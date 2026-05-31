@@ -5,6 +5,7 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 LIB_DIR="$SCRIPT_DIR/../lib"
 
 . "$LIB_DIR/logging.sh"
+. "$LIB_DIR/interactive.sh"
 
 create_black_background_image() {
   local image_path='/System/Library/Desktop Pictures/Solid Colors/Black.png'
@@ -289,6 +290,24 @@ configure_dock() {
   local codex_app
   local vscodium_app
   local zen_app
+  local choice
+
+  choice="$(interactive_select 'Should the Dock be visible or autohide?' 'Visible (always show)' 'Autohide')"
+
+  defaults write com.apple.dock tilesize -int 32
+  defaults write com.apple.dock largesize -int 64
+  defaults write com.apple.dock magnification -bool true
+
+  case "$choice" in
+    1)
+      defaults write com.apple.dock autohide -bool false
+      log_info 'Dock set to always show.'
+      ;;
+    2)
+      defaults write com.apple.dock autohide -bool true
+      log_info 'Dock set to autohide.'
+      ;;
+  esac
 
   mission_control_app="$(resolve_required_app_path 'Mission Control.app' '/System/Applications/Mission Control.app')"
   iphone_mirroring_app="$(resolve_required_app_path 'iPhone Mirroring.app' '/System/Applications/iPhone Mirroring.app')"
@@ -321,6 +340,8 @@ configure_dock() {
   defaults write com.apple.dock show-recents -bool false
   killall Dock >/dev/null 2>&1 || true
 
+  log_info 'Dock icon size set to 32 px (~25%).'
+  log_info 'Dock magnification size set to 64 px (~50%).'
   log_info 'Dock updated with the requested app order, no downloads stack, and no recent apps section.'
 }
 
