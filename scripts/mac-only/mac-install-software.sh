@@ -51,9 +51,12 @@ install_formula() {
 
 install_tailscale() {
   local choice
-  choice="$(interactive_select 'How do you want to install Tailscale?' 'CLI (system service)' 'App (GUI)' 'Skip')"
+  choice="$(interactive_select 'How do you want to install Tailscale?' 'Skip' 'CLI (system service)' 'App (GUI)')"
 
   case "$choice" in
+    0)
+      log_info 'Skipping Tailscale install.'
+      ;;
     1)
       if brew_has_formula tailscale; then
         log_info 'Tailscale CLI already installed.'
@@ -106,9 +109,6 @@ install_tailscale() {
       fi
 
       install_cask tailscale-app
-      ;;
-    3)
-      log_info 'Skipping Tailscale install.'
       ;;
   esac
 }

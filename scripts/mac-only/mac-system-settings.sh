@@ -103,26 +103,15 @@ configure_finder_preferences() {
   log_info "Finder new windows configured to open $home_dir."
 }
 
-configure_remote_access() {
+_apply_remote_access() {
   if ! sudo -v; then
     log_error 'Unable to acquire sudo privileges for remote access setup.'
     exit 1
   fi
 
-  if sudo /usr/bin/fdesetup status | /usr/bin/grep -q '^FileVault is On\.'; then
-    if ! sudo /usr/bin/fdesetup disable >/dev/null 2>&1; then
-      log_error 'Failed to disable FileVault.'
-      log_error 'Turn it off manually in System Settings > Privacy & Security > FileVault.'
-      exit 1
-    fi
-    log_info 'FileVault disabled.'
-  else
-    log_info 'FileVault already off.'
-  fi
-
-  if ! sudo systemsetup -setremotelogin on >/dev/null 2>&1; then
-    log_error 'Failed to enable sshd service.'
-    log_error 'Enable Remote Login manually in System Settings > General > Sharing.'
+  if ! sudo launchctl enable system/com.openssh.sshd >/dev/null 2>&1; then
+    log_error 'Failed to enable Remote Login (SSH) service.'
+    log_error 'Enable it manually in System Settings > General > Sharing > Remote Login.'
     exit 1
   fi
 
@@ -151,6 +140,20 @@ configure_remote_access() {
 
   log_info 'Remote Login (SSH) enabled.'
   log_info 'Screen Sharing enabled for native macOS login-window access.'
+}
+
+configure_remote_access() {
+  local choice
+  choice="$(interactive_select 'Enable remote access (SSH + Screen Sharing)?' 'Skip' 'Yes, enable remote access')"
+
+  case "$choice" in
+    0)
+      log_info 'Skipping remote access configuration.'
+      ;;
+    1)
+      _apply_remote_access
+      ;;
+  esac
 }
 
 open_full_disk_access_settings() {
@@ -292,13 +295,13 @@ configure_dock() {
   local zen_app
   local choice
 
-  choice="$(interactive_select 'Should the Dock be visible or autohide?' 'Visible (always show)' 'Autohide')"
-
-  defaults write com.apple.dock tilesize -int 32
-  defaults write com.apple.dock largesize -int 64
-  defaults write com.apple.dock magnification -bool true
+  choice="$(interactive_select 'Should the Dock be visible or autohide?' 'Skip' 'Visible (always show)' 'Autohide')"
 
   case "$choice" in
+    0)
+      log_info 'Skipping Dock configuration.'
+      return
+      ;;
     1)
       defaults write com.apple.dock autohide -bool false
       log_info 'Dock set to always show.'
@@ -308,6 +311,10 @@ configure_dock() {
       log_info 'Dock set to autohide.'
       ;;
   esac
+
+  defaults write com.apple.dock tilesize -int 32
+  defaults write com.apple.dock largesize -int 64
+  defaults write com.apple.dock magnification -bool true
 
   mission_control_app="$(resolve_required_app_path 'Mission Control.app' '/System/Applications/Mission Control.app')"
   iphone_mirroring_app="$(resolve_required_app_path 'iPhone Mirroring.app' '/System/Applications/iPhone Mirroring.app')"
