@@ -154,6 +154,8 @@ main() {
   run_step 'Install Google Chrome' install_cask google-chrome
   run_step 'Install Firefox' install_cask firefox
   run_step 'Install Zen Browser' install_cask zen
+  run_step 'Install Brave Browser' install_cask brave-browser
+  run_step 'Install Helium' install_cask helium
   run_step 'Install Discord' install_cask discord
   run_step 'Install Homerow' install_cask homerow
   run_step 'Install GIMP' install_cask gimp
