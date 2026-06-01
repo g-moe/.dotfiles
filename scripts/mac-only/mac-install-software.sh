@@ -145,7 +145,6 @@ main() {
   run_step 'Install Tailscale' install_tailscale
   run_step 'Install balenaEtcher' install_cask balenaetcher
   run_step 'Install Raycast' install_cask raycast
-  run_step 'Install Visual Studio Code' install_cask visual-studio-code
   run_step 'Install VSCodium' install_cask vscodium
   run_step 'Install Codex' install_cask codex-app
   run_step 'Install OpenCode Desktop' install_opencode_desktop
@@ -156,7 +155,6 @@ main() {
   run_step 'Install Zen Browser' install_cask zen
   run_step 'Install Brave Browser' install_cask brave-browser
   run_step 'Install Helium' install_cask helium
-  run_step 'Install Discord' install_cask discord
   run_step 'Install Homerow' install_cask homerow
   run_step 'Install GIMP' install_cask gimp
   run_step 'Install Fastfetch' install_formula fastfetch
