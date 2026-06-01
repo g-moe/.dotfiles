@@ -605,10 +605,23 @@ configure_menu_bar() {
   # The legacy key below may not have an effect on newer releases.
   silent defaults write NSGlobalDomain AppleEnableMenuBarTransparency -bool true || true
 
+  # Menu bar clock format: "May 31 21:29:18"
+  defaults write com.apple.menuextra.clock DateFormat -string "MMM d HH:mm:ss"
+  defaults write com.apple.menuextra.clock IsAnalog -bool false
+  defaults write com.apple.menuextra.clock Show24Hour -bool true
+  defaults write com.apple.menuextra.clock ShowSeconds -bool true
+  defaults write com.apple.menuextra.clock ShowAMPM -bool false
+  defaults write com.apple.menuextra.clock ShowDayOfWeek -bool false
+  defaults write com.apple.menuextra.clock ShowDayOfMonth -bool true
+  defaults write com.apple.menuextra.clock ShowDate -int 0
+
+  silent killall ControlCenter || true
   silent killall SystemUIServer || true
 
   log_info 'Menu bar configured to never hide.'
   log_info 'Recent documents, applications, and servers set to none.'
+  log_info 'Menu bar clock format set to "May 31 21:29:18".'
+  log_info 'Note: macOS menu bar clock does not support timezone display in the format string.'
 }
 
 main() {
