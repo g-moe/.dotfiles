@@ -1,8 +1,15 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-import { selectDiagnostic, type SelectableDiagnostic } from "../../../src/better-errors/diagnostics/selectDiagnostic";
-import type { BetterErrorPosition, BetterErrorRange, BetterErrorSeverity } from "../../../src/shared/contracts/betterErrors";
+import {
+	selectDiagnostic,
+	type SelectableDiagnostic,
+} from "../../../src/better-errors/diagnostics/selectDiagnostic";
+import type {
+	BetterErrorPosition,
+	BetterErrorRange,
+	BetterErrorSeverity,
+} from "../../../src/shared/contracts/betterErrors";
 
 test("selectDiagnostic prefers diagnostics containing the active position", () => {
 	const diagnostics = [

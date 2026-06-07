@@ -1,9 +1,9 @@
-import { PATHS } from "../paths"
-import type { CreateInstallModule, ThemeTokens, Variant } from "../types"
-import { installFile, writeText } from "../utils"
+import { PATHS } from "../paths";
+import type { CreateInstallModule, ThemeTokens, Variant } from "../types";
+import { installFile, writeText } from "../utils";
 
 function colorTable(v: Variant): string {
-  return `{
+	return `{
   bg = "${v.background}",
   bg_panel = "${v.backgroundPanel}",
   bg_element = "${v.backgroundElement}",
@@ -30,11 +30,11 @@ function colorTable(v: Variant): string {
   punctuation = "${v.syntax.punctuation}",
   cursor = "${v.cursor}",
   selection = "${v.selectionBackground}"
-}`
+}`;
 }
 
 function buildNvimTheme(tokens: ThemeTokens, mode: "dark" | "light"): string {
-  return `local M = {}
+	return `local M = {}
 
 M.setup = function()
   vim.cmd("highlight clear")
@@ -88,19 +88,19 @@ end
 M.setup()
 
 return M
-`
+`;
 }
 
 export const nvimApp: CreateInstallModule = {
-  appName: "nvim",
-  async create(tokens: ThemeTokens) {
-    await writeText(PATHS.output.nvim.dark, buildNvimTheme(tokens, "dark"))
-    await writeText(PATHS.output.nvim.light, buildNvimTheme(tokens, "light"))
-    return [PATHS.output.nvim.dark, PATHS.output.nvim.light]
-  },
-  async install() {
-    await installFile(PATHS.output.nvim.dark, PATHS.install.nvim.dark)
-    await installFile(PATHS.output.nvim.light, PATHS.install.nvim.light)
-    return [PATHS.install.nvim.dark, PATHS.install.nvim.light]
-  },
-}
+	appName: "nvim",
+	async create(tokens: ThemeTokens) {
+		await writeText(PATHS.output.nvim.dark, buildNvimTheme(tokens, "dark"));
+		await writeText(PATHS.output.nvim.light, buildNvimTheme(tokens, "light"));
+		return [PATHS.output.nvim.dark, PATHS.output.nvim.light];
+	},
+	async install() {
+		await installFile(PATHS.output.nvim.dark, PATHS.install.nvim.dark);
+		await installFile(PATHS.output.nvim.light, PATHS.install.nvim.light);
+		return [PATHS.install.nvim.dark, PATHS.install.nvim.light];
+	},
+};

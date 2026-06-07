@@ -18,7 +18,8 @@ test("buildCopyErrorPrompt includes trimmed high-signal sections", () => {
 		},
 		severity: "error",
 		message: "Type 'string' is not assignable to type 'number'.",
-		rawMessage: "Type 'string' is not assignable to type 'number'.\n  The expected type comes from property 'count'.",
+		rawMessage:
+			"Type 'string' is not assignable to type 'number'.\n  The expected type comes from property 'count'.",
 		source: "ts",
 		code: "2322",
 		relatedInformation: [
@@ -97,7 +98,10 @@ test("buildCopyErrorPrompt includes trimmed high-signal sections", () => {
 
 	assert.match(prompt, /## Raw Diagnostic/);
 	assert.match(prompt, /- File: src\/app\.ts/);
-	assert.match(prompt, /## Active Scope\n- File: src\/app\.ts\n- Range: 3:1-7:2\n```typescript/);
+	assert.match(
+		prompt,
+		/## Active Scope\n- File: src\/app\.ts\n- Range: 3:1-7:2\n```typescript/,
+	);
 	assert.match(prompt, /## Definition Snippet\n- File: src\/value\.ts/);
 	assert.match(prompt, /## Type Definition Snippet\n- File: src\/types\.ts/);
 	assert.match(prompt, /## Related Diagnostics/);
@@ -106,7 +110,10 @@ test("buildCopyErrorPrompt includes trimmed high-signal sections", () => {
 	assert.match(prompt, /- src\/a\.ts:10:3-10:8 foo\(value\)/);
 	assert.match(prompt, /## Call Hierarchy/);
 	assert.match(prompt, /- Called by: buildPayload in src\/a\.ts:10:1-10:13/);
-	assert.match(prompt, /- Calls into: normalizeValue in src\/value\.ts:3:1-3:15/);
+	assert.match(
+		prompt,
+		/- Calls into: normalizeValue in src\/value\.ts:3:1-3:15/,
+	);
 	assert.doesNotMatch(prompt, /## Facts/);
 	assert.doesNotMatch(prompt, /## Primary Symbol/);
 });
@@ -135,7 +142,10 @@ test("buildCopyErrorPrompt includes placeholders when optional evidence is missi
 
 	assert.match(prompt, /## Active Scope\n- <no enclosing scope found>/);
 	assert.match(prompt, /## Definition Snippet\n- <no definition found>/);
-	assert.match(prompt, /## Type Definition Snippet\n- <no type definition found>/);
+	assert.match(
+		prompt,
+		/## Type Definition Snippet\n- <no type definition found>/,
+	);
 	assert.match(prompt, /## Related Diagnostics\n- <no related diagnostics>/);
 	assert.match(prompt, /## References\n- <no references found>/);
 	assert.match(prompt, /## Call Hierarchy\n- <no call hierarchy available>/);

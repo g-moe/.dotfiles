@@ -1,7 +1,13 @@
-import type { BetterErrorCodeSnippet, BetterErrorPromptInput, BetterErrorRange } from "../../shared/contracts/betterErrors";
+import type {
+	BetterErrorCodeSnippet,
+	BetterErrorPromptInput,
+	BetterErrorRange,
+} from "../../shared/contracts/betterErrors";
 import { BETTER_ERRORS_PROMPT_DEFAULTS } from "../../shared/consts/betterErrors";
 
-export function buildCopyErrorPrompt({ diagnostic }: BetterErrorPromptInput): string {
+export function buildCopyErrorPrompt({
+	diagnostic,
+}: BetterErrorPromptInput): string {
 	return trimTrailingBlankLines([
 		...buildInstructionSection(),
 		...buildRawDiagnosticSection(diagnostic),
@@ -60,7 +66,9 @@ function buildRawDiagnosticSection(
 	];
 }
 
-function buildActiveScopeSection(diagnostic: BetterErrorPromptInput["diagnostic"]): string[] {
+function buildActiveScopeSection(
+	diagnostic: BetterErrorPromptInput["diagnostic"],
+): string[] {
 	return buildSnippetSection({
 		label: "## Active Scope",
 		snippet: diagnostic.activeScope,
@@ -68,7 +76,9 @@ function buildActiveScopeSection(diagnostic: BetterErrorPromptInput["diagnostic"
 	});
 }
 
-function buildDefinitionSection(diagnostic: BetterErrorPromptInput["diagnostic"]): string[] {
+function buildDefinitionSection(
+	diagnostic: BetterErrorPromptInput["diagnostic"],
+): string[] {
 	return buildSnippetSection({
 		label: "## Definition Snippet",
 		snippet: diagnostic.definition,
@@ -76,7 +86,9 @@ function buildDefinitionSection(diagnostic: BetterErrorPromptInput["diagnostic"]
 	});
 }
 
-function buildTypeDefinitionSection(diagnostic: BetterErrorPromptInput["diagnostic"]): string[] {
+function buildTypeDefinitionSection(
+	diagnostic: BetterErrorPromptInput["diagnostic"],
+): string[] {
 	return buildSnippetSection({
 		label: "## Type Definition Snippet",
 		snippet: diagnostic.typeDefinition,
@@ -91,26 +103,34 @@ function buildRelatedInformationSection(
 		"## Related Diagnostics",
 		...(diagnostic.relatedInformation.length > 0
 			? diagnostic.relatedInformation.map(
-				(item) => `- ${item.filePath}:${formatRange(item.range)} ${item.message}`,
-			)
-			: [`- ${BETTER_ERRORS_PROMPT_DEFAULTS.emptyRelatedDiagnosticsPlaceholder}`]),
+					(item) =>
+						`- ${item.filePath}:${formatRange(item.range)} ${item.message}`,
+				)
+			: [
+					`- ${BETTER_ERRORS_PROMPT_DEFAULTS.emptyRelatedDiagnosticsPlaceholder}`,
+				]),
 		"",
 	];
 }
 
-function buildReferencesSection(diagnostic: BetterErrorPromptInput["diagnostic"]): string[] {
+function buildReferencesSection(
+	diagnostic: BetterErrorPromptInput["diagnostic"],
+): string[] {
 	return [
 		"## References",
 		...(diagnostic.references.length > 0
 			? diagnostic.references.map(
-				(item) => `- ${item.filePath}:${formatRange(item.range)} ${item.snippet}`,
-			)
+					(item) =>
+						`- ${item.filePath}:${formatRange(item.range)} ${item.snippet}`,
+				)
 			: [`- ${BETTER_ERRORS_PROMPT_DEFAULTS.emptyReferencesPlaceholder}`]),
 		"",
 	];
 }
 
-function buildCallHierarchySection(diagnostic: BetterErrorPromptInput["diagnostic"]): string[] {
+function buildCallHierarchySection(
+	diagnostic: BetterErrorPromptInput["diagnostic"],
+): string[] {
 	if (!diagnostic.callHierarchy) {
 		return [
 			"## Call Hierarchy",
@@ -123,13 +143,15 @@ function buildCallHierarchySection(diagnostic: BetterErrorPromptInput["diagnosti
 		"## Call Hierarchy",
 		...(diagnostic.callHierarchy.incoming.length > 0
 			? diagnostic.callHierarchy.incoming.map(
-				(item) => `- Called by: ${item.name} in ${item.filePath}:${formatRange(item.range)}`,
-			)
+					(item) =>
+						`- Called by: ${item.name} in ${item.filePath}:${formatRange(item.range)}`,
+				)
 			: ["- Called by: <none>"]),
 		...(diagnostic.callHierarchy.outgoing.length > 0
 			? diagnostic.callHierarchy.outgoing.map(
-				(item) => `- Calls into: ${item.name} in ${item.filePath}:${formatRange(item.range)}`,
-			)
+					(item) =>
+						`- Calls into: ${item.name} in ${item.filePath}:${formatRange(item.range)}`,
+				)
 			: ["- Calls into: <none>"]),
 		"",
 	];

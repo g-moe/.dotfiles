@@ -25,3 +25,4 @@ This directory contains installation and configuration scripts for macOS.
 - Source `lib/interactive.sh` for `interactive_select` (0-based options, Skip is always option 0)
 - Source `lib/utils.sh` for `silent()`, `has_command()`, `brew_has_cask()`, `brew_has_formula()`
 - `run_step` wraps every major configuration phase so the installer prints clear `==> Step Name` headers
+- Node setup installs and uses Node.js 24 LTS via `nvm`; keep this aligned with the root `.nvmrc` and package `engines`.

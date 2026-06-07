@@ -9,6 +9,10 @@ load_nvm() {
   fi
 }
 
+node_major_version() {
+  node --version | sed -E 's/^v([0-9]+).*/\1/'
+}
+
 install_nvm() {
   load_nvm
   if has_command nvm; then
@@ -32,14 +36,14 @@ install_nvm() {
 node_dev_setup() {
   install_nvm
 
-  if has_command node && has_command npm; then
-    log_info 'Node.js and npm already installed.'
+  if has_command node && has_command npm && [[ "$(node_major_version)" == '24' ]]; then
+    log_info 'Node.js 24 and npm already installed.'
     return
   fi
 
-  log_info 'Installing Node.js LTS with nvm...'
-  nvm install --lts
-  nvm alias default 'lts/*'
-  nvm use --lts
+  log_info 'Installing Node.js 24 LTS with nvm...'
+  nvm install 24
+  nvm alias default 24
+  nvm use 24
   log_info 'Node.js and npm installed.'
 }

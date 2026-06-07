@@ -2,7 +2,10 @@ import test from "node:test";
 import assert from "node:assert/strict";
 
 import { selectCodeLensDiagnostics } from "../../../src/better-errors/diagnostics/selectCodeLensDiagnostics";
-import type { BetterErrorRange, BetterErrorSeverity } from "../../../src/shared/contracts/betterErrors";
+import type {
+	BetterErrorRange,
+	BetterErrorSeverity,
+} from "../../../src/shared/contracts/betterErrors";
 import type { SelectableDiagnostic } from "../../../src/better-errors/diagnostics/selectDiagnostic";
 
 test("selectCodeLensDiagnostics returns the strongest diagnostic per line", () => {
@@ -12,7 +15,10 @@ test("selectCodeLensDiagnostics returns the strongest diagnostic per line", () =
 		createDiagnostic("line-4-info", range(3, 1, 3, 8), "information"),
 	];
 
-	assert.deepEqual(selectCodeLensDiagnostics(diagnostics), ["line-2-error", "line-4-info"]);
+	assert.deepEqual(selectCodeLensDiagnostics(diagnostics), [
+		"line-2-error",
+		"line-4-info",
+	]);
 });
 
 test("selectCodeLensDiagnostics preserves line order", () => {
@@ -21,7 +27,10 @@ test("selectCodeLensDiagnostics preserves line order", () => {
 		createDiagnostic("line-1", range(0, 0, 0, 1), "error"),
 	];
 
-	assert.deepEqual(selectCodeLensDiagnostics(diagnostics), ["line-1", "line-5"]);
+	assert.deepEqual(selectCodeLensDiagnostics(diagnostics), [
+		"line-1",
+		"line-5",
+	]);
 });
 
 function createDiagnostic<TDiagnostic>(

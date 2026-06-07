@@ -8,14 +8,14 @@
 // command palette (cmd-shift-p / ctrl-shift-p)
 {
 	"diff_view_style": "unified",
- "session": {
-  "trust_all_worktrees": true
- },
- "vim_mode": true,
- "mouse_wheel_zoom": true,
- "colorize_brackets": false,
- "wrap_guides": [],
- "disable_ai": false,
+	"session": {
+		"trust_all_worktrees": true
+	},
+	"vim_mode": true,
+	"mouse_wheel_zoom": true,
+	"colorize_brackets": false,
+	"wrap_guides": [],
+	"disable_ai": false,
 	"active_pane_modifiers": {
 		"border_size": 1.0
 	},
@@ -55,9 +55,9 @@
 	},
 	"agent": {
 		"tool_permissions": {
-   "default": "allow"
-  },
-  "default_height": 320.0,
+			"default": "allow"
+		},
+		"default_height": 320.0,
 		"inline_assistant_model": {
 			"provider": "zed.dev",
 			"model": "claude-sonnet-4"
@@ -73,15 +73,15 @@
 	},
 	"agent_servers": {
 		"claude-acp": {
-   "type": "registry"
-  },
-  "codex-acp": {
-   "type": "registry"
-  },
-  "cursor": {
-   "type": "registry"
-  },
-  "OpenCode": {
+			"type": "registry"
+		},
+		"codex-acp": {
+			"type": "registry"
+		},
+		"cursor": {
+			"type": "registry"
+		},
+		"OpenCode": {
 			"type": "custom",
 			"command": "opencode",
 			"args": ["acp"]
@@ -123,14 +123,8 @@
 		"mode": "subtle"
 	},
 	"file_types": {
-		"cpp": [
-   "*.cpp",
-   "*.cpp"
-  ],
-		"tailwindcss": [
-   "*.css",
-   "*.css"
-  ]
+		"cpp": ["*.cpp", "*.cpp"],
+		"tailwindcss": ["*.css", "*.css"]
 	},
 	"formatter": "auto",
 	"format_on_save": "on",
@@ -142,10 +136,10 @@
 	},
 	"hover_popover_delay": 500,
 	"icon_theme": {
-  "mode": "system",
-  "light": "Zed (Default)",
-  "dark": "Zed (Default)"
- },
+		"mode": "system",
+		"light": "Zed (Default)",
+		"dark": "Zed (Default)"
+	},
 	"indent_guides": {
 		"active_line_width": 2,
 		"background_coloring": "disabled",
@@ -156,94 +150,94 @@
 	"languages": {
 		"JavaScript": {
 			"colorize_brackets": false,
-   "show_whitespaces": "none",
-   "wrap_guides": [],
-   "preferred_line_length": 80,
-   "soft_wrap": "editor_width",
-   "formatter": [
+			"show_whitespaces": "none",
+			"wrap_guides": [],
+			"preferred_line_length": 80,
+			"soft_wrap": "editor_width",
+			"formatter": [
 				{
 					"language_server": {
-						"name": "biome"
+						"name": "oxfmt"
 					}
 				}
 			],
 			"code_actions_on_format": {
-				"source.fixAll.biome": true
+				"source.fixAll.oxc": true
 			}
 		},
 		"TypeScript": {
 			"colorize_brackets": false,
-   "show_whitespaces": "none",
-   "wrap_guides": [],
-   "preferred_line_length": 80,
-   "soft_wrap": "editor_width",
-   "formatter": [
+			"show_whitespaces": "none",
+			"wrap_guides": [],
+			"preferred_line_length": 80,
+			"soft_wrap": "editor_width",
+			"formatter": [
 				{
 					"language_server": {
-						"name": "biome"
+						"name": "oxfmt"
 					}
 				}
 			],
 			"code_actions_on_format": {
-				"source.fixAll.biome": true
+				"source.fixAll.oxc": true
 			}
 		},
 		"JSON": {
 			"colorize_brackets": false,
-   "show_whitespaces": "none",
-   "wrap_guides": [],
-   "preferred_line_length": 80,
-   "soft_wrap": "editor_width",
-   "formatter": [
+			"show_whitespaces": "none",
+			"wrap_guides": [],
+			"preferred_line_length": 80,
+			"soft_wrap": "editor_width",
+			"formatter": [
 				{
 					"language_server": {
-						"name": "biome"
+						"name": "oxfmt"
 					}
 				}
 			],
 			"code_actions_on_format": {
-				"source.fixAll.biome": true
+				"source.fixAll.oxc": true
 			}
 		},
 		"JSONC": {
 			"colorize_brackets": false,
-   "show_whitespaces": "none",
-   "wrap_guides": [],
-   "preferred_line_length": 80,
-   "soft_wrap": "editor_width",
-   "formatter": [
+			"show_whitespaces": "none",
+			"wrap_guides": [],
+			"preferred_line_length": 80,
+			"soft_wrap": "editor_width",
+			"formatter": [
 				{
 					"language_server": {
-						"name": "biome"
+						"name": "oxfmt"
 					}
 				}
 			],
 			"code_actions_on_format": {
-				"source.fixAll.biome": true
+				"source.fixAll.oxc": true
 			}
 		},
 		"CSS": {
 			"colorize_brackets": false,
-   "show_whitespaces": "none",
-   "wrap_guides": [],
-   "preferred_line_length": 80,
-   "soft_wrap": "editor_width",
-   "formatter": [
+			"show_whitespaces": "none",
+			"wrap_guides": [],
+			"preferred_line_length": 80,
+			"soft_wrap": "editor_width",
+			"formatter": [
 				{
 					"language_server": {
-						"name": "biome"
+						"name": "oxfmt"
 					}
 				}
 			],
 			"code_actions_on_format": {
-				"source.fixAll.biome": true
+				"source.fixAll.oxc": true
 			}
 		}
 	},
 	"max_tabs": 1,
 	"minimap": {
 		"thumb": "always",
-  "show": "never"
+		"show": "never"
 	},
 	"notification_panel": {
 		"dock": "left"
@@ -304,10 +298,10 @@
 	},
 	"terminal": {
 		"bell": "off",
-  "line_height": {
-   "custom": 1.0
-  },
-  "scrollbar": {
+		"line_height": {
+			"custom": 1.0
+		},
+		"scrollbar": {
 			"show": "never"
 		},
 		"toolbar": {
@@ -331,10 +325,10 @@
 		"show_menus": true // Show/hide menus
 	},
 	"theme": {
-  "mode": "system",
-  "light": "One Light",
-  "dark": "One Dark"
- },
+		"mode": "system",
+		"light": "One Light",
+		"dark": "One Dark"
+	},
 	"toolbar": {
 		"agent_review": true,
 		"breadcrumbs": true,

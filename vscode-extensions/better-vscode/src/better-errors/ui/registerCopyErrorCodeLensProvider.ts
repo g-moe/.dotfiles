@@ -11,10 +11,7 @@ export function registerCopyErrorCodeLensProvider(): vscode.Disposable {
 	const onDidChangeCodeLenses = new vscode.EventEmitter<void>();
 
 	const provider = vscode.languages.registerCodeLensProvider(
-		[
-			{ scheme: "file" },
-			{ scheme: "untitled" },
-		],
+		[{ scheme: "file" }, { scheme: "untitled" }],
 		{
 			onDidChangeCodeLenses: onDidChangeCodeLenses.event,
 			provideCodeLenses(document) {
@@ -51,19 +48,23 @@ export function registerCopyErrorCodeLensProvider(): vscode.Disposable {
 		},
 	);
 
-	const diagnosticsSubscription = vscode.languages.onDidChangeDiagnostics(() => {
-		onDidChangeCodeLenses.fire();
-	});
-
-	const configurationSubscription = vscode.workspace.onDidChangeConfiguration((event) => {
-		if (
-			event.affectsConfiguration(
-				`${BETTER_ERRORS_CONFIG.root}.${BETTER_ERRORS_CONFIG.enabled}`,
-			)
-		) {
+	const diagnosticsSubscription = vscode.languages.onDidChangeDiagnostics(
+		() => {
 			onDidChangeCodeLenses.fire();
-		}
-	});
+		},
+	);
+
+	const configurationSubscription = vscode.workspace.onDidChangeConfiguration(
+		(event) => {
+			if (
+				event.affectsConfiguration(
+					`${BETTER_ERRORS_CONFIG.root}.${BETTER_ERRORS_CONFIG.enabled}`,
+				)
+			) {
+				onDidChangeCodeLenses.fire();
+			}
+		},
+	);
 
 	return vscode.Disposable.from(
 		provider,
@@ -79,12 +80,9 @@ function isBetterErrorsEnabled(): boolean {
 		.get(BETTER_ERRORS_CONFIG.enabled, true);
 }
 
-function formatSeverity(severity: vscode.DiagnosticSeverity):
-	| "error"
-	| "warning"
-	| "information"
-	| "hint"
-	| "unknown" {
+function formatSeverity(
+	severity: vscode.DiagnosticSeverity,
+): "error" | "warning" | "information" | "hint" | "unknown" {
 	switch (severity) {
 		case vscode.DiagnosticSeverity.Error:
 			return "error";

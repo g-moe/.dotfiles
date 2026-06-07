@@ -44,14 +44,21 @@ export async function getActiveErrorDiagnostic(
 	const diagnosticRange = toRange(diagnostic.range);
 	const selectionRange = toRange(selection);
 	const symbolPosition = effectiveActivePosition;
-	const symbolRange = editor.document.getWordRangeAtPosition(symbolPosition) ?? diagnostic.range;
-	const [activeScope, definition, typeDefinition, references, callHierarchy] = await Promise.all([
-		getActiveScopeSnippet(editor.document, diagnostic.range),
-		getDefinitionSnippet(editor.document.uri, symbolPosition),
-		getTypeDefinitionSnippet(editor.document.uri, symbolPosition),
-		getReferences(editor.document.uri, symbolPosition, editor.document.uri, symbolRange),
-		getCallHierarchy(editor.document.uri, symbolPosition),
-	]);
+	const symbolRange =
+		editor.document.getWordRangeAtPosition(symbolPosition) ?? diagnostic.range;
+	const [activeScope, definition, typeDefinition, references, callHierarchy] =
+		await Promise.all([
+			getActiveScopeSnippet(editor.document, diagnostic.range),
+			getDefinitionSnippet(editor.document.uri, symbolPosition),
+			getTypeDefinitionSnippet(editor.document.uri, symbolPosition),
+			getReferences(
+				editor.document.uri,
+				symbolPosition,
+				editor.document.uri,
+				symbolRange,
+			),
+			getCallHierarchy(editor.document.uri, symbolPosition),
+		]);
 
 	return {
 		filePath,
@@ -69,7 +76,11 @@ export async function getActiveErrorDiagnostic(
 			message: item.message,
 		})),
 		contextText: editor.document.getText(
-			expandRangeByLines(editor.document, diagnostic.range, getContextLineCount()),
+			expandRangeByLines(
+				editor.document,
+				diagnostic.range,
+				getContextLineCount(),
+			),
 		),
 		activeScope,
 		definition,
@@ -85,7 +96,10 @@ function expandRangeByLines(
 	paddingLineCount: number,
 ): vscode.Range {
 	const startLine = Math.max(0, range.start.line - paddingLineCount);
-	const endLine = Math.min(document.lineCount - 1, range.end.line + paddingLineCount);
+	const endLine = Math.min(
+		document.lineCount - 1,
+		range.end.line + paddingLineCount,
+	);
 
 	return new vscode.Range(
 		new vscode.Position(startLine, 0),
@@ -116,10 +130,15 @@ async function getActiveScopeSnippet(
 	const symbols = await vscode.commands.executeCommand<
 		readonly vscode.DocumentSymbol[] | readonly vscode.SymbolInformation[]
 	>("vscode.executeDocumentSymbolProvider", document.uri);
-	const scopeRange = getNarrowestContainingSymbolRange(document.uri, symbols ?? [], diagnosticRange);
-	const snippetRange = scopeRange && getLineSpan(scopeRange) <= MAX_SCOPE_LINES
-		? scopeRange
-		: expandRangeByLines(document, diagnosticRange, getContextLineCount());
+	const scopeRange = getNarrowestContainingSymbolRange(
+		document.uri,
+		symbols ?? [],
+		diagnosticRange,
+	);
+	const snippetRange =
+		scopeRange && getLineSpan(scopeRange) <= MAX_SCOPE_LINES
+			? scopeRange
+			: expandRangeByLines(document, diagnosticRange, getContextLineCount());
 
 	return {
 		filePath: getFilePath(document.uri),
@@ -133,11 +152,9 @@ async function getDefinitionSnippet(
 	uri: vscode.Uri,
 	position: vscode.Position,
 ): Promise<BetterErrorCodeSnippet | undefined> {
-	const locations = await vscode.commands.executeCommand<readonly vscode.Location[] | readonly vscode.LocationLink[]>(
-		"vscode.executeDefinitionProvider",
-		uri,
-		position,
-	);
+	const locations = await vscode.commands.executeCommand<
+		readonly vscode.Location[] | readonly vscode.LocationLink[]
+	>("vscode.executeDefinitionProvider", uri, position);
 
 	return toCodeSnippet(locations?.[0]);
 }
@@ -146,11 +163,9 @@ async function getTypeDefinitionSnippet(
 	uri: vscode.Uri,
 	position: vscode.Position,
 ): Promise<BetterErrorCodeSnippet | undefined> {
-	const locations = await vscode.commands.executeCommand<readonly vscode.Location[] | readonly vscode.LocationLink[]>(
-		"vscode.executeTypeDefinitionProvider",
-		uri,
-		position,
-	);
+	const locations = await vscode.commands.executeCommand<
+		readonly vscode.Location[] | readonly vscode.LocationLink[]
+	>("vscode.executeTypeDefinitionProvider", uri, position);
 
 	return toCodeSnippet(locations?.[0]);
 }
@@ -161,20 +176,25 @@ async function getReferences(
 	currentUri: vscode.Uri,
 	currentRange: vscode.Range,
 ): Promise<readonly BetterErrorReference[]> {
-	const locations = await vscode.commands.executeCommand<readonly vscode.Location[]>(
-		"vscode.executeReferenceProvider",
-		uri,
-		position,
-	);
+	const locations = await vscode.commands.executeCommand<
+		readonly vscode.Location[]
+	>("vscode.executeReferenceProvider", uri, position);
 
 	if (!locations) {
 		return [];
 	}
 
 	const filteredLocations = locations.filter(
-		(item) => !(item.uri.toString() === currentUri.toString() && item.range.isEqual(currentRange)),
+		(item) =>
+			!(
+				item.uri.toString() === currentUri.toString() &&
+				item.range.isEqual(currentRange)
+			),
 	);
-	const uniqueLocations = dedupeLocations(filteredLocations).slice(0, MAX_REFERENCES);
+	const uniqueLocations = dedupeLocations(filteredLocations).slice(
+		0,
+		MAX_REFERENCES,
+	);
 
 	return Promise.all(uniqueLocations.map(toReference));
 }
@@ -183,11 +203,9 @@ async function getCallHierarchy(
 	uri: vscode.Uri,
 	position: vscode.Position,
 ): Promise<BetterErrorCallHierarchy | undefined> {
-	const items = await vscode.commands.executeCommand<vscode.CallHierarchyItem[]>(
-		"vscode.prepareCallHierarchy",
-		uri,
-		position,
-	);
+	const items = await vscode.commands.executeCommand<
+		vscode.CallHierarchyItem[]
+	>("vscode.prepareCallHierarchy", uri, position);
 	const item = items?.[0];
 
 	if (!item) {
@@ -219,7 +237,9 @@ async function getCallHierarchy(
 	return { incoming, outgoing };
 }
 
-function dedupeLocations(locations: readonly vscode.Location[]): readonly vscode.Location[] {
+function dedupeLocations(
+	locations: readonly vscode.Location[],
+): readonly vscode.Location[] {
 	const seen = new Set<string>();
 
 	return locations.filter((item) => {
@@ -234,7 +254,9 @@ function dedupeLocations(locations: readonly vscode.Location[]): readonly vscode
 	});
 }
 
-async function toReference(location: vscode.Location): Promise<BetterErrorReference> {
+async function toReference(
+	location: vscode.Location,
+): Promise<BetterErrorReference> {
 	const document = await vscode.workspace.openTextDocument(location.uri);
 	const lineText = document.lineAt(location.range.start.line).text.trim();
 
@@ -253,9 +275,14 @@ async function toCodeSnippet(
 	}
 
 	const targetUri = "targetUri" in location ? location.targetUri : location.uri;
-	const targetRange = "targetRange" in location ? location.targetRange : location.range;
+	const targetRange =
+		"targetRange" in location ? location.targetRange : location.range;
 	const document = await vscode.workspace.openTextDocument(targetUri);
-	const snippetRange = expandRangeByLines(document, targetRange, DEFINITION_CONTEXT_LINES);
+	const snippetRange = expandRangeByLines(
+		document,
+		targetRange,
+		DEFINITION_CONTEXT_LINES,
+	);
 
 	return {
 		filePath: getFilePath(targetUri),
@@ -265,7 +292,9 @@ async function toCodeSnippet(
 	};
 }
 
-function toCallHierarchyItem(item: vscode.CallHierarchyItem): BetterErrorCallHierarchyItem {
+function toCallHierarchyItem(
+	item: vscode.CallHierarchyItem,
+): BetterErrorCallHierarchyItem {
 	return {
 		name: item.name,
 		filePath: getFilePath(item.uri),
@@ -275,7 +304,9 @@ function toCallHierarchyItem(item: vscode.CallHierarchyItem): BetterErrorCallHie
 
 function getNarrowestContainingSymbolRange(
 	uri: vscode.Uri,
-	symbols: readonly vscode.DocumentSymbol[] | readonly vscode.SymbolInformation[],
+	symbols:
+		| readonly vscode.DocumentSymbol[]
+		| readonly vscode.SymbolInformation[],
 	targetRange: vscode.Range,
 ): vscode.Range | undefined {
 	if (symbols.length === 0) {
@@ -284,19 +315,25 @@ function getNarrowestContainingSymbolRange(
 
 	const firstSymbol = symbols[0];
 	const candidateRanges = isDocumentSymbol(firstSymbol)
-		? flattenDocumentSymbols(symbols as readonly vscode.DocumentSymbol[])
-			.map((item) => item.range)
+		? flattenDocumentSymbols(symbols as readonly vscode.DocumentSymbol[]).map(
+				(item) => item.range,
+			)
 		: (symbols as readonly vscode.SymbolInformation[])
-			.filter((item) => item.location.uri.toString() === uri.toString())
-			.map((item) => item.location.range);
+				.filter((item) => item.location.uri.toString() === uri.toString())
+				.map((item) => item.location.range);
 
 	return candidateRanges
 		.filter((range) => rangeContainsRange(range, targetRange))
 		.sort((left, right) => getRangeArea(left) - getRangeArea(right))[0];
 }
 
-function flattenDocumentSymbols(symbols: readonly vscode.DocumentSymbol[]): readonly vscode.DocumentSymbol[] {
-	return symbols.flatMap((symbol) => [symbol, ...flattenDocumentSymbols(symbol.children)]);
+function flattenDocumentSymbols(
+	symbols: readonly vscode.DocumentSymbol[],
+): readonly vscode.DocumentSymbol[] {
+	return symbols.flatMap((symbol) => [
+		symbol,
+		...flattenDocumentSymbols(symbol.children),
+	]);
 }
 
 function isDocumentSymbol(
@@ -305,12 +342,17 @@ function isDocumentSymbol(
 	return "children" in symbol;
 }
 
-function rangeContainsRange(container: vscode.Range, target: vscode.Range): boolean {
+function rangeContainsRange(
+	container: vscode.Range,
+	target: vscode.Range,
+): boolean {
 	return container.contains(target.start) && container.contains(target.end);
 }
 
 function getRangeArea(range: vscode.Range): number {
-	return getLineSpan(range) * 10000 + (range.end.character - range.start.character);
+	return (
+		getLineSpan(range) * 10000 + (range.end.character - range.start.character)
+	);
 }
 
 function getLineSpan(range: vscode.Range): number {
@@ -331,7 +373,9 @@ function toRange(range: vscode.Range | vscode.Selection): BetterErrorRange {
 	};
 }
 
-function formatSeverity(severity: vscode.DiagnosticSeverity): BetterErrorSeverity {
+function formatSeverity(
+	severity: vscode.DiagnosticSeverity,
+): BetterErrorSeverity {
 	switch (severity) {
 		case vscode.DiagnosticSeverity.Error:
 			return "error";
@@ -346,7 +390,9 @@ function formatSeverity(severity: vscode.DiagnosticSeverity): BetterErrorSeverit
 	}
 }
 
-function normalizeDiagnosticCode(code: vscode.Diagnostic["code"]): string | undefined {
+function normalizeDiagnosticCode(
+	code: vscode.Diagnostic["code"],
+): string | undefined {
 	if (typeof code === "string") {
 		return code;
 	}

@@ -2,20 +2,27 @@
 	"name": "dotfiles-root",
 	"private": true,
 	"scripts": {
-		"lint": "biome lint .",
-		"lint:fix": "biome lint --write .",
-		"format": "biome format --write .",
-		"format:check": "biome format .",
+		"lint": "oxlint --deny-warnings .",
+		"lint:fix": "oxlint --fix --deny-warnings .",
+		"format": "oxfmt .",
+		"format:check": "oxfmt --check .",
+		"typecheck": "tsc -b --noEmit",
+		"typecheck:tsgo": "tsgo -b --noEmit",
 		"theme": "tsx custom-themes/create/controller.ts",
 		"vscode-install": "bash scripts/vscode-install.sh",
 		"mac:install": "bash scripts/mac-install.sh",
 		"mac:uninstall": "bash scripts/mac-uninstall.sh"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.4.4",
-		"@types/node": "22.18.1",
+		"@types/node": "24.13.1",
+		"@typescript/native-preview": "7.0.0-dev.20260607.1",
 		"jsonc-parser": "3.3.1",
+		"oxfmt": "0.53.0",
+		"oxlint": "1.68.0",
 		"tsx": "4.20.6",
-		"typescript": "5.9.2"
+		"typescript": "6.0.3"
+	},
+	"engines": {
+		"node": ">=24 <25"
 	}
 }

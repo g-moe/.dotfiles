@@ -22,14 +22,18 @@ function registerCopyErrorCommand(): vscode.Disposable {
 			const editor = vscode.window.activeTextEditor;
 
 			if (!editor) {
-				void vscode.window.showWarningMessage("Open a file before copying an error.");
+				void vscode.window.showWarningMessage(
+					"Open a file before copying an error.",
+				);
 				return;
 			}
 
 			const didCopy = await copyActiveError(editor, targetRange);
 
 			if (!didCopy) {
-				void vscode.window.showWarningMessage("No diagnostic found at the current cursor or selection.");
+				void vscode.window.showWarningMessage(
+					"No diagnostic found at the current cursor or selection.",
+				);
 				return;
 			}
 
@@ -39,20 +43,25 @@ function registerCopyErrorCommand(): vscode.Disposable {
 }
 
 function registerToggleEnabledCommand(): vscode.Disposable {
-	return vscode.commands.registerCommand(BETTER_ERRORS_COMMANDS.toggleEnabled, async () => {
-		const config = vscode.workspace.getConfiguration(BETTER_ERRORS_CONFIG.root);
-		const nextEnabled = !isBetterErrorsEnabled();
+	return vscode.commands.registerCommand(
+		BETTER_ERRORS_COMMANDS.toggleEnabled,
+		async () => {
+			const config = vscode.workspace.getConfiguration(
+				BETTER_ERRORS_CONFIG.root,
+			);
+			const nextEnabled = !isBetterErrorsEnabled();
 
-		await config.update(
-			BETTER_ERRORS_CONFIG.enabled,
-			nextEnabled,
-			vscode.ConfigurationTarget.Global,
-		);
+			await config.update(
+				BETTER_ERRORS_CONFIG.enabled,
+				nextEnabled,
+				vscode.ConfigurationTarget.Global,
+			);
 
-		void vscode.window.showInformationMessage(
-			`better-errors ${nextEnabled ? "enabled" : "disabled"}.`,
-		);
-	});
+			void vscode.window.showInformationMessage(
+				`better-errors ${nextEnabled ? "enabled" : "disabled"}.`,
+			);
+		},
+	);
 }
 
 function isBetterErrorsEnabled(): boolean {

@@ -1,5 +1,3 @@
-import type { BetterErrorRange } from "../../shared/contracts/betterErrors";
-
 import {
 	compareSelectableDiagnostics,
 	type SelectableDiagnostic,
@@ -8,7 +6,10 @@ import {
 export function selectCodeLensDiagnostics<TDiagnostic>(
 	diagnostics: readonly SelectableDiagnostic<TDiagnostic>[],
 ): TDiagnostic[] {
-	const groupedDiagnostics = new Map<number, SelectableDiagnostic<TDiagnostic>[]>();
+	const groupedDiagnostics = new Map<
+		number,
+		SelectableDiagnostic<TDiagnostic>[]
+	>();
 
 	for (const diagnostic of diagnostics) {
 		const line = diagnostic.range.start.line;
@@ -24,7 +25,13 @@ export function selectCodeLensDiagnostics<TDiagnostic>(
 
 	return [...groupedDiagnostics.entries()]
 		.sort(([leftLine], [rightLine]) => leftLine - rightLine)
-		.map(([, lineDiagnostics]) => [...lineDiagnostics].sort(compareSelectableDiagnostics)[0])
-		.filter((diagnostic): diagnostic is SelectableDiagnostic<TDiagnostic> => diagnostic !== undefined)
+		.map(
+			([, lineDiagnostics]) =>
+				[...lineDiagnostics].sort(compareSelectableDiagnostics)[0],
+		)
+		.filter(
+			(diagnostic): diagnostic is SelectableDiagnostic<TDiagnostic> =>
+				diagnostic !== undefined,
+		)
 		.map((diagnostic) => diagnostic.diagnostic);
 }

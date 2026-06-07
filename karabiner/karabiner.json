@@ -1,314 +1,323 @@
 {
-    "global": {
-        "check_for_updates_on_startup": false,
-        "enable_notification_window": false,
-        "show_in_menu_bar": false
-    },
-    "profiles": [
-        {
-            "complex_modifications": {
-                "rules": [
-                    {
-                        "description": "SUPER KEY: Left+Right Command chord primes next key with Ctrl+Opt+Shift.",
-                        "manipulators": [
-                            {
-                                "from": {
-                                    "modifiers": { "optional": ["any"] },
-                                    "simultaneous": [
-                                        { "key_code": "left_command" },
-                                        { "key_code": "right_command" }
-                                    ],
-                                    "simultaneous_options": {
-                                        "detect_key_down_uninterruptedly": true,
-                                        "key_down_order": "insensitive",
-                                        "key_up_order": "insensitive",
-                                        "key_up_when": "any"
-                                    }
-                                },
-                                "parameters": { "basic.simultaneous_threshold_milliseconds": 200 },
-                                "to": [
-                                    { "sticky_modifier": { "left_control": "on" } },
-                                    { "sticky_modifier": { "left_option": "on" } },
-                                    { "sticky_modifier": { "left_shift": "on" } }
-                                ],
-                                "type": "basic"
-                            }
-                        ]
-                    },
-                    {
-                        "description": "SUPER KEY: Caps Lock hold gives Ctrl+Opt+Shift.",
-                        "manipulators": [
-                            {
-                                "from": {
-                                    "key_code": "caps_lock",
-                                    "modifiers": { "optional": ["any"] }
-                                },
-                                "to": [
-                                    {
-                                        "key_code": "left_control",
-                                        "modifiers": ["left_option", "left_shift"]
-                                    }
-                                ],
-                                "to_if_alone": [{ "key_code": "escape" }],
-                                "type": "basic"
-                            }
-                        ]
-                    },
-                    {
-                        "description": "Caps Lock tap sends Escape.",
-                        "manipulators": [
-                            {
-                                "from": {
-                                    "key_code": "caps_lock",
-                                    "modifiers": { "optional": ["any"] }
-                                },
-                                "to": [],
-                                "to_if_alone": [{ "key_code": "escape" }],
-                                "type": "basic"
-                            }
-                        ]
-                    },
-                    {
-                        "description": "SUPER KEY: Option->Option on tap; hold gives Ctrl+Opt+Shift.",
-                        "enabled": false,
-                        "manipulators": [
-                            {
-                                "from": {
-                                    "key_code": "left_option",
-                                    "modifiers": { "optional": ["any"] }
-                                },
-                                "to": [
-                                    {
-                                        "key_code": "left_control",
-                                        "modifiers": ["left_option", "left_shift"]
-                                    }
-                                ],
-                                "to_if_alone": [{ "key_code": "left_option" }],
-                                "type": "basic"
-                            }
-                        ]
-                    },
-                    {
-                        "description": "SUPER KEY: Command+Space primes the next key with Ctrl+Opt+Shift.",
-                        "enabled": false,
-                        "manipulators": [
-                            {
-                                "from": {
-                                    "key_code": "spacebar",
-                                    "modifiers": {
-                                        "mandatory": ["command"],
-                                        "optional": ["any"]
-                                    }
-                                },
-                                "to_if_alone": [
-                                    { "sticky_modifier": { "left_control": "on" } },
-                                    { "sticky_modifier": { "left_option": "on" } },
-                                    { "sticky_modifier": { "left_shift": "on" } }
-                                ],
-                                "type": "basic"
-                            }
-                        ]
-                    },
-                    {
-                        "description": "Map Command+Spacebar to Control+Spacebar",
-                        "enabled": false,
-                        "manipulators": [
-                            {
-                                "from": {
-                                    "key_code": "spacebar",
-                                    "modifiers": {
-                                        "mandatory": ["command"],
-                                        "optional": ["any"]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "key_code": "spacebar",
-                                        "modifiers": ["control"]
-                                    }
-                                ],
-                                "type": "basic"
-                            }
-                        ]
-                    },
-                    {
-                        "description": "Left Shift. Double tap for SUPER+4 for mission control.",
-                        "enabled": false,
-                        "manipulators": [
-                            {
-                                "conditions": [
-                                    {
-                                        "name": "left_shift_pressed",
-                                        "type": "variable_if",
-                                        "value": 1
-                                    }
-                                ],
-                                "from": {
-                                    "key_code": "left_shift",
-                                    "modifiers": { "optional": ["any"] }
-                                },
-                                "to": [
-                                    {
-                                        "key_code": "4",
-                                        "modifiers": ["left_control", "left_option", "left_shift", "left_command"]
-                                    }
-                                ],
-                                "type": "basic"
-                            },
-                            {
-                                "from": {
-                                    "key_code": "left_shift",
-                                    "modifiers": { "optional": ["any"] }
-                                },
-                                "parameters": { "basic.to_delayed_action_delay_milliseconds": 300 },
-                                "to": [
-                                    {
-                                        "set_variable": {
-                                            "name": "left_shift_pressed",
-                                            "value": 1
-                                        }
-                                    },
-                                    { "key_code": "left_shift" }
-                                ],
-                                "to_delayed_action": {
-                                    "to_if_canceled": [
-                                        {
-                                            "set_variable": {
-                                                "name": "left_shift_pressed",
-                                                "value": 0
-                                            }
-                                        }
-                                    ],
-                                    "to_if_invoked": [
-                                        {
-                                            "set_variable": {
-                                                "name": "left_shift_pressed",
-                                                "value": 0
-                                            }
-                                        }
-                                    ]
-                                },
-                                "type": "basic"
-                            },
-                            {
-                                "from": {
-                                    "key_code": "caps_lock",
-                                    "modifiers": { "optional": ["any"] }
-                                },
-                                "to": [
-                                    {
-                                        "key_code": "left_control",
-                                        "lazy": true,
-                                        "modifiers": ["left_option", "left_shift"]
-                                    }
-                                ],
-                                "to_if_alone": [{ "key_code": "escape" }],
-                                "type": "basic"
-                            },
-                            {
-                                "from": {
-                                    "key_code": "left_option",
-                                    "modifiers": { "optional": ["any"] }
-                                },
-                                "to": [
-                                    {
-                                        "key_code": "left_control",
-                                        "lazy": true,
-                                        "modifiers": ["left_option", "left_shift", "caps_lock"]
-                                    }
-                                ],
-                                "to_if_alone": [{ "key_code": "left_option" }],
-                                "type": "basic"
-                            }
-                        ]
-                    },
-                    {
-                        "description": "ARROW-KEYS to SUPER + HJKL",
-                        "manipulators": [
-                            {
-                                "from": {
-                                    "key_code": "h",
-                                    "modifiers": {
-                                        "mandatory": ["left_control", "left_option", "left_shift"],
-                                        "optional": ["any"]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "key_code": "left_arrow",
-                                        "modifiers": []
-                                    }
-                                ],
-                                "type": "basic"
-                            },
-                            {
-                                "from": {
-                                    "key_code": "j",
-                                    "modifiers": {
-                                        "mandatory": ["left_control", "left_option", "left_shift"],
-                                        "optional": ["any"]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "key_code": "down_arrow",
-                                        "modifiers": []
-                                    }
-                                ],
-                                "type": "basic"
-                            },
-                            {
-                                "from": {
-                                    "key_code": "k",
-                                    "modifiers": {
-                                        "mandatory": ["left_control", "left_option", "left_shift"],
-                                        "optional": ["any"]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "key_code": "up_arrow",
-                                        "modifiers": []
-                                    }
-                                ],
-                                "type": "basic"
-                            },
-                            {
-                                "from": {
-                                    "key_code": "l",
-                                    "modifiers": {
-                                        "mandatory": ["left_control", "left_option", "left_shift"],
-                                        "optional": ["any"]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "key_code": "right_arrow",
-                                        "modifiers": []
-                                    }
-                                ],
-                                "type": "basic"
-                            }
-                        ]
-                    }
-                ]
-            },
-            "devices": [
-                {
-                    "identifiers": {
-                        "is_pointing_device": true,
-                        "product_id": 50504,
-                        "vendor_id": 1133
-                    },
-                    "ignore": false
-                }
-            ],
-            "name": "Default profile",
-            "selected": true,
-            "virtual_hid_keyboard": {
-                "indicate_sticky_modifier_keys_state": false,
-                "keyboard_type_v2": "ansi"
-            }
-        }
-    ]
+	"global": {
+		"check_for_updates_on_startup": false,
+		"enable_notification_window": false,
+		"show_in_menu_bar": false
+	},
+	"profiles": [
+		{
+			"complex_modifications": {
+				"rules": [
+					{
+						"description": "SUPER KEY: Left+Right Command chord primes next key with Ctrl+Opt+Shift.",
+						"manipulators": [
+							{
+								"from": {
+									"modifiers": { "optional": ["any"] },
+									"simultaneous": [
+										{ "key_code": "left_command" },
+										{ "key_code": "right_command" }
+									],
+									"simultaneous_options": {
+										"detect_key_down_uninterruptedly": true,
+										"key_down_order": "insensitive",
+										"key_up_order": "insensitive",
+										"key_up_when": "any"
+									}
+								},
+								"parameters": {
+									"basic.simultaneous_threshold_milliseconds": 200
+								},
+								"to": [
+									{ "sticky_modifier": { "left_control": "on" } },
+									{ "sticky_modifier": { "left_option": "on" } },
+									{ "sticky_modifier": { "left_shift": "on" } }
+								],
+								"type": "basic"
+							}
+						]
+					},
+					{
+						"description": "SUPER KEY: Caps Lock hold gives Ctrl+Opt+Shift.",
+						"manipulators": [
+							{
+								"from": {
+									"key_code": "caps_lock",
+									"modifiers": { "optional": ["any"] }
+								},
+								"to": [
+									{
+										"key_code": "left_control",
+										"modifiers": ["left_option", "left_shift"]
+									}
+								],
+								"to_if_alone": [{ "key_code": "escape" }],
+								"type": "basic"
+							}
+						]
+					},
+					{
+						"description": "Caps Lock tap sends Escape.",
+						"manipulators": [
+							{
+								"from": {
+									"key_code": "caps_lock",
+									"modifiers": { "optional": ["any"] }
+								},
+								"to": [],
+								"to_if_alone": [{ "key_code": "escape" }],
+								"type": "basic"
+							}
+						]
+					},
+					{
+						"description": "SUPER KEY: Option->Option on tap; hold gives Ctrl+Opt+Shift.",
+						"enabled": false,
+						"manipulators": [
+							{
+								"from": {
+									"key_code": "left_option",
+									"modifiers": { "optional": ["any"] }
+								},
+								"to": [
+									{
+										"key_code": "left_control",
+										"modifiers": ["left_option", "left_shift"]
+									}
+								],
+								"to_if_alone": [{ "key_code": "left_option" }],
+								"type": "basic"
+							}
+						]
+					},
+					{
+						"description": "SUPER KEY: Command+Space primes the next key with Ctrl+Opt+Shift.",
+						"enabled": false,
+						"manipulators": [
+							{
+								"from": {
+									"key_code": "spacebar",
+									"modifiers": {
+										"mandatory": ["command"],
+										"optional": ["any"]
+									}
+								},
+								"to_if_alone": [
+									{ "sticky_modifier": { "left_control": "on" } },
+									{ "sticky_modifier": { "left_option": "on" } },
+									{ "sticky_modifier": { "left_shift": "on" } }
+								],
+								"type": "basic"
+							}
+						]
+					},
+					{
+						"description": "Map Command+Spacebar to Control+Spacebar",
+						"enabled": false,
+						"manipulators": [
+							{
+								"from": {
+									"key_code": "spacebar",
+									"modifiers": {
+										"mandatory": ["command"],
+										"optional": ["any"]
+									}
+								},
+								"to": [
+									{
+										"key_code": "spacebar",
+										"modifiers": ["control"]
+									}
+								],
+								"type": "basic"
+							}
+						]
+					},
+					{
+						"description": "Left Shift. Double tap for SUPER+4 for mission control.",
+						"enabled": false,
+						"manipulators": [
+							{
+								"conditions": [
+									{
+										"name": "left_shift_pressed",
+										"type": "variable_if",
+										"value": 1
+									}
+								],
+								"from": {
+									"key_code": "left_shift",
+									"modifiers": { "optional": ["any"] }
+								},
+								"to": [
+									{
+										"key_code": "4",
+										"modifiers": [
+											"left_control",
+											"left_option",
+											"left_shift",
+											"left_command"
+										]
+									}
+								],
+								"type": "basic"
+							},
+							{
+								"from": {
+									"key_code": "left_shift",
+									"modifiers": { "optional": ["any"] }
+								},
+								"parameters": {
+									"basic.to_delayed_action_delay_milliseconds": 300
+								},
+								"to": [
+									{
+										"set_variable": {
+											"name": "left_shift_pressed",
+											"value": 1
+										}
+									},
+									{ "key_code": "left_shift" }
+								],
+								"to_delayed_action": {
+									"to_if_canceled": [
+										{
+											"set_variable": {
+												"name": "left_shift_pressed",
+												"value": 0
+											}
+										}
+									],
+									"to_if_invoked": [
+										{
+											"set_variable": {
+												"name": "left_shift_pressed",
+												"value": 0
+											}
+										}
+									]
+								},
+								"type": "basic"
+							},
+							{
+								"from": {
+									"key_code": "caps_lock",
+									"modifiers": { "optional": ["any"] }
+								},
+								"to": [
+									{
+										"key_code": "left_control",
+										"lazy": true,
+										"modifiers": ["left_option", "left_shift"]
+									}
+								],
+								"to_if_alone": [{ "key_code": "escape" }],
+								"type": "basic"
+							},
+							{
+								"from": {
+									"key_code": "left_option",
+									"modifiers": { "optional": ["any"] }
+								},
+								"to": [
+									{
+										"key_code": "left_control",
+										"lazy": true,
+										"modifiers": ["left_option", "left_shift", "caps_lock"]
+									}
+								],
+								"to_if_alone": [{ "key_code": "left_option" }],
+								"type": "basic"
+							}
+						]
+					},
+					{
+						"description": "ARROW-KEYS to SUPER + HJKL",
+						"manipulators": [
+							{
+								"from": {
+									"key_code": "h",
+									"modifiers": {
+										"mandatory": ["left_control", "left_option", "left_shift"],
+										"optional": ["any"]
+									}
+								},
+								"to": [
+									{
+										"key_code": "left_arrow",
+										"modifiers": []
+									}
+								],
+								"type": "basic"
+							},
+							{
+								"from": {
+									"key_code": "j",
+									"modifiers": {
+										"mandatory": ["left_control", "left_option", "left_shift"],
+										"optional": ["any"]
+									}
+								},
+								"to": [
+									{
+										"key_code": "down_arrow",
+										"modifiers": []
+									}
+								],
+								"type": "basic"
+							},
+							{
+								"from": {
+									"key_code": "k",
+									"modifiers": {
+										"mandatory": ["left_control", "left_option", "left_shift"],
+										"optional": ["any"]
+									}
+								},
+								"to": [
+									{
+										"key_code": "up_arrow",
+										"modifiers": []
+									}
+								],
+								"type": "basic"
+							},
+							{
+								"from": {
+									"key_code": "l",
+									"modifiers": {
+										"mandatory": ["left_control", "left_option", "left_shift"],
+										"optional": ["any"]
+									}
+								},
+								"to": [
+									{
+										"key_code": "right_arrow",
+										"modifiers": []
+									}
+								],
+								"type": "basic"
+							}
+						]
+					}
+				]
+			},
+			"devices": [
+				{
+					"identifiers": {
+						"is_pointing_device": true,
+						"product_id": 50504,
+						"vendor_id": 1133
+					},
+					"ignore": false
+				}
+			],
+			"name": "Default profile",
+			"selected": true,
+			"virtual_hid_keyboard": {
+				"indicate_sticky_modifier_keys_state": false,
+				"keyboard_type_v2": "ansi"
+			}
+		}
+	]
 }
