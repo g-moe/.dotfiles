@@ -28,6 +28,9 @@ plugins=(
 is_macos=false
 [[ "$OSTYPE" == darwin* ]] && is_macos=true
 
+# Prevent reload from expanding global aliases while Oh My Zsh parses plugins.
+(( ${+galiases[yank]} )) && unalias 'yank'
+
 # macOS-only plugins
 if [[ "$is_macos" == true ]]; then
   plugins+=(brew macos copypath copyfile)
