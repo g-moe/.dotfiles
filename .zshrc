@@ -131,3 +131,8 @@ export PATH="$HOME/.local/bin:$PATH"
 
 # opencode
 export PATH=/Users/garrett/.opencode/bin:$PATH
+
+# Added by LM Studio CLI (lms)
+export PATH="$PATH:/Users/garrett/.lmstudio/bin"
+# End of LM Studio CLI section
+
