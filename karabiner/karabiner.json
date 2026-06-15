@@ -9,7 +9,7 @@
 			"complex_modifications": {
 				"rules": [
 					{
-						"description": "SUPER KEY: Left+Right Command chord primes next key with Ctrl+Opt+Shift.",
+						"description": "Left+Right Command chord acts as Left Option while held.",
 						"manipulators": [
 							{
 								"from": {
@@ -28,11 +28,7 @@
 								"parameters": {
 									"basic.simultaneous_threshold_milliseconds": 200
 								},
-								"to": [
-									{ "sticky_modifier": { "left_control": "on" } },
-									{ "sticky_modifier": { "left_option": "on" } },
-									{ "sticky_modifier": { "left_shift": "on" } }
-								],
+								"to": [{ "key_code": "left_option" }],
 								"type": "basic"
 							}
 						]
