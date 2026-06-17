@@ -2,7 +2,7 @@
 
 ```mermaid
 flowchart TD
-  A["custom-themes/create/tokens.json"] --> B["custom-themes/create/controller.ts"]
+  A["custom-themes/create/tokens.css"] --> B["custom-themes/create/controller.ts"]
   B --> C["custom-themes/create/apps/vscode.ts"]
   B --> D["custom-themes/create/apps/opencode.ts"]
   B --> E["custom-themes/create/apps/ghostty.ts"]
