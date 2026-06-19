@@ -13,6 +13,9 @@
 !.vscode/
 !.vscode/settings.json
 !.vscode/extensions.json
+!.agents/
+!.agents/skills/
+!.agents/skills/**
 
 # aerospace
 !aerospace/
@@ -73,6 +76,7 @@
 !scripts/mac-only/install/mac-power-mode.ts
 !scripts/mac-install.sh
 !scripts/mac-uninstall.sh
+!scripts/link-agent-skills.ts
 !scripts/vscode-install.sh
 !scripts/mac-only/
 !scripts/mac-only/cursor/
