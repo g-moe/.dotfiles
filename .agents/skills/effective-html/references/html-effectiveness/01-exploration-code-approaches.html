@@ -7,28 +7,32 @@
   <title>Debounced search — three approaches</title>
   <style>
     :root {
-      --ivory:    #FAF9F5;
-      --slate:    #141413;
-      --clay:     #D97757;
-      --oat:      #E3DACC;
-      --olive:    #788C5D;
-      --gray-150: #F0EEE6;
-      --gray-300: #D1CFC5;
-      --gray-500: #87867F;
-      --gray-700: #3D3D3A;
-      --white:    #FFFFFF;
-
-      --serif: ui-serif, Georgia, 'Times New Roman', serif;
-      --sans:  system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-      --mono:  ui-monospace, 'SF Mono', Menlo, Monaco, monospace;
-    }
+    --bg: #fdfdfd; --surface: #fdfdfd; --surface2: #f4f4f9;
+    --text: #050607; --body: #262838; --muted: #7c7d8d;
+    --line: #d9daec; --line-soft: #d9daec8e;
+    --accent: #656675; --accent-soft: rgba(101,102,117,0.10);
+    --success: #26b933; --success-soft: rgba(54,251,72,0.12);
+    --warning: #bc9720; --warning-soft: rgba(255,211,98,0.16);
+    --error: #aa2624; --error-soft: rgba(170,38,36,0.12);
+      --sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  }
+  html.dark {
+    --bg: #050607; --surface: #101316; --surface2: #262838;
+    --text: #fdfdfd; --body: #d9daec; --muted: #7c7d8d;
+    --line: #262838; --line-soft: #2628388e;
+    --accent: #7c7d8d; --accent-soft: rgba(124,125,141,0.14);
+    --success: #65fb6e; --success-soft: rgba(101,251,110,0.16);
+    --warning: #ffd362; --warning-soft: rgba(101,251,110,0.16);
+    --error: #aa2624; --error-soft: rgba(170, 38, 36, 0.534);
+  }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
       font-family: var(--sans);
-      background: var(--ivory);
-      color: var(--gray-700);
+      background: var(--bg);
+      color: var(--body);
       line-height: 1.55;
       padding: 56px 32px 96px;
       -webkit-font-smoothing: antialiased;
@@ -50,27 +54,27 @@
       font-size: 12px;
       letter-spacing: 0.08em;
       text-transform: uppercase;
-      color: var(--gray-500);
+      color: var(--muted);
       margin-bottom: 12px;
     }
 
     h1 {
-      font-family: var(--serif);
+      font-family: var(--sans);
       font-weight: 500;
       font-size: 38px;
       line-height: 1.15;
-      color: var(--slate);
+      color: var(--text);
       margin-bottom: 18px;
       letter-spacing: -0.01em;
     }
 
     .prompt-box {
-      background: var(--gray-150);
-      border: 1.5px solid var(--gray-300);
+      background: var(--surface2);
+      border: 1.5px solid var(--line);
       border-radius: 12px;
       padding: 16px 20px;
       font-size: 14.5px;
-      color: var(--gray-700);
+      color: var(--body);
     }
 
     .prompt-box .label {
@@ -78,7 +82,7 @@
       font-size: 11px;
       text-transform: uppercase;
       letter-spacing: 0.06em;
-      color: var(--gray-500);
+      color: var(--muted);
       display: block;
       margin-bottom: 6px;
     }
@@ -97,8 +101,8 @@
     }
 
     .approach {
-      background: var(--white);
-      border: 1.5px solid var(--gray-300);
+      background: var(--surface);
+      border: 1.5px solid var(--line);
       border-radius: 12px;
       padding: 24px;
       display: flex;
@@ -107,10 +111,10 @@
     }
 
     .approach-head h2 {
-      font-family: var(--serif);
+      font-family: var(--sans);
       font-weight: 500;
       font-size: 21px;
-      color: var(--slate);
+      color: var(--text);
       margin-bottom: 6px;
     }
 
@@ -118,8 +122,8 @@
       display: inline-block;
       font-family: var(--mono);
       font-size: 12px;
-      background: var(--oat);
-      color: var(--slate);
+      background: var(--surface2);
+      color: var(--text);
       padding: 2px 8px;
       border-radius: 8px;
       margin-right: 8px;
@@ -128,13 +132,13 @@
 
     .approach-head p {
       font-size: 14px;
-      color: var(--gray-500);
+      color: var(--muted);
     }
 
     /* ---------- code panel ---------- */
 
     .code {
-      background: var(--slate);
+      background: var(--text);
       border-radius: 12px;
       padding: 18px 20px;
       overflow-x: auto;
@@ -144,19 +148,19 @@
       font-family: var(--mono);
       font-size: 12.5px;
       line-height: 1.65;
-      color: #E8E6DE;
+      color: var(--surface2);
       white-space: pre;
     }
 
-    .code .kw  { color: var(--clay); }     /* keywords */
-    .code .str { color: var(--olive); }    /* strings  */
-    .code .cm  { color: var(--gray-500); } /* comments */
-    .code .fn  { color: #C9B98A; }         /* identifiers, subtle warm */
+    .code .kw  { color: var(--accent); }     /* keywords */
+    .code .str { color: var(--success); }    /* strings  */
+    .code .cm  { color: var(--muted); } /* comments */
+    .code .fn  { color: var(--warning); }         /* identifiers, subtle warm */
 
     /* ---------- tradeoffs table ---------- */
 
     .tradeoffs {
-      border: 1.5px solid var(--gray-300);
+      border: 1.5px solid var(--line);
       border-radius: 8px;
       overflow: hidden;
       font-size: 13px;
@@ -168,7 +172,7 @@
     }
 
     .tradeoffs .row + .row {
-      border-top: 1.5px solid var(--gray-300);
+      border-top: 1.5px solid var(--line);
     }
 
     .tradeoffs .cell {
@@ -176,13 +180,13 @@
     }
 
     .tradeoffs .cell:first-child {
-      border-right: 1.5px solid var(--gray-300);
+      border-right: 1.5px solid var(--line);
     }
 
     .tradeoffs .head {
-      background: var(--gray-150);
+      background: var(--surface2);
       font-weight: 600;
-      color: var(--slate);
+      color: var(--text);
       font-size: 12px;
       text-transform: uppercase;
       letter-spacing: 0.04em;
@@ -198,8 +202,8 @@
       margin-right: 8px;
       vertical-align: 2px;
     }
-    .tradeoffs .pro::before { background: var(--olive); }
-    .tradeoffs .con::before { background: var(--clay); }
+    .tradeoffs .pro::before { background: var(--success); }
+    .tradeoffs .con::before { background: var(--accent); }
 
     /* ---------- chip footer ---------- */
 
@@ -212,31 +216,31 @@
     .chip {
       font-family: var(--mono);
       font-size: 11.5px;
-      background: var(--gray-150);
-      border: 1.5px solid var(--gray-300);
-      color: var(--gray-700);
+      background: var(--surface2);
+      border: 1.5px solid var(--line);
+      color: var(--body);
       padding: 5px 10px;
       border-radius: 8px;
       white-space: nowrap;
     }
 
-    .chip strong { color: var(--slate); font-weight: 600; }
+    .chip strong { color: var(--text); font-weight: 600; }
 
     /* ---------- recommendation ---------- */
 
     .reco {
-      border-left: 4px solid var(--clay);
-      background: var(--white);
+      border-left: 4px solid var(--accent);
+      background: var(--surface);
       border-radius: 0 12px 12px 0;
       padding: 24px 28px;
       max-width: 860px;
     }
 
     .reco h2 {
-      font-family: var(--serif);
+      font-family: var(--sans);
       font-weight: 500;
       font-size: 22px;
-      color: var(--slate);
+      color: var(--text);
       margin-bottom: 10px;
     }
 
@@ -248,7 +252,7 @@
     .reco code {
       font-family: var(--mono);
       font-size: 0.92em;
-      background: var(--gray-150);
+      background: var(--surface2);
       padding: 1px 6px;
       border-radius: 4px;
     }

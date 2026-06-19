@@ -7,19 +7,24 @@
 <title>PR #247 — Review Summary</title>
 <style>
   :root {
-    --ivory: #FAF9F5;
-    --slate: #141413;
-    --clay: #D97757;
-    --oat: #E3DACC;
-    --olive: #788C5D;
-    --rust: #B04A3F;
-    --gray-150: #F0EEE6;
-    --gray-300: #D1CFC5;
-    --gray-500: #87867F;
-    --gray-700: #3D3D3A;
-    --serif: ui-serif, Georgia, 'Times New Roman', serif;
-    --sans: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-    --mono: ui-monospace, 'SF Mono', Menlo, Monaco, monospace;
+    --bg: #fdfdfd; --surface: #fdfdfd; --surface2: #f4f4f9;
+    --text: #050607; --body: #262838; --muted: #7c7d8d;
+    --line: #d9daec; --line-soft: #d9daec8e;
+    --accent: #656675; --accent-soft: rgba(101,102,117,0.10);
+    --success: #26b933; --success-soft: rgba(54,251,72,0.12);
+    --warning: #bc9720; --warning-soft: rgba(255,211,98,0.16);
+    --error: #aa2624; --error-soft: rgba(170,38,36,0.12);
+    --sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  }
+  html.dark {
+    --bg: #050607; --surface: #101316; --surface2: #262838;
+    --text: #fdfdfd; --body: #d9daec; --muted: #7c7d8d;
+    --line: #262838; --line-soft: #2628388e;
+    --accent: #7c7d8d; --accent-soft: rgba(124,125,141,0.14);
+    --success: #65fb6e; --success-soft: rgba(101,251,110,0.16);
+    --warning: #ffd362; --warning-soft: rgba(101,251,110,0.16);
+    --error: #aa2624; --error-soft: rgba(170, 38, 36, 0.534);
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -27,8 +32,8 @@
   html { scroll-behavior: smooth; }
 
   body {
-    background: var(--ivory);
-    color: var(--gray-700);
+    background: var(--bg);
+    color: var(--body);
     font-family: var(--sans);
     font-size: 15px;
     line-height: 1.6;
@@ -42,27 +47,27 @@
 
   /* ---------- Header ---------- */
   header.pr-head {
-    border: 1.5px solid var(--gray-300);
+    border: 1.5px solid var(--line);
     border-radius: 12px;
     padding: 28px 32px;
-    background: #fff;
+    background: var(--bg);
     margin-bottom: 36px;
   }
 
   .repo-line {
     font-family: var(--mono);
     font-size: 12.5px;
-    color: var(--gray-500);
+    color: var(--muted);
     letter-spacing: 0.01em;
     margin-bottom: 10px;
   }
 
   h1 {
-    font-family: var(--serif);
+    font-family: var(--sans);
     font-weight: 500;
     font-size: 30px;
     line-height: 1.25;
-    color: var(--slate);
+    color: var(--text);
     margin-bottom: 18px;
   }
 
@@ -83,47 +88,47 @@
     width: 36px;
     height: 36px;
     border-radius: 50%;
-    background: var(--oat);
-    color: var(--slate);
+    background: var(--surface2);
+    color: var(--text);
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: 600;
     font-size: 13px;
     letter-spacing: 0.02em;
-    border: 1.5px solid var(--gray-300);
+    border: 1.5px solid var(--line);
   }
 
-  .author-name { font-weight: 500; color: var(--slate); }
-  .author-sub { font-size: 12px; color: var(--gray-500); }
+  .author-name { font-weight: 500; color: var(--text); }
+  .author-sub { font-size: 12px; color: var(--muted); }
 
   .branch {
     font-family: var(--mono);
     font-size: 12.5px;
-    color: var(--gray-700);
-    background: var(--gray-150);
-    border: 1.5px solid var(--gray-300);
+    color: var(--body);
+    background: var(--surface2);
+    border: 1.5px solid var(--line);
     border-radius: 8px;
     padding: 6px 10px;
   }
-  .branch .arrow { color: var(--gray-500); margin: 0 6px; }
+  .branch .arrow { color: var(--muted); margin: 0 6px; }
 
   .stat {
     font-family: var(--mono);
     font-size: 13px;
   }
-  .stat .add { color: var(--olive); font-weight: 600; }
-  .stat .del { color: var(--rust); font-weight: 600; }
-  .stat .files { color: var(--gray-500); margin-left: 10px; }
+  .stat .add { color: var(--success); font-weight: 600; }
+  .stat .del { color: var(--error); font-weight: 600; }
+  .stat .files { color: var(--muted); margin-left: 10px; }
 
   /* ---------- Section blocks ---------- */
   section { margin-bottom: 40px; }
 
   h2 {
-    font-family: var(--serif);
+    font-family: var(--sans);
     font-weight: 500;
     font-size: 21px;
-    color: var(--slate);
+    color: var(--text);
     margin-bottom: 14px;
   }
 
@@ -143,7 +148,7 @@
     top: 9px;
     width: 6px;
     height: 6px;
-    background: var(--gray-500);
+    background: var(--muted);
     border-radius: 2px;
   }
 
@@ -160,12 +165,12 @@
     gap: 8px;
     padding: 8px 12px;
     border-radius: 8px;
-    border: 1.5px solid var(--gray-300);
+    border: 1.5px solid var(--line);
     font-family: var(--mono);
     font-size: 12.5px;
-    color: var(--slate);
+    color: var(--text);
     text-decoration: none;
-    background: #fff;
+    background: var(--bg);
     transition: transform 0.12s ease;
   }
   .chip:hover { transform: translateY(-1px); }
@@ -176,17 +181,17 @@
     border-radius: 50%;
     flex-shrink: 0;
   }
-  .chip.safe { background: rgba(120,140,93,0.10); border-color: rgba(120,140,93,0.45); }
-  .chip.safe .dot { background: var(--olive); }
-  .chip.medium { background: var(--oat); }
-  .chip.medium .dot { background: #B89B6E; }
-  .chip.attention { background: rgba(217,119,87,0.12); border-color: rgba(217,119,87,0.55); }
-  .chip.attention .dot { background: var(--clay); }
+  .chip.safe { background: var(--success-soft); border-color: var(--success-soft); }
+  .chip.safe .dot { background: var(--success); }
+  .chip.medium { background: var(--surface2); }
+  .chip.medium .dot { background: var(--warning); }
+  .chip.attention { background: var(--accent-soft); border-color: var(--accent-soft); }
+  .chip.attention .dot { background: var(--accent); }
 
   .legend {
     margin-top: 12px;
     font-size: 12px;
-    color: var(--gray-500);
+    color: var(--muted);
     display: flex;
     gap: 18px;
   }
@@ -195,9 +200,9 @@
 
   /* ---------- File sections ---------- */
   .file-card {
-    border: 1.5px solid var(--gray-300);
+    border: 1.5px solid var(--line);
     border-radius: 12px;
-    background: #fff;
+    background: var(--bg);
     margin-bottom: 24px;
     overflow: hidden;
     scroll-margin-top: 20px;
@@ -205,7 +210,7 @@
 
   .file-head {
     padding: 16px 20px;
-    border-bottom: 1.5px solid var(--gray-150);
+    border-bottom: 1.5px solid var(--surface2);
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -214,15 +219,15 @@
   .file-path {
     font-family: var(--mono);
     font-size: 13.5px;
-    color: var(--slate);
+    color: var(--text);
   }
   .file-delta {
     font-family: var(--mono);
     font-size: 12px;
-    color: var(--gray-500);
+    color: var(--muted);
   }
-  .file-delta .add { color: var(--olive); }
-  .file-delta .del { color: var(--rust); }
+  .file-delta .add { color: var(--success); }
+  .file-delta .del { color: var(--error); }
 
   .risk-tag {
     font-size: 11px;
@@ -232,13 +237,13 @@
     border-radius: 6px;
     font-weight: 600;
   }
-  .risk-tag.safe { background: rgba(120,140,93,0.15); color: var(--olive); }
-  .risk-tag.medium { background: var(--oat); color: #7A6A4F; }
-  .risk-tag.attention { background: rgba(217,119,87,0.15); color: var(--clay); }
+  .risk-tag.safe { background: var(--success-soft); color: var(--success); }
+  .risk-tag.medium { background: var(--surface2); color: var(--warning); }
+  .risk-tag.attention { background: var(--accent-soft); color: var(--accent); }
 
   /* ---------- Diff block ---------- */
   .diff {
-    background: var(--slate);
+    background: var(--text);
     font-family: var(--mono);
     font-size: 12.5px;
     line-height: 1.7;
@@ -254,24 +259,24 @@
   .diff-row .ln {
     text-align: right;
     padding-right: 14px;
-    color: var(--gray-500);
+    color: var(--muted);
     user-select: none;
   }
   .diff-row .mark {
     text-align: center;
-    color: var(--gray-500);
+    color: var(--muted);
   }
-  .diff-row .code { color: #E8E6DC; }
-  .diff-row.ctx .code { color: #B8B6AC; }
-  .diff-row.add { background: rgba(120,140,93,0.15); }
-  .diff-row.add .mark { color: var(--olive); }
-  .diff-row.del { background: rgba(176,74,63,0.15); }
-  .diff-row.del .mark { color: var(--rust); }
+  .diff-row .code { color: var(--surface2); }
+  .diff-row.ctx .code { color: var(--surface2); }
+  .diff-row.add { background: var(--success-soft); }
+  .diff-row.add .mark { color: var(--success); }
+  .diff-row.del { background: var(--error-soft); }
+  .diff-row.del .mark { color: var(--error); }
   .diff-row.hunk {
-    background: rgba(255,255,255,0.04);
-    color: var(--gray-500);
+    background: rgba(253,253,253,0.04);
+    color: var(--muted);
   }
-  .diff-row.hunk .code { color: var(--gray-500); }
+  .diff-row.hunk .code { color: var(--muted); }
 
   /* ---------- Review comments ---------- */
   .comments {
@@ -279,20 +284,20 @@
     display: flex;
     flex-direction: column;
     gap: 14px;
-    background: var(--gray-150);
+    background: var(--surface2);
   }
 
   .bubble {
     position: relative;
-    background: #fff;
-    border: 1.5px solid var(--gray-300);
+    background: var(--bg);
+    border: 1.5px solid var(--line);
     border-left-width: 4px;
     border-radius: 8px;
     padding: 12px 14px 12px 16px;
     max-width: 680px;
   }
-  .bubble.blocking { border-left-color: var(--clay); }
-  .bubble.nit { border-left-color: var(--gray-300); }
+  .bubble.blocking { border-left-color: var(--accent); }
+  .bubble.nit { border-left-color: var(--line); }
 
   .bubble::before {
     content: "";
@@ -301,17 +306,17 @@
     top: 16px;
     width: 12px;
     height: 12px;
-    background: #fff;
-    border-left: 1.5px solid var(--gray-300);
-    border-bottom: 1.5px solid var(--gray-300);
+    background: var(--bg);
+    border-left: 1.5px solid var(--line);
+    border-bottom: 1.5px solid var(--line);
     transform: rotate(45deg);
   }
-  .bubble.blocking::before { border-left-color: var(--clay); border-bottom-color: var(--clay); }
+  .bubble.blocking::before { border-left-color: var(--accent); border-bottom-color: var(--accent); }
 
   .bubble .anchor {
     font-family: var(--mono);
     font-size: 11.5px;
-    color: var(--gray-500);
+    color: var(--muted);
     margin-bottom: 4px;
   }
   .bubble .label {
@@ -322,22 +327,22 @@
     font-weight: 700;
     margin-right: 8px;
   }
-  .bubble.blocking .label { color: var(--clay); }
-  .bubble.nit .label { color: var(--gray-500); }
-  .bubble p { font-size: 13.5px; color: var(--gray-700); }
+  .bubble.blocking .label { color: var(--accent); }
+  .bubble.nit .label { color: var(--muted); }
+  .bubble p { font-size: 13.5px; color: var(--body); }
   .bubble code {
     font-family: var(--mono);
     font-size: 12.5px;
-    background: var(--gray-150);
+    background: var(--surface2);
     padding: 1px 5px;
     border-radius: 4px;
   }
 
   /* ---------- Collapsed files ---------- */
   details.file-collapsed {
-    border: 1.5px solid var(--gray-300);
+    border: 1.5px solid var(--line);
     border-radius: 12px;
-    background: #fff;
+    background: var(--bg);
     margin-bottom: 14px;
     scroll-margin-top: 20px;
   }
@@ -354,21 +359,21 @@
   details.file-collapsed summary::after {
     content: "+";
     font-family: var(--mono);
-    color: var(--gray-500);
+    color: var(--muted);
     font-size: 16px;
   }
   details.file-collapsed[open] summary::after { content: "−"; }
   details.file-collapsed .body {
     padding: 0 20px 16px;
     font-size: 13.5px;
-    color: var(--gray-700);
+    color: var(--body);
   }
 
   /* ---------- Footer ---------- */
   footer.next-steps {
-    border: 1.5px solid var(--gray-300);
+    border: 1.5px solid var(--line);
     border-radius: 12px;
-    background: #fff;
+    background: var(--bg);
     padding: 24px 28px;
   }
   .checklist { list-style: none; padding: 0; }
@@ -382,14 +387,14 @@
     width: 17px;
     height: 17px;
     margin-top: 2px;
-    accent-color: var(--olive);
+    accent-color: var(--success);
     cursor: pointer;
   }
   .checklist label { cursor: pointer; flex: 1; }
   .checklist code {
     font-family: var(--mono);
     font-size: 12.5px;
-    background: var(--gray-150);
+    background: var(--surface2);
     padding: 1px 5px;
     border-radius: 4px;
   }
@@ -422,8 +427,8 @@
   <section class="prose">
     <h2>What this PR does</h2>
     <ul>
-      <li>Replaces the await-then-refetch pattern in <code style="font-family:var(--mono);font-size:12.5px;background:var(--gray-150);padding:1px 5px;border-radius:4px">TaskList</code> with optimistic cache writes, so toggling or reordering a task feels instant instead of waiting ~300ms for the round-trip.</li>
-      <li>Introduces a small <code style="font-family:var(--mono);font-size:12.5px;background:var(--gray-150);padding:1px 5px;border-radius:4px">useOptimisticTasks</code> hook that wraps the mutation, snapshots the previous list, and rolls back on error.</li>
+      <li>Replaces the await-then-refetch pattern in <code style="font-family:var(--mono);font-size:12.5px;background:var(--surface2);padding:1px 5px;border-radius:4px">TaskList</code> with optimistic cache writes, so toggling or reordering a task feels instant instead of waiting ~300ms for the round-trip.</li>
+      <li>Introduces a small <code style="font-family:var(--mono);font-size:12.5px;background:var(--surface2);padding:1px 5px;border-radius:4px">useOptimisticTasks</code> hook that wraps the mutation, snapshots the previous list, and rolls back on error.</li>
       <li>Extends the API client to accept an idempotency key per mutation and adds a toast when a rollback fires.</li>
     </ul>
   </section>
@@ -439,9 +444,9 @@
       <a class="chip safe" href="#file-test"><span class="dot"></span>TaskList.test.tsx</a>
     </div>
     <div class="legend">
-      <span><span class="dot" style="background:var(--olive)"></span> safe</span>
-      <span><span class="dot" style="background:#B89B6E"></span> worth a look</span>
-      <span><span class="dot" style="background:var(--clay)"></span> needs attention</span>
+      <span><span class="dot" style="background:var(--success)"></span> safe</span>
+      <span><span class="dot" style="background:#bc9720"></span> worth a look</span>
+      <span><span class="dot" style="background:var(--accent)"></span> needs attention</span>
     </div>
   </section>
 
@@ -630,7 +635,7 @@
       var target = document.querySelector(a.getAttribute('href'));
       if (!target) return;
       target.style.transition = 'box-shadow 180ms ease';
-      target.style.boxShadow = '0 0 0 3px rgba(217,119,87,0.35)';
+      target.style.boxShadow = '0 0 0 3px var(--accent-soft)';
       setTimeout(function () { target.style.boxShadow = 'none'; }, 1400);
     });
   });

@@ -7,26 +7,31 @@
 <title>How authentication flows through acme/web</title>
 <style>
   :root {
-    --ivory: #FAF9F5;
-    --slate: #141413;
-    --clay: #D97757;
-    --oat: #E3DACC;
-    --olive: #788C5D;
-    --rust: #B04A3F;
-    --gray-150: #F0EEE6;
-    --gray-300: #D1CFC5;
-    --gray-500: #87867F;
-    --gray-700: #3D3D3A;
-    --serif: ui-serif, Georgia, 'Times New Roman', serif;
-    --sans: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-    --mono: ui-monospace, 'SF Mono', Menlo, Monaco, monospace;
+    --bg: #fdfdfd; --surface: #fdfdfd; --surface2: #f4f4f9;
+    --text: #050607; --body: #262838; --muted: #7c7d8d;
+    --line: #d9daec; --line-soft: #d9daec8e;
+    --accent: #656675; --accent-soft: rgba(101,102,117,0.10);
+    --success: #26b933; --success-soft: rgba(54,251,72,0.12);
+    --warning: #bc9720; --warning-soft: rgba(255,211,98,0.16);
+    --error: #aa2624; --error-soft: rgba(170,38,36,0.12);
+    --sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  }
+  html.dark {
+    --bg: #050607; --surface: #101316; --surface2: #262838;
+    --text: #fdfdfd; --body: #d9daec; --muted: #7c7d8d;
+    --line: #262838; --line-soft: #2628388e;
+    --accent: #7c7d8d; --accent-soft: rgba(124,125,141,0.14);
+    --success: #65fb6e; --success-soft: rgba(101,251,110,0.16);
+    --warning: #ffd362; --warning-soft: rgba(101,251,110,0.16);
+    --error: #aa2624; --error-soft: rgba(170, 38, 36, 0.534);
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
-    background: var(--ivory);
-    color: var(--gray-700);
+    background: var(--bg);
+    color: var(--body);
     font-family: var(--sans);
     font-size: 15px;
     line-height: 1.65;
@@ -54,16 +59,16 @@
   .repo-line {
     font-family: var(--mono);
     font-size: 12.5px;
-    color: var(--gray-500);
+    color: var(--muted);
     margin-bottom: 10px;
   }
 
   h1 {
-    font-family: var(--serif);
+    font-family: var(--sans);
     font-weight: 500;
     font-size: 32px;
     line-height: 1.25;
-    color: var(--slate);
+    color: var(--text);
     margin-bottom: 16px;
   }
 
@@ -74,18 +79,18 @@
   .summary code { font-family: var(--mono); font-size: 13px; }
 
   h2 {
-    font-family: var(--serif);
+    font-family: var(--sans);
     font-weight: 500;
     font-size: 22px;
-    color: var(--slate);
+    color: var(--text);
     margin: 36px 0 16px;
   }
 
   /* ---------- Diagram ---------- */
   .diagram-panel {
-    border: 1.5px solid var(--gray-300);
+    border: 1.5px solid var(--line);
     border-radius: 12px;
-    background: #fff;
+    background: var(--bg);
     padding: 20px;
     overflow-x: auto;
   }
@@ -94,12 +99,12 @@
   .flow text {
     font-family: var(--mono);
     font-size: 12px;
-    fill: var(--slate);
+    fill: var(--text);
   }
-  .flow .sub { font-size: 10px; fill: var(--gray-500); }
-  .flow .box { fill: #fff; stroke: var(--gray-300); stroke-width: 1.5; }
-  .flow .box.hot { fill: rgba(217,119,87,0.10); stroke: var(--clay); }
-  .flow .arrow { stroke: var(--gray-500); stroke-width: 1.5; fill: none; }
+  .flow .sub { font-size: 10px; fill: var(--muted); }
+  .flow .box { fill: var(--bg); stroke: var(--line); stroke-width: 1.5; }
+  .flow .box.hot { fill: var(--accent-soft); stroke: var(--accent); }
+  .flow .arrow { stroke: var(--muted); stroke-width: 1.5; fill: none; }
 
   /* ---------- Walkthrough ---------- */
   .step {
@@ -107,7 +112,7 @@
     grid-template-columns: 44px 1fr;
     gap: 18px;
     padding: 20px 0;
-    border-bottom: 1.5px solid var(--gray-150);
+    border-bottom: 1.5px solid var(--surface2);
   }
   .step:last-of-type { border-bottom: none; }
 
@@ -115,29 +120,29 @@
     width: 34px;
     height: 34px;
     border-radius: 50%;
-    background: var(--oat);
-    border: 1.5px solid var(--gray-300);
+    background: var(--surface2);
+    border: 1.5px solid var(--line);
     display: flex;
     align-items: center;
     justify-content: center;
     font-family: var(--mono);
     font-weight: 600;
-    color: var(--slate);
+    color: var(--text);
     font-size: 14px;
   }
   .step.hot .badge {
-    background: rgba(217,119,87,0.14);
-    border-color: var(--clay);
-    color: var(--clay);
+    background: var(--accent-soft);
+    border-color: var(--accent);
+    color: var(--accent);
   }
 
   .step-loc {
     font-family: var(--mono);
     font-size: 13px;
-    color: var(--slate);
+    color: var(--text);
     margin-bottom: 6px;
   }
-  .step-loc .range { color: var(--gray-500); }
+  .step-loc .range { color: var(--muted); }
 
   .step-body p { margin-bottom: 10px; }
 
@@ -146,7 +151,7 @@
     list-style: none;
     cursor: pointer;
     font-size: 12.5px;
-    color: var(--gray-500);
+    color: var(--muted);
     font-family: var(--mono);
     display: inline-flex;
     align-items: center;
@@ -163,8 +168,8 @@
   details.snippet[open] summary::before { transform: rotate(90deg); }
 
   pre.code {
-    background: var(--slate);
-    color: #E8E6DC;
+    background: var(--text);
+    color: var(--surface2);
     font-family: var(--mono);
     font-size: 12.5px;
     line-height: 1.7;
@@ -173,9 +178,9 @@
     overflow-x: auto;
     margin-top: 10px;
   }
-  pre.code .dim { color: var(--gray-500); }
-  pre.code .kw  { color: #C9B98A; }
-  pre.code .str { color: #A8BC8C; }
+  pre.code .dim { color: var(--muted); }
+  pre.code .kw  { color: var(--warning); }
+  pre.code .str { color: var(--success-soft); }
 
   /* ---------- Sidebar ---------- */
   aside {
@@ -185,9 +190,9 @@
   }
 
   .panel {
-    border: 1.5px solid var(--gray-300);
+    border: 1.5px solid var(--line);
     border-radius: 12px;
-    background: #fff;
+    background: var(--bg);
     padding: 18px 20px;
     margin-bottom: 20px;
   }
@@ -198,7 +203,7 @@
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.08em;
-    color: var(--gray-500);
+    color: var(--muted);
     margin-bottom: 12px;
   }
 
@@ -208,21 +213,21 @@
   .key-files .path {
     font-family: var(--mono);
     font-size: 12px;
-    color: var(--slate);
+    color: var(--text);
     display: block;
     margin-bottom: 2px;
     word-break: break-all;
   }
   .key-files .desc {
     font-size: 12.5px;
-    color: var(--gray-500);
+    color: var(--muted);
     line-height: 1.45;
   }
 
   .gotchas {
-    border: 1.5px solid var(--clay);
+    border: 1.5px solid var(--accent);
     border-radius: 12px;
-    background: rgba(217,119,87,0.06);
+    background: var(--accent-soft);
     padding: 18px 20px;
   }
   .gotchas h3 {
@@ -231,7 +236,7 @@
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.08em;
-    color: var(--clay);
+    color: var(--accent);
     margin-bottom: 10px;
   }
   .gotchas ul { list-style: none; padding: 0; }
@@ -246,7 +251,7 @@
     position: absolute;
     left: 0; top: 8px;
     width: 5px; height: 5px;
-    background: var(--clay);
+    background: var(--accent);
     border-radius: 2px;
   }
   .gotchas code { font-family: var(--mono); font-size: 11.5px; }
@@ -269,7 +274,7 @@
       <svg class="flow" viewBox="0 0 720 280" width="720" height="280" role="img" aria-label="Authentication flow diagram">
         <defs>
           <marker id="arrowHead" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-            <path d="M 0 0 L 10 5 L 0 10 z" fill="#87867F"></path>
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--muted)"></path>
           </marker>
         </defs>
 

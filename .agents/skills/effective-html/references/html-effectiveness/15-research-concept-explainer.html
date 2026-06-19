@@ -7,24 +7,29 @@
 <title>Consistent hashing — an interactive explainer</title>
 <style>
   :root {
-    --ivory:   #FAF9F5;
-    --slate:   #141413;
-    --clay:    #D97757;
-    --oat:     #E3DACC;
-    --olive:   #788C5D;
-    --sky:     #6A8CAF;
-    --gray-150:#F0EEE6;
-    --gray-300:#D1CFC5;
-    --gray-500:#87867F;
-    --gray-700:#3D3D3A;
-    --serif: ui-serif, Georgia, "Times New Roman", serif;
-    --sans:  system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-    --mono:  ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    --bg: #fdfdfd; --surface: #fdfdfd; --surface2: #f4f4f9;
+    --text: #050607; --body: #262838; --muted: #7c7d8d;
+    --line: #d9daec; --line-soft: #d9daec8e;
+    --accent: #656675; --accent-soft: rgba(101,102,117,0.10);
+    --success: #26b933; --success-soft: rgba(54,251,72,0.12);
+    --warning: #bc9720; --warning-soft: rgba(255,211,98,0.16);
+    --error: #aa2624; --error-soft: rgba(170,38,36,0.12);
+    --sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  }
+  html.dark {
+    --bg: #050607; --surface: #101316; --surface2: #262838;
+    --text: #fdfdfd; --body: #d9daec; --muted: #7c7d8d;
+    --line: #262838; --line-soft: #2628388e;
+    --accent: #7c7d8d; --accent-soft: rgba(124,125,141,0.14);
+    --success: #65fb6e; --success-soft: rgba(101,251,110,0.16);
+    --warning: #ffd362; --warning-soft: rgba(101,251,110,0.16);
+    --error: #aa2624; --error-soft: rgba(170, 38, 36, 0.534);
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
-    background: var(--ivory);
-    color: var(--gray-700);
+    background: var(--bg);
+    color: var(--body);
     font-family: var(--sans);
     font-size: 15px;
     line-height: 1.65;
@@ -46,38 +51,38 @@
     font-size: 11px;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: var(--gray-500);
+    color: var(--muted);
     margin-bottom: 10px;
   }
   h1 {
-    font-family: var(--serif);
+    font-family: var(--sans);
     font-weight: 500;
     font-size: 33px;
-    color: var(--slate);
+    color: var(--text);
     letter-spacing: -0.01em;
     margin-bottom: 12px;
   }
   .lead { max-width: 640px; margin-bottom: 8px; }
   h2 {
-    font-family: var(--serif);
+    font-family: var(--sans);
     font-weight: 500;
     font-size: 22px;
-    color: var(--slate);
+    color: var(--text);
     margin: 40px 0 12px;
   }
   p { margin-bottom: 12px; max-width: 680px; }
   code { font-family: var(--mono); font-size: 13px; }
   .term {
-    border-bottom: 1.5px dotted var(--clay);
+    border-bottom: 1.5px dotted var(--accent);
     cursor: help;
-    color: var(--slate);
+    color: var(--text);
   }
 
   /* ── demo panel ───────────────────────── */
   .demo {
-    border: 1.5px solid var(--gray-300);
+    border: 1.5px solid var(--line);
     border-radius: 14px;
-    background: #fff;
+    background: var(--bg);
     padding: 24px;
     margin: 12px 0 8px;
   }
@@ -90,21 +95,21 @@
   @media (max-width: 760px) { .demo-grid { grid-template-columns: 1fr; } }
 
   svg.ring { display: block; width: 100%; max-width: 320px; }
-  .ring .track { fill: none; stroke: var(--gray-300); stroke-width: 14; }
+  .ring .track { fill: none; stroke: var(--line); stroke-width: 14; }
   .ring .arc   { fill: none; stroke-width: 14; transition: stroke-dasharray 300ms ease; }
-  .ring .node  { stroke: #fff; stroke-width: 2; transition: cx 300ms, cy 300ms, opacity 200ms; }
-  .ring .key   { fill: var(--slate); transition: cx 300ms, cy 300ms; }
-  .ring .lbl   { font-family: var(--mono); font-size: 10px; fill: var(--gray-500); }
+  .ring .node  { stroke: var(--bg); stroke-width: 2; transition: cx 300ms, cy 300ms, opacity 200ms; }
+  .ring .key   { fill: var(--text); transition: cx 300ms, cy 300ms; }
+  .ring .lbl   { font-family: var(--mono); font-size: 10px; fill: var(--muted); }
 
   .controls { font-size: 13px; }
   .controls .row { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
-  .controls label { width: 64px; color: var(--gray-500); font-family: var(--mono); font-size: 11px; }
-  .controls .val { font-family: var(--mono); font-size: 12px; color: var(--slate); width: 28px; }
-  .controls input[type=range] { flex: 1; accent-color: var(--clay); }
+  .controls label { width: 64px; color: var(--muted); font-family: var(--mono); font-size: 11px; }
+  .controls .val { font-family: var(--mono); font-size: 12px; color: var(--text); width: 28px; }
+  .controls input[type=range] { flex: 1; accent-color: var(--accent); }
   .controls button {
     appearance: none;
-    border: 1.5px solid var(--gray-300);
-    background: var(--gray-150);
+    border: 1.5px solid var(--line);
+    background: var(--surface2);
     border-radius: 6px;
     font-family: var(--mono);
     font-size: 11px;
@@ -112,16 +117,16 @@
     cursor: pointer;
     margin-right: 6px;
   }
-  .controls button:hover { background: var(--oat); }
+  .controls button:hover { background: var(--surface2); }
 
   .readout {
-    border-top: 1px solid var(--gray-300);
+    border-top: 1px solid var(--line);
     margin-top: 16px;
     padding-top: 14px;
     font-size: 13px;
   }
-  .readout b { color: var(--slate); }
-  .moved { color: var(--clay); font-family: var(--mono); }
+  .readout b { color: var(--text); }
+  .moved { color: var(--accent); font-family: var(--mono); }
 
   /* ── compare table ────────────────────── */
   table {
@@ -131,19 +136,19 @@
     font-size: 13.5px;
     margin: 12px 0;
   }
-  th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--gray-300); }
-  th { font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--gray-500); font-weight: 500; }
-  td.bad { color: #B04A3F; }
-  td.good { color: var(--olive); }
+  th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+  th { font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); font-weight: 500; }
+  td.bad { color: var(--error); }
+  td.good { color: var(--success); }
 
   /* ── glossary ─────────────────────────── */
   aside {
     position: sticky;
     top: 32px;
     align-self: start;
-    border: 1.5px solid var(--gray-300);
+    border: 1.5px solid var(--line);
     border-radius: 12px;
-    background: #fff;
+    background: var(--bg);
     padding: 18px 18px 8px;
   }
   aside .label {
@@ -151,22 +156,22 @@
     font-size: 10px;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: var(--gray-500);
+    color: var(--muted);
     margin-bottom: 12px;
   }
   aside dl dt {
-    font-family: var(--serif);
+    font-family: var(--sans);
     font-size: 15px;
-    color: var(--slate);
+    color: var(--text);
     margin-top: 0;
   }
   aside dl dd {
     font-size: 12.5px;
     line-height: 1.5;
-    color: var(--gray-700);
+    color: var(--body);
     margin: 2px 0 14px;
   }
-  aside dl dt.hl, aside dl dt.hl + dd { background: rgba(217,119,87,0.10); margin-left: -8px; margin-right: -8px; padding-left: 8px; padding-right: 8px; border-radius: 4px; }
+  aside dl dt.hl, aside dl dt.hl + dd { background: var(--accent-soft); margin-left: -8px; margin-right: -8px; padding-left: 8px; padding-right: 8px; border-radius: 4px; }
 </style>
 </head>
 <body>
@@ -215,7 +220,7 @@
         </div>
       </div>
     </div>
-    <p style="font-size:13px; color:var(--gray-500); max-width:640px;">
+    <p style="font-size:13px; color:var(--muted); max-width:640px;">
       Colored arcs show ownership. Removing a node hands its arc to its clockwise neighbor; every dot outside
       that arc keeps its color. That's the whole idea.
     </p>
@@ -267,7 +272,7 @@ function h(s) {
   for (let i = 0; i < s.length; i++) { x ^= s.charCodeAt(i); x = (x * 16777619) >>> 0; }
   return x / 4294967296;
 }
-const COLORS = ["#D97757", "#788C5D", "#6A8CAF", "#C2A83E", "#B04A3F", "#87867F", "#3D6E6E", "#A67C52"];
+const COLORS = ["var(--accent)", "var(--success)", "var(--muted)", "var(--warning)", "var(--error)", "var(--muted)", "var(--accent)", "var(--muted)"];
 const CX = 130, CY = 130, R = 100, RKEY = 78;
 const TAU = Math.PI * 2;
 

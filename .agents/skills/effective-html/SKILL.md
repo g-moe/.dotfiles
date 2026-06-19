@@ -31,6 +31,42 @@ Use `rg` or file names to pick examples by artifact type instead of loading ever
 Always include dark mode:
 
 - Use hand-rolled CSS variables on `:root` and `html.dark`.
+- Use the canonical color tokens below. Use `:root` for the light variant and `html.dark` for the dark variant. Keep color variables limited to this canonical design-system set.
 - Add an apply-before-paint script in `<head>` that defaults to `prefers-color-scheme`.
 - Add a small theme toggle button.
 - Persist the selected theme in `localStorage`.
+
+```css
+:root {
+  --bg: #fdfdfd; --surface: #fdfdfd; --surface2: #f4f4f9;
+  --text: #050607; --body: #262838; --muted: #7c7d8d;
+  --line: #d9daec; --line-soft: #d9daec8e;
+  --accent: #656675; --accent-soft: rgba(101,102,117,0.10);
+  --success: #26b933; --success-soft: rgba(54,251,72,0.12);
+  --warning: #bc9720; --warning-soft: rgba(255,211,98,0.16);
+  --error: #aa2624; --error-soft: rgba(170,38,36,0.12);
+}
+
+html.dark {
+  --bg: #050607; --surface: #101316; --surface2: #262838;
+  --text: #fdfdfd; --body: #d9daec; --muted: #7c7d8d;
+  --line: #262838; --line-soft: #2628388e;
+  --accent: #7c7d8d; --accent-soft: rgba(124,125,141,0.14);
+  --success: #65fb6e; --success-soft: rgba(101,251,110,0.16);
+  --warning: #ffd362; --warning-soft: rgba(101,251,110,0.16);
+  --error: #aa2624; --error-soft: rgba(170, 38, 36, 0.534);
+}
+```
+
+## Typography Requirements
+
+Use system-default font stacks. Avoid serif or decorative display fonts unless the user explicitly asks for that style.
+
+```css
+:root {
+  --sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+}
+```
+
+Use `var(--sans)` for headings, body, controls, captions, and labels. Use `var(--mono)` only for code, IDs, metrics, and compact technical labels.

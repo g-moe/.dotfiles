@@ -7,33 +7,37 @@
 <title>Acme — Card Variant Matrix</title>
 <style>
   :root {
-    --ivory: #FAF9F5;
-    --slate: #141413;
-    --clay: #D97757;
-    --oat: #E3DACC;
-    --olive: #788C5D;
-    --gray-100: #F0EEE6;
-    --gray-300: #D1CFC5;
-    --gray-500: #87867F;
-    --gray-700: #3D3D3A;
-    --white: #FFFFFF;
-
-    --serif: ui-serif, Georgia, serif;
-    --sans: system-ui, -apple-system, sans-serif;
-    --mono: ui-monospace, 'SF Mono', Menlo, monospace;
+    --bg: #fdfdfd; --surface: #fdfdfd; --surface2: #f4f4f9;
+    --text: #050607; --body: #262838; --muted: #7c7d8d;
+    --line: #d9daec; --line-soft: #d9daec8e;
+    --accent: #656675; --accent-soft: rgba(101,102,117,0.10);
+    --success: #26b933; --success-soft: rgba(54,251,72,0.12);
+    --warning: #bc9720; --warning-soft: rgba(255,211,98,0.16);
+    --error: #aa2624; --error-soft: rgba(170,38,36,0.12);
+    --sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
 
     /* live-controlled tokens */
     --card-pad: 20px;
-    --card-border: 1.5px solid var(--gray-300);
-    --card-shadow: 0 4px 14px rgba(20, 20, 19, 0.08);
+    --card-border: 1.5px solid var(--line);
+    --card-shadow: 0 4px 14px rgba(5,6,7,0.08);
+  }
+  html.dark {
+    --bg: #050607; --surface: #101316; --surface2: #262838;
+    --text: #fdfdfd; --body: #d9daec; --muted: #7c7d8d;
+    --line: #262838; --line-soft: #2628388e;
+    --accent: #7c7d8d; --accent-soft: rgba(124,125,141,0.14);
+    --success: #65fb6e; --success-soft: rgba(101,251,110,0.16);
+    --warning: #ffd362; --warning-soft: rgba(101,251,110,0.16);
+    --error: #aa2624; --error-soft: rgba(170, 38, 36, 0.534);
   }
 
   * { box-sizing: border-box; }
 
   body {
     margin: 0;
-    background: var(--ivory);
-    color: var(--slate);
+    background: var(--bg);
+    color: var(--text);
     font-family: var(--sans);
     font-size: 15px;
     line-height: 1.5;
@@ -50,14 +54,14 @@
     padding: 48px 0 20px;
   }
   header h1 {
-    font-family: var(--serif);
+    font-family: var(--sans);
     font-weight: 500;
     font-size: 36px;
     letter-spacing: -0.01em;
     margin: 0 0 6px;
   }
   header p {
-    color: var(--gray-500);
+    color: var(--muted);
     font-size: 14px;
     margin: 0;
     max-width: 640px;
@@ -74,8 +78,8 @@
     gap: 28px;
     padding: 16px 20px;
     margin: 24px 0 36px;
-    background: var(--white);
-    border: 1.5px solid var(--gray-300);
+    background: var(--surface);
+    border: 1.5px solid var(--line);
     border-radius: 12px;
   }
   .control {
@@ -86,12 +90,12 @@
   .control-label {
     font-family: var(--mono);
     font-size: 12px;
-    color: var(--gray-700);
+    color: var(--body);
   }
   .control-value {
     font-family: var(--mono);
     font-size: 12px;
-    color: var(--gray-500);
+    color: var(--muted);
     min-width: 36px;
   }
 
@@ -99,20 +103,20 @@
     appearance: none;
     width: 140px;
     height: 4px;
-    background: var(--gray-300);
+    background: var(--line);
     border-radius: 2px;
     outline: none;
   }
   input[type="range"]::-webkit-slider-thumb {
     appearance: none;
     width: 16px; height: 16px;
-    background: var(--clay);
+    background: var(--accent);
     border-radius: 50%;
     cursor: pointer;
   }
   input[type="range"]::-moz-range-thumb {
     width: 16px; height: 16px;
-    background: var(--clay);
+    background: var(--accent);
     border: none;
     border-radius: 50%;
     cursor: pointer;
@@ -120,7 +124,7 @@
 
   .radio-group {
     display: inline-flex;
-    border: 1.5px solid var(--gray-300);
+    border: 1.5px solid var(--line);
     border-radius: 8px;
     overflow: hidden;
   }
@@ -129,16 +133,16 @@
     font-size: 13px;
     cursor: pointer;
     user-select: none;
-    color: var(--gray-700);
-    border-right: 1px solid var(--gray-300);
+    color: var(--body);
+    border-right: 1px solid var(--line);
   }
   .radio-group label:last-child { border-right: none; }
   .radio-group input { display: none; }
   .radio-group input:checked + span {
-    color: var(--slate);
+    color: var(--text);
   }
   .radio-group label:has(input:checked) {
-    background: var(--gray-100);
+    background: var(--surface2);
   }
 
   .check {
@@ -152,22 +156,22 @@
   .check input {
     appearance: none;
     width: 16px; height: 16px;
-    border: 1.5px solid var(--gray-300);
+    border: 1.5px solid var(--line);
     border-radius: 4px;
     margin: 0;
     cursor: pointer;
     position: relative;
   }
   .check input:checked {
-    background: var(--clay);
-    border-color: var(--clay);
+    background: var(--accent);
+    border-color: var(--accent);
   }
   .check input:checked::after {
     content: "";
     position: absolute;
     left: 4px; top: 0;
     width: 4px; height: 9px;
-    border: solid var(--white);
+    border: solid var(--surface);
     border-width: 0 2px 2px 0;
     transform: rotate(45deg);
   }
@@ -194,14 +198,14 @@
     font-family: var(--mono);
     font-size: 11px;
     font-weight: 500;
-    color: var(--gray-700);
-    background: var(--gray-100);
+    color: var(--body);
+    background: var(--surface2);
     border-radius: 999px;
     margin-bottom: 10px;
   }
   .variant-note {
     font-size: 12px;
-    color: var(--gray-500);
+    color: var(--muted);
     margin-top: 10px;
   }
 
@@ -212,7 +216,7 @@
     transition: padding 0.15s ease, box-shadow 0.15s ease, border 0.15s ease;
     cursor: pointer;
   }
-  .card:hover { outline: 2px solid var(--clay); outline-offset: 2px; }
+  .card:hover { outline: 2px solid var(--accent); outline-offset: 2px; }
 
   .card-head {
     display: flex;
@@ -223,18 +227,18 @@
   .avatar {
     width: 36px; height: 36px;
     border-radius: 50%;
-    background: var(--oat);
+    background: var(--surface2);
     flex-shrink: 0;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 13px;
     font-weight: 600;
-    color: var(--gray-700);
+    color: var(--body);
   }
   .card-titles { min-width: 0; }
   .card-title {
-    font-family: var(--serif);
+    font-family: var(--sans);
     font-size: 17px;
     font-weight: 500;
     margin: 0 0 2px;
@@ -242,7 +246,7 @@
   }
   .card-sub {
     font-size: 13px;
-    color: var(--gray-500);
+    color: var(--muted);
     margin: 0;
     white-space: nowrap;
     overflow: hidden;
@@ -261,10 +265,10 @@
     font-size: 11px;
     font-weight: 500;
     border-radius: 999px;
-    background: var(--gray-100);
-    color: var(--gray-700);
+    background: var(--surface2);
+    color: var(--body);
   }
-  .chip.olive { background: rgba(120,140,93,0.16); color: var(--olive); }
+  .chip.success { background: var(--success-soft); color: var(--success); }
   .ghost-btn {
     display: inline-flex;
     align-items: center;
@@ -272,32 +276,32 @@
     padding: 0 12px;
     font-size: 13px;
     font-weight: 500;
-    color: var(--gray-700);
+    color: var(--body);
     background: transparent;
-    border: 1.5px solid var(--gray-300);
+    border: 1.5px solid var(--line);
     border-radius: 8px;
     cursor: pointer;
   }
-  .ghost-btn:hover { background: var(--gray-100); }
+  .ghost-btn:hover { background: var(--surface2); }
 
   /* ---------- Variant treatments ---------- */
   .v-flat {
-    background: var(--white);
+    background: var(--surface);
     border: none;
     box-shadow: none;
   }
   .v-outlined {
-    background: var(--white);
+    background: var(--surface);
     border: var(--card-border);
     box-shadow: none;
   }
   .v-elevated {
-    background: var(--white);
+    background: var(--surface);
     border: none;
     box-shadow: var(--card-shadow);
   }
   .v-stripe {
-    background: var(--white);
+    background: var(--surface);
     border: var(--card-border);
     box-shadow: none;
     position: relative;
@@ -308,19 +312,19 @@
     position: absolute;
     left: 0; right: 0; top: 0;
     height: 4px;
-    background: var(--clay);
+    background: var(--accent);
   }
   .v-inset {
-    background: var(--oat);
+    background: var(--surface2);
     border: none;
     box-shadow: none;
   }
-  .v-inset .chip { background: rgba(255,255,255,0.6); }
-  .v-inset .ghost-btn { border-color: rgba(20,20,19,0.15); }
-  .v-inset .avatar { background: var(--white); }
+  .v-inset .chip { background: rgba(253,253,253,0.6); }
+  .v-inset .ghost-btn { border-color: rgba(5,6,7,0.15); }
+  .v-inset .avatar { background: var(--surface); }
 
   .v-horizontal {
-    background: var(--white);
+    background: var(--surface);
     border: var(--card-border);
     box-shadow: none;
     display: flex;
@@ -335,7 +339,7 @@
   /* ---------- Snippet panel ---------- */
   .snippet-panel {
     margin-top: 40px;
-    border: 1.5px solid var(--gray-300);
+    border: 1.5px solid var(--line);
     border-radius: 12px;
     overflow: hidden;
   }
@@ -343,15 +347,15 @@
     padding: 10px 16px;
     font-family: var(--mono);
     font-size: 12px;
-    color: var(--gray-500);
-    background: var(--gray-100);
-    border-bottom: 1px solid var(--gray-300);
+    color: var(--muted);
+    background: var(--surface2);
+    border-bottom: 1px solid var(--line);
   }
   pre#snippet {
     margin: 0;
     padding: 20px;
-    background: var(--slate);
-    color: var(--ivory);
+    background: var(--text);
+    color: var(--bg);
     font-family: var(--mono);
     font-size: 13px;
     line-height: 1.6;
@@ -414,7 +418,7 @@
         </div>
         <div class="chips">
           <span class="chip">Q2</span>
-          <span class="chip olive">Roadmap</span>
+          <span class="chip success">Roadmap</span>
         </div>
         <button class="ghost-btn">Open</button>
       </div>
@@ -439,11 +443,11 @@
         </div>
         <div class="chips">
           <span class="chip">Q2</span>
-          <span class="chip olive">Roadmap</span>
+          <span class="chip success">Roadmap</span>
         </div>
         <button class="ghost-btn">Open</button>
       </div>
-      <p class="variant-note">best for: default content cards on ivory</p>
+      <p class="variant-note">best for: default content cards on bg</p>
     </div>
 
     <!-- C: Elevated -->
@@ -464,7 +468,7 @@
         </div>
         <div class="chips">
           <span class="chip">Q2</span>
-          <span class="chip olive">Roadmap</span>
+          <span class="chip success">Roadmap</span>
         </div>
         <button class="ghost-btn">Open</button>
       </div>
@@ -475,7 +479,7 @@
     <div class="cell">
       <span class="variant-label">D &middot; Accent stripe</span>
       <div class="card v-stripe"
-           data-snippet='<Card variant="outlined" accent="clay" padding={PAD} border="BORDER">
+           data-snippet='<Card variant="outlined" accent="accent" padding={PAD} border="BORDER">
   <Card.Header avatar title="Weekly planning" subtitle="12 tasks &middot; due Friday" />
   <Card.Meta tags={["Q2", "Roadmap"]} />
   <Button variant="ghost">Open</Button>
@@ -489,7 +493,7 @@
         </div>
         <div class="chips">
           <span class="chip">Q2</span>
-          <span class="chip olive">Roadmap</span>
+          <span class="chip success">Roadmap</span>
         </div>
         <button class="ghost-btn">Open</button>
       </div>
@@ -500,7 +504,7 @@
     <div class="cell">
       <span class="variant-label">E &middot; Inset</span>
       <div class="card v-inset"
-           data-snippet='<Card variant="filled" tone="oat" padding={PAD}>
+           data-snippet='<Card variant="filled" tone="surface2" padding={PAD}>
   <Card.Header avatar title="Weekly planning" subtitle="12 tasks &middot; due Friday" />
   <Card.Meta tags={["Q2", "Roadmap"]} />
   <Button variant="ghost">Open</Button>
@@ -514,7 +518,7 @@
         </div>
         <div class="chips">
           <span class="chip">Q2</span>
-          <span class="chip olive">Roadmap</span>
+          <span class="chip success">Roadmap</span>
         </div>
         <button class="ghost-btn">Open</button>
       </div>
@@ -539,7 +543,7 @@
         </div>
         <div class="chips">
           <span class="chip">Q2</span>
-          <span class="chip olive">Roadmap</span>
+          <span class="chip success">Roadmap</span>
         </div>
         <button class="ghost-btn">Open</button>
       </div>
@@ -567,8 +571,8 @@
 
     var borderMap = {
       none: 'none',
-      hairline: '1px solid var(--gray-300)',
-      solid: '1.5px solid var(--gray-300)'
+      hairline: '1px solid var(--line)',
+      solid: '1.5px solid var(--line)'
     };
 
     function applyPad() {
@@ -581,7 +585,7 @@
     }
     function applyShadow() {
       root.style.setProperty('--card-shadow',
-        shadow.checked ? '0 4px 14px rgba(20,20,19,0.08)' : 'none');
+        shadow.checked ? '0 4px 14px rgba(5,6,7,0.08)' : 'none');
     }
 
     pad.addEventListener('input', applyPad);

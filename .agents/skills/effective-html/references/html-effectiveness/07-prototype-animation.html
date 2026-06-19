@@ -7,27 +7,32 @@
 <title>Acme — Task completed micro-interaction</title>
 <style>
   :root {
-    --ivory: #FAF9F5;
-    --slate: #141413;
-    --clay: #D97757;
-    --oat: #E3DACC;
-    --olive: #788C5D;
-    --gray-50: #F0EEE6;
-    --gray-200: #D1CFC5;
-    --gray-500: #87867F;
-    --gray-800: #3D3D3A;
-    --white: #ffffff;
-    --serif: ui-serif, Georgia, "Times New Roman", serif;
-    --sans: system-ui, -apple-system, "Segoe UI", sans-serif;
-    --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    --bg: #fdfdfd; --surface: #fdfdfd; --surface2: #f4f4f9;
+    --text: #050607; --body: #262838; --muted: #7c7d8d;
+    --line: #d9daec; --line-soft: #d9daec8e;
+    --accent: #656675; --accent-soft: rgba(101,102,117,0.10);
+    --success: #26b933; --success-soft: rgba(54,251,72,0.12);
+    --warning: #bc9720; --warning-soft: rgba(255,211,98,0.16);
+    --error: #aa2624; --error-soft: rgba(170,38,36,0.12);
+    --sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
     /* swapped at runtime by the easing panel */
     --ease: cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  html.dark {
+    --bg: #050607; --surface: #101316; --surface2: #262838;
+    --text: #fdfdfd; --body: #d9daec; --muted: #7c7d8d;
+    --line: #262838; --line-soft: #2628388e;
+    --accent: #7c7d8d; --accent-soft: rgba(124,125,141,0.14);
+    --success: #65fb6e; --success-soft: rgba(101,251,110,0.16);
+    --warning: #ffd362; --warning-soft: rgba(101,251,110,0.16);
+    --error: #aa2624; --error-soft: rgba(170, 38, 36, 0.534);
   }
   * { box-sizing: border-box; }
   html, body {
     margin: 0;
-    background: var(--ivory);
-    color: var(--slate);
+    background: var(--bg);
+    color: var(--text);
     font-family: var(--sans);
     font-size: 14px;
     line-height: 1.5;
@@ -43,17 +48,17 @@
     font-size: 11px;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: var(--gray-500);
+    color: var(--muted);
   }
   h1 {
-    font-family: var(--serif);
+    font-family: var(--sans);
     font-weight: 500;
     font-size: 30px;
     letter-spacing: -0.01em;
     margin: 6px 0 4px;
   }
   .sub {
-    color: var(--gray-500);
+    color: var(--muted);
     max-width: 560px;
   }
 
@@ -65,8 +70,8 @@
     align-items: start;
   }
   .stage {
-    background: var(--white);
-    border: 1.5px solid var(--gray-200);
+    background: var(--surface);
+    border: 1.5px solid var(--line);
     border-radius: 12px;
     height: 360px;
     display: flex;
@@ -82,7 +87,7 @@
     transform: translateX(-50%);
     font-family: var(--mono);
     font-size: 11px;
-    color: var(--gray-500);
+    color: var(--muted);
   }
 
   /* ---------- the task row ---------- */
@@ -91,9 +96,9 @@
     align-items: center;
     gap: 14px;
     padding: 14px 18px;
-    border: 1.5px solid var(--gray-200);
+    border: 1.5px solid var(--line);
     border-radius: 8px;
-    background: var(--white);
+    background: var(--surface);
     width: 360px;
     max-height: 64px;
     position: relative;
@@ -104,15 +109,15 @@
     cursor: pointer;
     user-select: none;
   }
-  .task:hover { border-color: var(--gray-500); }
+  .task:hover { border-color: var(--muted); }
 
   .check {
     flex: none;
     width: 24px;
     height: 24px;
     border-radius: 50%;
-    border: 1.5px solid var(--gray-500);
-    background: var(--white);
+    border: 1.5px solid var(--muted);
+    background: var(--surface);
     position: relative;
     transition: background 180ms var(--ease),
                 border-color 180ms var(--ease),
@@ -126,7 +131,7 @@
     height: 14px;
   }
   .check path {
-    stroke: var(--white);
+    stroke: var(--surface);
     stroke-width: 2.5;
     stroke-linecap: round;
     stroke-linejoin: round;
@@ -139,7 +144,7 @@
   .label {
     position: relative;
     font-size: 15px;
-    color: var(--slate);
+    color: var(--text);
     transition: color 200ms var(--ease) 120ms;
   }
   .label::after {
@@ -149,7 +154,7 @@
     top: 52%;
     height: 1.5px;
     width: 0;
-    background: var(--gray-500);
+    background: var(--muted);
     transition: width 240ms var(--ease) 120ms;
   }
 
@@ -157,9 +162,9 @@
     margin-left: auto;
     font-family: var(--mono);
     font-size: 11px;
-    color: var(--gray-500);
-    background: var(--gray-50);
-    border: 1.5px solid var(--gray-200);
+    color: var(--muted);
+    background: var(--surface2);
+    border: 1.5px solid var(--line);
     padding: 3px 8px;
     border-radius: 8px;
     transition: opacity 200ms var(--ease) 120ms;
@@ -176,27 +181,27 @@
     opacity: 0;
     pointer-events: none;
   }
-  .confetti.c1 { background: var(--clay);  }
-  .confetti.c2 { background: var(--olive); }
-  .confetti.c3 { background: var(--oat);   }
-  .confetti.c4 { background: var(--clay);  }
-  .confetti.c5 { background: var(--olive); }
-  .confetti.c6 { background: var(--gray-800); }
+  .confetti.c1 { background: var(--accent);  }
+  .confetti.c2 { background: var(--success); }
+  .confetti.c3 { background: var(--surface2);   }
+  .confetti.c4 { background: var(--accent);  }
+  .confetti.c5 { background: var(--success); }
+  .confetti.c6 { background: var(--body); }
 
   /* ---------- done state ---------- */
   .task.done .check {
-    background: var(--olive);
-    border-color: var(--olive);
+    background: var(--success);
+    border-color: var(--success);
     transform: scale(1.12);
     animation: settle 380ms var(--ease) forwards;
   }
   @keyframes settle {
-    0%   { transform: scale(0.8); background: var(--clay); border-color: var(--clay); }
+    0%   { transform: scale(0.8); background: var(--accent); border-color: var(--accent); }
     55%  { transform: scale(1.18); }
-    100% { transform: scale(1); background: var(--olive); border-color: var(--olive); }
+    100% { transform: scale(1); background: var(--success); border-color: var(--success); }
   }
   .task.done .check path { stroke-dashoffset: 0; }
-  .task.done .label { color: var(--gray-500); }
+  .task.done .label { color: var(--muted); }
   .task.done .label::after { width: 100%; }
   .task.done .due { opacity: 0.35; }
   .task.done {
@@ -220,13 +225,13 @@
 
   /* ---------- easing panel ---------- */
   .panel {
-    background: var(--white);
-    border: 1.5px solid var(--gray-200);
+    background: var(--surface);
+    border: 1.5px solid var(--line);
     border-radius: 12px;
     padding: 18px;
   }
   .panel h2 {
-    font-family: var(--serif);
+    font-family: var(--sans);
     font-weight: 500;
     font-size: 16px;
     margin: 0 0 4px;
@@ -234,45 +239,45 @@
   .panel p {
     margin: 0 0 14px;
     font-size: 12px;
-    color: var(--gray-500);
+    color: var(--muted);
   }
   .ease-btn {
     display: block;
     width: 100%;
     text-align: left;
-    background: var(--gray-50);
-    border: 1.5px solid var(--gray-200);
+    background: var(--surface2);
+    border: 1.5px solid var(--line);
     border-radius: 8px;
     padding: 10px 12px;
     margin-bottom: 8px;
     font-family: var(--sans);
     font-size: 13px;
-    color: var(--slate);
+    color: var(--text);
     cursor: pointer;
   }
-  .ease-btn:hover { border-color: var(--gray-500); }
+  .ease-btn:hover { border-color: var(--muted); }
   .ease-btn.active {
-    border-color: var(--clay);
-    background: #FBF1EC;
+    border-color: var(--accent);
+    background: var(--surface2);
   }
   .ease-btn code {
     display: block;
     font-family: var(--mono);
     font-size: 10px;
-    color: var(--gray-500);
+    color: var(--muted);
     margin-top: 2px;
   }
 
   /* ---------- timeline ---------- */
   .timeline {
     margin-top: 28px;
-    background: var(--white);
-    border: 1.5px solid var(--gray-200);
+    background: var(--surface);
+    border: 1.5px solid var(--line);
     border-radius: 12px;
     padding: 22px 22px 30px;
   }
   .timeline h2 {
-    font-family: var(--serif);
+    font-family: var(--sans);
     font-weight: 500;
     font-size: 16px;
     margin: 0 0 18px;
@@ -280,7 +285,7 @@
   .track {
     position: relative;
     height: 2px;
-    background: var(--gray-200);
+    background: var(--line);
     margin: 20px 8px 0;
   }
   .key {
@@ -289,9 +294,9 @@
     width: 12px;
     height: 12px;
     border-radius: 50%;
-    background: var(--clay);
-    border: 1.5px solid var(--white);
-    box-shadow: 0 0 0 1.5px var(--clay);
+    background: var(--accent);
+    border: 1.5px solid var(--surface);
+    box-shadow: 0 0 0 1.5px var(--accent);
     transform: translateX(-50%);
   }
   .key span {
@@ -302,7 +307,7 @@
     white-space: nowrap;
     font-family: var(--mono);
     font-size: 10px;
-    color: var(--gray-800);
+    color: var(--body);
   }
   .key em {
     position: absolute;
@@ -312,27 +317,27 @@
     white-space: nowrap;
     font-style: normal;
     font-size: 11px;
-    color: var(--gray-500);
+    color: var(--muted);
   }
   .k1 { left: 0%;   }
   .k2 { left: 13%;  }
   .k3 { left: 20%;  }
   .k4 { left: 33%;  }
-  .k5 { left: 100%; background: var(--olive); box-shadow: 0 0 0 1.5px var(--olive); }
+  .k5 { left: 100%; background: var(--success); box-shadow: 0 0 0 1.5px var(--success); }
 
   /* ---------- snippet ---------- */
   .snippet {
     margin-top: 28px;
   }
   .snippet h2 {
-    font-family: var(--serif);
+    font-family: var(--sans);
     font-weight: 500;
     font-size: 16px;
     margin: 0 0 10px;
   }
   pre {
-    background: var(--gray-800);
-    color: var(--gray-50);
+    background: var(--body);
+    color: var(--surface2);
     border-radius: 12px;
     padding: 18px 20px;
     font-family: var(--mono);
@@ -341,9 +346,9 @@
     overflow-x: auto;
     margin: 0;
   }
-  pre .c { color: var(--gray-500); }
-  pre .k { color: var(--clay); }
-  pre .v { color: #B8C99D; }
+  pre .c { color: var(--muted); }
+  pre .k { color: var(--accent); }
+  pre .v { color: var(--success); }
 </style>
 </head>
 <body>
@@ -410,14 +415,14 @@
 
   <section class="snippet">
     <h2>Copy-paste CSS</h2>
-<pre><span class="c">/* circle: clay flash, settle to olive with spring overshoot */</span>
+<pre><span class="c">/* circle: accent flash, settle to success with spring overshoot */</span>
 <span class="k">.task.done .check</span> {
   animation: settle 380ms <span class="v">cubic-bezier(.34,1.56,.64,1)</span> forwards;
 }
 <span class="k">@keyframes settle</span> {
-  0%   { transform: scale(.8);  background: <span class="v">#D97757</span>; }
+  0%   { transform: scale(.8);  background: <span class="v">var(--accent)</span>; }
   55%  { transform: scale(1.18); }
-  100% { transform: scale(1);   background: <span class="v">#788C5D</span>; }
+  100% { transform: scale(1);   background: <span class="v">var(--success)</span>; }
 }
 
 <span class="c">/* checkmark draws via stroke-dashoffset, 80ms delay */</span>

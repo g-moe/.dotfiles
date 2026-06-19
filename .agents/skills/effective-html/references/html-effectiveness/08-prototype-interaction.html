@@ -7,25 +7,30 @@
 <title>Acme — Sidebar drag-to-reorder</title>
 <style>
   :root {
-    --ivory: #FAF9F5;
-    --slate: #141413;
-    --clay: #D97757;
-    --oat: #E3DACC;
-    --olive: #788C5D;
-    --gray-50: #F0EEE6;
-    --gray-200: #D1CFC5;
-    --gray-500: #87867F;
-    --gray-800: #3D3D3A;
-    --white: #ffffff;
-    --serif: ui-serif, Georgia, "Times New Roman", serif;
-    --sans: system-ui, -apple-system, "Segoe UI", sans-serif;
-    --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    --bg: #fdfdfd; --surface: #fdfdfd; --surface2: #f4f4f9;
+    --text: #050607; --body: #262838; --muted: #7c7d8d;
+    --line: #d9daec; --line-soft: #d9daec8e;
+    --accent: #656675; --accent-soft: rgba(101,102,117,0.10);
+    --success: #26b933; --success-soft: rgba(54,251,72,0.12);
+    --warning: #bc9720; --warning-soft: rgba(255,211,98,0.16);
+    --error: #aa2624; --error-soft: rgba(170,38,36,0.12);
+    --sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  }
+  html.dark {
+    --bg: #050607; --surface: #101316; --surface2: #262838;
+    --text: #fdfdfd; --body: #d9daec; --muted: #7c7d8d;
+    --line: #262838; --line-soft: #2628388e;
+    --accent: #7c7d8d; --accent-soft: rgba(124,125,141,0.14);
+    --success: #65fb6e; --success-soft: rgba(101,251,110,0.16);
+    --warning: #ffd362; --warning-soft: rgba(101,251,110,0.16);
+    --error: #aa2624; --error-soft: rgba(170, 38, 36, 0.534);
   }
   * { box-sizing: border-box; }
   html, body {
     margin: 0;
-    background: var(--ivory);
-    color: var(--slate);
+    background: var(--bg);
+    color: var(--text);
     font-family: var(--sans);
     font-size: 14px;
     line-height: 1.55;
@@ -41,24 +46,24 @@
     font-size: 11px;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: var(--gray-500);
+    color: var(--muted);
   }
   h1 {
-    font-family: var(--serif);
+    font-family: var(--sans);
     font-weight: 500;
     font-size: 30px;
     letter-spacing: -0.01em;
     margin: 6px 0 4px;
   }
   .sub {
-    color: var(--gray-500);
+    color: var(--muted);
     max-width: 600px;
   }
   code.inline {
     font-family: var(--mono);
     font-size: 12px;
-    background: var(--gray-50);
-    border: 1.5px solid var(--gray-200);
+    background: var(--surface2);
+    border: 1.5px solid var(--line);
     padding: 1px 5px;
     border-radius: 4px;
   }
@@ -74,8 +79,8 @@
   /* ---------- sidebar mock ---------- */
   .sidebar {
     width: 260px;
-    background: var(--white);
-    border: 1.5px solid var(--gray-200);
+    background: var(--surface);
+    border: 1.5px solid var(--line);
     border-radius: 12px;
     padding: 14px 10px;
   }
@@ -84,7 +89,7 @@
     font-size: 10px;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: var(--gray-500);
+    color: var(--muted);
     padding: 4px 10px 10px;
   }
   .list {
@@ -100,25 +105,25 @@
     padding: 9px 10px;
     margin: 2px 0;
     border-radius: 8px;
-    background: var(--white);
+    background: var(--surface);
     cursor: grab;
     user-select: none;
     transition: background 120ms linear, transform 120ms ease-out, opacity 120ms linear;
   }
-  .item:hover { background: var(--gray-50); }
-  .item:hover .grip i { background: var(--gray-800); }
+  .item:hover { background: var(--surface2); }
+  .item:hover .grip i { background: var(--body); }
   .item.dragging {
     opacity: 0.35;
     transform: rotate(2deg);
-    background: var(--gray-50);
+    background: var(--surface2);
     cursor: grabbing;
   }
-  .item .label { font-size: 14px; color: var(--slate); }
+  .item .label { font-size: 14px; color: var(--text); }
   .item .count {
     margin-left: auto;
     font-family: var(--mono);
     font-size: 11px;
-    color: var(--gray-500);
+    color: var(--muted);
   }
 
   /* grip: 2 × 3 dot grid, pure css */
@@ -136,7 +141,7 @@
     width: 3px;
     height: 3px;
     border-radius: 50%;
-    background: var(--gray-200);
+    background: var(--line);
     transition: background 120ms linear;
   }
 
@@ -146,7 +151,7 @@
     left: 6px;
     right: 6px;
     height: 2px;
-    background: var(--clay);
+    background: var(--accent);
     border-radius: 2px;
     pointer-events: none;
     display: none;
@@ -159,25 +164,25 @@
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background: var(--clay);
+    background: var(--accent);
   }
   .indicator.on { display: block; }
 
   /* ---------- annotation panel ---------- */
   .notes {
-    background: var(--white);
-    border: 1.5px solid var(--gray-200);
+    background: var(--surface);
+    border: 1.5px solid var(--line);
     border-radius: 12px;
     padding: 22px 24px;
   }
   .notes h2 {
-    font-family: var(--serif);
+    font-family: var(--sans);
     font-weight: 500;
     font-size: 18px;
     margin: 0 0 6px;
   }
   .notes .lede {
-    color: var(--gray-500);
+    color: var(--muted);
     font-size: 13px;
     margin: 0 0 16px;
   }
@@ -189,9 +194,9 @@
   .notes li {
     position: relative;
     padding: 10px 0 10px 22px;
-    border-top: 1.5px solid var(--gray-50);
+    border-top: 1.5px solid var(--surface2);
     font-size: 13px;
-    color: var(--gray-800);
+    color: var(--body);
   }
   .notes li:first-child { border-top: none; }
   .notes li::before {
@@ -202,20 +207,20 @@
     width: 7px;
     height: 7px;
     border-radius: 2px;
-    background: var(--clay);
+    background: var(--accent);
   }
-  .notes li b { color: var(--slate); font-weight: 600; }
+  .notes li b { color: var(--text); font-weight: 600; }
 
   /* ---------- open questions ---------- */
   .questions {
     margin-top: 28px;
-    background: var(--oat);
-    border: 1.5px solid var(--gray-200);
+    background: var(--surface2);
+    border: 1.5px solid var(--line);
     border-radius: 12px;
     padding: 20px 24px;
   }
   .questions h2 {
-    font-family: var(--serif);
+    font-family: var(--sans);
     font-weight: 500;
     font-size: 17px;
     margin: 0 0 12px;
@@ -226,12 +231,12 @@
   }
   .questions li {
     font-size: 13px;
-    color: var(--gray-800);
+    color: var(--body);
     padding: 4px 0;
   }
   .questions li::marker {
     font-family: var(--mono);
-    color: var(--olive);
+    color: var(--success);
     font-weight: 600;
   }
 
@@ -239,7 +244,7 @@
     margin-top: 18px;
     font-family: var(--mono);
     font-size: 11px;
-    color: var(--gray-500);
+    color: var(--muted);
   }
 </style>
 </head>
