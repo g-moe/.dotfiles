@@ -14,43 +14,44 @@
 			})();
 		</script>
 		<style>
-			:root {
-				--bg: #fdfdfd;
-				--surface: #fdfdfd;
-				--surface2: #f4f4f9;
-				--ink: #050607;
-				--body: #262838;
-				--muted: #7c7d8d;
-				--line: #d9daec;
-				--line-soft: #f4f4f9;
-				--neutral-e3: #656675;
-				--neutral-e3-soft: rgba(101, 102, 117, 0.1);
-				--system-success-h1: #26b933;
-				--system-success-soft: rgba(54, 251, 72, 0.12);
-				--system-warning: #ffce2e;
-				--zone: rgba(5, 6, 7, 0.025);
-				--zone-line: #d9daec;
-				--serif: ui-serif, Georgia, "Times New Roman", serif;
-				--sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-				--mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-			}
-			html.dark {
-				--bg: #050607;
-				--surface: #101316;
-				--surface2: #262838;
-				--ink: #fdfdfd;
-				--body: #d9daec;
-				--muted: #7c7d8d;
-				--line: #262838;
-				--line-soft: #2628388e;
-				--neutral-e3: #7c7d8d;
-				--neutral-e3-soft: rgba(124, 125, 141, 0.14);
-				--system-success-h1: #65fb6e;
-				--system-success-soft: rgba(101, 251, 110, 0.16);
-				--system-warning: rgba(170, 38, 36, 0.534);
-				--zone: rgba(253, 253, 253, 0.03);
-				--zone-line: #262838;
-			}
+				:root {
+					--bg: #fdfdfd;
+					--surface: #fdfdfd;
+					--surface2: #f4f4f9;
+					--text: #050607;
+					--body: #262838;
+					--muted: #7c7d8d;
+					--line: #d9daec;
+					--line-soft: #d9daec8e;
+					--accent: #656675;
+					--accent-soft: rgba(101, 102, 117, 0.1);
+					--success: #26b933;
+					--success-soft: rgba(54, 251, 72, 0.12);
+					--warning: #bc9720;
+					--warning-soft: rgba(255, 211, 98, 0.16);
+					--error: #aa2624;
+					--error-soft: rgba(170, 38, 36, 0.12);
+					--sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+					--mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+				}
+				html.dark {
+					--bg: #050607;
+					--surface: #101316;
+					--surface2: #262838;
+					--text: #fdfdfd;
+					--body: #d9daec;
+					--muted: #7c7d8d;
+					--line: #262838;
+					--line-soft: #2628388e;
+					--accent: #7c7d8d;
+					--accent-soft: rgba(124, 125, 141, 0.14);
+					--success: #65fb6e;
+					--success-soft: rgba(101, 251, 110, 0.16);
+					--warning: #ffd362;
+					--warning-soft: rgba(255, 211, 98, 0.16);
+					--error: #aa2624;
+					--error-soft: rgba(170, 38, 36, 0.534);
+				}
 			* {
 				box-sizing: border-box;
 				margin: 0;
@@ -81,10 +82,10 @@
 				flex: none;
 			}
 			.bar h1 {
-				font-family: var(--serif);
+					font-family: var(--sans);
 				font-weight: 500;
 				font-size: 19px;
-				color: var(--ink);
+					color: var(--text);
 				letter-spacing: -0.01em;
 			}
 			.bar .sub {
@@ -115,12 +116,12 @@
 				transition: all 0.15s ease;
 			}
 			.chip:hover {
-				color: var(--ink);
+				color: var(--text);
 				border-color: var(--muted);
 			}
 			.chip.on {
-				background: var(--ink);
-				border-color: var(--ink);
+				background: var(--text);
+				border-color: var(--text);
 				color: var(--bg);
 			}
 			#themeToggle {
@@ -136,7 +137,7 @@
 				cursor: pointer;
 			}
 			#themeToggle:hover {
-				color: var(--ink);
+				color: var(--text);
 				border-color: var(--muted);
 			}
 
@@ -156,8 +157,8 @@
 
 			/* zones */
 			.zone rect {
-				fill: var(--zone);
-				stroke: var(--zone-line);
+				fill: var(--accent-soft);
+				stroke: var(--line);
 				stroke-width: 1;
 				stroke-dasharray: 5 5;
 				rx: 16;
@@ -193,14 +194,14 @@
 				stroke: var(--muted);
 			}
 			.node.sel rect {
-				stroke: var(--neutral-e3) !important;
+				stroke: var(--accent) !important;
 				stroke-width: 2;
 			}
 			.node .t {
 				font-family: var(--sans);
 				font-size: 14.5px;
 				font-weight: 600;
-				fill: var(--ink);
+				fill: var(--text);
 				pointer-events: none;
 			}
 			.node .m {
@@ -214,19 +215,19 @@
 				font-size: 10px;
 				letter-spacing: 0.08em;
 				text-transform: uppercase;
-				fill: var(--neutral-e3);
+				fill: var(--accent);
 				pointer-events: none;
 			}
 			.node.gate rect {
-				fill: var(--neutral-e3-soft);
-				stroke: var(--neutral-e3);
+				fill: var(--accent-soft);
+				stroke: var(--accent);
 			}
 			.node.store rect {
 				fill: var(--surface2);
 			}
 			.node.do rect {
-				fill: var(--system-success-soft);
-				stroke: var(--system-success-h1);
+				fill: var(--accent-soft);
+				stroke: var(--accent);
 			}
 			.node.ext rect {
 				stroke-dasharray: 6 3;
@@ -270,20 +271,20 @@
 			}
 			.stage.flowing .edge.lit {
 				opacity: 1;
-				stroke: var(--neutral-e3);
-				marker-end: url(#a-neutral-e3);
+				stroke: var(--accent);
+				marker-end: url(#a-accent);
 				stroke-dasharray: 7 5;
 				animation: march 0.9s linear infinite;
 			}
 			.stage.flowing .elbl.lit {
 				opacity: 1;
-				fill: var(--neutral-e3);
+				fill: var(--accent);
 			}
 			.stage.flowing .node.lit {
 				opacity: 1;
 			}
 			.stage.flowing .node.lit rect {
-				stroke: var(--neutral-e3);
+				stroke: var(--accent);
 			}
 			@keyframes march {
 				to {
@@ -302,7 +303,7 @@
 				font-weight: 700;
 			}
 			.badge circle {
-				fill: var(--neutral-e3);
+				fill: var(--accent);
 			}
 			.badge text {
 				fill: var(--bg);
@@ -327,10 +328,10 @@
 				width: 340px;
 			}
 			#detail h3 {
-				font-family: var(--serif);
+				font-family: var(--sans);
 				font-weight: 500;
 				font-size: 17px;
-				color: var(--ink);
+				color: var(--text);
 				margin-bottom: 2px;
 			}
 			#detail .meta {
@@ -347,7 +348,7 @@
 			#flowcap code {
 				font-family: var(--mono);
 				font-size: 11px;
-				color: var(--neutral-e3);
+				color: var(--accent);
 			}
 			#flowcap {
 				left: 16px;
@@ -363,7 +364,7 @@
 				font-size: 10.5px;
 				letter-spacing: 0.08em;
 				text-transform: uppercase;
-				color: var(--neutral-e3);
+				color: var(--accent);
 				margin-bottom: 6px;
 			}
 			#flowcap ol {
@@ -440,7 +441,7 @@
 						<path d="M0,0 L10,5 L0,10 z" style="fill: var(--muted)" />
 					</marker>
 					<marker
-						id="a-neutral-e3"
+						id="a-accent"
 						viewBox="0 0 10 10"
 						refX="9"
 						refY="5"
@@ -448,7 +449,7 @@
 						markerHeight="6.5"
 						orient="auto-start-reverse"
 					>
-						<path d="M0,0 L10,5 L0,10 z" style="fill: var(--neutral-e3)" />
+						<path d="M0,0 L10,5 L0,10 z" style="fill: var(--accent)" />
 					</marker>
 				</defs>
 				<!-- ── zones ─────────────────────────────── -->

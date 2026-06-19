@@ -24,6 +24,7 @@ Use `rg` or file names to pick examples by artifact type instead of loading ever
 - Keep prose useful and compact. Use the visual structure to make the subject click quickly.
 - Match the artifact type: plans should be pragmatic and simple; diagrams should be light on prose and diagram-first; general artifacts should balance polish with clarity.
 - For diagrams, build a high-quality SVG. Style SVG elements through CSS classes and variables, not hard-coded colors inside the SVG.
+- Treat proof, validation, check, runtime-check, and evidence panels as informational components: use `--accent` for borders/key lines and `--accent-soft` for subtle fills. Do not use `--success`, `--warning`, or `--error` on the container unless the whole component is explicitly a pass, warning, or failure state; use semantic status colors only for specific rows, badges, or markers inside it.
 - Add interaction or animation when it helps explain state, flow, sequence, comparison, or system behavior.
 
 ## Theme Requirements
@@ -32,6 +33,7 @@ Always include dark mode:
 
 - Use hand-rolled CSS variables on `:root` and `html.dark`.
 - Use the canonical color tokens below. Use `:root` for the light variant and `html.dark` for the dark variant. Keep color variables limited to this canonical design-system set.
+- Reserve `--success` and `--success-soft` for confirmed success, pass, completion, or positive-delta states only. Reserve `--warning` and `--warning-soft` for explicit caution states only. For neutral emphasis, proof paths, validation/check containers, category tags, avatars, chart series, and "next" columns, use `--accent`, `--accent-soft`, `--line`, `--line-soft`, or `--surface2`.
 - Add an apply-before-paint script in `<head>` that defaults to `prefers-color-scheme`.
 - Add a small theme toggle button.
 - Persist the selected theme in `localStorage`.
@@ -53,7 +55,7 @@ html.dark {
   --line: #262838; --line-soft: #2628388e;
   --accent: #7c7d8d; --accent-soft: rgba(124,125,141,0.14);
   --success: #65fb6e; --success-soft: rgba(101,251,110,0.16);
-  --warning: #ffd362; --warning-soft: rgba(101,251,110,0.16);
+  --warning: #ffd362; --warning-soft: rgba(255,211,98,0.16);
   --error: #aa2624; --error-soft: rgba(170, 38, 36, 0.534);
 }
 ```

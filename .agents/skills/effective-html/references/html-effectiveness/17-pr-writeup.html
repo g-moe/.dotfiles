@@ -23,7 +23,7 @@
     --line: #262838; --line-soft: #2628388e;
     --accent: #7c7d8d; --accent-soft: rgba(124,125,141,0.14);
     --success: #65fb6e; --success-soft: rgba(101,251,110,0.16);
-    --warning: #ffd362; --warning-soft: rgba(101,251,110,0.16);
+    --warning: #ffd362; --warning-soft: rgba(255,211,98,0.16);
     --error: #aa2624; --error-soft: rgba(170, 38, 36, 0.534);
   }
 
@@ -227,7 +227,7 @@
       border-radius: 6px;
       font-weight: 600;
     }
-    .badge.new { background: var(--success-soft); color: var(--success); }
+    .badge.new { background: var(--accent-soft); color: var(--accent); }
     .badge.mod { background: var(--surface2); color: var(--text); }
     .badge.del { background: var(--line); color: var(--error); }
     .file summary .stat { font-family: var(--mono); font-size: 12px; }
@@ -257,7 +257,7 @@
       white-space: pre;
     }
     .code .kw  { color: var(--accent); }
-    .code .str { color: var(--success); }
+    .code .str { color: var(--accent); }
     .code .cm  { color: var(--muted); }
     .code .fn  { color: var(--warning); }
     .code .add { background: var(--success-soft); display: inline-block; width: 100%; }
