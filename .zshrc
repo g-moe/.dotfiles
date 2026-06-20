@@ -71,6 +71,12 @@ alias aliases='grep "^alias " ~/.zshrc'
 # Reload zshrc
 alias reload='source ~/.zshrc'
 
+# List out directories with `cd` change directory
+unalias cd 2>/dev/null
+cd() {
+  builtin cd "$@" && ls -a
+}
+
 # History
 alias h='history'
 
