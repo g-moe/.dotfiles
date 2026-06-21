@@ -83,14 +83,9 @@ alias h='history'
 # Copy to clipboard and print to terminal
 alias -g yank='| tee /dev/tty | pbcopy'
 
-# Git commit
-alias gcm='git commit -m'
 
 # Git stash including untracked files
-alias gs='git stash -u'
-
-# Git stash apply 
-alias gsa='git stash apply'
+alias gitstash='git stash -u'
 
 # Git clean dry
 alias gc-dry='git clean -nd'
