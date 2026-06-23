@@ -1,7 +1,7 @@
 interface:
-  display_name: "Effective HTML"
+  display_name: "Output HTML"
   short_description: "Create polished standalone HTML artifacts"
-  default_prompt: "Use $effective-html to create a polished standalone HTML artifact."
+  default_prompt: "Use $output-html to create a polished standalone HTML artifact."
 
 policy:
   allow_implicit_invocation: false

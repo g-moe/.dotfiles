@@ -1,0 +1,7 @@
+interface:
+  display_name: "Grill Me"
+  short_description: "Stress-test plans with relentless questions"
+  default_prompt: "Use $grilling to stress-test this plan."
+
+policy:
+  allow_implicit_invocation: false

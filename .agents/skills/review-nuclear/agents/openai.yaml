@@ -1,0 +1,7 @@
+interface:
+  display_name: "Review Nuclear"
+  short_description: "Run an extremely strict code quality review"
+  default_prompt: "Use $review-nuclear to run a strict code quality review."
+
+policy:
+  allow_implicit_invocation: false

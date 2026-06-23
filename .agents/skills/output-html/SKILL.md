@@ -1,9 +1,9 @@
 ---
-name: effective-html
-description: Create a self-contained, polished HTML artifact in the effective HTML style. Use when the user wants one HTML file for a report, explainer, comparison, deck, prototype, implementation plan, visual plan, architecture diagram, stack diagram, system walkthrough, or other artifact that benefits from strong visual structure, dense but readable layout, and optional SVG-first diagrams.
+name: output-html
+description: Create a self-contained, polished HTML artifact in the output HTML style. Use when the user wants one HTML file for a report, explainer, comparison, deck, prototype, implementation plan, visual plan, architecture diagram, stack diagram, system walkthrough, or other artifact that benefits from strong visual structure, dense but readable layout, and optional SVG-first diagrams.
 ---
 
-# Effective HTML
+# Output HTML
 
 Create a single self-contained HTML file that is visually organized, pragmatic, and easy to inspect. Use the bundled examples for style, density, alignment, interaction patterns, and tone.
 
