@@ -13,6 +13,11 @@
 !.vscode/
 !.vscode/settings.json
 !.vscode/extensions.json
+!vscode/
+!vscode/user/
+!vscode/user/settings.json
+!vscode/user/keybindings.json
+!vscode/user/extensions.json
 !.agents/
 !.agents/skills/
 !.agents/skills/**

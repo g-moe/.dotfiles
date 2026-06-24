@@ -29,7 +29,8 @@
 		"package:vsix": "vsce package --out better-vscode.vsix",
 		"test": "npm run compile-tests && node --test \"dist-test/test/**/*.test.js\"",
 		"watch": "tsc -watch -p ./",
-		"install:cursor": "npm run package:vsix && ELECTRON_RUN_AS_NODE=1 \"/Applications/Cursor.app/Contents/MacOS/Cursor\" \"/Applications/Cursor.app/Contents/Resources/app/out/cli.js\" --install-extension \"./better-vscode.vsix\" --force"
+		"install:cursor": "npm run package:vsix && ELECTRON_RUN_AS_NODE=1 \"/Applications/Cursor.app/Contents/MacOS/Cursor\" \"/Applications/Cursor.app/Contents/Resources/app/out/cli.js\" --install-extension \"./better-vscode.vsix\" --force",
+		"install:codium": "npm run build && npm run package:vsix && codium --install-extension \"./better-vscode.vsix\" --force"
 	},
 	"devDependencies": {
 		"@types/node": "24.13.1",

@@ -11,6 +11,9 @@ npm install
 npm run compile
 ```
 
-## Current status
+## Local installs
 
-This package is intentionally scaffold-only. See `docs/design-spec.md` for the current research questions and structure direction.
+```bash
+npm run install:cursor
+npm run install:codium
+```
