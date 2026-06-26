@@ -47,8 +47,11 @@
 # nvim
 !nvim/
 !nvim/init.lua
-!nvim/colors/
-!nvim/colors/**
+!nvim/lua/
+!nvim/lua/config/
+!nvim/lua/config/**
+!nvim/lua/plugins/
+!nvim/lua/plugins/**
 
 # opencode
 !opencode/

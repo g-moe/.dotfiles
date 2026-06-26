@@ -1873,7 +1873,7 @@
 		"command": "editor.action.marker.next"
 	},
 	{
-		"key": "shift+cmd+l",
+		"key": "cmd+e cmd+enter",
 		"command": "workbench.action.toggleEditorGroupLock"
 	},
 	{
@@ -1901,5 +1901,10 @@
 	{
 		"key": "cmd+,",
 		"command": "workbench.action.openSettings2"
-	}
+    },
+    {
+        "key": "cmd+e t",
+        "command": "workbench.action.terminal.toggleTerminal",
+        "when": "terminal.active"
+    }
 ]
