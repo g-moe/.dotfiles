@@ -413,8 +413,9 @@
 	"workbench.startupEditor": "none",
 	"workbench.editor.splitInGroupLayout": "vertical",
 	"workbench.layoutControl.enabled": false,
-	"supermaven.enable": { "*": false },
-	"workbench.sideBar.location": "right",
+    "supermaven.enable": {
+        "*": false
+    },
 	"workbench.activityBar.location": "top",
 	"workbench.preferredDarkColorTheme": "gtheme-dark"
 }
