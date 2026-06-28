@@ -1,12 +1,17 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Conventions
+#  - Keep app/service restarts centralized in finish() so interactive or skipped steps cannot leave later settings unapplied.
+
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 LIB_DIR="$SCRIPT_DIR/../../lib"
 
 . "$LIB_DIR/logging.sh"
 . "$LIB_DIR/interactive.sh"
 . "$LIB_DIR/utils.sh"
+
+
 
 create_black_background_image() {
   local image_path='/System/Library/Desktop Pictures/Solid Colors/Black.png'
@@ -55,8 +60,6 @@ set_black_screensaver() {
 disable_handoff() {
   defaults -currentHost write com.apple.coreservices.useractivityd ActivityAdvertisingAllowed -bool false
   defaults -currentHost write com.apple.coreservices.useractivityd ActivityReceivingAllowed -bool false
-  silent killall useractivityd || true
-  silent killall Dock || true
 
   log_info 'Handoff disabled.'
 }
@@ -119,9 +122,6 @@ configure_trackpad() {
   if [[ -x /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings ]]; then
     silent /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u || true
   fi
-
-  silent killall Dock || true
-  silent killall SystemUIServer || true
 
   log_info 'Trackpad tracking speed set to fastest (3).'
   log_info 'Trackpad click set to light.'
@@ -192,8 +192,6 @@ configure_finder_preferences() {
   defaults write com.apple.finder NewWindowTarget -string 'PfHm'
   defaults write com.apple.finder NewWindowTargetPath -string "file://${home_dir}/"
   defaults write com.apple.finder FXPreferredViewStyle -string 'clmv'
-
-  silent killall Finder || true
 
   log_info 'Finder configured to show filename extensions.'
   log_info 'Finder configured to remove trash items after 30 days.'
@@ -382,9 +380,6 @@ configure_finder_sidebar() {
     fi
   fi
 
-  silent killall sharedfilelistd || true
-  silent killall Finder || true
-
   log_info "Finder sidebar pinned: $home_dir"
   log_info "Finder sidebar pinned: $config_dir"
   log_info "Finder sidebar pinned: $code_dir"
@@ -494,7 +489,6 @@ configure_dock() {
   add_dock_app "$zen_app"
 
   defaults write com.apple.dock persistent-others -array
-  silent killall Dock || true
 
   log_info 'Dock position set to bottom.'
   log_info 'Dock minimize effect set to scale.'
@@ -521,16 +515,12 @@ configure_widgets() {
   defaults write com.apple.WindowManager StandardHideWidgets -int 1
   defaults write com.apple.WindowManager StageManagerHideWidgets -int 1
 
-  silent killall Dock || true
-
   log_info 'Widgets hidden on desktop.'
   log_info 'Widgets hidden in Stage Manager.'
 }
 
 configure_stage_manager() {
   defaults write com.apple.WindowManager GloballyEnabled -bool false
-
-  silent killall Dock || true
 
   log_info 'Stage Manager disabled.'
 }
@@ -540,8 +530,6 @@ configure_window_tiling() {
   defaults write com.apple.WindowManager EnableTopTilingByEdgeDrag -bool false
   defaults write com.apple.WindowManager EnableTilingOptionAccelerator -bool false
   defaults write com.apple.WindowManager EnableTiledWindowMargins -bool false
-
-  silent killall Dock || true
 
   log_info 'Window tiling by screen-edge drag disabled.'
   log_info 'Window fill by menu-bar drag disabled.'
@@ -569,9 +557,6 @@ disable_apple_intelligence() {
   defaults write com.apple.Siri AppleIntelligenceEnabled -bool false
   defaults write com.apple.Siri LLMEnable -bool false
 
-  silent killall Siri || true
-  silent killall SystemUIServer || true
-
   log_info 'Apple Intelligence disabled.'
 }
 
@@ -581,9 +566,6 @@ disable_siri() {
   defaults write com.apple.Siri UserHasDeclinedEnable -bool true
   defaults write com.apple.assistant.support 'Siri Data Sharing Opt-In Status' -int 2
   defaults write com.apple.SetupAssistant 'DidSeeSiriSetup' -bool true
-
-  silent killall Siri || true
-  silent killall SystemUIServer || true
 
   log_info 'Siri disabled.'
   log_info 'Siri menu bar icon hidden.'
@@ -634,9 +616,6 @@ configure_control_center() {
   # Hide Spotlight search icon from menu bar
   defaults -currentHost write com.apple.Spotlight MenuItemHidden -int 1
 
-  silent killall Spotlight || true
-  silent killall SystemUIServer || true
-
   log_info 'Control Center configured to hide most system icons from menu bar.'
   log_info 'Weather widget (BentoBox) enabled in menu bar.'
   log_info 'Battery percentage hidden.'
@@ -662,13 +641,23 @@ configure_menu_bar() {
   defaults write com.apple.menuextra.clock ShowDayOfMonth -bool true
   defaults write com.apple.menuextra.clock ShowDate -int 0
 
-  silent killall ControlCenter || true
-  silent killall SystemUIServer || true
-
   log_info 'Menu bar configured to never hide.'
   log_info 'Recent documents, applications, and servers set to none.'
   log_info 'Menu bar clock format set to "May 31 21:29:18".'
   log_info 'Note: macOS menu bar clock does not support timezone display in the format string.'
+}
+
+finish() {
+  silent killall useractivityd || true
+  silent killall sharedfilelistd || true
+  silent killall Finder || true
+  silent killall Dock || true
+  silent killall Siri || true
+  silent killall Spotlight || true
+  silent killall ControlCenter || true
+  silent killall SystemUIServer || true
+
+  log_info 'Restarted macOS services affected by system settings.'
 }
 
 main() {
@@ -684,13 +673,14 @@ main() {
   run_step 'Configure Headless Remote Access' configure_headless_access
   run_step 'Configure Remote Access' configure_remote_access
   run_step 'Configure Finder Sidebar' configure_finder_sidebar
-  run_step 'Configure Dock' configure_dock
   run_step 'Configure Widgets' configure_widgets
   run_step 'Configure Stage Manager' configure_stage_manager
   run_step 'Configure Window Tiling' configure_window_tiling
+  run_step 'Configure Dock' configure_dock
   run_step 'Configure Software Updates' configure_software_updates
   run_step 'Configure Control Center' configure_control_center
   run_step 'Configure Menu Bar' configure_menu_bar
+  run_step 'Apply System Setting Restarts' finish
 }
 
 main "$@"
