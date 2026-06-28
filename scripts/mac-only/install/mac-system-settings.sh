@@ -511,18 +511,28 @@ set_black_wallpaper_and_screensaver() {
   set_black_screensaver "$image_path"
 }
 
-configure_widgets() {
-  defaults write com.apple.WindowManager StandardHideWidgets -int 1
-  defaults write com.apple.WindowManager StageManagerHideWidgets -int 1
+desktopAndStageManager() {
+  defaults write com.apple.WindowManager StandardHideDesktopIcons -bool true
+  defaults write com.apple.WindowManager HideDesktop -bool true
+  defaults write com.apple.WindowManager EnableStandardClickToShowDesktop -bool false
+  defaults write com.apple.WindowManager GloballyEnabled -bool false
+  defaults write com.apple.WindowManager AutoHide -bool true
+  defaults write com.apple.WindowManager AppWindowGroupingBehavior -int 1
+
+  log_info 'Desktop items hidden.'
+  log_info 'Click wallpaper to show desktop set to only in Stage Manager.'
+  log_info 'Stage Manager disabled.'
+  log_info 'Recent apps hidden in Stage Manager.'
+  log_info 'Stage Manager app windows shown all at once.'
+}
+
+widgets() {
+  defaults write com.apple.WindowManager StandardHideWidgets -bool true
+  defaults write com.apple.WindowManager StageManagerHideWidgets -bool true
 
   log_info 'Widgets hidden on desktop.'
   log_info 'Widgets hidden in Stage Manager.'
-}
-
-configure_stage_manager() {
-  defaults write com.apple.WindowManager GloballyEnabled -bool false
-
-  log_info 'Stage Manager disabled.'
+  log_info 'Desktop widget dimming left at automatic.'
 }
 
 configure_window_tiling() {
@@ -673,8 +683,8 @@ main() {
   run_step 'Configure Headless Remote Access' configure_headless_access
   run_step 'Configure Remote Access' configure_remote_access
   run_step 'Configure Finder Sidebar' configure_finder_sidebar
-  run_step 'Configure Widgets' configure_widgets
-  run_step 'Configure Stage Manager' configure_stage_manager
+  run_step 'Configure Desktop and Stage Manager' desktopAndStageManager
+  run_step 'Configure Widgets' widgets
   run_step 'Configure Window Tiling' configure_window_tiling
   run_step 'Configure Dock' configure_dock
   run_step 'Configure Software Updates' configure_software_updates
