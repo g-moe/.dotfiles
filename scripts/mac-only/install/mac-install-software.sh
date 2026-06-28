@@ -171,6 +171,7 @@ main() {
   run_step 'Install Helium' install_cask helium
   run_step 'Install Homerow' install_cask homerow
   run_step 'Install GIMP' install_cask gimp
+  run_step 'Install cloudflared' install_formula cloudflared
   run_step 'Install Fastfetch' install_formula fastfetch
   run_step 'Install Neovim' install_formula neovim
   run_step 'Install VoiceInk' install_cask voiceink
