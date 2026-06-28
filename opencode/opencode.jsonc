@@ -5,4 +5,5 @@
 	"enabled_providers": ["anthropic", "openai", "opencode", "openrouter"],
 	"permission": "allow",
 	"mcp": {},
+	"shell": "zsh",
 }

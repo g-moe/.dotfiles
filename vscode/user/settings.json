@@ -323,8 +323,7 @@
 	"vitest.maximumConfigs": 20,
 	"window.autoDetectHighContrast": false,
 	"window.commandCenter": false,
-	"window.confirmBeforeClose": "keyboardOnly",
-	"window.density.editorTabHeight": "compact",
+    "window.confirmBeforeClose": "keyboardOnly",
 	"workbench.colorCustomizations": {
 		"tree.inactiveIndentGuidesStroke": "#7c7d8d00",
 		"tree.indentGuidesStroke": "#5a5a5a65"
@@ -417,5 +416,6 @@
         "*": false
     },
 	"workbench.activityBar.location": "top",
-	"workbench.preferredDarkColorTheme": "gtheme-dark"
+    "workbench.preferredDarkColorTheme": "gtheme-dark",
+    "window.density.editorTabHeight": "compact"
 }
