@@ -431,7 +431,6 @@ configure_dock() {
   local opencode_app
   local codex_app
   local vscodium_app
-  local zen_app
   local dock_hiding_choice
   local dock_hiding_message='Dock hiding preference left unchanged.'
 
@@ -472,7 +471,6 @@ configure_dock() {
   opencode_app="$(resolve_required_app_path 'OpenCode.app' '/Applications/OpenCode.app')"
   codex_app="$(resolve_required_app_path 'Codex.app' '/Applications/Codex.app')"
   vscodium_app="$(resolve_required_app_path 'VSCodium.app' '/Applications/VSCodium.app')"
-  zen_app="$(resolve_required_app_path 'Zen.app' '/Applications/Zen.app')"
 
   defaults write com.apple.dock persistent-apps -array
   add_dock_app "$mission_control_app"
@@ -486,7 +484,6 @@ configure_dock() {
   add_dock_app "$opencode_app"
   add_dock_app "$codex_app"
   add_dock_app "$vscodium_app"
-  add_dock_app "$zen_app"
 
   defaults write com.apple.dock persistent-others -array
 
