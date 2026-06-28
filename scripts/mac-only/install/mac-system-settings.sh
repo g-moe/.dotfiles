@@ -150,6 +150,21 @@ configure_keyboard_repeat() {
   log_info 'Delay until repeat set to shortest (225 ms).'
 }
 
+configure_mission_control() {
+  defaults write com.apple.dock mru-spaces -bool false
+  defaults write NSGlobalDomain AppleSpacesSwitchOnActivate -bool false
+  defaults write com.apple.dock workspaces-auto-swoosh -bool false
+  defaults write com.apple.dock expose-group-apps -bool false
+  defaults write com.apple.spaces spans-displays -bool true
+  defaults write com.apple.dock enterMissionControlByTopWindowDrag -bool false
+
+  log_info 'Spaces are not automatically rearranged based on recent use.'
+  log_info 'Switching apps does not switch to an app window Space.'
+  log_info 'Mission Control does not group windows by application.'
+  log_info 'Displays do not have separate Spaces.'
+  log_info 'Dragging windows to the top of the screen does not enter Mission Control.'
+}
+
 mac_file_associations() {
   local script_path="$SCRIPT_DIR/mac-file-associations.sh"
 
@@ -663,6 +678,7 @@ main() {
   run_step 'Disable Siri' disable_siri
   run_step 'Configure Trackpad' configure_trackpad
   run_step 'Configure Keyboard Repeat' configure_keyboard_repeat
+  run_step 'Configure Mission Control' configure_mission_control
   run_step 'Install File Associations' mac_file_associations
   run_step 'Configure Finder Preferences' configure_finder_preferences
   run_step 'Configure Headless Remote Access' configure_headless_access
