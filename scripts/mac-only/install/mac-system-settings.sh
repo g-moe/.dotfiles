@@ -520,6 +520,20 @@ configure_stage_manager() {
   log_info 'Stage Manager disabled.'
 }
 
+configure_window_tiling() {
+  defaults write com.apple.WindowManager EnableTilingByEdgeDrag -bool false
+  defaults write com.apple.WindowManager EnableTopTilingByEdgeDrag -bool false
+  defaults write com.apple.WindowManager EnableTilingOptionAccelerator -bool false
+  defaults write com.apple.WindowManager EnableTiledWindowMargins -bool false
+
+  silent killall Dock || true
+
+  log_info 'Window tiling by screen-edge drag disabled.'
+  log_info 'Window fill by menu-bar drag disabled.'
+  log_info 'Option-key window tiling while dragging disabled.'
+  log_info 'Tiled window margins disabled.'
+}
+
 configure_software_updates() {
   if ! sudo -v; then
     log_error 'Unable to acquire sudo privileges for software update setup.'
@@ -657,6 +671,7 @@ main() {
   run_step 'Configure Dock' configure_dock
   run_step 'Configure Widgets' configure_widgets
   run_step 'Configure Stage Manager' configure_stage_manager
+  run_step 'Configure Window Tiling' configure_window_tiling
   run_step 'Configure Software Updates' configure_software_updates
   run_step 'Configure Control Center' configure_control_center
   run_step 'Configure Menu Bar' configure_menu_bar
