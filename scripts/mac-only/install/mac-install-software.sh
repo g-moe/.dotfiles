@@ -158,7 +158,6 @@ main() {
   run_step 'Install BetterDisplay' install_cask betterdisplay
   run_step 'Install Tailscale' install_tailscale
   run_step 'Install NordVPN' install_nordvpn
-  run_step 'Install balenaEtcher' install_cask balenaetcher
   run_step 'Install Raycast' install_cask raycast
   run_step 'Install VSCodium' install_cask vscodium
   run_step 'Install Codex' install_cask codex-app
