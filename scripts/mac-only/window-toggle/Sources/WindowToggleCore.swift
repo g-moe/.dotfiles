@@ -16,6 +16,7 @@ enum WindowAction: Equatable {
     case restore(id: Int, bounds: WindowBounds)
     case focus(ids: [Int])
     case park(id: Int, point: CGPoint)
+    case giveUpFocus
     case save(String)
 }
 
@@ -92,5 +93,7 @@ func planToggle(windows: [WindowSnapshot], screens: [CGRect], savedBoundsText: S
     }
 
     let saved = targets.map { encode($0.bounds) }.joined(separator: "\n")
-    return [.save(saved)] + targets.map { .park(id: $0.id, point: parkedPoint(for: $0.bounds, screens: screens)) }
+    return [.save(saved)] +
+        targets.map { .park(id: $0.id, point: parkedPoint(for: $0.bounds, screens: screens)) } +
+        [.giveUpFocus]
 }

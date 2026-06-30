@@ -56,10 +56,11 @@ func testPlannerParksAllFocusedMainWindows() {
     ]
 
     let actions = planToggle(windows: windows, screens: screens, savedBoundsText: "")
-    expect(actions.count == 3, "planner saves and parks two main-screen windows")
+    expect(actions.count == 4, "planner saves, parks two main-screen windows, and gives up focus")
     expect(actions[0] == .save("8,38,900,900\n980,38,900,900"), "planner saves main-screen bounds")
     expect(actions[1] == .park(id: 1, point: CGPoint(x: 1919, y: 1079)), "planner parks first main-screen window")
     expect(actions[2] == .park(id: 2, point: CGPoint(x: 1919, y: 1079)), "planner parks second main-screen window")
+    expect(actions[3] == .giveUpFocus, "planner gives up focus after parking")
 }
 
 func testPlannerRestoresParkedWindowsThenFocusesGroup() {

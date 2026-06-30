@@ -57,7 +57,35 @@ func activeScreens() -> [CGRect] {
     return displays.map(CGDisplayBounds)
 }
 
+func nextRegularApplication(excluding excludedPID: pid_t) -> NSRunningApplication? {
+    let options: CGWindowListOption = [.optionOnScreenOnly, .excludeDesktopElements]
+    guard let windows = CGWindowListCopyWindowInfo(options, kCGNullWindowID) as? [[String: Any]] else {
+        return nil
+    }
+
+    for window in windows {
+        guard
+            let pidNumber = window[kCGWindowOwnerPID as String] as? NSNumber,
+            let layerNumber = window[kCGWindowLayer as String] as? NSNumber
+        else { continue }
+
+        let pid = pidNumber.int32Value
+        guard
+            pid != excludedPID,
+            layerNumber.intValue == 0,
+            let app = NSRunningApplication(processIdentifier: pid),
+            app.activationPolicy == .regular,
+            !app.isTerminated
+        else { continue }
+
+        return app
+    }
+
+    return nil
+}
+
 func focus(_ ids: [Int], windows: [AXUIElement], app: NSRunningApplication, axApp: AXUIElement) {
+    app.unhide()
     app.activate(options: [])
 
     for id in ids.reversed() {
@@ -90,6 +118,7 @@ let snapshots = axWindows.enumerated().compactMap { index, window -> WindowSnaps
 }
 
 let savedBounds = (try? String(contentsOf: stateURL, encoding: .utf8).trimmingCharacters(in: .whitespacesAndNewlines)) ?? ""
+let fallbackApp = nextRegularApplication(excluding: app.processIdentifier)
 
 for action in planToggle(windows: snapshots, screens: activeScreens(), savedBoundsText: savedBounds) {
     switch action {
@@ -103,6 +132,12 @@ for action in planToggle(windows: snapshots, screens: activeScreens(), savedBoun
         case .park(let id, let point):
             guard axWindows.indices.contains(id) else { continue }
             setPoint(axWindows[id], point)
+        case .giveUpFocus:
+            if let fallbackApp {
+                fallbackApp.activate(options: [])
+            } else {
+                app.hide()
+            }
         case .save(let text):
             try? text.write(to: stateURL, atomically: true, encoding: .utf8)
     }
