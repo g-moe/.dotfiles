@@ -59,6 +59,19 @@ disable_handoff() {
   log_info 'Handoff disabled.'
 }
 
+configure_mouse_pointer() {
+  defaults write NSGlobalDomain CGDisableCursorLocationMagnification -bool false
+  defaults write com.apple.universalaccess mouseDriverCursorSize -float 1
+  defaults write com.apple.universalaccess cursorOutline -dict red -float 0 green -float 0 blue -float 0 alpha -float 1
+  defaults write com.apple.universalaccess cursorFill -dict red -float 1 green -float 1 blue -float 1 alpha -float 1
+  defaults write com.apple.universalaccess cursorIsCustomized -bool true
+
+  log_info 'Shake mouse pointer to locate enabled.'
+  log_info 'Pointer size set to normal.'
+  log_info 'Pointer outline color set to black.'
+  log_info 'Pointer fill color set to white.'
+}
+
 configure_trackpad() {
   # Tracking speed: 3 is the fastest setting in macOS
   defaults write -g com.apple.trackpad.scaling -float 3
@@ -677,6 +690,7 @@ main() {
   run_step 'Disable Handoff' disable_handoff
   run_step 'Disable Apple Intelligence' disable_apple_intelligence
   run_step 'Disable Siri' disable_siri
+  run_step 'Configure Mouse Pointer' configure_mouse_pointer
   run_step 'Configure Trackpad' configure_trackpad
   run_step 'Configure Keyboard Repeat' configure_keyboard_repeat
   run_step 'Configure Theme' configure_theme
