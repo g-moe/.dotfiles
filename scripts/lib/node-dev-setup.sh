@@ -1,11 +1,31 @@
 #!/usr/bin/env bash
 
 load_nvm() {
-  export NVM_DIR="$HOME/.nvm"
+  export NVM_DIR="${NVM_DIR:-$HOME/.nvm}"
 
-  if [[ -s "$NVM_DIR/nvm.sh" ]]; then
-    # shellcheck disable=SC1090
-    . "$NVM_DIR/nvm.sh"
+  if [[ ! -s "$NVM_DIR/nvm.sh" ]]; then
+    return 0
+  fi
+
+  log_info "Loading nvm from $NVM_DIR/nvm.sh"
+
+  local restore_nounset=0
+  if [[ "$-" == *u* ]]; then
+    restore_nounset=1
+    set +u
+  fi
+
+  # shellcheck disable=SC1090
+  if ! . "$NVM_DIR/nvm.sh"; then
+    if [[ "$restore_nounset" -eq 1 ]]; then
+      set -u
+    fi
+    log_error "Could not load nvm from $NVM_DIR/nvm.sh"
+    return 1
+  fi
+
+  if [[ "$restore_nounset" -eq 1 ]]; then
+    set -u
   fi
 }
 
