@@ -23,7 +23,7 @@ interactive_select() {
   local i=0
   for option in "${options[@]}"; do
     printf '  %d) %s\n' "$i" "$option" >/dev/tty
-    ((i++))
+    ((i += 1))
   done
 
   while true; do

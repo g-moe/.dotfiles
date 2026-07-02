@@ -90,6 +90,7 @@
 !scripts/mac-install.sh
 !scripts/mac-uninstall.sh
 !scripts/link-agent-skills.ts
+!scripts/setup-tailscale-cli.sh
 !scripts/vscode-install.sh
 !scripts/mac-only/
 !scripts/mac-only/cursor/

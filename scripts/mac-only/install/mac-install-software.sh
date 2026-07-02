@@ -78,7 +78,7 @@ install_tailscale() {
       log_info 'Starting tailscale system service...'
       sudo brew services start tailscale
       log_info 'tailscale system service started.'
-      log_info 'Run sudo tailscale up to authenticate this Mac if it is not already connected.'
+      log_info 'Run bash scripts/setup-tailscale-cli.sh to authenticate and enable CLI access.'
       ;;
     2)
       if brew_has_cask tailscale-app; then
