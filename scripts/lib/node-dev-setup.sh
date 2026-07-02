@@ -16,7 +16,7 @@ load_nvm() {
   fi
 
   # shellcheck disable=SC1090
-  if ! . "$NVM_DIR/nvm.sh"; then
+  if ! . "$NVM_DIR/nvm.sh" --no-use; then
     if [[ "$restore_nounset" -eq 1 ]]; then
       set -u
     fi
