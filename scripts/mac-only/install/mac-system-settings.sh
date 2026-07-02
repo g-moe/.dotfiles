@@ -61,15 +61,18 @@ disable_handoff() {
 
 configure_mouse_pointer() {
   defaults write NSGlobalDomain CGDisableCursorLocationMagnification -bool false
-  defaults write com.apple.universalaccess mouseDriverCursorSize -float 1
-  defaults write com.apple.universalaccess cursorOutline -dict red -float 0 green -float 0 blue -float 0 alpha -float 1
-  defaults write com.apple.universalaccess cursorFill -dict red -float 1 green -float 1 blue -float 1 alpha -float 1
-  defaults write com.apple.universalaccess cursorIsCustomized -bool true
-
   log_info 'Shake mouse pointer to locate enabled.'
-  log_info 'Pointer size set to normal.'
-  log_info 'Pointer outline color set to black.'
-  log_info 'Pointer fill color set to white.'
+
+  if defaults write com.apple.universalaccess mouseDriverCursorSize -float 1 &&
+    defaults write com.apple.universalaccess cursorOutline -dict red -float 0 green -float 0 blue -float 0 alpha -float 1 &&
+    defaults write com.apple.universalaccess cursorFill -dict red -float 1 green -float 1 blue -float 1 alpha -float 1 &&
+    defaults write com.apple.universalaccess cursorIsCustomized -bool true; then
+    log_info 'Pointer size set to normal.'
+    log_info 'Pointer outline color set to black.'
+    log_info 'Pointer fill color set to white.'
+  else
+    log_info 'Skipped pointer size/color settings; macOS refused to write com.apple.universalaccess.'
+  fi
 }
 
 configure_trackpad() {
