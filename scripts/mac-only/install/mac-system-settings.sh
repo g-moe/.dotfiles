@@ -458,8 +458,9 @@ configure_dock() {
   local vscodium_app
   local dock_hiding_choice
   local dock_hiding_message='Dock hiding preference left unchanged.'
+  local dock_size_message='Dock icon size left unchanged.'
+  local dock_position_message='Dock position left unchanged.'
 
-  defaults write com.apple.dock orientation -string bottom
   defaults write com.apple.dock mineffect -string scale
   defaults write com.apple.dock minimize-to-application -bool false
 
@@ -475,14 +476,51 @@ configure_dock() {
       ;;
   esac
 
+  if [[ "$dock_hiding_choice" != '0' ]]; then
+    local dock_size_choice
+    dock_size_choice="$(interactive_select 'Choose Dock icon size:' 'Small (32 px)' 'Medium (48 px)' 'Large (64 px)')"
+    case "$dock_size_choice" in
+      0)
+        defaults write com.apple.dock tilesize -int 32
+        defaults write com.apple.dock largesize -int 64
+        dock_size_message='Dock icon size set to small (32 px).'
+        ;;
+      1)
+        defaults write com.apple.dock tilesize -int 48
+        defaults write com.apple.dock largesize -int 96
+        dock_size_message='Dock icon size set to medium (48 px).'
+        ;;
+      2)
+        defaults write com.apple.dock tilesize -int 64
+        defaults write com.apple.dock largesize -int 128
+        dock_size_message='Dock icon size set to large (64 px).'
+        ;;
+    esac
+
+    local dock_position_choice
+    dock_position_choice="$(interactive_select 'Choose Dock position:' 'Bottom' 'Left' 'Right')"
+    case "$dock_position_choice" in
+      0)
+        defaults write com.apple.dock orientation -string bottom
+        dock_position_message='Dock position set to bottom.'
+        ;;
+      1)
+        defaults write com.apple.dock orientation -string left
+        dock_position_message='Dock position set to left.'
+        ;;
+      2)
+        defaults write com.apple.dock orientation -string right
+        dock_position_message='Dock position set to right.'
+        ;;
+    esac
+  fi
+
   defaults write com.apple.dock launchanim -bool false
   defaults write com.apple.dock show-process-indicators -bool true
   defaults write com.apple.dock show-recents -bool false
 
   defaults write NSGlobalDomain AppleActionOnDoubleClick -string Maximize
 
-  defaults write com.apple.dock tilesize -int 32
-  defaults write com.apple.dock largesize -int 64
   defaults write com.apple.dock magnification -bool true
 
   mission_control_app="$(resolve_required_app_path 'Mission Control.app' '/System/Applications/Mission Control.app')"
@@ -510,7 +548,7 @@ configure_dock() {
 
   defaults write com.apple.dock persistent-others -array
 
-  log_info 'Dock position set to bottom.'
+  log_info "$dock_position_message"
   log_info 'Dock minimize effect set to scale.'
   log_info 'Window title bar double-click set to maximize/fill.'
   log_info 'Dock configured to not minimize windows into application icons.'
@@ -518,8 +556,7 @@ configure_dock() {
   log_info 'Dock application launch animation disabled.'
   log_info 'Dock open application indicators enabled.'
   log_info 'Dock recents section disabled.'
-  log_info 'Dock icon size set to 32 px (~25%).'
-  log_info 'Dock magnification size set to 64 px (~50%).'
+  log_info "$dock_size_message"
   log_info 'Dock updated with the requested app order, no downloads stack, and no recent apps section.'
 }
 
