@@ -80,6 +80,9 @@ cd() {
 # History
 alias h='history'
 
+# List configured SSH host aliases
+alias sshhosts='awk '\''tolower($1)=="host" {for (i=2; i<=NF; i++) if ($i !~ /[*?]/) print $i}'\'' ~/.ssh/config'
+
 # Copy to clipboard and print to terminal
 alias -g yank='| tee /dev/tty | pbcopy'
 
@@ -136,4 +139,3 @@ export PATH=/Users/garrett/.opencode/bin:$PATH
 # Added by LM Studio CLI (lms)
 export PATH="$PATH:/Users/garrett/.lmstudio/bin"
 # End of LM Studio CLI section
-
