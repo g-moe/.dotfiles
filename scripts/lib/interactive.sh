@@ -36,3 +36,58 @@ interactive_select() {
     log_error "Invalid choice. Please enter a number between 0 and $((${#options[@]} - 1))."
   done
 }
+
+# Read one line of input and print the answer.
+# If a default is provided and the user presses enter, print the default.
+# Usage:
+#   hostname="$(interactive_read "Hostname" "my-mac")"
+interactive_read() {
+  local question="$1"
+  local default="${2:-}"
+  local answer
+
+  if [[ -n "$default" ]]; then
+    printf '%s [%s]: ' "$question" "$default" >/dev/tty
+  else
+    printf '%s: ' "$question" >/dev/tty
+  fi
+
+  read -r answer </dev/tty
+  printf '%s\n' "${answer:-$default}"
+}
+
+# Ask a yes/no question.
+# Returns 0 for yes and 1 for no, so it can be used directly in an if statement.
+# Usage:
+#   if interactive_confirm "Continue?" "y"; then
+#     echo "Continuing"
+#   fi
+interactive_confirm() {
+  local question="$1"
+  local default="${2:-y}"
+  local answer
+  local suffix
+
+  if [[ "$default" == 'y' ]]; then
+    suffix='Y/n'
+  else
+    suffix='y/N'
+  fi
+
+  while true; do
+    printf '%s [%s]: ' "$question" "$suffix" >/dev/tty
+    read -r answer </dev/tty
+    answer="${answer:-$default}"
+
+    case "$answer" in
+      y | Y | yes | YES | Yes)
+        return 0
+        ;;
+      n | N | no | NO | No)
+        return 1
+        ;;
+    esac
+
+    log_error 'Please answer yes or no.'
+  done
+}

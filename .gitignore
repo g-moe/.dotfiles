@@ -91,6 +91,7 @@
 !scripts/mac-uninstall.sh
 !scripts/link-agent-skills.ts
 !scripts/setup-tailscale-cli.sh
+!scripts/ssh-new-host.sh
 !scripts/vscode-install.sh
 !scripts/mac-only/
 !scripts/mac-only/cursor/

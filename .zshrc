@@ -81,11 +81,13 @@ cd() {
 alias h='history'
 
 # List configured SSH host aliases
-alias sshhosts='awk '\''tolower($1)=="host" {for (i=2; i<=NF; i++) if ($i !~ /[*?]/) print $i}'\'' ~/.ssh/config'
+alias ssh-hosts='awk '\''tolower($1)=="host" {for (i=2; i<=NF; i++) if ($i !~ /[*?]/) print $i}'\'' ~/.ssh/config'
+
+# Walk through creating a new SSH host config
+alias ssh-new='$HOME/.config/scripts/ssh-new-host.sh'
 
 # Copy to clipboard and print to terminal
 alias -g yank='| tee /dev/tty | pbcopy'
-
 
 # Git stash including untracked files
 alias gitstash='git stash -u'
