@@ -519,8 +519,6 @@ configure_dock() {
   defaults write com.apple.dock show-process-indicators -bool true
   defaults write com.apple.dock show-recents -bool false
 
-  defaults write NSGlobalDomain AppleActionOnDoubleClick -string Maximize
-
   defaults write com.apple.dock magnification -bool true
 
   mission_control_app="$(resolve_required_app_path 'Mission Control.app' '/System/Applications/Mission Control.app')"
@@ -550,7 +548,6 @@ configure_dock() {
 
   log_info "$dock_position_message"
   log_info 'Dock minimize effect set to scale.'
-  log_info 'Window title bar double-click set to maximize/fill.'
   log_info 'Dock configured to not minimize windows into application icons.'
   log_info "$dock_hiding_message"
   log_info 'Dock application launch animation disabled.'
@@ -590,11 +587,14 @@ widgets() {
 }
 
 configure_window_tiling() {
+  defaults write NSGlobalDomain AppleActionOnDoubleClick -string Fill
+
   defaults write com.apple.WindowManager EnableTilingByEdgeDrag -bool false
   defaults write com.apple.WindowManager EnableTopTilingByEdgeDrag -bool false
   defaults write com.apple.WindowManager EnableTilingOptionAccelerator -bool false
   defaults write com.apple.WindowManager EnableTiledWindowMargins -bool false
 
+  log_info 'Window title bar double-click set to fill.'
   log_info 'Window tiling by screen-edge drag disabled.'
   log_info 'Window fill by menu-bar drag disabled.'
   log_info 'Option-key window tiling while dragging disabled.'
