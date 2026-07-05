@@ -446,6 +446,7 @@ add_dock_app() {
 }
 
 configure_dock() {
+  local spotlight_app
   local mission_control_app
   local iphone_mirroring_app
   local passwords_app
@@ -521,6 +522,7 @@ configure_dock() {
 
   defaults write com.apple.dock magnification -bool true
 
+  spotlight_app="$(resolve_required_app_path 'Spotlight.app' '/System/Library/CoreServices/Spotlight.app')"
   mission_control_app="$(resolve_required_app_path 'Mission Control.app' '/System/Applications/Mission Control.app')"
   iphone_mirroring_app="$(resolve_required_app_path 'iPhone Mirroring.app' '/System/Applications/iPhone Mirroring.app')"
   passwords_app="$(resolve_required_app_path 'Passwords.app' '/System/Applications/Passwords.app')"
@@ -533,6 +535,7 @@ configure_dock() {
   vscodium_app="$(resolve_required_app_path 'VSCodium.app' '/Applications/VSCodium.app')"
 
   defaults write com.apple.dock persistent-apps -array
+  add_dock_app "$spotlight_app"
   add_dock_app "$mission_control_app"
   add_dock_app "$iphone_mirroring_app"
   add_dock_app "$passwords_app"
