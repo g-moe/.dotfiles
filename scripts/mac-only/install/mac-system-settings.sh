@@ -181,13 +181,13 @@ configure_mission_control() {
   defaults write NSGlobalDomain AppleSpacesSwitchOnActivate -bool false
   defaults write com.apple.dock workspaces-auto-swoosh -bool false
   defaults write com.apple.dock expose-group-apps -bool false
-  defaults write com.apple.spaces spans-displays -bool true
+  defaults write com.apple.spaces spans-displays -bool false
   defaults write com.apple.dock enterMissionControlByTopWindowDrag -bool false
 
   log_info 'Spaces are not automatically rearranged based on recent use.'
   log_info 'Switching apps does not switch to an app window Space.'
   log_info 'Mission Control does not group windows by application.'
-  log_info 'Displays do not have separate Spaces.'
+  log_info 'Displays have separate Spaces.'
   log_info 'Dragging windows to the top of the screen does not enter Mission Control.'
 }
 
