@@ -446,7 +446,7 @@ add_dock_app() {
 }
 
 configure_dock() {
-  local spotlight_app
+  local apps_app
   local mission_control_app
   local iphone_mirroring_app
   local passwords_app
@@ -522,7 +522,7 @@ configure_dock() {
 
   defaults write com.apple.dock magnification -bool true
 
-  spotlight_app="$(resolve_required_app_path 'Spotlight.app' '/System/Library/CoreServices/Spotlight.app')"
+  apps_app="$(resolve_required_app_path 'Apps.app' '/System/Applications/Apps.app')"
   mission_control_app="$(resolve_required_app_path 'Mission Control.app' '/System/Applications/Mission Control.app')"
   iphone_mirroring_app="$(resolve_required_app_path 'iPhone Mirroring.app' '/System/Applications/iPhone Mirroring.app')"
   passwords_app="$(resolve_required_app_path 'Passwords.app' '/System/Applications/Passwords.app')"
@@ -535,7 +535,7 @@ configure_dock() {
   vscodium_app="$(resolve_required_app_path 'VSCodium.app' '/Applications/VSCodium.app')"
 
   defaults write com.apple.dock persistent-apps -array
-  add_dock_app "$spotlight_app"
+  add_dock_app "$apps_app"
   add_dock_app "$mission_control_app"
   add_dock_app "$iphone_mirroring_app"
   add_dock_app "$passwords_app"
@@ -591,6 +591,7 @@ widgets() {
 
 configure_window_tiling() {
   defaults write NSGlobalDomain AppleActionOnDoubleClick -string Fill
+  defaults write NSGlobalDomain AppleMiniaturizeOnDoubleClick -bool false
 
   defaults write com.apple.WindowManager EnableTilingByEdgeDrag -bool false
   defaults write com.apple.WindowManager EnableTopTilingByEdgeDrag -bool false
@@ -598,6 +599,7 @@ configure_window_tiling() {
   defaults write com.apple.WindowManager EnableTiledWindowMargins -bool false
 
   log_info 'Window title bar double-click set to fill.'
+  log_info 'Window title bar double-click minimize disabled.'
   log_info 'Window tiling by screen-edge drag disabled.'
   log_info 'Window fill by menu-bar drag disabled.'
   log_info 'Option-key window tiling while dragging disabled.'
