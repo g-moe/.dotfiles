@@ -408,8 +408,7 @@
 	"gitlens.codeLens.recentChange.enabled": false,
 	"editor.showFoldingControls": "always",
 	"workbench.activityBar.orientation": "vertical",
-	"workbench.startupEditor": "none",
-	"workbench.editor.splitInGroupLayout": "vertical",
+    "workbench.startupEditor": "none",
 	"workbench.layoutControl.enabled": false,
 	"supermaven.enable": {
 		"*": false
