@@ -89,7 +89,7 @@
 !scripts/mac-only/install/mac-power-mode.ts
 !scripts/mac-install.sh
 !scripts/mac-uninstall.sh
-!scripts/link-agent-skills.ts
+!scripts/skills-install.ts
 !scripts/setup-tailscale-cli.sh
 !scripts/ssh-new-host.sh
 !scripts/vscode-install.sh
