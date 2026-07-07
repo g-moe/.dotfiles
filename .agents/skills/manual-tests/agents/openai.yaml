@@ -1,6 +1,6 @@
 interface:
   display_name: "Manual Tests"
-  short_description: "Match tests to runtime behavior"
+  short_description: "Fix tests but dont bake-in bugs"
   default_prompt: "Use $manual-tests."
 policy:
   allow_implicit_invocation: false
