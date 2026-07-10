@@ -3,10 +3,10 @@
 	"autoshare": false,
 	"autoupdate": true,
 	"enabled_providers": [
-		"anthropic",
+		// "anthropic",
 		"openai",
-		"opencode",
-		"openrouter",
+		// "opencode",
+		// "openrouter",
 		"opencode-go",
 	],
 	"permission": "allow",
