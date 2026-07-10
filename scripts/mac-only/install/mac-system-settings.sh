@@ -184,15 +184,15 @@ configure_mission_control() {
   defaults write com.apple.spaces spans-displays -bool false
   defaults write com.apple.dock enterMissionControlByTopWindowDrag -bool false
 
-  defaults write com.apple.dock wvous-tl-corner -int 2
-  defaults write com.apple.dock wvous-tl-modifier -int 0
+  defaults write com.apple.dock wvous-br-corner -int 2
+  defaults write com.apple.dock wvous-br-modifier -int 0
 
   log_info 'Spaces are not automatically rearranged based on recent use.'
   log_info 'Switching apps does not switch to an app window Space.'
   log_info 'Mission Control does not group windows by application.'
   log_info 'Displays have separate Spaces.'
   log_info 'Dragging windows to the top of the screen does not enter Mission Control.'
-  log_info 'Top-left hot corner set to Mission Control.'
+  log_info 'Bottom-right hot corner set to Mission Control.'
 }
 
 mac_file_associations() {
