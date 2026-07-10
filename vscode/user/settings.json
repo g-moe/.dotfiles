@@ -153,7 +153,7 @@
 	"editor.indentSize": "tabSize",
 	"editor.largeFileOptimizations": false,
 	"editor.letterSpacing": 0.25,
-	"editor.lineHeight": 1.4,
+	"editor.lineHeight": 1.6,
 	"editor.minimap.maxColumn": 0,
 	"editor.minimap.showSlider": "always",
 	"editor.mouseWheelZoom": true,
@@ -195,7 +195,7 @@
 	},
 	"files.saveConflictResolution": "overwriteFileOnDisk",
 	"git.autofetch": true,
-	"git.blame.statusBarItem.enabled": false,
+	"git.blame.statusBarItem.enabled": true,
 	"git.confirmSync": false,
 	"git.ignoreRebaseWarning": true,
 	"git.openRepositoryInParentFolders": "never",
@@ -374,7 +374,7 @@
 	"workbench.editor.preventPinnedEditorClose": "never",
 	"terminal.integrated.mouseWheelZoom": false,
 	"comments.openView": "never",
-	"git.blame.editorDecoration.enabled": false,
+	"git.blame.editorDecoration.enabled": true,
 	"gitlens.currentLine.enabled": false,
 	"editor.inlayHints.fontSize": 12,
 	"editor.suggestFontSize": 12,
@@ -419,5 +419,13 @@
 	"redhat.telemetry.enabled": false,
 	"workbench.browser.showInTitleBar": false,
 	"window.customTitleBarVisibility": "never",
-	"workbench.editor.showTabs": "single"
+    "workbench.editor.showTabs": "single",
+    "yaml.disableSchemaDetection": [
+        "**/.github/workflows/*.yml",
+        "**/.github/workflows/*.yaml",
+        "**/.gitea/workflows/*.yml",
+        "**/.gitea/workflows/*.yaml",
+        "**/.forgejo/workflows/*.yml",
+        "**/.forgejo/workflows/*.yaml"
+    ]
 }
