@@ -61,7 +61,8 @@ set_wallpaper() {
   local color_key="${MACHINE_COLOR_HEX#\#}"
   local image_path="$CONFIG_DIR/.machine-wallpaper-$color_key-rgb.png"
 
-  xcrun swift - "$color_key" "$image_path" <<'SWIFT'
+  if [[ ! -s "$image_path" ]]; then
+    xcrun swift - "$color_key" "$image_path" <<'SWIFT'
 import AppKit
 import Foundation
 
@@ -82,6 +83,7 @@ bitmap.setColor(NSColor(
 let png = bitmap.representation(using: NSBitmapImageRep.FileType.png, properties: [:])!
 try! png.write(to: output)
 SWIFT
+  fi
 
   osascript <<EOF
 tell application "System Events"
@@ -227,7 +229,7 @@ configure_theme() {
   defaults write NSGlobalDomain AppleInterfaceStyle -string Dark
   defaults write NSGlobalDomain NSGlassDiffusionSetting -int 0
   defaults write NSGlobalDomain AppleReduceDesktopTinting -bool true
-  defaults write NSGlobalDomain AppleIconAppearanceTheme -string ClearDark
+  defaults write NSGlobalDomain AppleIconAppearanceTheme -string ClearLight
   defaults write NSGlobalDomain AppleIconAppearanceTintColor -string Other
   defaults write NSGlobalDomain AppleIconAppearanceCustomTintColor -string "$MACHINE_COLOR_TINT"
 
@@ -236,7 +238,7 @@ configure_theme() {
   log_info 'Appearance set to dark.'
   log_info 'Liquid Glass style set to clear.'
   log_info 'Window background wallpaper tint disabled.'
-  log_info 'Icon and widget style set to clear dark.'
+  log_info 'Icon and widget style set to clear light.'
   log_info "Icon, widget, and folder color set to ${MACHINE_COLOR:-gray}."
 }
 
@@ -585,7 +587,7 @@ configure_dock() {
   fi
 
   defaults write com.apple.dock launchanim -bool false
-  defaults write com.apple.dock show-process-indicators -bool true
+  defaults write com.apple.dock show-process-indicators -bool false
   defaults write com.apple.dock show-recents -bool false
 
   defaults write com.apple.dock magnification -bool true
@@ -622,7 +624,7 @@ configure_dock() {
   log_info 'Dock configured to not minimize windows into application icons.'
   log_info "$dock_hiding_message"
   log_info 'Dock application launch animation disabled.'
-  log_info 'Dock open application indicators enabled.'
+  log_info 'Dock open application indicators disabled.'
   log_info 'Dock recents section disabled.'
   log_info "$dock_size_message"
   log_info 'Dock updated with the requested app order, no downloads stack, and no recent apps section.'
@@ -664,14 +666,14 @@ configure_window_tiling() {
   defaults write com.apple.WindowManager EnableTilingByEdgeDrag -bool false
   defaults write com.apple.WindowManager EnableTopTilingByEdgeDrag -bool false
   defaults write com.apple.WindowManager EnableTilingOptionAccelerator -bool false
-  defaults write com.apple.WindowManager EnableTiledWindowMargins -bool false
+  defaults write com.apple.WindowManager EnableTiledWindowMargins -bool true
 
   log_info 'Window title bar double-click set to fill.'
   log_info 'Window title bar double-click minimize disabled.'
   log_info 'Window tiling by screen-edge drag disabled.'
   log_info 'Window fill by menu-bar drag disabled.'
   log_info 'Option-key window tiling while dragging disabled.'
-  log_info 'Tiled window margins disabled.'
+  log_info 'Tiled window margins enabled.'
 }
 
 configure_software_updates() {
