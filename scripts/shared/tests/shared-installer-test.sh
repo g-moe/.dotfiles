@@ -447,6 +447,7 @@ fi
 EOF
   cat >"$fake_bin/xcrun" <<'EOF'
 #!/bin/bash
+printf 'xcrun %s\n' "$*" >>"$CALL_LOG"
 /bin/cat >"$SWIFT_CAPTURE"
 printf '#!/bin/bash\n' >"$3"
 /bin/chmod +x "$3"
@@ -463,7 +464,7 @@ EOF
   assert_file_contains "$linux_home/.local/share/gnome-shell/extensions/machine-name@local/metadata.json" \
     '"shell-version": ["50"]' 'GNOME extension must match the installed shell version'
   assert_file_contains "$linux_home/.local/share/gnome-shell/extensions/machine-name@local/extension.js" \
-    "text: 'linux-box'" 'GNOME extension must show the machine name'
+    "text: 'machine:linux-box'" 'GNOME extension must show the prefixed machine name'
   assert_file_contains "$call_log" 'enable machine-name@local' 'GNOME extension must be enabled'
   assert_file_contains "$call_log" "set org.gnome.shell enabled-extensions ['machine-name@local']" \
     'GNOME extension must stay enabled after login'
@@ -474,8 +475,11 @@ EOF
   [[ -x "$mac_home/.local/bin/machine-name-menu-bar" ]] || fail 'Mac menu bar program must be executable'
   assert_file_contains "$swift_capture" 'NSStatusBar.system.statusItem' 'Mac program must create a native menu bar item'
   assert_file_contains "$mac_home/Library/LaunchAgents/local.machine-name-menu-bar.plist" \
-    '<string>mac-box</string>' 'Mac login job must pass the machine name'
+    '<string>machine:mac-box</string>' 'Mac login job must pass the prefixed machine name'
   assert_file_contains "$call_log" 'bootstrap gui/' 'Mac login job must be started'
+  FAKE_UNAME_S=Darwin MACHINE_NAME=mac-box HOME="$mac_home" CALL_LOG="$call_log" \
+    SWIFT_CAPTURE="$swift_capture" PATH="$fake_bin:/usr/bin:/bin" /bin/bash "$script" >/dev/null
+  assert_equal 1 "$(grep -c '^xcrun ' "$call_log")" 'unchanged Mac menu bar program must not be recompiled'
   pass 'native machine name menu bars for Mac and GNOME'
 }
 

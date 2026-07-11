@@ -18,7 +18,8 @@ mac() {
   local service="gui/$(id -u)/local.machine-name-menu-bar"
 
   mkdir -p "$binary_dir" "$agent_dir"
-  xcrun swiftc -o "$binary_path" - <<'SWIFT'
+  if [[ ! -x "$binary_path" || "$0" -nt "$binary_path" ]]; then
+    xcrun swiftc -o "$binary_path" - <<'SWIFT'
 import AppKit
 
 let app = NSApplication.shared
@@ -29,6 +30,7 @@ item.button?.title = CommandLine.arguments[1]
 
 app.run()
 SWIFT
+  fi
 
   cat >"$agent_path" <<EOF
 <?xml version="1.0" encoding="UTF-8"?>
@@ -40,7 +42,7 @@ SWIFT
   <key>ProgramArguments</key>
   <array>
     <string>$binary_path</string>
-    <string>$MACHINE_NAME</string>
+    <string>machine:$MACHINE_NAME</string>
   </array>
   <key>RunAtLoad</key>
   <true/>
@@ -89,7 +91,7 @@ const Indicator = GObject.registerClass(
 class Indicator extends PanelMenu.Button {
   _init() {
     super._init(0.0, 'Machine Name');
-    this.add_child(new St.Label({text: '$MACHINE_NAME'}));
+    this.add_child(new St.Label({text: 'machine:$MACHINE_NAME'}));
   }
 });
 
