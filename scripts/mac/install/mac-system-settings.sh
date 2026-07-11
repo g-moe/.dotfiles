@@ -58,7 +58,8 @@ load_machine_color() {
 }
 
 set_wallpaper() {
-  local image_path="$CONFIG_DIR/.machine-wallpaper.png"
+  local color_key="${MACHINE_COLOR_HEX#\#}"
+  local image_path="$CONFIG_DIR/.machine-wallpaper-$color_key.png"
   local svg_path temporary_dir
 
   temporary_dir="$(mktemp -d -t machine-wallpaper)"
@@ -212,6 +213,8 @@ configure_theme() {
   defaults write NSGlobalDomain AppleAccentColor -int 4
   defaults write NSGlobalDomain AppleHighlightColor -string '0.698039 0.843137 1.000000 Blue'
   defaults write NSGlobalDomain AppleInterfaceStyle -string Dark
+  defaults write NSGlobalDomain NSGlassDiffusionSetting -int 0
+  defaults write NSGlobalDomain AppleReduceDesktopTinting -bool true
   defaults write NSGlobalDomain AppleIconAppearanceTheme -string ClearDark
   defaults write NSGlobalDomain AppleIconAppearanceTintColor -string Other
   defaults write NSGlobalDomain AppleIconAppearanceCustomTintColor -string "$MACHINE_COLOR_TINT"
@@ -219,6 +222,8 @@ configure_theme() {
   log_info 'Theme color set to blue.'
   log_info 'Text highlight color set to blue.'
   log_info 'Appearance set to dark.'
+  log_info 'Liquid Glass style set to clear.'
+  log_info 'Window background wallpaper tint disabled.'
   log_info 'Icon and widget style set to clear dark.'
   log_info "Icon, widget, and folder color set to ${MACHINE_COLOR:-gray}."
 }
