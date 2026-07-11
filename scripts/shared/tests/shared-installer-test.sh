@@ -182,6 +182,7 @@ EOF
   for name in \
     shared-homebrew-setup.sh \
     shared-apps-setup.sh \
+    shared-machine-name-menu-bar.sh \
     shared-node-setup.sh \
     shared-zsh-setup.sh \
     shared-tmux-setup.sh \
@@ -197,13 +198,14 @@ EOF
   assert_equal "$(printf '%s\n' \
     shared-homebrew-setup.sh \
     shared-apps-setup.sh \
+    shared-machine-name-menu-bar.sh \
     shared-node-setup.sh \
     shared-zsh-setup.sh \
     shared-tmux-setup.sh \
     shared-tailscale-setup.sh)" "$actual_order" 'shared setup order changed'
 
   unique_pids="$(awk -F'|' '{print $2}' "$log" | sort -u | wc -l | tr -d ' ')"
-  assert_equal 6 "$unique_pids" 'each setup domain must run in a fresh Bash process'
+  assert_equal 7 "$unique_pids" 'each setup domain must run in a fresh Bash process'
   assert_file_contains "$log" 'shared-tailscale-setup.sh|' 'runner must call Tailscale'
   assert_file_contains "$log" '|install' 'runner must use Tailscale install mode only'
   pass 'shared runner order and fresh processes'
@@ -393,9 +395,11 @@ test_linux_entrypoint() {
   : >"$system_log"
 
   FAKE_UNAME_S=Linux FAKE_UNAME_M=aarch64 ENTRY_LOG="$log" SYSTEM_LOG="$system_log" \
+    MACHINE_LOG="$TEST_DIR/linux-machine.log" PROMPT_LOG="$TEST_DIR/linux-prompt.log" \
     PATH="$fake_bin:/usr/bin:/bin" /bin/bash "$fixture/scripts/linux-install.sh"
   assert_equal shared "$(cat "$log")" 'Linux entrypoint did not run the shared installer'
-  [[ ! -s "$system_log" ]] || fail 'Linux validation wrote to the system'
+  assert_file_contains "$fixture/machine.json" '"name": "test-mac"' 'Linux entrypoint must save the machine name'
+  assert_file_contains "$system_log" 'hostnamectl set-hostname test-mac' 'Linux entrypoint must set the hostname'
 
   printf 'ID=ubuntu\nVERSION_ID=24.04\n' >"$os_release"
   : >"$log"
@@ -414,6 +418,65 @@ test_linux_entrypoint() {
   fi
   [[ ! -s "$log" && ! -s "$system_log" ]] || fail 'unsupported CPU changed state'
   pass 'Ubuntu 26.04 entrypoint and pre-write rejection'
+}
+
+test_machine_name_menu_bar() {
+  local script="$SCRIPTS_DIR/shared/install/shared-machine-name-menu-bar.sh"
+  local fake_bin="$TEST_DIR/menu-bar-bin"
+  local linux_home="$TEST_DIR/linux-home"
+  local mac_home="$TEST_DIR/mac-home"
+  local call_log="$TEST_DIR/menu-bar-calls.log"
+  local swift_capture="$TEST_DIR/menu-bar.swift"
+
+  write_fake_uname "$fake_bin"
+  cat >"$fake_bin/gnome-shell" <<'EOF'
+#!/bin/bash
+printf 'GNOME Shell 50.1\n'
+EOF
+  cat >"$fake_bin/gnome-extensions" <<'EOF'
+#!/bin/bash
+printf '%s\n' "$*" >>"$CALL_LOG"
+EOF
+  cat >"$fake_bin/gsettings" <<'EOF'
+#!/bin/bash
+if [[ "$1" == 'get' ]]; then
+  printf '@as []\n'
+else
+  printf '%s\n' "$*" >>"$CALL_LOG"
+fi
+EOF
+  cat >"$fake_bin/xcrun" <<'EOF'
+#!/bin/bash
+/bin/cat >"$SWIFT_CAPTURE"
+printf '#!/bin/bash\n' >"$3"
+/bin/chmod +x "$3"
+EOF
+  cat >"$fake_bin/launchctl" <<'EOF'
+#!/bin/bash
+printf '%s\n' "$*" >>"$CALL_LOG"
+EOF
+  chmod +x "$fake_bin"/*
+
+  : >"$call_log"
+  FAKE_UNAME_S=Linux MACHINE_NAME=linux-box HOME="$linux_home" CALL_LOG="$call_log" \
+    PATH="$fake_bin:/usr/bin:/bin" /bin/bash "$script" >/dev/null
+  assert_file_contains "$linux_home/.local/share/gnome-shell/extensions/machine-name@local/metadata.json" \
+    '"shell-version": ["50"]' 'GNOME extension must match the installed shell version'
+  assert_file_contains "$linux_home/.local/share/gnome-shell/extensions/machine-name@local/extension.js" \
+    "text: 'linux-box'" 'GNOME extension must show the machine name'
+  assert_file_contains "$call_log" 'enable machine-name@local' 'GNOME extension must be enabled'
+  assert_file_contains "$call_log" "set org.gnome.shell enabled-extensions ['machine-name@local']" \
+    'GNOME extension must stay enabled after login'
+
+  : >"$call_log"
+  FAKE_UNAME_S=Darwin MACHINE_NAME=mac-box HOME="$mac_home" CALL_LOG="$call_log" \
+    SWIFT_CAPTURE="$swift_capture" PATH="$fake_bin:/usr/bin:/bin" /bin/bash "$script" >/dev/null
+  [[ -x "$mac_home/.local/bin/machine-name-menu-bar" ]] || fail 'Mac menu bar program must be executable'
+  assert_file_contains "$swift_capture" 'NSStatusBar.system.statusItem' 'Mac program must create a native menu bar item'
+  assert_file_contains "$mac_home/Library/LaunchAgents/local.machine-name-menu-bar.plist" \
+    '<string>mac-box</string>' 'Mac login job must pass the machine name'
+  assert_file_contains "$call_log" 'bootstrap gui/' 'Mac login job must be started'
+  pass 'native machine name menu bars for Mac and GNOME'
 }
 
 make_tailscale_fixture() {
@@ -656,6 +719,7 @@ main() {
   test_mac_entrypoint
   test_mac_power_mode
   test_linux_entrypoint
+  test_machine_name_menu_bar
   test_fake_tailscale_lifecycle
   test_tailscale_contract
   test_one_brewfile_and_environment_loading

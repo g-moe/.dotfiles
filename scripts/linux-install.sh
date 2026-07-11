@@ -2,10 +2,13 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ROOT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 LIB_DIR="$SCRIPT_DIR/lib"
 SHARED_INSTALL_DIR="$SCRIPT_DIR/shared/install"
 
 . "$LIB_DIR/lib-logging.sh"
+. "$LIB_DIR/lib-interactive.sh"
+. "$LIB_DIR/lib-machine-identity.sh"
 . "$LIB_DIR/lib-utils.sh"
 . "$LIB_DIR/lib-get-linux-or-mac.sh"
 
@@ -63,10 +66,17 @@ ensure_normal_user() {
   fi
 }
 
+set_machine_name() {
+  sudo hostnamectl set-hostname "$MACHINE_NAME"
+  log_info "Linux name set to $MACHINE_NAME."
+}
+
 main() {
   run_step 'Validate Linux' require_linux_or_mac linux
   run_step 'Validate Ubuntu' ensure_supported_linux
   run_step 'Validate user' ensure_normal_user
+  run_step 'Load machine identity' configure_machine_identity "$ROOT_DIR/machine.json"
+  run_step 'Set Linux name' set_machine_name
   bash "$SHARED_INSTALL_DIR/shared-install-runner.sh"
   log_section 'Done'
   log_info 'Linux install complete.'

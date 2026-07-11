@@ -18,6 +18,7 @@ run_setup() {
 main() {
   run_setup 'Install Homebrew' shared-homebrew-setup.sh
   run_setup 'Install applications' shared-apps-setup.sh
+  run_setup 'Show machine name in menu bar' shared-machine-name-menu-bar.sh
   run_setup 'Set up Node.js' shared-node-setup.sh
   run_setup 'Set up Zsh' shared-zsh-setup.sh
   run_setup 'Set up tmux' shared-tmux-setup.sh

@@ -11,12 +11,12 @@ This directory contains the shared macOS and Ubuntu installers plus Mac-only too
 ## Structure
 
 - `lib/` — Source-only Bash helpers. Library filenames start with `lib-`.
-- `shared/install/` — Executable setup domains and the single shared Brewfile.
+- `shared/install/` — Executable setup domains, the single shared Brewfile, and the native machine-name menu bar setup.
 - `shared/tools/` — Shared commands used outside the main installer.
 - `shared/tests/` — Dependency-free installer tests using fake commands.
 - `mac/` — Mac-only install steps and tools. Runtime filenames start with `mac-`.
 - `mac-install.sh` — Shared install followed by Mac-only software and settings.
-- `linux-install.sh` — Shared install for Ubuntu 26.04 LTS; no Linux settings.
+- `linux-install.sh` — Shared install for Ubuntu 26.04 LTS plus the machine name and hostname.
 - Root `machine.json` — Ignored, machine-local name and color created by installers through `lib-machine-identity.sh`.
 
 ## Conventions
