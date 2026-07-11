@@ -1,191 +1,61 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 LIB_DIR="$SCRIPT_DIR/lib"
-HOME_DIR="${HOME:-}"
 
-. "$LIB_DIR/logging.sh"
-. "$LIB_DIR/utils.sh"
-. "$LIB_DIR/interactive.sh"
-. "$LIB_DIR/node-dev-setup.sh"
-. "$LIB_DIR/zsh-setup.sh"
+. "$LIB_DIR/lib-get-linux-or-mac.sh"
+. "$LIB_DIR/lib-interactive.sh"
+. "$LIB_DIR/lib-logging.sh"
+. "$LIB_DIR/lib-runtime.sh"
+. "$LIB_DIR/lib-utils.sh"
 
-ensure_macos() {
-  if [[ "${OSTYPE:-}" != darwin* ]]; then
-    log_error 'This installer only supports macOS.'
-    exit 1
-  fi
-}
+enable_install_error_trap
 
 ensure_not_root() {
   if [[ "$(id -u)" -eq 0 ]]; then
     log_error 'Do not run this script with sudo.'
-    log_error 'Run as your normal user so Homebrew can request sudo when needed.'
+    log_error 'Run as your normal user so individual steps can request sudo when needed.'
     exit 1
   fi
 }
 
-load_homebrew() {
-  if has_command brew; then
-    return
-  fi
-
-  if [[ -x /opt/homebrew/bin/brew ]]; then
-    eval "$(/opt/homebrew/bin/brew shellenv)"
-    return
-  fi
-
-  if [[ -x /usr/local/bin/brew ]]; then
-    eval "$(/usr/local/bin/brew shellenv)"
-  fi
+run_shared_installer() {
+  bash "$SCRIPT_DIR/shared/install/shared-install-runner.sh"
 }
 
-install_homebrew() {
-  load_homebrew
-  if has_command brew; then
-    log_info 'Homebrew already installed.'
-    return
-  fi
-
-  log_info 'Installing Homebrew...'
-  NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-  load_homebrew
-
-  if ! has_command brew; then
-    log_error 'Homebrew install completed, but brew was not found in PATH.'
-    log_error 'Run one of these and retry:'
-    log_error '  eval "$(/opt/homebrew/bin/brew shellenv)"'
-    log_error '  eval "$(/usr/local/bin/brew shellenv)"'
-    exit 1
-  fi
-
-  log_info 'Homebrew installed.'
-}
-
-install_github_cli() {
-  if has_command gh; then
-    log_info 'GitHub CLI already installed.'
-    return
-  fi
-
-  log_info 'Installing GitHub CLI with Homebrew...'
-  brew install gh
-  log_info 'GitHub CLI installed.'
-}
-
-set_mac_system_settings() {
-  local script_path="$SCRIPT_DIR/mac-only/install/mac-system-settings.sh"
-
-  if [[ ! -f "$script_path" ]]; then
-    log_error "Missing mac system settings script: $script_path"
-    exit 1
-  fi
-
-  bash "$script_path"
-}
-
-install_mac_software() {
-  local script_path="$SCRIPT_DIR/mac-only/install/mac-install-software.sh"
-
-  if [[ ! -f "$script_path" ]]; then
-    log_error "Missing mac software install script: $script_path"
-    exit 1
-  fi
-
-  bash "$script_path"
-}
-
-configure_karabiner() {
-  local source_config="$ROOT_DIR/karabiner/karabiner.json"
-  local target_config_dir="$HOME_DIR/.config/karabiner"
-  local target_config="$target_config_dir/karabiner.json"
-
-  if [[ -z "$HOME_DIR" ]]; then
-    log_error 'HOME is not set; cannot configure Karabiner.'
-    exit 1
-  fi
-
-  if [[ ! -f "$source_config" ]]; then
-    log_error "Missing repo Karabiner config: $source_config"
-    exit 1
-  fi
-
-  mkdir -p "$target_config_dir"
-
-  if [[ "$source_config" == "$target_config" ]]; then
-    log_info 'Karabiner config already in expected location.'
-    return
-  fi
-
-  ln -sfn "$source_config" "$target_config"
-  log_info "Linked $target_config -> $source_config"
-}
-
-configure_tmux() {
-  local source_config="$ROOT_DIR/tmux/tmux.conf"
-  local target_config="$HOME_DIR/.tmux.conf"
-
-  if [[ -z "$HOME_DIR" ]]; then
-    log_error 'HOME is not set; cannot configure tmux.'
-    exit 1
-  fi
-
-  if [[ ! -f "$source_config" ]]; then
-    log_error "Missing repo tmux config: $source_config"
-    exit 1
-  fi
-
-  ln -sfn "$source_config" "$target_config"
-  log_info "Linked $target_config -> $source_config"
+run_mac_script() {
+  bash "$SCRIPT_DIR/mac/install/$1"
 }
 
 configure_power_mode() {
-  local choice
+  local choice mode
   choice="$(interactive_select 'Choose a power mode configuration:' 'Skip' 'Normal' 'Server')"
 
   case "$choice" in
     0)
       log_info 'Skipping power mode configuration.'
+      return
       ;;
-    1)
-      if ! has_command npx; then
-        log_error 'npx is not available. Ensure Node.js is installed.'
-        exit 1
-      fi
-
-      log_info 'Applying normal power mode...'
-      sudo npx tsx "$ROOT_DIR/scripts/mac-only/install/mac-power-mode.ts" normal
-      log_info 'Normal power mode applied.'
-      ;;
-    2)
-      if ! has_command npx; then
-        log_error 'npx is not available. Ensure Node.js is installed.'
-        exit 1
-      fi
-
-      log_info 'Applying server power mode...'
-      sudo npx tsx "$ROOT_DIR/scripts/mac-only/install/mac-power-mode.ts" server
-      log_info 'Server power mode applied.'
-      ;;
+    1) mode=normal ;;
+    2) mode=server ;;
   esac
+
+  run_with_node "$ROOT_DIR/.nvmrc" "$SCRIPT_DIR/mac/install/mac-power-mode.ts" "$mode"
+  log_info "$mode power mode applied."
 }
 
 main() {
-  run_step 'Validating platform' ensure_macos
-  run_step 'Validating user' ensure_not_root
-  run_step 'Install Homebrew' install_homebrew
-  run_step 'Install GitHub CLI' install_github_cli
-  run_step 'Node Dev Setup' node_dev_setup
-  run_step 'ZSH Setup' zsh_setup
-  run_step 'Install Mac Software' install_mac_software
-  run_step 'Configure tmux' configure_tmux
-  run_step 'Configure Karabiner' configure_karabiner
-  run_step 'Set Mac System Settings' set_mac_system_settings
-  run_step 'Configure Power Mode' configure_power_mode
+  run_step 'Validate macOS' require_linux_or_mac mac
+  run_step 'Validate user' ensure_not_root
+  run_step 'Shared install' run_shared_installer
+  run_step 'Install optional Mac software' run_mac_script mac-software-setup.sh
+  run_step 'Configure Karabiner' run_mac_script mac-karabiner-setup.sh
+  run_step 'Set Mac system settings' run_mac_script mac-system-settings.sh
+  run_step 'Configure power mode' configure_power_mode
   log_section 'Done'
-  log_info 'mac install complete'
+  log_info 'Mac install complete.'
 }
 
 main "$@"

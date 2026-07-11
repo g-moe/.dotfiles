@@ -1,0 +1,32 @@
+brew "cloudflared"
+brew "fastfetch"
+brew "gh"
+brew "neovim"
+brew "tmux"
+brew "tpm"
+
+if OS.mac?
+  brew "duti"
+
+  cask "ghostty"
+  cask "karabiner-elements"
+  cask "betterdisplay"
+  cask "raycast"
+  cask "vscodium"
+  cask "codex-app"
+  cask "docker-desktop"
+  cask "utm"
+  cask "google-chrome"
+  cask "firefox"
+  cask "homerow"
+  cask "gimp"
+  cask "voiceink"
+  cask "tg-pro"
+  cask "istat-menus"
+end
+
+if OS.linux?
+  brew "zsh"
+  brew "wl-clipboard"
+  brew "xclip"
+end

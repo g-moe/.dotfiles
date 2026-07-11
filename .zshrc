@@ -28,6 +28,18 @@ plugins=(
 is_macos=false
 [[ "$OSTYPE" == darwin* ]] && is_macos=true
 
+# Homebrew
+if [[ "$is_macos" == true && -x /opt/homebrew/bin/brew ]]; then
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+elif [[ "$is_macos" == true && -x /usr/local/bin/brew ]]; then
+  eval "$(/usr/local/bin/brew shellenv)"
+elif [[ "$is_macos" == false && -x /home/linuxbrew/.linuxbrew/bin/brew ]]; then
+  eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+fi
+
+# User-installed commands
+export PATH="$HOME/.local/bin:$PATH"
+
 # Prevent reload from expanding global aliases while Oh My Zsh parses plugins.
 (( ${+galiases[yank]} )) && unalias 'yank'
 
@@ -84,10 +96,12 @@ alias h='history'
 alias ssh-hosts='awk '\''tolower($1)=="host" {for (i=2; i<=NF; i++) if ($i !~ /[*?]/) print $i}'\'' ~/.ssh/config'
 
 # Walk through creating a new SSH host config
-alias ssh-new='$HOME/.config/scripts/ssh-new-host.sh'
+alias ssh-new='$HOME/.config/scripts/shared/tools/shared-ssh-new-host.sh'
 
 # Copy to clipboard and print to terminal
-alias -g yank='| tee /dev/tty | pbcopy'
+if command -v copy-to-clipboard >/dev/null 2>&1; then
+  alias -g yank='| tee /dev/tty | copy-to-clipboard'
+fi
 
 # Git stash including untracked files
 alias gitstash='git stash -u'
@@ -131,13 +145,23 @@ export AWS_REGION=us-east-1
 export NVM_DIR="$HOME/.nvm"
 [[ -s "$NVM_DIR/nvm.sh" ]] && source "$NVM_DIR/nvm.sh"
 [[ -s "$NVM_DIR/bash_completion" ]] && source "$NVM_DIR/bash_completion"
-
-# Prefer installed CLI tools
-export PATH="$HOME/.local/bin:$PATH"
+if (( ${+functions[nvm]} )); then
+  nvm use --silent default >/dev/null 2>&1 || true
+  nvm_node="$(nvm which default 2>/dev/null || true)"
+  if [[ -x "$nvm_node" ]]; then
+    export PATH="$(dirname "$nvm_node"):$PATH"
+    rehash
+  fi
+  unset nvm_node
+fi
 
 # opencode
-export PATH=/Users/garrett/.opencode/bin:$PATH
+if [[ -d "$HOME/.opencode/bin" ]]; then
+  export PATH="$HOME/.opencode/bin:$PATH"
+fi
 
 # Added by LM Studio CLI (lms)
-export PATH="$PATH:/Users/garrett/.lmstudio/bin"
+if [[ -d "$HOME/.lmstudio/bin" ]]; then
+  export PATH="$PATH:$HOME/.lmstudio/bin"
+fi
 # End of LM Studio CLI section
