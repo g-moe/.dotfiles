@@ -59,17 +59,29 @@ load_machine_color() {
 
 set_wallpaper() {
   local color_key="${MACHINE_COLOR_HEX#\#}"
-  local image_path="$CONFIG_DIR/.machine-wallpaper-$color_key.png"
-  local svg_path temporary_dir
+  local image_path="$CONFIG_DIR/.machine-wallpaper-$color_key-rgb.png"
 
-  temporary_dir="$(mktemp -d -t machine-wallpaper)"
-  svg_path="$temporary_dir/wallpaper.svg"
-  printf '%s\n' \
-    '<svg xmlns="http://www.w3.org/2000/svg" width="6016" height="3388">' \
-    "  <rect width=\"100%\" height=\"100%\" fill=\"$MACHINE_COLOR_HEX\"/>" \
-    '</svg>' >"$svg_path"
-  sips -s format png "$svg_path" --out "$image_path" >/dev/null
-  rm -rf "$temporary_dir"
+  xcrun swift - "$color_key" "$image_path" <<'SWIFT'
+import AppKit
+import Foundation
+
+let hex = UInt32(CommandLine.arguments[1], radix: 16)!
+let output = URL(fileURLWithPath: CommandLine.arguments[2])
+let bitmap = NSBitmapImageRep(
+  bitmapDataPlanes: nil, pixelsWide: 1, pixelsHigh: 1,
+  bitsPerSample: 8, samplesPerPixel: 4, hasAlpha: true,
+  isPlanar: false, colorSpaceName: .deviceRGB,
+  bytesPerRow: 4, bitsPerPixel: 32
+)!
+bitmap.setColor(NSColor(
+  deviceRed: CGFloat((hex >> 16) & 255) / 255,
+  green: CGFloat((hex >> 8) & 255) / 255,
+  blue: CGFloat(hex & 255) / 255,
+  alpha: 1
+), atX: 0, y: 0)
+let png = bitmap.representation(using: NSBitmapImageRep.FileType.png, properties: [:])!
+try! png.write(to: output)
+SWIFT
 
   osascript <<EOF
 tell application "System Events"
@@ -237,14 +249,14 @@ configure_mission_control() {
   defaults write com.apple.dock enterMissionControlByTopWindowDrag -bool false
 
   defaults write com.apple.dock wvous-br-corner -int 2
-  defaults write com.apple.dock wvous-br-modifier -int 0
+  defaults write com.apple.dock wvous-br-modifier -int 131072
 
   log_info 'Spaces are not automatically rearranged based on recent use.'
   log_info 'Switching apps does not switch to an app window Space.'
   log_info 'Mission Control does not group windows by application.'
   log_info 'Displays have separate Spaces.'
   log_info 'Dragging windows to the top of the screen does not enter Mission Control.'
-  log_info 'Bottom-right hot corner set to Mission Control.'
+  log_info 'Bottom-right hot corner set to Shift + Mission Control.'
 }
 
 mac_file_associations() {
