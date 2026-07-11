@@ -15,6 +15,39 @@ LIB_DIR="$SCRIPT_DIR/../../lib"
 
 enable_install_error_trap
 
+MACHINE_COLOR_TINT='0.596078 0.596078 0.615686 0.250000'
+
+load_machine_color() {
+  case "${MACHINE_COLOR:-gray}" in
+    blue)
+      MACHINE_COLOR_TINT='0.039216 0.517647 1.000000 0.250000'
+      ;;
+    green)
+      MACHINE_COLOR_TINT='0.188235 0.819608 0.345098 0.250000'
+      ;;
+    orange)
+      MACHINE_COLOR_TINT='1.000000 0.623529 0.039216 0.250000'
+      ;;
+    pink)
+      MACHINE_COLOR_TINT='1.000000 0.215686 0.372549 0.250000'
+      ;;
+    purple)
+      MACHINE_COLOR_TINT='0.749020 0.352941 0.949020 0.250000'
+      ;;
+    red)
+      MACHINE_COLOR_TINT='1.000000 0.270588 0.227451 0.250000'
+      ;;
+    yellow)
+      MACHINE_COLOR_TINT='1.000000 0.839216 0.039216 0.250000'
+      ;;
+    gray) ;;
+    *)
+      log_error "Unknown machine color: $MACHINE_COLOR"
+      return 1
+      ;;
+  esac
+}
+
 set_wallpaper() {
   local image_path="$CONFIG_DIR/black.heic"
 
@@ -167,13 +200,13 @@ configure_theme() {
   defaults write NSGlobalDomain AppleInterfaceStyle -string Dark
   defaults write NSGlobalDomain AppleIconAppearanceTheme -string TintedDark
   defaults write NSGlobalDomain AppleIconAppearanceTintColor -string Other
-  defaults write NSGlobalDomain AppleIconAppearanceCustomTintColor -string '0.596078 0.596078 0.615686 0.250000'
+  defaults write NSGlobalDomain AppleIconAppearanceCustomTintColor -string "$MACHINE_COLOR_TINT"
 
   log_info 'Theme color set to blue.'
   log_info 'Text highlight color set to blue.'
   log_info 'Appearance set to dark.'
   log_info 'Icon and widget style set to tinted dark.'
-  log_info 'Icon, widget, and folder color set to custom gray.'
+  log_info "Icon, widget, and folder color set to ${MACHINE_COLOR:-gray}."
 }
 
 configure_mission_control() {
@@ -735,6 +768,7 @@ finish() {
 }
 
 main() {
+  load_machine_color
   run_step 'Set Black Wallpaper and Screen Saver' set_black_wallpaper_and_screensaver
   run_step 'Disable Handoff' disable_handoff
   run_step 'Disable Apple Intelligence' disable_apple_intelligence

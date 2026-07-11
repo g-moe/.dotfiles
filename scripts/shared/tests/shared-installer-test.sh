@@ -218,6 +218,7 @@ make_entrypoint_fixture() {
   mkdir -p "$fixture/scripts/lib" "$fixture/scripts/shared/install" \
     "$fixture/scripts/mac/install" "$fake_bin"
   cp "$SCRIPTS_DIR/lib/lib-get-linux-or-mac.sh" "$fixture/scripts/lib/"
+  cp "$SCRIPTS_DIR/lib/lib-machine-identity.sh" "$fixture/scripts/lib/"
   cp "$SCRIPTS_DIR/mac-install.sh" "$fixture/scripts/"
 
   cat >"$fixture/scripts/lib/lib-logging.sh" <<'EOF'
@@ -229,6 +230,10 @@ run_step() { shift; "$@"; }
 EOF
   cat >"$fixture/scripts/lib/lib-interactive.sh" <<'EOF'
 interactive_select() { printf '0\n'; }
+interactive_read() {
+  printf 'machine-name\n' >>"$PROMPT_LOG"
+  printf 'Test-Mac\n'
+}
 EOF
   cat >"$fixture/scripts/lib/lib-runtime.sh" <<'EOF'
 run_with_node() { printf 'node\n' >>"$ENTRY_LOG"; }
@@ -244,6 +249,7 @@ EOF
     cat >"$fixture/scripts/mac/install/$name" <<'EOF'
 #!/bin/bash
 printf '%s\n' "$(basename "$0")" >>"$ENTRY_LOG"
+printf '%s|%s\n' "$MACHINE_NAME" "$MACHINE_COLOR" >>"$MACHINE_LOG"
 EOF
   done
 
@@ -273,17 +279,35 @@ test_mac_entrypoint() {
   local fixture="$TEST_DIR/mac-entry"
   local log="$TEST_DIR/mac-entry.log"
   local system_log="$TEST_DIR/mac-system.log"
+  local machine_log="$TEST_DIR/mac-machine.log"
+  local prompt_log="$TEST_DIR/mac-prompt.log"
   local fake_bin="$fixture/fake-bin"
 
   make_entrypoint_fixture "$fixture" "$log"
   : >"$system_log"
+  : >"$machine_log"
+  : >"$prompt_log"
   FAKE_UNAME_S=Darwin ENTRY_LOG="$log" SYSTEM_LOG="$system_log" \
+    MACHINE_LOG="$machine_log" PROMPT_LOG="$prompt_log" \
     PATH="$fake_bin:/usr/bin:/bin" /bin/bash "$fixture/scripts/mac-install.sh"
 
   assert_equal "$(printf '%s\n' shared mac-software-setup.sh mac-karabiner-setup.sh mac-system-settings.sh)" \
     "$(cat "$log")" 'Mac entrypoint order changed'
-  [[ ! -s "$system_log" ]] || fail 'Mac entrypoint called a Linux system command'
-  pass 'Mac entrypoint order without Linux commands'
+  assert_file_contains "$fixture/machine.json" '"name": "test-mac"' 'Mac entrypoint must save the machine name'
+  assert_file_contains "$fixture/machine.json" '"color": "blue"' 'Mac entrypoint must save the machine color'
+  assert_equal "$(printf '%s\n' 'test-mac|blue' 'test-mac|blue' 'test-mac|blue')" \
+    "$(cat "$machine_log")" 'Mac entrypoint must pass machine identity to child steps'
+  assert_file_contains "$system_log" 'scutil --set ComputerName test-mac' 'Mac entrypoint must set ComputerName'
+  assert_file_contains "$system_log" 'scutil --set LocalHostName test-mac' 'Mac entrypoint must set LocalHostName'
+  assert_file_contains "$system_log" 'scutil --set HostName test-mac' 'Mac entrypoint must set HostName'
+
+  : >"$log"
+  : >"$prompt_log"
+  FAKE_UNAME_S=Darwin ENTRY_LOG="$log" SYSTEM_LOG="$system_log" \
+    MACHINE_LOG="$machine_log" PROMPT_LOG="$prompt_log" \
+    PATH="$fake_bin:/usr/bin:/bin" /bin/bash "$fixture/scripts/mac-install.sh"
+  [[ ! -s "$prompt_log" ]] || fail 'Mac entrypoint asked for an existing machine identity again'
+  pass 'Mac entrypoint saves and reuses machine identity'
 }
 
 test_mac_power_mode() {

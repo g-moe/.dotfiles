@@ -8,10 +8,18 @@ LIB_DIR="$SCRIPT_DIR/lib"
 . "$LIB_DIR/lib-get-linux-or-mac.sh"
 . "$LIB_DIR/lib-interactive.sh"
 . "$LIB_DIR/lib-logging.sh"
+. "$LIB_DIR/lib-machine-identity.sh"
 . "$LIB_DIR/lib-runtime.sh"
 . "$LIB_DIR/lib-utils.sh"
 
 enable_install_error_trap
+
+set_machine_name() {
+  sudo scutil --set ComputerName "$MACHINE_NAME"
+  sudo scutil --set LocalHostName "$MACHINE_NAME"
+  sudo scutil --set HostName "$MACHINE_NAME"
+  log_info "Mac name set to $MACHINE_NAME."
+}
 
 ensure_not_root() {
   if [[ "$(id -u)" -eq 0 ]]; then
@@ -49,6 +57,8 @@ configure_power_mode() {
 main() {
   run_step 'Validate macOS' require_linux_or_mac mac
   run_step 'Validate user' ensure_not_root
+  run_step 'Load machine identity' configure_machine_identity "$ROOT_DIR/machine.json"
+  run_step 'Set Mac name' set_machine_name
   run_step 'Shared install' run_shared_installer
   run_step 'Install optional Mac software' run_mac_script mac-software-setup.sh
   run_step 'Configure Karabiner' run_mac_script mac-karabiner-setup.sh

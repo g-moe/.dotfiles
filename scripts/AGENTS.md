@@ -17,6 +17,7 @@ This directory contains the shared macOS and Ubuntu installers plus Mac-only too
 - `mac/` — Mac-only install steps and tools. Runtime filenames start with `mac-`.
 - `mac-install.sh` — Shared install followed by Mac-only software and settings.
 - `linux-install.sh` — Shared install for Ubuntu 26.04 LTS; no Linux settings.
+- Root `machine.json` — Ignored, machine-local name and color created by installers through `lib-machine-identity.sh`.
 
 ## Conventions
 
@@ -24,6 +25,7 @@ This directory contains the shared macOS and Ubuntu installers plus Mac-only too
 - General helpers stay in `scripts/lib`; scripts that install or configure a tool belong in `scripts/shared/install`.
 - Source `lib/lib-logging.sh` for logging and `run_step`.
 - Source `lib/lib-interactive.sh` for prompts.
+- Source `lib/lib-machine-identity.sh` to create or reuse the shared machine name and color.
 - Source `lib/lib-utils.sh` for command checks, silent commands, Homebrew checks, and `safe_link`.
 - Source `lib/lib-runtime.sh` to reload Homebrew or NVM in a fresh process.
 - Source `lib/lib-get-linux-or-mac.sh` for platform checks and `mac()`/`linux()` routing.
