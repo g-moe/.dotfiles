@@ -60,8 +60,8 @@ load_machine_color() {
 
 set_wallpaper() {
   local color_key="${MACHINE_COLOR_HEX#\#}"
-  local source_path="$CONFIG_DIR/black.heic"
-  local image_path="$CONFIG_DIR/.machine-wallpaper-$color_key-rgb-rotated.png"
+  local source_path="$CONFIG_DIR/white.heic"
+  local image_path="$CONFIG_DIR/.machine-wallpaper-white-$color_key-rgb-rotated.png"
 
   if [[ ! -s "$source_path" ]]; then
     log_error "Missing wallpaper source: $source_path"
@@ -631,7 +631,14 @@ configure_dock() {
 }
 
 set_machine_wallpaper_and_screensaver() {
-  set_wallpaper
+  local choice
+  choice="$(interactive_select 'Change the desktop wallpaper?' 'Skip (leave the current wallpaper)' 'Set the machine-color wallpaper')"
+
+  case "$choice" in
+    0) log_info 'Leaving the current wallpaper unchanged.' ;;
+    1) set_wallpaper ;;
+  esac
+
   set_screensaver
 }
 
