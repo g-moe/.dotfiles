@@ -15,38 +15,39 @@ LIB_DIR="$SCRIPT_DIR/../../lib"
 
 enable_install_error_trap
 
-MACHINE_COLOR_HEX='#98989D'
-MACHINE_COLOR_TINT='0.596078 0.596078 0.615686 0.250000'
+# Gruvbox bright palette; blue uses the more saturated neutral shade.
+MACHINE_COLOR_HEX='#A89984'
+MACHINE_COLOR_TINT='0.658824 0.600000 0.517647 0.250000'
 
 load_machine_color() {
   case "${MACHINE_COLOR:-gray}" in
     blue)
-      MACHINE_COLOR_HEX='#0A84FF'
-      MACHINE_COLOR_TINT='0.039216 0.517647 1.000000 0.250000'
+      MACHINE_COLOR_HEX='#458588'
+      MACHINE_COLOR_TINT='0.270588 0.521569 0.533333 0.250000'
       ;;
     green)
-      MACHINE_COLOR_HEX='#30D158'
-      MACHINE_COLOR_TINT='0.188235 0.819608 0.345098 0.250000'
+      MACHINE_COLOR_HEX='#B8BB26'
+      MACHINE_COLOR_TINT='0.721569 0.733333 0.149020 0.250000'
       ;;
     orange)
-      MACHINE_COLOR_HEX='#FF9F0A'
-      MACHINE_COLOR_TINT='1.000000 0.623529 0.039216 0.250000'
+      MACHINE_COLOR_HEX='#FE8019'
+      MACHINE_COLOR_TINT='0.996078 0.501961 0.098039 0.250000'
       ;;
-    pink)
-      MACHINE_COLOR_HEX='#FF375F'
-      MACHINE_COLOR_TINT='1.000000 0.215686 0.372549 0.250000'
+    pink | purple)
+      MACHINE_COLOR_HEX='#D3869B'
+      MACHINE_COLOR_TINT='0.827451 0.525490 0.607843 0.250000'
       ;;
-    purple)
-      MACHINE_COLOR_HEX='#BF5AF2'
-      MACHINE_COLOR_TINT='0.749020 0.352941 0.949020 0.250000'
+    aqua)
+      MACHINE_COLOR_HEX='#8EC07C'
+      MACHINE_COLOR_TINT='0.556863 0.752941 0.486275 0.250000'
       ;;
     red)
-      MACHINE_COLOR_HEX='#FF453A'
-      MACHINE_COLOR_TINT='1.000000 0.270588 0.227451 0.250000'
+      MACHINE_COLOR_HEX='#FB4934'
+      MACHINE_COLOR_TINT='0.984314 0.286275 0.203922 0.250000'
       ;;
     yellow)
-      MACHINE_COLOR_HEX='#FFD60A'
-      MACHINE_COLOR_TINT='1.000000 0.839216 0.039216 0.250000'
+      MACHINE_COLOR_HEX='#FABD2F'
+      MACHINE_COLOR_TINT='0.980392 0.741176 0.184314 0.250000'
       ;;
     gray) ;;
     *)
@@ -211,14 +212,14 @@ configure_theme() {
   defaults write NSGlobalDomain AppleAccentColor -int 4
   defaults write NSGlobalDomain AppleHighlightColor -string '0.698039 0.843137 1.000000 Blue'
   defaults write NSGlobalDomain AppleInterfaceStyle -string Dark
-  defaults write NSGlobalDomain AppleIconAppearanceTheme -string TintedDark
+  defaults write NSGlobalDomain AppleIconAppearanceTheme -string ClearDark
   defaults write NSGlobalDomain AppleIconAppearanceTintColor -string Other
   defaults write NSGlobalDomain AppleIconAppearanceCustomTintColor -string "$MACHINE_COLOR_TINT"
 
   log_info 'Theme color set to blue.'
   log_info 'Text highlight color set to blue.'
   log_info 'Appearance set to dark.'
-  log_info 'Icon and widget style set to tinted dark.'
+  log_info 'Icon and widget style set to clear dark.'
   log_info "Icon, widget, and folder color set to ${MACHINE_COLOR:-gray}."
 }
 

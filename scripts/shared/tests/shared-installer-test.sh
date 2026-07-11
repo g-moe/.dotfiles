@@ -232,7 +232,11 @@ EOF
 interactive_select() { printf '0\n'; }
 interactive_read() {
   printf 'machine-name\n' >>"$PROMPT_LOG"
-  printf 'Test-Mac\n'
+  printf '%s\n' "${MACHINE_NAME_ANSWER:-Test-Mac}"
+}
+interactive_confirm() {
+  printf 'change-machine\n' >>"$PROMPT_LOG"
+  [[ "${CHANGE_MACHINE_IDENTITY:-0}" == '1' ]]
 }
 EOF
   cat >"$fixture/scripts/lib/lib-runtime.sh" <<'EOF'
@@ -306,8 +310,19 @@ test_mac_entrypoint() {
   FAKE_UNAME_S=Darwin ENTRY_LOG="$log" SYSTEM_LOG="$system_log" \
     MACHINE_LOG="$machine_log" PROMPT_LOG="$prompt_log" \
     PATH="$fake_bin:/usr/bin:/bin" /bin/bash "$fixture/scripts/mac-install.sh"
-  [[ ! -s "$prompt_log" ]] || fail 'Mac entrypoint asked for an existing machine identity again'
-  pass 'Mac entrypoint saves and reuses machine identity'
+  assert_equal 'change-machine' "$(cat "$prompt_log")" \
+    'Mac entrypoint must ask before reusing an existing machine identity'
+
+  : >"$prompt_log"
+  CHANGE_MACHINE_IDENTITY=1 MACHINE_NAME_ANSWER=Other-Mac \
+    FAKE_UNAME_S=Darwin ENTRY_LOG="$log" SYSTEM_LOG="$system_log" \
+    MACHINE_LOG="$machine_log" PROMPT_LOG="$prompt_log" \
+    PATH="$fake_bin:/usr/bin:/bin" /bin/bash "$fixture/scripts/mac-install.sh"
+  assert_equal "$(printf '%s\n' change-machine machine-name)" "$(cat "$prompt_log")" \
+    'Mac entrypoint must ask for new values when changing machine identity'
+  assert_file_contains "$fixture/machine.json" '"name": "other-mac"' \
+    'Mac entrypoint must replace the saved machine identity'
+  pass 'Mac entrypoint creates, reuses, and changes machine identity'
 }
 
 test_mac_power_mode() {
@@ -616,6 +631,8 @@ test_one_brewfile_and_environment_loading() {
   assert_file_contains "$SCRIPTS_DIR/mac/install/mac-software-setup.sh" 'load_homebrew' 'Mac software child must reload Homebrew'
   assert_file_contains "$SCRIPTS_DIR/mac/install/mac-system-settings.sh" '.machine-wallpaper.png' 'Mac wallpaper must use the machine color image'
   assert_file_contains "$SCRIPTS_DIR/mac/install/mac-system-settings.sh" 'MACHINE_COLOR_HEX' 'Mac wallpaper must use the selected machine color'
+  assert_file_contains "$SCRIPTS_DIR/mac/install/mac-system-settings.sh" "MACHINE_COLOR_HEX='#458588'" 'Mac blue must use the saturated Gruvbox shade'
+  assert_file_contains "$SCRIPTS_DIR/mac/install/mac-system-settings.sh" 'AppleIconAppearanceTheme -string ClearDark' 'Mac icon and widget style must be clear dark'
   assert_file_contains "$SCRIPTS_DIR/mac-install.sh" 'run_with_node' 'Mac power setup must reload Node'
   assert_file_contains "$SCRIPTS_DIR/shared/install/shared-zsh-setup.sh" 'run_privileged chsh' 'Linux shell change must use sudo'
   assert_file_contains "$SCRIPTS_DIR/shared/install/shared-tmux-setup.sh" 'bin/install_plugins' 'tmux plugins must be installed'

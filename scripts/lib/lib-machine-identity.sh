@@ -9,7 +9,7 @@ valid_machine_name() {
 
 valid_machine_color() {
   case "$1" in
-    blue | green | orange | pink | purple | red | yellow | gray) return 0 ;;
+    aqua | blue | green | orange | pink | purple | red | yellow | gray) return 0 ;;
     *) return 1 ;;
   esac
 }
@@ -46,15 +46,15 @@ create_machine_config() {
     log_error 'Use 1-32 lowercase letters, numbers, or dashes; start with a letter or number.'
   done
 
-  choice="$(interactive_select 'Machine color:' 'Blue' 'Green' 'Orange' 'Pink' 'Purple' 'Red' 'Yellow' 'Gray')"
+  choice="$(interactive_select 'Machine color:' 'Blue' 'Green' 'Orange' 'Purple' 'Red' 'Yellow' 'Aqua' 'Gray')"
   case "$choice" in
     0) MACHINE_COLOR=blue ;;
     1) MACHINE_COLOR=green ;;
     2) MACHINE_COLOR=orange ;;
-    3) MACHINE_COLOR=pink ;;
-    4) MACHINE_COLOR=purple ;;
-    5) MACHINE_COLOR=red ;;
-    6) MACHINE_COLOR=yellow ;;
+    3) MACHINE_COLOR=purple ;;
+    4) MACHINE_COLOR=red ;;
+    5) MACHINE_COLOR=yellow ;;
+    6) MACHINE_COLOR=aqua ;;
     7) MACHINE_COLOR=gray ;;
   esac
 
@@ -68,7 +68,11 @@ configure_machine_identity() {
   local config_path="$1"
 
   if [[ -f "$config_path" ]]; then
-    read_machine_config "$config_path"
+    if interactive_confirm 'Change the saved machine name and color?' 'n'; then
+      create_machine_config "$config_path"
+    else
+      read_machine_config "$config_path"
+    fi
   else
     create_machine_config "$config_path"
   fi
