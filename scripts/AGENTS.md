@@ -35,3 +35,4 @@ This directory contains the shared macOS and Ubuntu installers plus Mac-only too
 - Install shared and OS-specific Homebrew entries through `shared/install/shared-Brewfile`. Do not run `brew bundle cleanup`.
 - Node setup uses Node.js 24 through NVM; keep it aligned with `.nvmrc` and `package.json`.
 - Ubuntu support is limited to Ubuntu 26.04 LTS on amd64 with SSSE3 or arm64.
+- Mac wallpaper setup rotates the tracked root `black.heic`, maps its light values to the machine color with ImageMagick, and caches a lossless PNG.

@@ -11,6 +11,7 @@ LIB_DIR="$SCRIPT_DIR/../../lib"
 
 . "$LIB_DIR/lib-logging.sh"
 . "$LIB_DIR/lib-interactive.sh"
+. "$LIB_DIR/lib-runtime.sh"
 . "$LIB_DIR/lib-utils.sh"
 
 enable_install_error_trap
@@ -59,39 +60,38 @@ load_machine_color() {
 
 set_wallpaper() {
   local color_key="${MACHINE_COLOR_HEX#\#}"
-  local image_path="$CONFIG_DIR/.machine-wallpaper-$color_key-rgb.png"
+  local source_path="$CONFIG_DIR/black.heic"
+  local image_path="$CONFIG_DIR/.machine-wallpaper-$color_key-rgb-rotated.png"
 
-  if [[ ! -s "$image_path" ]]; then
-    xcrun swift - "$color_key" "$image_path" <<'SWIFT'
-import AppKit
-import Foundation
-
-let hex = UInt32(CommandLine.arguments[1], radix: 16)!
-let output = URL(fileURLWithPath: CommandLine.arguments[2])
-let bitmap = NSBitmapImageRep(
-  bitmapDataPlanes: nil, pixelsWide: 1, pixelsHigh: 1,
-  bitsPerSample: 8, samplesPerPixel: 4, hasAlpha: true,
-  isPlanar: false, colorSpaceName: .deviceRGB,
-  bytesPerRow: 4, bitsPerPixel: 32
-)!
-bitmap.setColor(NSColor(
-  deviceRed: CGFloat((hex >> 16) & 255) / 255,
-  green: CGFloat((hex >> 8) & 255) / 255,
-  blue: CGFloat(hex & 255) / 255,
-  alpha: 1
-), atX: 0, y: 0)
-let png = bitmap.representation(using: NSBitmapImageRep.FileType.png, properties: [:])!
-try! png.write(to: output)
-SWIFT
+  if [[ ! -s "$source_path" ]]; then
+    log_error "Missing wallpaper source: $source_path"
+    return 1
   fi
 
-  osascript <<EOF
-tell application "System Events"
-  tell every desktop
-    set picture to POSIX file "$image_path"
+  if ! load_homebrew || ! has_command magick; then
+    log_error 'ImageMagick is required to generate the machine wallpaper.'
+    return 1
+  fi
+
+  if [[ ! -s "$image_path" ]]; then
+    magick "$source_path" \
+      -rotate 180 \
+      -colorspace gray \
+      +level-colors '#000000',"$MACHINE_COLOR_HEX" \
+      "$image_path"
+  fi
+
+  osascript - "$image_path" <<'APPLESCRIPT'
+on run argv
+  set wallpaperPath to POSIX file (item 1 of argv)
+  tell application "System Events"
+    repeat with i from 1 to count of desktops
+      set picture of desktop i to wallpaperPath
+      delay 0.2
+    end repeat
   end tell
-end tell
-EOF
+end run
+APPLESCRIPT
 
   log_info "Wallpaper set to ${MACHINE_COLOR:-gray}."
 }
