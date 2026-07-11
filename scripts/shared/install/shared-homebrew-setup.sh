@@ -84,7 +84,7 @@ install_homebrew() {
   fi
 
   log_info 'Installing Homebrew...'
-  NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
   if ! load_homebrew; then
     log_error 'Homebrew installation finished, but brew is not available.'

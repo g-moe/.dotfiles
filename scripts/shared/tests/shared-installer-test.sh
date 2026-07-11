@@ -684,6 +684,7 @@ test_one_brewfile_and_environment_loading() {
   local brewfile_count
   local bad_lib_count
   local brewfile="$SCRIPTS_DIR/shared/install/shared-Brewfile"
+  local homebrew_setup="$SCRIPTS_DIR/shared/install/shared-homebrew-setup.sh"
   brewfile_count="$(find "$SCRIPTS_DIR" -type f -name '*Brewfile' | wc -l | tr -d ' ')"
   assert_equal 1 "$brewfile_count" 'there must be exactly one Brewfile'
   assert_file_contains "$brewfile" 'if OS.mac?' 'Brewfile needs a Mac branch'
@@ -691,6 +692,9 @@ test_one_brewfile_and_environment_loading() {
   assert_file_contains "$brewfile" 'brew "tmux"' 'shared tmux formula is missing'
   assert_file_contains "$brewfile" 'brew "zsh"' 'Linux Zsh formula is missing'
   assert_file_contains "$brewfile" 'brew "wl-clipboard"' 'Wayland clipboard formula is missing'
+  if grep -Fq 'NONINTERACTIVE=1' "$homebrew_setup"; then
+    fail 'Homebrew setup must allow the first sudo password prompt'
+  fi
 
   assert_file_contains "$SCRIPTS_DIR/shared/install/shared-apps-setup.sh" 'load_homebrew' 'app child must reload Homebrew'
   assert_file_contains "$SCRIPTS_DIR/shared/install/shared-tmux-setup.sh" 'load_homebrew' 'tmux child must reload Homebrew'
