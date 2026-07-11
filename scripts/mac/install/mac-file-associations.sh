@@ -1,9 +1,14 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+LIB_DIR="$SCRIPT_DIR/../../lib"
+
+. "$LIB_DIR/lib-runtime.sh"
+
 VSCODIUM_BUNDLE_ID="com.vscodium"
 
-if ! command -v duti >/dev/null 2>&1; then
+if ! load_homebrew || ! command -v duti >/dev/null 2>&1; then
     echo "duti is required; run scripts/mac-install.sh first." >&2
     exit 1
 fi

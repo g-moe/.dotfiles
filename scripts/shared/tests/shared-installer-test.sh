@@ -700,6 +700,7 @@ test_one_brewfile_and_environment_loading() {
   assert_file_contains "$SCRIPTS_DIR/shared/install/shared-tmux-setup.sh" 'load_homebrew' 'tmux child must reload Homebrew'
   assert_file_contains "$SCRIPTS_DIR/shared/install/shared-node-setup.sh" 'load_nvm' 'Node child must reload NVM'
   assert_file_contains "$SCRIPTS_DIR/mac/install/mac-software-setup.sh" 'load_homebrew' 'Mac software child must reload Homebrew'
+  assert_file_contains "$SCRIPTS_DIR/mac/install/mac-file-associations.sh" 'load_homebrew' 'Mac file associations must reload Homebrew'
   assert_file_contains "$SCRIPTS_DIR/mac/install/mac-system-settings.sh" '.machine-wallpaper-$color_key-rgb.png' 'Mac wallpaper filename must change with its color'
   assert_file_contains "$SCRIPTS_DIR/mac/install/mac-system-settings.sh" 'MACHINE_COLOR_HEX' 'Mac wallpaper must use the selected machine color'
   assert_file_contains "$SCRIPTS_DIR/mac/install/mac-system-settings.sh" 'pixelsWide: 1, pixelsHigh: 1' 'Mac wallpaper must write an exact solid-color pixel'
