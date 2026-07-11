@@ -614,6 +614,8 @@ test_one_brewfile_and_environment_loading() {
   assert_file_contains "$SCRIPTS_DIR/shared/install/shared-tmux-setup.sh" 'load_homebrew' 'tmux child must reload Homebrew'
   assert_file_contains "$SCRIPTS_DIR/shared/install/shared-node-setup.sh" 'load_nvm' 'Node child must reload NVM'
   assert_file_contains "$SCRIPTS_DIR/mac/install/mac-software-setup.sh" 'load_homebrew' 'Mac software child must reload Homebrew'
+  assert_file_contains "$SCRIPTS_DIR/mac/install/mac-system-settings.sh" '.machine-wallpaper.png' 'Mac wallpaper must use the machine color image'
+  assert_file_contains "$SCRIPTS_DIR/mac/install/mac-system-settings.sh" 'MACHINE_COLOR_HEX' 'Mac wallpaper must use the selected machine color'
   assert_file_contains "$SCRIPTS_DIR/mac-install.sh" 'run_with_node' 'Mac power setup must reload Node'
   assert_file_contains "$SCRIPTS_DIR/shared/install/shared-zsh-setup.sh" 'run_privileged chsh' 'Linux shell change must use sudo'
   assert_file_contains "$SCRIPTS_DIR/shared/install/shared-tmux-setup.sh" 'bin/install_plugins' 'tmux plugins must be installed'

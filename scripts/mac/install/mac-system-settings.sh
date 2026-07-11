@@ -15,29 +15,37 @@ LIB_DIR="$SCRIPT_DIR/../../lib"
 
 enable_install_error_trap
 
+MACHINE_COLOR_HEX='#98989D'
 MACHINE_COLOR_TINT='0.596078 0.596078 0.615686 0.250000'
 
 load_machine_color() {
   case "${MACHINE_COLOR:-gray}" in
     blue)
+      MACHINE_COLOR_HEX='#0A84FF'
       MACHINE_COLOR_TINT='0.039216 0.517647 1.000000 0.250000'
       ;;
     green)
+      MACHINE_COLOR_HEX='#30D158'
       MACHINE_COLOR_TINT='0.188235 0.819608 0.345098 0.250000'
       ;;
     orange)
+      MACHINE_COLOR_HEX='#FF9F0A'
       MACHINE_COLOR_TINT='1.000000 0.623529 0.039216 0.250000'
       ;;
     pink)
+      MACHINE_COLOR_HEX='#FF375F'
       MACHINE_COLOR_TINT='1.000000 0.215686 0.372549 0.250000'
       ;;
     purple)
+      MACHINE_COLOR_HEX='#BF5AF2'
       MACHINE_COLOR_TINT='0.749020 0.352941 0.949020 0.250000'
       ;;
     red)
+      MACHINE_COLOR_HEX='#FF453A'
       MACHINE_COLOR_TINT='1.000000 0.270588 0.227451 0.250000'
       ;;
     yellow)
+      MACHINE_COLOR_HEX='#FFD60A'
       MACHINE_COLOR_TINT='1.000000 0.839216 0.039216 0.250000'
       ;;
     gray) ;;
@@ -49,12 +57,17 @@ load_machine_color() {
 }
 
 set_wallpaper() {
-  local image_path="$CONFIG_DIR/black.heic"
+  local image_path="$CONFIG_DIR/.machine-wallpaper.png"
+  local svg_path temporary_dir
 
-  if [[ ! -f "$image_path" ]]; then
-    log_error "Missing repo black wallpaper: $image_path"
-    exit 1
-  fi
+  temporary_dir="$(mktemp -d -t machine-wallpaper)"
+  svg_path="$temporary_dir/wallpaper.svg"
+  printf '%s\n' \
+    '<svg xmlns="http://www.w3.org/2000/svg" width="6016" height="3388">' \
+    "  <rect width=\"100%\" height=\"100%\" fill=\"$MACHINE_COLOR_HEX\"/>" \
+    '</svg>' >"$svg_path"
+  sips -s format png "$svg_path" --out "$image_path" >/dev/null
+  rm -rf "$temporary_dir"
 
   osascript <<EOF
 tell application "System Events"
@@ -64,7 +77,7 @@ tell application "System Events"
 end tell
 EOF
 
-  log_info "Wallpaper set to black: $image_path"
+  log_info "Wallpaper set to ${MACHINE_COLOR:-gray}."
 }
 
 set_screensaver() {
@@ -597,7 +610,7 @@ configure_dock() {
   log_info 'Dock updated with the requested app order, no downloads stack, and no recent apps section.'
 }
 
-set_black_wallpaper_and_screensaver() {
+set_machine_wallpaper_and_screensaver() {
   set_wallpaper
   set_screensaver
 }
@@ -769,7 +782,7 @@ finish() {
 
 main() {
   load_machine_color
-  run_step 'Set Black Wallpaper and Screen Saver' set_black_wallpaper_and_screensaver
+  run_step 'Set Machine Wallpaper and Screen Saver' set_machine_wallpaper_and_screensaver
   run_step 'Disable Handoff' disable_handoff
   run_step 'Disable Apple Intelligence' disable_apple_intelligence
   run_step 'Disable Siri' disable_siri
