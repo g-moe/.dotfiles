@@ -71,7 +71,7 @@ const PMSET_SETTINGS = {
 	powermode: {
 		description:
 			"CPU power profile (0 = lower power, 1 = balanced, 2 = higher performance).",
-		normal: "2",
+		normal: "1",
 		server: "2",
 	},
 	lowpowermode: {
@@ -79,24 +79,13 @@ const PMSET_SETTINGS = {
 		normal: "0",
 		server: "0",
 	},
+	autorestart: {
+		description:
+			"Auto restart after power failure (1 = restart when power returns, 0 = stay off).",
+		normal: "0",
+		server: "1",
+	},
 } satisfies Record<string, ModeSetting>;
-
-const RESTART_SETTINGS = {
-	restartPowerFailure: {
-		command: "-setrestartpowerfailure",
-		description:
-			"Auto restart after power failure (on = restart when power returns, off = stay off).",
-		normal: "off",
-		server: "on",
-	},
-	restartFreeze: {
-		command: "-setrestartfreeze",
-		description:
-			"Auto restart after system freeze (on = restart automatically, off = remain frozen).",
-		normal: "off",
-		server: "on",
-	},
-} satisfies Record<string, ModeSetting & { command: string }>;
 
 function isMode(value: string | undefined): value is Mode {
 	return value === "normal" || value === "server";
@@ -115,11 +104,44 @@ function run(command: string, args: readonly string[]) {
 	}
 }
 
-function getPmsetArgs(mode: Mode): string[] {
+function getCapabilities(): Set<string> {
+	const result = spawnSync("pmset", ["-g", "cap"], {
+		encoding: "utf8",
+	});
+
+	if (result.error) {
+		console.error(result.error.message);
+		process.exit(1);
+	}
+
+	if (result.status !== 0) {
+		process.stderr.write(result.stderr);
+		process.exit(result.status ?? 1);
+	}
+
+	return new Set(result.stdout.split(/\s+/));
+}
+
+function getPmsetArgs(mode: Mode, capabilities: ReadonlySet<string>): string[] {
 	const args = ["-a"];
 
 	for (const [setting, config] of Object.entries(PMSET_SETTINGS)) {
-		args.push(setting, config[mode]);
+		let value = config[mode];
+
+		if (setting === "powermode" && value === "2") {
+			if (!capabilities.has("highpowermode")) {
+				console.warn(
+					"High Power Mode is not supported on this Mac; using balanced mode.",
+				);
+				value = "1";
+			}
+		}
+
+		if (setting === "lowpowermode" && !capabilities.has("lowpowermode")) {
+			continue;
+		}
+
+		args.push(setting, value);
 	}
 
 	return args;
@@ -129,13 +151,9 @@ const mode = process.argv[2];
 
 if (!isMode(mode)) {
 	console.error(
-		"Usage: node scripts/mac/install/mac-power-mode.ts <normal|server>",
+		"Usage: node scripts/mac/install/mac-power-mode.mts <normal|server>",
 	);
 	process.exit(1);
 }
 
-run("sudo", ["pmset", ...getPmsetArgs(mode)]);
-
-for (const config of Object.values(RESTART_SETTINGS)) {
-	run("sudo", ["systemsetup", config.command, config[mode]]);
-}
+run("sudo", ["pmset", ...getPmsetArgs(mode, getCapabilities())]);

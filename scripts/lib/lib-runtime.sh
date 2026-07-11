@@ -130,7 +130,7 @@ use_node_from_file() {
 }
 
 # Run a JavaScript or TypeScript file directly with the selected Node version.
-# Usage: run_with_node /path/to/.nvmrc /path/to/script.ts [arguments...]
+# Usage: run_with_node /path/to/.nvmrc /path/to/script.mts [arguments...]
 run_with_node() {
   local version_file="$1"
   local script_path="$2"

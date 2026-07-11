@@ -286,6 +286,47 @@ test_mac_entrypoint() {
   pass 'Mac entrypoint order without Linux commands'
 }
 
+test_mac_power_mode() {
+  local fake_bin="$TEST_DIR/power-bin"
+  local command_log="$TEST_DIR/power-command.log"
+  local error_log="$TEST_DIR/power-error.log"
+  local power_script="$SCRIPTS_DIR/mac/install/mac-power-mode.mts"
+
+  mkdir -p "$fake_bin"
+  cat >"$fake_bin/pmset" <<'EOF'
+#!/bin/bash
+printf '%s\n' 'Capabilities for AC Power:' ' lowpowermode'
+if [[ "${FAKE_HIGH_POWER:-0}" == '1' ]]; then
+  printf '%s\n' ' highpowermode'
+fi
+EOF
+  cat >"$fake_bin/sudo" <<'EOF'
+#!/bin/bash
+printf '%s\n' "$*" >>"$POWER_COMMAND_LOG"
+EOF
+  chmod +x "$fake_bin/pmset" "$fake_bin/sudo"
+
+  : >"$command_log"
+  PATH="$fake_bin:$PATH" POWER_COMMAND_LOG="$command_log" \
+    node "$power_script" server 2>"$error_log"
+  assert_file_contains "$command_log" 'pmset -a' 'power mode must use pmset'
+  assert_file_contains "$command_log" 'powermode 1' 'unsupported High Power Mode must fall back to balanced'
+  assert_file_contains "$command_log" 'autorestart 1' 'server mode must restart after power loss'
+  assert_file_contains "$error_log" 'using balanced mode' 'High Power Mode fallback must be explained'
+  if grep -Fq 'systemsetup' "$command_log"; then
+    fail 'power mode must not use failing systemsetup commands'
+  fi
+  if grep -Fq 'MODULE_TYPELESS_PACKAGE_JSON' "$error_log"; then
+    fail 'power mode must not print a Node module warning'
+  fi
+
+  : >"$command_log"
+  FAKE_HIGH_POWER=1 PATH="$fake_bin:$PATH" POWER_COMMAND_LOG="$command_log" \
+    node "$power_script" server 2>"$error_log"
+  assert_file_contains "$command_log" 'powermode 2' 'supported High Power Mode must be enabled for server mode'
+  pass 'Mac power mode capability fallback and restart setting'
+}
+
 make_linux_entrypoint() {
   local fixture="$1"
   local os_release="$2"
@@ -563,6 +604,7 @@ main() {
   test_clipboard_routing
   test_fresh_process_runner
   test_mac_entrypoint
+  test_mac_power_mode
   test_linux_entrypoint
   test_fake_tailscale_lifecycle
   test_tailscale_contract

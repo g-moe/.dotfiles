@@ -42,7 +42,7 @@ configure_power_mode() {
     2) mode=server ;;
   esac
 
-  run_with_node "$ROOT_DIR/.nvmrc" "$SCRIPT_DIR/mac/install/mac-power-mode.ts" "$mode"
+  run_with_node "$ROOT_DIR/.nvmrc" "$SCRIPT_DIR/mac/install/mac-power-mode.mts" "$mode"
   log_info "$mode power mode applied."
 }
 
