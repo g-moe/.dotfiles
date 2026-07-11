@@ -61,7 +61,8 @@ load_machine_color() {
 set_wallpaper() {
   local color_key="${MACHINE_COLOR_HEX#\#}"
   local source_path="$CONFIG_DIR/white.heic"
-  local image_path="$CONFIG_DIR/.machine-wallpaper-white-$color_key-rgb-rotated.png"
+  local image_path="$CONFIG_DIR/.machine-wallpaper-white-$color_key-rgb-rotated-heavy-vignette.png"
+  local base_path
 
   if [[ ! -s "$source_path" ]]; then
     log_error "Missing wallpaper source: $source_path"
@@ -74,11 +75,28 @@ set_wallpaper() {
   fi
 
   if [[ ! -s "$image_path" ]]; then
-    magick "$source_path" \
+    base_path="$(mktemp "$CONFIG_DIR/.machine-wallpaper-base.XXXXXX.png")"
+
+    if ! magick "$source_path" \
       -rotate 180 \
       -colorspace gray \
       +level-colors '#000000',"$MACHINE_COLOR_HEX" \
-      "$image_path"
+      "$base_path"; then
+      rm -f "$base_path"
+      return 1
+    fi
+
+    if ! magick "$base_path" \
+      \( -size 1504x847 radial-gradient:white-black +level '5%,100%' \
+        -resize '6016x3388!' \) \
+      -compose multiply \
+      -composite \
+      "$image_path"; then
+      rm -f "$base_path" "$image_path"
+      return 1
+    fi
+
+    rm -f "$base_path"
   fi
 
   osascript - "$image_path" <<'APPLESCRIPT'
