@@ -61,7 +61,7 @@ load_machine_color() {
 set_wallpaper() {
   local color_key="${MACHINE_COLOR_HEX#\#}"
   local source_path="$CONFIG_DIR/white.heic"
-  local image_path="$CONFIG_DIR/.machine-wallpaper-white-$color_key-rgb-rotated-heavy-vignette.png"
+  local image_path="$CONFIG_DIR/.machine-wallpaper-white-$color_key-rgb-rotated-vignette-25.png"
   local base_path
 
   if [[ ! -s "$source_path" ]]; then
@@ -87,7 +87,7 @@ set_wallpaper() {
     fi
 
     if ! magick "$base_path" \
-      \( -size 1504x847 radial-gradient:white-black +level '5%,100%' \
+      \( -size 1504x847 radial-gradient:white-black +level '25%,100%' \
         -resize '6016x3388!' \) \
       -compose multiply \
       -composite \
