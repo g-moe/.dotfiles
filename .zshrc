@@ -78,7 +78,7 @@ fi
 bindkey '^R' history-incremental-search-backward
 
 # Print out alias
-alias aliases='grep "^alias " ~/.zshrc'
+alias alias-ls='sed -nE "s/^[[:space:]]*alias[[:space:]]+([^=]+)=.*/\1/p" ~/.zshrc'
 
 # Reload zshrc
 alias reload='source ~/.zshrc'
@@ -89,11 +89,8 @@ cd() {
   builtin cd "$@" && ls -a
 }
 
-# History
-alias h='history'
-
 # List configured SSH host aliases
-alias ssh-hosts='awk '\''tolower($1)=="host" {for (i=2; i<=NF; i++) if ($i !~ /[*?]/) print $i}'\'' ~/.ssh/config'
+alias ssh-ls='awk '\''tolower($1)=="host" {for (i=2; i<=NF; i++) if ($i !~ /[*?]/) print $i}'\'' ~/.ssh/config'
 
 # Walk through creating a new SSH host config
 alias ssh-new='$HOME/.config/scripts/shared/tools/shared-ssh-new-host.sh'
