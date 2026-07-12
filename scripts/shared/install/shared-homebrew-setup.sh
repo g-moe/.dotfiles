@@ -72,6 +72,11 @@ install_ubuntu_prerequisites() {
     ca-certificates
 }
 
+prepare_linuxbrew_parent() {
+  sudo mkdir -p /home/linuxbrew
+  sudo chmod 0755 /home/linuxbrew
+}
+
 install_homebrew() {
   if load_homebrew; then
     log_info 'Homebrew already installed.'
@@ -102,6 +107,7 @@ linux() {
   ensure_ubuntu_26_04
   ensure_supported_linux_cpu
   ensure_normal_user
+  prepare_linuxbrew_parent
 
   if ! load_homebrew; then
     install_ubuntu_prerequisites

@@ -18,6 +18,7 @@ CURRENT_USER="${USER:-$(id -un)}"
 TAILSCALE_UP_TIMEOUT="${TAILSCALE_UP_TIMEOUT:-120s}"
 LINUX_SERVICE_NAME='linux-tailscaled.service'
 LINUX_SERVICE_PATH="/etc/systemd/system/$LINUX_SERVICE_NAME"
+LINUX_HOMEBREW_SERVICE_NAME='homebrew.tailscale.service'
 LINUX_TAILSCALED_BIN='/home/linuxbrew/.linuxbrew/opt/tailscale/bin/tailscaled'
 
 ensure_homebrew() {
@@ -86,18 +87,13 @@ install_mac_gui() {
 
 stop_linux_homebrew_services() {
   local brew_bin="$1"
-  local system_services
   local user_services
 
   "$brew_bin" services stop tailscale >/dev/null 2>&1 || true
-  sudo "$brew_bin" services stop tailscale >/dev/null 2>&1 || true
+  sudo systemctl disable --now "$LINUX_HOMEBREW_SERVICE_NAME" >/dev/null 2>&1 || true
 
   if ! user_services="$("$brew_bin" services list 2>&1)"; then
     log_error "Could not inspect the user Homebrew services: $user_services"
-    return 1
-  fi
-  if ! system_services="$(sudo "$brew_bin" services list 2>&1)"; then
-    log_error "Could not inspect the system Homebrew services: $system_services"
     return 1
   fi
 
@@ -105,7 +101,7 @@ stop_linux_homebrew_services() {
     log_error 'The user Homebrew Tailscale service is still active.'
     return 1
   fi
-  if grep -Eq '^tailscale[[:space:]]+started([[:space:]]|$)' <<<"$system_services"; then
+  if sudo systemctl is-active --quiet "$LINUX_HOMEBREW_SERVICE_NAME"; then
     log_error 'The system Homebrew Tailscale service is still active.'
     return 1
   fi
@@ -119,7 +115,7 @@ refuse_vendor_linux_service() {
     return 1
   fi
 
-  if ! installed_units="$(sudo systemctl list-unit-files tailscaled.service --no-legend 2>&1)"; then
+  if ! installed_units="$(sudo systemctl list-unit-files --type=service --no-legend --no-pager 2>&1)"; then
     log_error "Could not inspect systemd services: $installed_units"
     return 1
   fi

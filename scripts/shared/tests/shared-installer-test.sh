@@ -529,11 +529,11 @@ unit=''
 for argument in "$@"; do unit="$argument"; done
 case "$command_name" in
   is-active)
-    if [[ "$unit" == 'tailscaled.service' ]]; then
-      [[ "${VENDOR_ACTIVE:-0}" == '1' ]]
-    else
-      [[ -f "$CUSTOM_ACTIVE_STATE" ]]
-    fi
+    case "$unit" in
+      tailscaled.service) [[ "${VENDOR_ACTIVE:-0}" == '1' ]] ;;
+      linux-tailscaled.service) [[ -f "$CUSTOM_ACTIVE_STATE" ]] ;;
+      *) exit 1 ;;
+    esac
     ;;
   list-unit-files)
     if [[ "${VENDOR_INSTALLED:-0}" == '1' ]]; then
@@ -616,11 +616,14 @@ test_fake_tailscale_lifecycle() {
 
   run_fake_tailscale_install "$fixture" 0
   assert_file_contains "$fixture/brew.log" 'brew[user] services stop tailscale' 'user Brew service was not stopped'
-  assert_file_contains "$fixture/brew.log" 'brew[system] services stop tailscale' 'system Brew service was not stopped'
   assert_file_contains "$fixture/brew.log" 'brew[user] services list' 'user Brew service was not verified'
-  assert_file_contains "$fixture/brew.log" 'brew[system] services list' 'system Brew service was not verified'
+  assert_file_contains "$fixture/system.log" 'systemctl disable --now homebrew.tailscale.service' \
+    'system Brew service was not stopped'
+  assert_file_contains "$fixture/system.log" 'systemctl is-active --quiet homebrew.tailscale.service' \
+    'system Brew service was not verified'
   assert_file_contains "$fixture/brew.log" 'brew[user] install --formula tailscale' 'Tailscale formula was not installed as the user'
-  assert_file_contains "$fixture/system.log" 'systemctl list-unit-files tailscaled.service --no-legend' 'vendor service was not checked'
+  assert_file_contains "$fixture/system.log" 'systemctl list-unit-files --type=service --no-legend --no-pager' \
+    'vendor service was not checked'
   assert_file_contains "$fixture/system.log" 'systemctl daemon-reload' 'systemd was not reloaded'
   assert_file_contains "$fixture/system.log" 'systemctl enable linux-tailscaled.service' 'custom service was not enabled'
   assert_file_contains "$fixture/system.log" 'systemctl restart linux-tailscaled.service' 'custom service was not restarted'
@@ -628,10 +631,11 @@ test_fake_tailscale_lifecycle() {
   assert_file_contains "$fixture/linux-tailscaled.service" '--port=41641' 'rendered service is missing its port'
   [[ ! -s "$fixture/configure.log" ]] || fail 'Tailscale install called configure mode'
   assert_before "$fixture/events.log" 'brew[user] services stop tailscale' \
-    'brew[system] services stop tailscale' 'user Brew service must stop before the system Brew service'
-  assert_before "$fixture/events.log" 'brew[system] services list' \
-    'systemctl list-unit-files tailscaled.service --no-legend' 'Brew services must be verified before the vendor service check'
-  assert_before "$fixture/events.log" 'systemctl list-unit-files tailscaled.service --no-legend' \
+    'systemctl disable --now homebrew.tailscale.service' 'user Brew service must stop before the system Brew service'
+  assert_before "$fixture/events.log" 'systemctl is-active --quiet homebrew.tailscale.service' \
+    'systemctl list-unit-files --type=service --no-legend --no-pager' \
+    'Brew services must be verified before the vendor service check'
+  assert_before "$fixture/events.log" 'systemctl list-unit-files --type=service --no-legend --no-pager' \
     'brew[user] install --formula tailscale' 'vendor collision must be checked before formula installation'
   assert_before "$fixture/events.log" 'brew[user] install --formula tailscale' \
     'systemctl daemon-reload' 'formula installation must finish before systemd setup'
@@ -659,8 +663,9 @@ test_tailscale_contract() {
 
   assert_file_contains "$runner" 'shared-tailscale-setup.sh install' 'runner must not configure Tailscale'
   assert_file_contains "$tailscale" '"$brew_bin" services stop tailscale' 'user Homebrew service is not stopped'
-  assert_file_contains "$tailscale" 'sudo "$brew_bin" services stop tailscale' 'system Homebrew service is not stopped'
-  assert_file_contains "$tailscale" 'list-unit-files tailscaled.service' 'vendor service collision is not checked'
+  assert_file_contains "$tailscale" 'systemctl disable --now "$LINUX_HOMEBREW_SERVICE_NAME"' \
+    'system Homebrew service is not stopped'
+  assert_file_contains "$tailscale" 'list-unit-files --type=service' 'vendor service collision is not checked'
   assert_file_contains "$tailscale" "LINUX_SERVICE_NAME='linux-tailscaled.service'" 'custom Linux service name changed'
   assert_file_contains "$tailscale" "LINUX_TAILSCALED_BIN='/home/linuxbrew/.linuxbrew/opt/tailscale/bin/tailscaled'" 'stable Tailscale binary changed'
   assert_file_contains "$tailscale" '--port=41641' 'Tailscale UDP port is missing'
@@ -698,6 +703,10 @@ test_one_brewfile_and_environment_loading() {
   if grep -Fq 'NONINTERACTIVE=1' "$homebrew_setup"; then
     fail 'Homebrew setup must allow the first sudo password prompt'
   fi
+  assert_file_contains "$homebrew_setup" 'sudo chmod 0755 /home/linuxbrew' \
+    'Linux Homebrew setup must repair the shared parent directory permissions'
+  assert_file_contains "$homebrew_setup" $'  ensure_normal_user\n  prepare_linuxbrew_parent' \
+    'Linuxbrew parent permissions must be repaired before Homebrew runs'
 
   assert_file_contains "$SCRIPTS_DIR/shared/install/shared-apps-setup.sh" 'load_homebrew' 'app child must reload Homebrew'
   assert_file_contains "$SCRIPTS_DIR/shared/install/shared-tmux-setup.sh" 'load_homebrew' 'tmux child must reload Homebrew'
