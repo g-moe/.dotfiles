@@ -10,6 +10,7 @@ if OS.mac?
   brew "imagemagick"
 
   cask "ghostty"
+  cask "font-jetbrains-mono"
   cask "karabiner-elements"
   cask "betterdisplay"
   cask "raycast"

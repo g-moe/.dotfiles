@@ -33,6 +33,7 @@ This directory contains the shared macOS and Ubuntu installers plus Mac-only too
 - Put OS-specific work in literal `mac()` and `linux()` functions. Do not use `eval` for routing.
 - Use `safe_link SOURCE TARGET`: correct links are left alone, other links are replaced, and real files or directories are never overwritten.
 - Install shared and OS-specific Homebrew entries through `shared/install/shared-Brewfile`. Do not run `brew bundle cleanup`.
+- JetBrains Mono is installed as a Homebrew cask on Mac and an Ubuntu package on Linux by `shared-apps-setup.sh`.
 - Node setup uses Node.js 24 through NVM; keep it aligned with `.nvmrc` and `package.json`.
 - Ubuntu support is limited to Ubuntu 26.04 LTS on amd64 with SSSE3 or arm64.
 - Mac wallpaper setup lets the user keep the current wallpaper or rotate the tracked root `white.heic`, map its light values to the machine color, add a black vignette with ImageMagick, and cache a lossless PNG.

@@ -692,6 +692,9 @@ test_one_brewfile_and_environment_loading() {
   assert_file_contains "$brewfile" 'brew "tmux"' 'shared tmux formula is missing'
   assert_file_contains "$brewfile" 'brew "zsh"' 'Linux Zsh formula is missing'
   assert_file_contains "$brewfile" 'brew "wl-clipboard"' 'Wayland clipboard formula is missing'
+  assert_file_contains "$brewfile" 'cask "font-jetbrains-mono"' 'Mac JetBrains Mono font is missing'
+  assert_file_contains "$SCRIPTS_DIR/shared/install/shared-apps-setup.sh" \
+    'sudo apt-get install -y fonts-jetbrains-mono' 'Linux JetBrains Mono font is missing'
   if grep -Fq 'NONINTERACTIVE=1' "$homebrew_setup"; then
     fail 'Homebrew setup must allow the first sudo password prompt'
   fi
