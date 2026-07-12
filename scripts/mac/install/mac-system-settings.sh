@@ -317,6 +317,8 @@ configure_finder_preferences() {
 }
 
 _apply_remote_access() {
+  local screen_sharing_state
+
   if ! sudo -v; then
     log_error 'Unable to acquire sudo privileges for remote access setup.'
     exit 1
@@ -337,22 +339,25 @@ _apply_remote_access() {
     exit 1
   fi
 
-  # Screen Sharing
-  if ! silent sudo launchctl enable system/com.apple.screensharing; then
-    log_error 'Failed to enable Screen Sharing service.'
-    exit 1
-  fi
-
-  silent sudo launchctl load -w /System/Library/LaunchDaemons/com.apple.screensharing.plist || true
-
-  if ! silent sudo launchctl print system/com.apple.screensharing; then
-    log_error 'Screen Sharing service could not be verified as loaded.'
-    log_error 'Enable it manually in System Settings > General > Sharing > Screen Sharing.'
-    exit 1
-  fi
-
   log_info 'Remote Login (SSH) enabled.'
-  log_info 'Screen Sharing enabled for native macOS login-window access.'
+
+  # macOS 12.1 and later requires Screen Sharing to be enabled in System Settings.
+  # Starting its launch daemon directly appears enabled but rejects connections.
+  log_info 'macOS requires Screen Sharing to be approved in System Settings.'
+  log_info 'Turn Remote Management off, then turn Screen Sharing off and back on.'
+  silent /usr/bin/open 'x-apple.systempreferences:com.apple.Sharing-Settings.extension' || true
+  printf 'Press Enter after Screen Sharing is on... ' >/dev/tty
+  read -r </dev/tty
+
+  screen_sharing_state="$(sudo launchctl print-disabled system 2>/dev/null || true)"
+  if [[ "$screen_sharing_state" != *'"com.apple.screensharing" => enabled'* ]] || \
+    ! silent sudo launchctl print system/com.apple.screensharing; then
+    log_error 'Screen Sharing is not on.'
+    log_error 'Turn it on in System Settings > General > Sharing, then run the installer again.'
+    exit 1
+  fi
+
+  log_info 'Screen Sharing enabled and verified.'
 }
 
 configure_headless_access() {

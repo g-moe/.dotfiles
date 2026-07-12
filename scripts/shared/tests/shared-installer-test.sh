@@ -720,6 +720,13 @@ test_one_brewfile_and_environment_loading() {
   assert_file_contains "$SCRIPTS_DIR/mac/install/mac-system-settings.sh" 'EnableTiledWindowMargins -bool true' 'Mac tiled and filled windows must leave margins'
   assert_file_contains "$SCRIPTS_DIR/mac/install/mac-system-settings.sh" 'show-process-indicators -bool false' 'Mac Dock open application indicators must be disabled'
   assert_file_contains "$SCRIPTS_DIR/mac/install/mac-system-settings.sh" 'AppleIconAppearanceTheme -string ClearLight' 'Mac icon and widget style must be clear light'
+  assert_file_contains "$SCRIPTS_DIR/mac/install/mac-system-settings.sh" \
+    'x-apple.systempreferences:com.apple.Sharing-Settings.extension' 'Mac remote access setup must open Sharing settings'
+  assert_file_contains "$SCRIPTS_DIR/mac/install/mac-system-settings.sh" \
+    'Press Enter after Screen Sharing is on' 'Mac remote access setup must wait for Screen Sharing approval'
+  if grep -Fq 'launchctl enable system/com.apple.screensharing' "$SCRIPTS_DIR/mac/install/mac-system-settings.sh"; then
+    fail 'Mac remote access setup must not bypass Screen Sharing approval with launchctl'
+  fi
   assert_file_contains "$SCRIPTS_DIR/mac-install.sh" 'run_with_node' 'Mac power setup must reload Node'
   assert_file_contains "$SCRIPTS_DIR/shared/install/shared-zsh-setup.sh" 'run_privileged chsh' 'Linux shell change must use sudo'
   assert_file_contains "$SCRIPTS_DIR/shared/install/shared-tmux-setup.sh" 'bin/install_plugins' 'tmux plugins must be installed'
