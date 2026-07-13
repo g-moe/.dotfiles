@@ -15,32 +15,36 @@ configure_wallpaper() {
 }
 
 _wallpaper_path() {
-  local color color_hex color_key image_path temporary_path
+  local color color_hex color_key image_path output_size temporary_path
 
   color="$(machine_field "$ROOT_DIR/machine.json" color)"
   color_hex="$(machine_color_hex "$color")"
   color_key="${color_hex#\#}"
-  image_path="$ROOT_DIR/.machine-wallpaper-$color_key.png"
+  output_size=6016x3388
+  [[ "$OS" != linux ]] || output_size=3840x2160
+  image_path="$ROOT_DIR/.machine-wallpaper-$color_key-$output_size.png"
   if [[ ! -s "$image_path" ]]; then
     temporary_path="$(mktemp "${TMPDIR:-/tmp}/machine-wallpaper.XXXXXX.png")"
-    magick "$ROOT_DIR/white.heic" \
+    magick "$ROOT_DIR/white.png" \
       -rotate 180 \
       -colorspace gray \
       +level-colors '#000000',"$color_hex" \
-      "$temporary_path"
+      -resize "$output_size!" \
+      "$temporary_path" || die 'Could not color the wallpaper.'
     magick "$temporary_path" \
-      \( -size 1504x847 radial-gradient:white-black +level '25%,100%' -resize '6016x3388!' \) \
+      \( -size 1504x847 radial-gradient:white-black +level '25%,100%' -resize "$output_size!" \) \
       -compose multiply \
       -composite \
-      "$image_path"
+      "$image_path" || die 'Could not create the wallpaper.'
     rm -f "$temporary_path"
+    [[ -s "$image_path" ]] || die 'Wallpaper image is empty.'
   fi
   printf '%s\n' "$image_path"
 }
 
 mac() {
   local image_path
-  confirm 'Set the machine-color wallpaper?' || return
+  confirm 'Set the machine-color wallpaper?' || return 0
   image_path="$(_wallpaper_path)"
   osascript - "$image_path" <<'APPLESCRIPT'
 on run argv
@@ -57,7 +61,7 @@ APPLESCRIPT
 
 linux() {
   local image_path uri
-  confirm 'Set the machine-color wallpaper?' || return
+  confirm 'Set the machine-color wallpaper?' || return 0
   image_path="$(_wallpaper_path)"
   uri="file://$image_path"
   gsettings set org.gnome.desktop.background picture-uri "$uri"
