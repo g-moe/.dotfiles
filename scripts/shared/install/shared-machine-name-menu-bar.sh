@@ -98,7 +98,7 @@ class Indicator extends PanelMenu.Button {
 export default class MachineNameExtension extends Extension {
   enable() {
     this._indicator = new Indicator();
-    Main.panel.addToStatusArea(this.uuid, this._indicator);
+    Main.panel.addToStatusArea(this.uuid, this._indicator, 0, 'center');
   }
 
   disable() {
@@ -117,6 +117,7 @@ EOF
     gsettings set org.gnome.shell enabled-extensions "$enabled_extensions"
   fi
 
+  gnome-extensions disable "$uuid" >/dev/null 2>&1 || true
   gnome-extensions enable "$uuid" >/dev/null 2>&1 || true
   log_info "Machine name added to the GNOME top bar: $MACHINE_NAME"
   log_info 'Log out and back in if the machine name is not visible yet.'

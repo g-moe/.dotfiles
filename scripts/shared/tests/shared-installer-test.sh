@@ -465,6 +465,9 @@ EOF
     '"shell-version": ["50"]' 'GNOME extension must match the installed shell version'
   assert_file_contains "$linux_home/.local/share/gnome-shell/extensions/machine-name@local/extension.js" \
     "text: 'machine:linux-box'" 'GNOME extension must show the prefixed machine name'
+  assert_file_contains "$linux_home/.local/share/gnome-shell/extensions/machine-name@local/extension.js" \
+    "addToStatusArea(this.uuid, this._indicator, 0, 'center')" 'GNOME extension must center the machine name'
+  assert_file_contains "$call_log" 'disable machine-name@local' 'changed GNOME extension must be reloaded'
   assert_file_contains "$call_log" 'enable machine-name@local' 'GNOME extension must be enabled'
   assert_file_contains "$call_log" "set org.gnome.shell enabled-extensions ['machine-name@local']" \
     'GNOME extension must stay enabled after login'
