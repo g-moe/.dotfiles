@@ -12,6 +12,7 @@ All installer runs happen inside UTM. Do not run the installer or its tests on t
 - Keep one stopped base machine after each operating system is installed and before the repo installer runs.
 - Save one clean snapshot after the OS setup finishes. Restore that snapshot before every first-run test instead of rebuilding or cloning the VM.
 - Copy or clone the repo inside the guest. Do not run from a read-only shared folder.
+- On macOS, log in to the desktop before starting the installer so its desktop changes have an active session.
 - Save the full terminal output for every run.
 - After a first run passes, run the same installer a second time without cleaning the machine.
 - A test only passes when the commands succeed and the result is checked in the desktop.
@@ -88,6 +89,7 @@ All installer runs happen inside UTM. Do not run the installer or its tests on t
 - After reboot, the guest was still arm64 and named `m4-vm`. Docker, Tailscale, SSH, and GNOME Remote Desktop were enabled and active. The machine name, wallpaper, dark theme, bottom Dock, and eight skill links in each supported agent folder were also checked.
 - Full logs from these runs, including both full passes and the post-reboot check, are saved on the host under `.test-logs/ubuntu-arm64-2026-07-13/`. The folder is ignored because test output is not source code.
 - After the macOS fixes in `9f16184`, the current scripts were tested again from the Ubuntu `test-ready` snapshot. The full clean ARM64 run passed, the exact second run passed, and the reboot check confirmed the machine name, wallpaper, dark theme, bottom Dock, apps, services, Node 24, VSCodium extensions, and skill links. These logs are under `.test-logs/ubuntu-arm64-after-macos-2026-07-13/`.
+- After the Linux check in `b2b195f`, the current scripts were tested again from the Mac `test-ready` snapshot after logging in to the desktop. The full clean ARM64 run and the exact second run passed. The reboot check confirmed the machine name, FileVault off, wallpaper, dark theme, hidden small bottom Dock, all selected apps, Node 24, VSCodium extensions, eight skill links in each supported agent folder, and the Tailscale service. The VM was then stopped and restored to `test-ready`. These logs are under `.test-logs/macos-arm64-2026-07-13/`.
 
 ## Desktop checks
 
