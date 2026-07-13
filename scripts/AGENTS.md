@@ -32,8 +32,10 @@ This directory contains one macOS/Ubuntu installer plus separate Mac-only tools.
 - Name the switch function after the thing it changes, such as `install_vscodium` or `configure_dock`.
 - Every strategy file receives the OS as `$1`; its switch calls plain `mac()` or `linux()` functions.
 - Run each strategy in a new Bash process. This lets every file use the plain names `mac()` and `linux()` without clashes.
+- Register every strategy exactly once in `install.sh`; `tests/strategy-shape.sh` checks this.
 - Keep one feature per strategy file. Do not group Skills, Node, Zsh, tmux, Dock, or other unrelated work.
 - Do not add migration steps, old-path cleanup, or compatibility branches. These installers target clean machines.
 - macOS uses Homebrew. Ubuntu uses APT unless the vendor does not publish an APT package.
-- Ubuntu support is limited to Ubuntu 26.04 on amd64 because Google does not publish Chrome for Linux ARM.
+- Ubuntu 26.04 supports amd64 and arm64. `detect_os` exports `LINUX_ARCH` once; setup files must use it instead of detecting the CPU again.
+- Use Google Chrome and OpenWhispr on amd64. Use Brave and whisper.cpp on arm64 because those vendors do not publish matching Linux ARM builds.
 - Keep true Mac-only tools under `mac/`; do not put normal Mac setup there.

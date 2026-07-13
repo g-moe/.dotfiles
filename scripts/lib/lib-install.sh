@@ -40,14 +40,23 @@ link_config() {
 detect_os() {
   case "$(uname -s)" in
     Darwin) OS=mac ;;
-    Linux) OS=linux ;;
+    Linux)
+      OS=linux
+      has dpkg || die 'Ubuntu package tools are missing.'
+      LINUX_ARCH="$(dpkg --print-architecture)"
+      case "$LINUX_ARCH" in
+        amd64 | arm64) ;;
+        *) die "Ubuntu amd64 or arm64 is required; found $LINUX_ARCH." ;;
+      esac
+      export LINUX_ARCH
+      ;;
     *) die "Unsupported system: $(uname -s)" ;;
   esac
   export OS
 }
 
 validate_os() {
-  local architecture ID='' VERSION_ID=''
+  local ID='' VERSION_ID=''
 
   case "$OS" in
     mac) ;;
@@ -57,9 +66,6 @@ validate_os() {
       . /etc/os-release
       [[ "$ID" == ubuntu && "$VERSION_ID" == 26.04 ]] ||
         die "Ubuntu 26.04 is required; found ${ID:-unknown} ${VERSION_ID:-unknown}."
-      architecture="$(dpkg --print-architecture)"
-      [[ "$architecture" == amd64 ]] ||
-        die "Ubuntu amd64 is required; found $architecture."
       ;;
     *) die "Unsupported OS value: $OS" ;;
   esac

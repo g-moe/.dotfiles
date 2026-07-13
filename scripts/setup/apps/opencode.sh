@@ -20,11 +20,10 @@ mac() {
 }
 
 linux() {
-  local architecture package
+  local package
 
-  architecture="$(dpkg --print-architecture)"
   package="$(download_github_asset anomalyco/opencode \
-    "opencode-desktop-linux-${architecture}\\.deb$" .deb)"
+    "opencode-desktop-linux-${LINUX_ARCH}\\.deb$" .deb)"
   apt_install "$package"
   rm -f "$package"
   link_config "$ROOT_DIR/opencode" "$HOME/.config/opencode"

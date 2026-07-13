@@ -16,7 +16,7 @@ configure_theme() {
 
 mac() {
   local color tint
-  confirm 'Set the dark theme and machine color?' || return
+  confirm 'Set the dark theme and machine color?' || return 0
   color="$(machine_field "$ROOT_DIR/machine.json" color)"
   tint="$(machine_color_tint "$color")"
   defaults write NSGlobalDomain AppleAccentColor -int 4
@@ -31,7 +31,7 @@ mac() {
 
 linux() {
   local accent color
-  confirm 'Set the dark theme and machine color?' || return
+  confirm 'Set the dark theme and machine color?' || return 0
   color="$(machine_field "$ROOT_DIR/machine.json" color)"
   case "$color" in
     aqua) accent=teal ;;

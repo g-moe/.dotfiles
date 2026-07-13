@@ -18,13 +18,12 @@ mac() {
 }
 
 linux() {
-  local archive architecture asset_arch binary temporary_dir
+  local archive asset_arch binary temporary_dir
 
-  architecture="$(dpkg --print-architecture)"
-  case "$architecture" in
+  case "$LINUX_ARCH" in
     amd64) asset_arch=x86_64 ;;
     arm64) asset_arch=aarch64 ;;
-    *) die "Codex has no Linux build for $architecture" ;;
+    *) die "Codex has no Linux build for $LINUX_ARCH" ;;
   esac
   archive="$(download_github_asset openai/codex \
     "^codex-${asset_arch}-unknown-linux-musl\\.tar\\.gz$" .tar.gz)"

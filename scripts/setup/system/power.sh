@@ -28,7 +28,7 @@ mac() {
   local -a settings
 
   mode="$(_mode)"
-  [[ "$mode" != skip ]] || return
+  [[ "$mode" != skip ]] || return 0
   capabilities="$(pmset -g cap)"
   power_mode=1
   standby=1
@@ -64,7 +64,7 @@ linux() {
   local mode profile
 
   mode="$(_mode)"
-  [[ "$mode" != skip ]] || return
+  [[ "$mode" != skip ]] || return 0
   profile=balanced
   [[ "$mode" == normal ]] || profile=performance
   gsettings set org.gnome.settings-daemon.plugins.power idle-dim false
@@ -73,7 +73,7 @@ linux() {
   gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-battery-type nothing
   gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-battery-timeout 0
   if has powerprofilesctl && powerprofilesctl list | grep -Fq "$profile:"; then
-    powerprofilesctl set "$profile"
+    sudo powerprofilesctl set "$profile"
   fi
   install_root_file /etc/systemd/logind.conf.d/60-machine-power.conf \
     '[Login]

@@ -1,6 +1,6 @@
 # Machine installer
 
-Run this from a clean macOS machine or an Ubuntu 26.04 amd64 machine:
+Run this from a clean macOS machine or an Ubuntu 26.04 amd64 or arm64 machine:
 
 ```bash
 bash scripts/install.sh
@@ -54,6 +54,10 @@ macOS uses Homebrew. Ubuntu uses APT when the app is available there. A vendor p
 
 Ubuntu ships Firefox as a Snap. The Firefox strategy removes that copy and installs Mozilla's APT package so future Firefox updates stay under APT.
 
+On Linux, the installer detects the CPU once at startup. AMD64 installs Google Chrome and OpenWhispr. ARM64 installs Brave and whisper.cpp because Google and OpenWhispr do not publish matching Linux ARM packages. The rest of the Linux app list uses packages that publish both CPU types.
+
 The installer is for a clean machine. It has no move-old-files steps and no support for an older installer layout.
+
+The wallpaper source is the tracked root `white.png`. macOS keeps its full size; Ubuntu creates a 3840x2160 copy that works with UTM's virtual display.
 
 See [TESTING.md](TESTING.md) for the clean-machine checks.

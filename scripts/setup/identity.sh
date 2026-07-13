@@ -60,13 +60,11 @@ load_machine_identity() {
 }
 
 configure_identity() {
-  local os="$1"
-
   load_machine_identity
-  case "$os" in
+  case "$1" in
     mac) mac ;;
     linux) linux ;;
-    *) die "Unsupported OS: $os" ;;
+    *) die "Unsupported OS: $1" ;;
   esac
 }
 

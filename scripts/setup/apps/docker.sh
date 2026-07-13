@@ -18,11 +18,10 @@ mac() {
 }
 
 linux() {
-  local architecture ID='' VERSION_CODENAME=''
+  local ID='' VERSION_CODENAME=''
 
   # shellcheck disable=SC1091
   . /etc/os-release
-  architecture="$(dpkg --print-architecture)"
   install_apt_key \
     https://download.docker.com/linux/ubuntu/gpg \
     /etc/apt/keyrings/docker.asc
@@ -31,7 +30,7 @@ Types: deb
 URIs: https://download.docker.com/linux/ubuntu
 Suites: $VERSION_CODENAME
 Components: stable
-Architectures: $architecture
+Architectures: $LINUX_ARCH
 Signed-By: /etc/apt/keyrings/docker.asc
 EOF
 )"

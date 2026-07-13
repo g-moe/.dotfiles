@@ -28,7 +28,7 @@ _mac_handler() {
   temporary_file="$(mktemp "${TMPDIR:-/tmp}/vscodium.XXXXXX.$extension")"
   uti="$(mdls -name kMDItemContentType -raw "$temporary_file" 2>/dev/null || true)"
   rm -f "$temporary_file"
-  [[ -n "$uti" && "$uti" != '(null)' && "$uti" != '*' ]] || return
+  [[ -n "$uti" && "$uti" != '(null)' && "$uti" != '*' ]] || return 0
   duti -s com.vscodium "$uti" all 2>/dev/null || duti -s com.vscodium "$uti" editor
 }
 

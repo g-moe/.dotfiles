@@ -31,7 +31,7 @@ linux() {
   local choice ID='' VERSION_CODENAME=''
 
   choice="$(choose 'Install Tailscale?' Skip 'System service')"
-  [[ "$choice" == 1 ]] || return
+  [[ "$choice" == 1 ]] || return 0
   # shellcheck disable=SC1091
   . /etc/os-release
   install_apt_key \
