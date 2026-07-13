@@ -19,29 +19,29 @@ All installer runs happen inside UTM. Do not run the installer or its tests on t
 
 ## Runs
 
-| Run | macOS choice | Ubuntu choice | Status |
-| --- | --- | --- | --- |
-| App install A | Tailscale command-line service, NordVPN yes | Tailscale service, NordVPN yes | macOS earlier test passed twice; Ubuntu passed twice |
-| App install B | Tailscale menu bar app, NordVPN no | Tailscale skipped, NordVPN no | Ubuntu passed; macOS pending |
-| App install C | Tailscale skipped | Tailscale service | Ubuntu service choice covered by A; macOS pending |
-| Desktop A | Dock hidden, small, bottom | Dock hidden, small, bottom | Ubuntu passed; macOS pending |
-| Desktop B | Dock shown, large, left | Dock shown, large, left | Ubuntu passed; macOS pending |
-| Desktop C | Dock unchanged, medium, right | Dock unchanged, medium, right | Ubuntu passed; macOS pending |
-| Wallpaper A | Apply machine wallpaper | Apply machine wallpaper | Ubuntu passed; macOS pending |
-| Wallpaper B | Keep current wallpaper | Keep current wallpaper | Ubuntu passed; macOS pending |
-| Theme A | Apply dark theme and machine color | Apply dark theme and machine color | Ubuntu passed; macOS pending |
-| Theme B | Keep current theme | Keep current theme | Ubuntu passed; macOS pending |
-| Development | Node, Zsh, tmux, VSCodium, and Skills | Node, Zsh, tmux, VSCodium, and Skills | Ubuntu passed; macOS pending |
-| Input | Pointer, touchpad, keyboard, and remapping | Pointer, touchpad, keyboard, and remapping | Ubuntu passed; macOS pending |
-| Files | Associations, preferences, and sidebar | Associations, preferences, and sidebar | Ubuntu passed; macOS pending |
-| Remote A | Enable remote access | Enable remote access | Ubuntu passed; macOS pending |
-| Remote B | Skip remote access | Skip remote access | Ubuntu passed; macOS pending |
-| Power A | Normal | Normal | Ubuntu passed; macOS pending |
-| Power B | Server | Server | Ubuntu passed; macOS pending |
-| Power C | Skip | Skip | Ubuntu passed; macOS pending |
-| Full clean run | All normal choices | All normal choices | Ubuntu passed; macOS pending |
-| Second run | Run again without a restore | Run again without a restore | Ubuntu full run passed twice; macOS full run pending |
-| CPU support | Native Mac CPU | Ubuntu amd64 and arm64 paths | AMD64 official package checks and earlier live evidence passed; ARM64 live run passed |
+| Run            | macOS choice                                | Ubuntu choice                              | Status                                                                                |
+| -------------- | ------------------------------------------- | ------------------------------------------ | ------------------------------------------------------------------------------------- |
+| App install A  | Tailscale command-line service, NordVPN yes | Tailscale service, NordVPN yes             | Both passed twice                                                                     |
+| App install B  | Tailscale menu bar app, NordVPN no          | Tailscale skipped, NordVPN no              | Both passed; macOS passed twice                                                       |
+| App install C  | Tailscale skipped                           | Tailscale service                          | Ubuntu service choice covered by A; macOS not run                                     |
+| Desktop A      | Dock hidden, small, bottom                  | Dock hidden, small, bottom                 | Both passed                                                                           |
+| Desktop B      | Dock shown, large, left                     | Dock shown, large, left                    | Ubuntu passed; macOS pending                                                          |
+| Desktop C      | Dock unchanged, medium, right               | Dock unchanged, medium, right              | Ubuntu passed; macOS pending                                                          |
+| Wallpaper A    | Apply machine wallpaper                     | Apply machine wallpaper                    | Both passed                                                                           |
+| Wallpaper B    | Keep current wallpaper                      | Keep current wallpaper                     | Ubuntu passed; macOS pending                                                          |
+| Theme A        | Apply dark theme and machine color          | Apply dark theme and machine color         | Both passed                                                                           |
+| Theme B        | Keep current theme                          | Keep current theme                         | Ubuntu passed; macOS pending                                                          |
+| Development    | Node, Zsh, tmux, VSCodium, and Skills       | Node, Zsh, tmux, VSCodium, and Skills      | Both passed                                                                           |
+| Input          | Pointer, touchpad, keyboard, and remapping  | Pointer, touchpad, keyboard, and remapping | Both passed                                                                           |
+| Files          | Associations, preferences, and sidebar      | Associations, preferences, and sidebar     | Both passed; macOS 26 skips protected associations and sidebar entries                |
+| Remote A       | Enable remote access                        | Enable remote access                       | Ubuntu passed; macOS pending                                                          |
+| Remote B       | Skip remote access                          | Skip remote access                         | Both passed                                                                           |
+| Power A        | Normal                                      | Normal                                     | Both passed                                                                           |
+| Power B        | Server                                      | Server                                     | Ubuntu passed; macOS pending                                                          |
+| Power C        | Skip                                        | Skip                                       | Ubuntu passed; macOS pending                                                          |
+| Full clean run | All normal choices                          | All normal choices                         | Both passed                                                                           |
+| Second run     | Run again without a restore                 | Run again without a restore                | Both full runs passed twice                                                           |
+| CPU support    | Native Mac CPU                              | Ubuntu amd64 and arm64 paths               | AMD64 official package checks and earlier live evidence passed; ARM64 live run passed |
 
 ## Results so far
 
@@ -52,13 +52,31 @@ All installer runs happen inside UTM. Do not run the installer or its tests on t
 - The stopped pre-first-boot disk was saved as the verified internal snapshot `clean-base`. Its matching EFI state is saved as `efi_vars.clean-base.fd`; both are restored before every first-run test.
 - Linux detects `LINUX_ARCH` once at startup. AMD64 keeps Google Chrome and OpenWhispr; arm64 uses Brave and whisper.cpp.
 - Official arm64 package indexes contained Brave, VSCodium, Docker, Firefox, Cloudflared, Tailscale, and NordVPN. GitHub releases contained checksum-backed arm64 files for Codex, OpenCode, and whisper.cpp. Canonical's arm64 indexes contained every Ubuntu package named by the installer.
-- `Clean macOS 26` is the one reusable Apple virtual machine. The OS install and clean snapshot are still pending.
-- The strategy shape and Bash syntax check passed in the earlier disposable Mac test guest.
+- `Clean macOS 26` is the one reusable Apple virtual machine. It uses Apple's native arm64 virtualization with 6 cores, 8 GB of memory, and no Intel translation.
+- macOS 26.5.2 was installed once with user `m4` and computer name `m4-vm`. FileVault is off.
+- The stopped `clean-base` snapshot contains the finished OS only. The stopped `test-ready` snapshot adds temporary SSH access, Expect, and the repo at the Linux checkpoint.
+- The Mac snapshots are copy-on-write copies under `Clean macOS 26.utm/Snapshots/`. Restore `test-ready` only while the VM is stopped:
+
+  ```zsh
+  VM="$HOME/Library/Containers/com.utmapp.UTM/Data/Documents/Clean macOS 26.utm"
+  SNAP="$VM/Snapshots/test-ready"
+  cp -c -f "$SNAP/8DEFE143-36C9-4B96-BDCF-5C8E5F91CA1E.img" "$VM/Data/8DEFE143-36C9-4B96-BDCF-5C8E5F91CA1E.img"
+  cp -c -f "$SNAP/AuxiliaryStorage" "$VM/Data/AuxiliaryStorage"
+  cp -c -f "$SNAP/config.plist" "$VM/config.plist"
+  ```
+
+- The strategy shape and Bash syntax checks passed.
 - The first app run passed with Tailscale's command-line service and NordVPN selected.
 - `brew services list` showed Tailscale started as root from `/Library/LaunchDaemons/homebrew.mxcl.tailscale.plist`.
 - VSCodium, Ghostty, Chrome, Firefox, OpenCode, and Codex opened successfully.
 - Docker opened, then reported that nested virtualization is unavailable in the UTM macOS guest. Its install succeeded; its engine cannot be tested inside this guest.
 - The same app run passed again without restoring the machine. Homebrew reported the apps current, and the running Tailscale service was kept running.
+- A second clean Mac app choice run passed twice without restoring the machine.
+- Mac development, wallpaper, theme, pointer and input, desktop, file, remote-skip, and normal-power parts passed separately before the full run.
+- macOS 26 asks for approval for every file association and protects Finder sidebar files. The installer now reports this and leaves those two sets of values unchanged instead of opening approval windows. The rest of the file preferences passed.
+- The Mac full clean run passed with the normal choices, a hidden small bottom Dock, remote access skipped, the command-line Tailscale service, and NordVPN selected. The exact same command passed again without a restore.
+- After reboot, the guest was still arm64 and named `m4-vm`. The wallpaper, dark theme, hidden bottom Dock, Node 24, VSCodium extensions, skill links, and root Tailscale service were checked. VSCodium, Ghostty, Chrome, Firefox, Docker, OpenCode, Codex, NordVPN, and UTM were installed.
+- Full Mac logs, including both full passes and the final macOS 26 file check, are saved on the host under `.test-logs/macos-arm64-2026-07-13/`. The folder is ignored because test output is not source code.
 - The Ubuntu ARM64 app run passed, then the same app run passed again without a restore. Cloudflared, Fastfetch, GitHub CLI, Neovim, tmux, Ghostty, VSCodium, Codex, Docker, Brave, Firefox, whisper.cpp, Zsh, wl-copy, Tailscale, and NordVPN were checked from the guest.
 - VSCodium, Brave, Firefox, and Ghostty opened in the Ubuntu desktop. OpenCode installed and its server and window code stayed running, but its Electron window did not become visible under UTM's Wayland display. The guest had free memory, no out-of-memory report, and no app crash. This remains a UTM display limit rather than an ARM64 package failure.
 - The tracked wallpaper source is `white.png`. Ubuntu creates a 3840x2160 copy because UTM's virtual display rejected the 6016x3388 texture. The colored wallpaper appeared correctly in the guest. Both apply and skip choices passed.

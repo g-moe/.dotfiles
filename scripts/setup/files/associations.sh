@@ -33,7 +33,13 @@ _mac_handler() {
 }
 
 mac() {
-  local extension
+  local extension major_version
+  major_version="$(sw_vers -productVersion | cut -d. -f1)"
+  if ((major_version >= 26)); then
+    log 'macOS 26 asks for approval for each file type; leaving them unchanged.'
+    return 0
+  fi
+  load_homebrew || die 'Homebrew is not installed.'
   while IFS= read -r extension; do
     _mac_handler "$extension"
   done < <(_extensions)

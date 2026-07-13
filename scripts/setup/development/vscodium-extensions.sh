@@ -50,6 +50,7 @@ _install() {
 }
 
 mac() {
+  load_homebrew || die 'Homebrew is not installed.'
   _install
 }
 

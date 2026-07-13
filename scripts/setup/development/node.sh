@@ -19,7 +19,7 @@ _load_nvm() {
   [[ -s "$NVM_DIR/nvm.sh" ]] || return 1
   set +u
   # shellcheck disable=SC1090
-  . "$NVM_DIR/nvm.sh"
+  . "$NVM_DIR/nvm.sh" --no-use
   set -u
 }
 

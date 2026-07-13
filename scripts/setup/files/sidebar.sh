@@ -14,21 +14,35 @@ configure_file_sidebar() {
   esac
 }
 
-mac() {
-  local script="$STRATEGY_DIR/finder-sidebar.js"
-  mkdir -p "$HOME/code"
-  if ! osascript -l JavaScript "$script" \
+_mac_sidebar() {
+  local pid seconds=0
+
+  osascript -l JavaScript "$STRATEGY_DIR/finder-sidebar.js" \
     "$HOME" "$ROOT_DIR" "$HOME/code" /Applications \
     "$HOME/Desktop" "$HOME/Documents" "$HOME/Downloads" \
-    "$HOME/Pictures" "$HOME/Movies"; then
-    open 'x-apple.systempreferences:com.apple.preference.security?Privacy_AllFiles' || true
-    printf 'Give this terminal Full Disk Access, then press Enter: ' >/dev/tty
-    read -r </dev/tty
-    osascript -l JavaScript "$script" \
-      "$HOME" "$ROOT_DIR" "$HOME/code" /Applications \
-      "$HOME/Desktop" "$HOME/Documents" "$HOME/Downloads" \
-      "$HOME/Pictures" "$HOME/Movies"
+    "$HOME/Pictures" "$HOME/Movies" &
+  pid=$!
+  while kill -0 "$pid" 2>/dev/null; do
+    if ((seconds >= 10)); then
+      kill "$pid" 2>/dev/null || true
+      wait "$pid" 2>/dev/null || true
+      return 1
+    fi
+    sleep 1
+    seconds=$((seconds + 1))
+  done
+  wait "$pid"
+}
+
+mac() {
+  local major_version
+  major_version="$(sw_vers -productVersion | cut -d. -f1)"
+  if ((major_version >= 26)); then
+    log 'macOS 26 protects Finder sidebar files; leaving the sidebar unchanged.'
+    return 0
   fi
+  mkdir -p "$HOME/code"
+  _mac_sidebar || log 'macOS did not allow Finder sidebar changes; continuing.'
 }
 
 linux() {

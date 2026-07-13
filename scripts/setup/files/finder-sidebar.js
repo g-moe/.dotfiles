@@ -21,8 +21,10 @@ function currentMajorVersion() {
 }
 
 function sharedFileListBasePath() {
-	return asString($.NSHomeDirectory()) +
-		"/Library/Application Support/com.apple.sharedfilelist";
+	return (
+		asString($.NSHomeDirectory()) +
+		"/Library/Application Support/com.apple.sharedfilelist"
+	);
 }
 
 function favoriteItemsFilePath() {
@@ -38,25 +40,28 @@ function favoriteItemsFilePath() {
 
 function ensureDirectory(path) {
 	var error = Ref();
-	if (!$.NSFileManager.defaultManager.createDirectoryAtPathWithIntermediateDirectoriesAttributesError(
-		path,
-		true,
-		$(),
-		error,
-	)) {
+	if (
+		!$.NSFileManager.defaultManager.createDirectoryAtPathWithIntermediateDirectoriesAttributesError(
+			path,
+			true,
+			$(),
+			error,
+		)
+	) {
 		fail("Unable to create directory: " + path);
 	}
 }
 
 function bookmarkForPath(path) {
 	var error = Ref();
-	var bookmark = $.NSURL.fileURLWithPath(path)
-		.bookmarkDataWithOptionsIncludingResourceValuesForKeysRelativeToURLError(
-			0,
-			$(),
-			$(),
-			error,
-		);
+	var bookmark = $.NSURL.fileURLWithPath(
+		path,
+	).bookmarkDataWithOptionsIncludingResourceValuesForKeysRelativeToURLError(
+		0,
+		$(),
+		$(),
+		error,
+	);
 	if (isNil(bookmark)) fail("Unable to create bookmark for path: " + path);
 	return bookmark;
 }
@@ -66,7 +71,10 @@ function targetItems(targetPaths) {
 	for (var i = 0; i < targetPaths.length; i += 1) {
 		var targetItem = $.NSMutableDictionary.dictionary;
 		targetItem.setObjectForKey(bookmarkForPath(targetPaths[i]), "Bookmark");
-		targetItem.setObjectForKey($.NSDictionary.dictionary, "CustomItemProperties");
+		targetItem.setObjectForKey(
+			$.NSDictionary.dictionary,
+			"CustomItemProperties",
+		);
 		targetItem.setObjectForKey($.NSUUID.UUID.UUIDString, "uuid");
 		targetItem.setObjectForKey($.NSNumber.numberWithInt(0), "visibility");
 		newItems.addObject(targetItem);
@@ -102,6 +110,7 @@ function configureSidebar(rawPaths) {
 	}
 }
 
+// oxlint-disable-next-line no-unused-vars -- osascript calls this entry point.
 function run(argv) {
 	configureSidebar(argv);
 }

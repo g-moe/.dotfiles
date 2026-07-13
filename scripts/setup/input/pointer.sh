@@ -15,12 +15,16 @@ configure_pointer() {
 
 mac() {
   defaults write NSGlobalDomain CGDisableCursorLocationMagnification -bool false
-  defaults write com.apple.universalaccess mouseDriverCursorSize -float 1
-  defaults write com.apple.universalaccess cursorOutline -dict \
-    red -float 0 green -float 0 blue -float 0 alpha -float 1
-  defaults write com.apple.universalaccess cursorFill -dict \
-    red -float 1 green -float 1 blue -float 1 alpha -float 1
-  defaults write com.apple.universalaccess cursorIsCustomized -bool true
+  if ! {
+    defaults write com.apple.universalaccess mouseDriverCursorSize -float 1
+    defaults write com.apple.universalaccess cursorOutline -dict \
+      red -float 0 green -float 0 blue -float 0 alpha -float 1
+    defaults write com.apple.universalaccess cursorFill -dict \
+      red -float 1 green -float 1 blue -float 1 alpha -float 1
+    defaults write com.apple.universalaccess cursorIsCustomized -bool true
+  } 2>/dev/null; then
+    log 'macOS did not allow custom cursor colors; continuing.'
+  fi
 }
 
 linux() {
