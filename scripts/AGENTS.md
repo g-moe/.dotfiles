@@ -1,40 +1,39 @@
 # Scripts Directory — Agent Rules
 
-This directory contains the shared macOS and Ubuntu installers plus Mac-only tools.
+This directory contains one macOS/Ubuntu installer plus separate Mac-only tools.
 
 ## Workflow
 
 1. Keep this file up to date when script layout or conventions change.
 2. Whitelist every new tracked file in the root `.gitignore`.
-3. Run `npm run install:test` and syntax checks after installer changes.
+3. Test installer changes only inside clean UTM machines.
 
 ## Structure
 
-- `lib/` — Source-only Bash helpers. Library filenames start with `lib-`.
-- `shared/install/` — Executable setup domains, the single shared Brewfile, and the native machine-name menu bar setup.
+- `install.sh` — The only installer entry point. It detects macOS or Ubuntu.
+- `lib/lib-install.sh` — Small helpers used by the installer.
+- `setup/` — One strategy file per app or setting. Each file keeps its Mac and Linux commands together.
+  - `setup/apps/` — Application installs.
+  - `setup/development/` — Development tool setup.
+  - `setup/appearance/` — Wallpaper, screen saver, and theme.
+  - `setup/input/` — Pointer, touchpad, keyboard, and key remapping.
+  - `setup/desktop/` — Workspaces, desktop items, windows, Dock, and top bar.
+  - `setup/files/` — File associations and file browser settings.
+  - `setup/access/` — Handoff, assistants, SSH, and screen sharing.
+  - `setup/system/` — Updates, power, and final desktop refresh.
 - `shared/tools/` — Shared commands used outside the main installer.
-- `shared/tests/` — Dependency-free installer tests using fake commands.
-- `mac/` — Mac-only install steps and tools. Runtime filenames start with `mac-`.
-- `mac-install.sh` — Shared install followed by Mac-only software and settings.
-- `linux-install.sh` — Shared install for Ubuntu 26.04 LTS plus the machine name and hostname.
-- Root `machine.json` — Ignored, machine-local name and color created by installers through `lib-machine-identity.sh`.
+- `mac/` — Mac-only tools that are not part of machine setup.
+- Root `machine.json` — Ignored, machine-local name and color created by the installer.
 
 ## Conventions
 
-- Executable Bash scripts use `set -euo pipefail`; source-only libraries and Raycast wrappers that intentionally return success after handled UI errors are exceptions.
-- General helpers stay in `scripts/lib`; scripts that install or configure a tool belong in `scripts/shared/install`.
-- Source `lib/lib-logging.sh` for logging and `run_step`.
-- Source `lib/lib-interactive.sh` for prompts.
-- Source `lib/lib-machine-identity.sh` to create or reuse the shared machine name and color.
-- Source `lib/lib-utils.sh` for command checks, silent commands, Homebrew checks, and `safe_link`.
-- Source `lib/lib-runtime.sh` to reload Homebrew or NVM in a fresh process.
-- Source `lib/lib-get-linux-or-mac.sh` for platform checks and `mac()`/`linux()` routing.
-- Each shared setup domain runs in a fresh Bash process and sources its own helpers.
-- Put OS-specific work in literal `mac()` and `linux()` functions. Do not use `eval` for routing.
-- Use `safe_link SOURCE TARGET`: correct links are left alone, other links are replaced, and real files or directories are never overwritten.
-- Install shared and OS-specific Homebrew entries through `shared/install/shared-Brewfile`. Do not run `brew bundle cleanup`.
-- Linux Homebrew setup restores `/home/linuxbrew` to mode `0755` before each install so old permissions cannot block the shared prefix.
-- JetBrains Mono is installed as a Homebrew cask on Mac and an Ubuntu package on Linux by `shared-apps-setup.sh`.
-- Node setup uses Node.js 24 through NVM; keep it aligned with `.nvmrc` and `package.json`.
-- Ubuntu support is limited to Ubuntu 26.04 LTS on amd64 with SSSE3 or arm64.
-- Mac wallpaper setup lets the user keep the current wallpaper or rotate the tracked root `white.heic`, map its light values to the machine color, add a black vignette with ImageMagick, and cache a lossless PNG.
+- `install.sh` and executable tools use `set -euo pipefail`.
+- Use Bash because a clean machine does not have Node.js yet.
+- Name the switch function after the thing it changes, such as `install_vscodium` or `configure_dock`.
+- Every strategy file receives the OS as `$1`; its switch calls plain `mac()` or `linux()` functions.
+- Run each strategy in a new Bash process. This lets every file use the plain names `mac()` and `linux()` without clashes.
+- Keep one feature per strategy file. Do not group Skills, Node, Zsh, tmux, Dock, or other unrelated work.
+- Do not add migration steps, old-path cleanup, or compatibility branches. These installers target clean machines.
+- macOS uses Homebrew. Ubuntu uses APT unless the vendor does not publish an APT package.
+- Ubuntu support is limited to Ubuntu 26.04 on amd64 because Google does not publish Chrome for Linux ARM.
+- Keep true Mac-only tools under `mac/`; do not put normal Mac setup there.

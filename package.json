@@ -8,12 +8,10 @@
 		"format:check": "oxfmt --check .",
 		"typecheck": "tsc -b --noEmit",
 		"typecheck:tsgo": "tsgo -b --noEmit",
-		"skills:install": "tsx scripts/shared/install/shared-skills-setup.ts",
+		"skills:install": "bash scripts/setup/skills.sh",
 		"theme:install": "tsx custom-themes/create/controller.ts",
-		"vscode-install": "bash scripts/shared/install/shared-vscode-setup.sh",
-		"mac:install": "bash scripts/mac-install.sh",
-		"linux:install": "bash scripts/linux-install.sh",
-		"install:test": "bash scripts/shared/tests/shared-installer-test.sh"
+		"machine:install": "bash scripts/install.sh",
+		"install:test": "bash scripts/tests/strategy-shape.sh"
 	},
 	"devDependencies": {
 		"@types/node": "24.13.1",
