@@ -87,6 +87,7 @@ All installer runs happen inside UTM. Do not run the installer or its tests on t
 - The Ubuntu full clean run passed with all normal choices. The exact same full command passed again without a restore.
 - After reboot, the guest was still arm64 and named `m4-vm`. Docker, Tailscale, SSH, and GNOME Remote Desktop were enabled and active. The machine name, wallpaper, dark theme, bottom Dock, and eight skill links in each supported agent folder were also checked.
 - Full logs from these runs, including both full passes and the post-reboot check, are saved on the host under `.test-logs/ubuntu-arm64-2026-07-13/`. The folder is ignored because test output is not source code.
+- After the macOS fixes in `9f16184`, the current scripts were tested again from the Ubuntu `test-ready` snapshot. The full clean ARM64 run passed, the exact second run passed, and the reboot check confirmed the machine name, wallpaper, dark theme, bottom Dock, apps, services, Node 24, VSCodium extensions, and skill links. These logs are under `.test-logs/ubuntu-arm64-after-macos-2026-07-13/`.
 
 ## Desktop checks
 
