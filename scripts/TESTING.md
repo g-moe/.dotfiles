@@ -10,11 +10,12 @@ All installer runs happen inside UTM. Do not run the installer or its tests on t
 ## Rules
 
 - Keep one stopped base machine after each operating system is installed and before the repo installer runs.
-- Save one clean snapshot after the OS setup finishes. Restore that snapshot before every first-run test instead of rebuilding or cloning the VM.
+- Save one clean snapshot after the OS setup finishes. For every first-run test, make a disposable UTM clone from the clean base and leave the base stopped and unchanged.
 - Copy or clone the repo inside the guest. Do not run from a read-only shared folder.
 - On macOS, log in to the desktop before starting the installer so its desktop changes have an active session.
 - Save the full terminal output for every run.
-- After a first run passes, run the same installer a second time without cleaning the machine.
+- After a first run passes, reboot the same test clone, log back in when needed, and run the same installer a second time without cleaning the machine.
+- Delete the disposable clone after both runs and checks pass.
 - A test only passes when the commands succeed and the result is checked in the desktop.
 - Use `bash scripts/install.sh apps`, `desktop`, or another named part while fixing one part. Use the command with no part for final clean runs.
 
@@ -43,10 +44,12 @@ All installer runs happen inside UTM. Do not run the installer or its tests on t
 | Power B        | Server                                      | Server                                     | Ubuntu passed; macOS pending                                                          |
 | Power C        | Skip                                        | Skip                                       | Ubuntu passed; macOS pending                                                          |
 | Full clean run | All normal choices                          | All normal choices                         | Both passed                                                                           |
-| Second run     | Run again without a restore                 | Run again without a restore                | Both full runs passed twice                                                           |
+| Second run     | Reboot, log in, and run again               | Reboot and run again                       | Both full runs passed twice                                                           |
 | CPU support    | Native Mac CPU                              | Ubuntu amd64 and arm64 paths               | AMD64 official package checks and earlier live evidence passed; ARM64 live run passed |
 
 ## Results so far
+
+- On 2026-07-14, both reusable base VMs stayed stopped while new disposable UTM clones were tested. Each clone started with a fresh repo clone. Ubuntu ARM64 passed the full clean install, reboot, second full install, and both result checks. Native Mac ARM64 passed the same sequence after logging in to the desktop before each run. The Mac test used `8fab8ff`; the Ubuntu test used `64cfbd0`, whose installer files are identical to `8fab8ff` because the later commit only added `TODO.md`, `icon.png`, and their `.gitignore` entries. Both disposable clones were deleted after the checks. Logs are under `.test-logs/vm-retest-2026-07-14/`.
 
 - The Ubuntu 26.04 amd64 ISO matched Canonical's published SHA-256 checksum before the base machine was installed.
 - Canonical's Ubuntu 26.04 arm64 desktop image matched its published `c2afd538d66fdd77377d03f1ed2ac76a34f1c116baecc9a8170d68f833121f57` SHA-256 checksum.

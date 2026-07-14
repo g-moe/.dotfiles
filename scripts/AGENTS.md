@@ -6,7 +6,7 @@ This directory contains one macOS/Ubuntu installer plus separate Mac-only tools.
 
 1. Keep this file up to date when script layout or conventions change.
 2. Whitelist every new tracked file in the root `.gitignore`.
-3. Test installer changes only inside clean UTM machines.
+3. Test installer changes only inside disposable clones of the clean UTM machines. Never run a test in a reusable base VM.
 
 ## Structure
 
