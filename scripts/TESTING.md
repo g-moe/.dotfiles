@@ -32,6 +32,7 @@ All installer runs happen inside UTM. Do not run the installer or its tests on t
 | Wallpaper B    | Keep current wallpaper                      | Keep current wallpaper                     | Ubuntu passed; macOS pending                                                          |
 | Theme A        | Apply dark theme and machine color          | Apply dark theme and machine color         | Both passed                                                                           |
 | Theme B        | Keep current theme                          | Keep current theme                         | Ubuntu passed; macOS pending                                                          |
+| Icons          | Built-in clear icons                        | MacTahoe blue dark icons                   | Pending Ubuntu check                                                                  |
 | Development    | Node, Zsh, tmux, VSCodium, and Skills       | Node, Zsh, tmux, VSCodium, and Skills      | Both passed                                                                           |
 | Input          | Pointer, touchpad, keyboard, and remapping  | Pointer, touchpad, keyboard, and remapping | Both passed                                                                           |
 | Default apps   | Chrome browser                              | Chrome or Brave browser, Ghostty terminal  | Pending clean VM check                                                                |

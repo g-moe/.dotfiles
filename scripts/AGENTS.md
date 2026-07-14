@@ -15,7 +15,7 @@ This directory contains one macOS/Ubuntu installer plus separate Mac-only tools.
 - `setup/` — One strategy file per app or setting. Each file keeps its Mac and Linux commands together.
   - `setup/apps/` — Application installs.
   - `setup/development/` — Development tool setup.
-  - `setup/appearance/` — Wallpaper, screen saver, and theme.
+  - `setup/appearance/` — Wallpaper, screen saver, theme, and Linux icons.
   - `setup/input/` — Pointer, touchpad, keyboard, and key remapping.
   - `setup/desktop/` — Workspaces, desktop items, windows, Dock, and top bar.
   - `setup/files/` — Default applications, file associations, and file browser settings.

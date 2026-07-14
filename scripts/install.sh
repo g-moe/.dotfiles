@@ -60,6 +60,7 @@ configure_appearance() {
   run_strategy 'Wallpaper' appearance/wallpaper.sh
   run_strategy 'Screen saver' appearance/screensaver.sh
   run_strategy 'Theme' appearance/theme.sh
+  run_strategy 'Icons' appearance/icons.sh
 }
 
 configure_input() {

@@ -43,7 +43,7 @@ The files are split by purpose:
 
 - `setup/apps` installs one app per file.
 - `setup/development` sets up Node, Zsh, tmux, VSCodium, and agent Skills.
-- `setup/appearance` changes the wallpaper, screen saver, and theme.
+- `setup/appearance` changes the wallpaper, screen saver, theme, and Linux icons.
 - `setup/input` changes the pointer, touchpad, keyboard, and key remapping.
 - `setup/desktop` changes workspaces, desktop items, windows, the Dock, and the top bar.
 - `setup/files` changes default applications, file associations, and Finder or Files settings.
@@ -61,5 +61,7 @@ The files part makes Chrome the default Mac and Ubuntu AMD64 browser, Brave the 
 The installer is for a clean machine. It has no move-old-files steps and no support for an older installer layout.
 
 The wallpaper source is the tracked root `white.png`. macOS keeps its full size; Ubuntu creates a 3840x2160 copy that works with UTM's virtual display.
+
+Ubuntu installs the pinned MacTahoe icon release under `~/.local/share/icons` and uses its blue dark version. It does not install another system package. macOS keeps its built-in clear icons.
 
 See [TESTING.md](TESTING.md) for the clean-machine checks.
