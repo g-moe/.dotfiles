@@ -46,7 +46,7 @@ The files are split by purpose:
 - `setup/appearance` changes the wallpaper, screen saver, and theme.
 - `setup/input` changes the pointer, touchpad, keyboard, and key remapping.
 - `setup/desktop` changes workspaces, desktop items, windows, the Dock, and the top bar.
-- `setup/files` changes file associations and Finder or Files settings.
+- `setup/files` changes default applications, file associations, and Finder or Files settings.
 - `setup/access` changes Handoff, assistants, SSH, and screen sharing.
 - `setup/system` changes updates and power.
 
@@ -55,6 +55,8 @@ macOS uses Homebrew. Ubuntu uses APT when the app is available there. A vendor p
 Ubuntu ships Firefox as a Snap. The Firefox strategy removes that copy and installs Mozilla's APT package so future Firefox updates stay under APT.
 
 On Linux, the installer detects the CPU once at startup. AMD64 installs Google Chrome and OpenWhispr. ARM64 installs Brave and whisper.cpp because Google and OpenWhispr do not publish matching Linux ARM packages. The rest of the Linux app list uses packages that publish both CPU types.
+
+The files part makes Chrome the default Mac and Ubuntu AMD64 browser, Brave the default Ubuntu ARM64 browser, and Ghostty the default Ubuntu terminal. macOS has no system-wide default terminal setting, so Ghostty is not forced there.
 
 The installer is for a clean machine. It has no move-old-files steps and no support for an older installer layout.
 

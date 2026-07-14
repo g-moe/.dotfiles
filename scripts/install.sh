@@ -80,6 +80,7 @@ configure_desktop() {
 }
 
 configure_files() {
+  run_strategy 'Default applications' files/default-applications.sh
   run_strategy 'File associations' files/associations.sh
   run_strategy 'File browser preferences' files/preferences.sh
   run_strategy 'File browser sidebar' files/sidebar.sh
