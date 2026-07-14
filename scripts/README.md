@@ -6,7 +6,13 @@ Run this from a clean macOS machine or an Ubuntu 26.04 amd64 or arm64 machine:
 bash scripts/install.sh
 ```
 
-This is the only install command. It finds the operating system and then runs the same ordered list of app and setting files.
+This is the full machine install command. It finds the operating system and then runs the same ordered list of app and setting files.
+
+Git, Git LFS, and GitHub login can also be run on their own:
+
+```bash
+npm run install:git
+```
 
 During VM testing, one part can be run at a time without keeping a second list of steps:
 

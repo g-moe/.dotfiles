@@ -116,6 +116,7 @@ All installer runs happen inside UTM. Do not run the installer or its tests on t
 
 ## Git checks
 
+- Run `npm run install:git` and confirm it detects the operating system and runs only the Git setup.
 - Skip Git setup and confirm the rest of the development part continues without changing Git or GitHub settings.
 - Confirm Git LFS is absent after skipping, or installed and initialized after accepting, with `git lfs version` and the global `filter.lfs` settings.
 - Accept the three defaults, then repeat with another name, email, and default branch. Confirm later runs show the saved values.

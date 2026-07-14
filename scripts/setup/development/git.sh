@@ -79,4 +79,9 @@ linux() {
   _configure
 }
 
+if (($# == 0)); then
+  detect_os
+  set -- "$OS"
+fi
+[[ "$#" -eq 1 ]] || die 'Use: bash scripts/setup/development/git.sh'
 configure_git "$1"
