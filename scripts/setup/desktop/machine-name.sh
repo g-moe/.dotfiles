@@ -74,6 +74,7 @@ EOF
 )" >"$extension_dir/metadata.json"
   printf '%s\n' "$(cat <<EOF
 import GObject from 'gi://GObject';
+import Clutter from 'gi://Clutter';
 import St from 'gi://St';
 import {Extension} from 'resource:///org/gnome/shell/extensions/extension.js';
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
@@ -82,7 +83,11 @@ import * as PanelMenu from 'resource:///org/gnome/shell/ui/panelMenu.js';
 const Indicator = GObject.registerClass(class Indicator extends PanelMenu.Button {
   _init() {
     super._init(0.0, 'Machine Name');
-    this.add_child(new St.Label({text: 'machine:$name'}));
+    this.add_child(new St.Label({
+      text: 'machine:$name',
+      y_expand: true,
+      y_align: Clutter.ActorAlign.CENTER,
+    }));
   }
 });
 
