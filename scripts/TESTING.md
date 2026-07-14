@@ -49,6 +49,8 @@ All installer runs happen inside UTM. Do not run the installer or its tests on t
 
 ## Results so far
 
+- The optional Git configuration and GitHub browser-login step passed local prompt, setting, login, and repeat-run checks. It has not yet been checked in the clean macOS and Ubuntu VM clones.
+
 - On 2026-07-14, both reusable base VMs stayed stopped while new disposable UTM clones were tested. Each clone started with a fresh repo clone. Ubuntu ARM64 passed the full clean install, reboot, second full install, and both result checks. Native Mac ARM64 passed the same sequence after logging in to the desktop before each run. The Mac test used `8fab8ff`; the Ubuntu test used `64cfbd0`, whose installer files are identical to `8fab8ff` because the later commit only added `TODO.md`, `icon.png`, and their `.gitignore` entries. Both disposable clones were deleted after the checks. Logs are under `.test-logs/vm-retest-2026-07-14/`.
 
 - The Ubuntu 26.04 amd64 ISO matched Canonical's published SHA-256 checksum before the base machine was installed.
@@ -111,3 +113,14 @@ All installer runs happen inside UTM. Do not run the installer or its tests on t
 - SSH and screen sharing work from the other guest when enabled.
 - Update and power settings match the chosen run.
 - Skills appear in each supported agent folder.
+
+## Git checks
+
+- Skip Git setup and confirm the rest of the development part continues without changing Git or GitHub settings.
+- Confirm Git LFS is absent after skipping, or installed and initialized after accepting, with `git lfs version` and the global `filter.lfs` settings.
+- Accept the three defaults, then repeat with another name, email, and default branch. Confirm later runs show the saved values.
+- Confirm the fixed push, fetch, pull, merge, and diff settings match the values documented in `setup/development/git.sh`.
+- Skip GitHub sign-in and confirm no credential helper is added.
+- Sign in through the browser and confirm `gh auth status --hostname github.com` passes, `gh` did not fall back to plain-text token storage, and an HTTPS private repository can fetch without another login.
+- Run the development part again and confirm it reuses the saved GitHub login.
+- Start a new shell and confirm `GITHUB_TOKEN` is not set by `.zshrc`.

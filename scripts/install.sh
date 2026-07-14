@@ -48,6 +48,7 @@ install_apps() {
 }
 
 install_development() {
+  run_strategy 'Git, Git LFS, and GitHub login' development/git.sh
   run_strategy 'Node.js 24' development/node.sh
   run_strategy 'Zsh' development/zsh.sh
   run_strategy 'tmux configuration' development/tmux.sh

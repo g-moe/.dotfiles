@@ -44,7 +44,7 @@ Every setup file loads `lib/lib-install.sh`. That file only joins the focused lo
 The files are split by purpose:
 
 - `setup/apps` installs one app per file.
-- `setup/development` sets up Node, Zsh, tmux, VSCodium, and agent Skills.
+- `setup/development` sets up Git, Node, Zsh, tmux, VSCodium, and agent Skills.
 - `setup/appearance` changes the wallpaper, screen saver, theme, and Linux icons.
 - `setup/input` changes the pointer, touchpad, keyboard, and key remapping.
 - `setup/desktop` changes workspaces, desktop items, windows, the Dock, and the top bar.
@@ -61,6 +61,8 @@ On Linux, the installer detects the CPU once at startup. AMD64 installs Google C
 The files part makes Chrome the default Mac and Ubuntu AMD64 browser, Brave the default Ubuntu ARM64 browser, and Ghostty the default Ubuntu terminal. macOS shows its own approval prompt for the browser change; choose **Use Chrome** and the installer continues. macOS has no system-wide default terminal setting, so Ghostty is not forced there.
 
 The installer is for a clean machine. It has no move-old-files steps and no support for an older installer layout.
+
+The Git step can be skipped. When used, it installs Git LFS, asks for the Git user name, email, and default branch, and sets up LFS for the user. New machines default to `garrett`, `114707197+g-moe@users.noreply.github.com`, and `main`; later runs reuse the saved values. It also applies the shared push, fetch, pull, merge, and diff settings. GitHub sign-in is a separate browser choice, and an existing login is reused. GitHub CLI uses macOS Keychain or the Ubuntu desktop password store and configures HTTPS Git access. The shell does not read or export the saved token.
 
 The wallpaper source is the tracked root `white.png`. macOS keeps its full size; Ubuntu creates a 3840x2160 copy that works with UTM's virtual display.
 

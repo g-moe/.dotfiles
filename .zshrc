@@ -122,16 +122,6 @@ else
   export VISUAL='vi'
 fi
 
-# Github token from keychain or gh cli
-if [[ "$is_macos" == true ]] && command -v security >/dev/null 2>&1; then
-  token="$(security find-generic-password -s "GITHUB_TOKEN" -w 2>/dev/null || true)"
-  [[ -n "$token" ]] && export GITHUB_TOKEN="$token"
-elif [[ -z "${GITHUB_TOKEN:-}" ]] && command -v gh >/dev/null 2>&1; then
-  token="$(gh auth token 2>/dev/null || true)"
-  [[ -n "$token" ]] && export GITHUB_TOKEN="$token"
-fi
-unset token
-
 # AWS
 export AWS_PROFILE=tradester-test
 export AWS_REGION=us-east-1
