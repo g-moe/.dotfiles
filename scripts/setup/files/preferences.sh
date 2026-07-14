@@ -22,6 +22,9 @@ mac() {
   defaults write com.apple.finder NewWindowTarget -string PfHm
   defaults write com.apple.finder NewWindowTargetPath -string "file://$HOME/"
   defaults write com.apple.finder FXPreferredViewStyle -string clmv
+  defaults write com.apple.finder ShowPathbar -bool true
+  defaults write com.apple.finder ShowStatusBar -bool true
+  defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
   killall Finder >/dev/null 2>&1 || true
 }
 
