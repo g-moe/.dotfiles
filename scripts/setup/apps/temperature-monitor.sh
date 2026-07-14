@@ -14,7 +14,7 @@ install_temperature_monitor() {
 }
 
 mac() {
-  brew_cask tg-pro
+  brew_cask macs-fan-control
 }
 
 linux() {
