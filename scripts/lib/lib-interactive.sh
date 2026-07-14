@@ -29,7 +29,7 @@ interactive_select() {
   done
 
   while true; do
-    printf 'Enter choice (0-%d): ' "$((${#options[@]} - 1))" >/dev/tty
+    printf 'Choice (0-%d): ' "$((${#options[@]} - 1))" >/dev/tty
     read -r choice </dev/tty
     if [[ "$choice" =~ ^[0-9]+$ ]] && ((choice >= 0 && choice < ${#options[@]})); then
       printf '%s\n' "$choice"
@@ -37,6 +37,10 @@ interactive_select() {
     fi
     log_error "Invalid choice. Please enter a number between 0 and $((${#options[@]} - 1))."
   done
+}
+
+choose() {
+  interactive_select "$@"
 }
 
 # Read one line of input and print the answer.
@@ -56,6 +60,21 @@ interactive_read() {
 
   read -r answer </dev/tty
   printf '%s\n' "${answer:-$default}"
+}
+
+read_value() {
+  interactive_read "$@"
+}
+
+read_secret() {
+  local prompt="$1"
+  local value
+
+  printf '%s: ' "$prompt" >/dev/tty
+  read -rs value </dev/tty
+  printf '\n' >/dev/tty
+  [[ -n "$value" ]] || die "$prompt cannot be empty."
+  printf '%s\n' "$value"
 }
 
 # Ask a yes/no question.
@@ -92,4 +111,8 @@ interactive_confirm() {
 
     log_error 'Please answer yes or no.'
   done
+}
+
+confirm() {
+  [[ "$(choose "$1" 'No' 'Yes')" == 1 ]]
 }

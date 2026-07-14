@@ -11,7 +11,8 @@ This directory contains one macOS/Ubuntu installer plus separate Mac-only tools.
 ## Structure
 
 - `install.sh` — The only installer entry point. It detects macOS or Ubuntu.
-- `lib/lib-install.sh` — Small helpers used by the installer.
+- `lib/lib-install.sh` — The one shared library entry point used by setup files.
+- `lib/lib-logging.sh`, `lib/lib-interactive.sh`, `lib/lib-utils.sh`, and `lib/lib-packages.sh` — Focused logging, prompt, safe-link, download, and package helpers.
 - `setup/` — One strategy file per app or setting. Each file keeps its Mac and Linux commands together.
   - `setup/apps/` — Application installs.
   - `setup/development/` — Development tool setup.
@@ -33,6 +34,7 @@ This directory contains one macOS/Ubuntu installer plus separate Mac-only tools.
 - Every strategy file receives the OS as `$1`; its switch calls plain `mac()` or `linux()` functions.
 - Run each strategy in a new Bash process. This lets every file use the plain names `mac()` and `linux()` without clashes.
 - Register every strategy exactly once in `install.sh`; `tests/strategy-shape.sh` checks this.
+- Keep shared helpers in their matching library and expose them through `lib-install.sh`; do not copy helpers into setup files.
 - Keep one feature per strategy file. Do not group Skills, Node, Zsh, tmux, Dock, or other unrelated work.
 - Do not add migration steps, old-path cleanup, or compatibility branches. These installers target clean machines.
 - macOS uses Homebrew. Ubuntu uses APT unless the vendor does not publish an APT package.

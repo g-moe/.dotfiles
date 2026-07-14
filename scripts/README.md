@@ -39,6 +39,8 @@ linux() {
 install_vscodium "$1"
 ```
 
+Every setup file loads `lib/lib-install.sh`. That file only joins the focused logging, prompt, safe-link, package, operating-system, and machine helpers; each shared helper has one implementation.
+
 The files are split by purpose:
 
 - `setup/apps` installs one app per file.

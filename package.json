@@ -11,7 +11,7 @@
 		"skills:install": "bash scripts/setup/skills.sh",
 		"theme:install": "tsx custom-themes/create/controller.ts",
 		"machine:install": "bash scripts/install.sh",
-		"install:test": "bash scripts/tests/strategy-shape.sh"
+		"install:test": "bash scripts/tests/strategy-shape.sh && bash scripts/tests/lib-install.sh"
 	},
 	"devDependencies": {
 		"@types/node": "24.13.1",

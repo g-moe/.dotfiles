@@ -44,7 +44,9 @@ if [[ -n "$failed_skip_returns" ]]; then
 fi
 
 bash -n "$SCRIPTS_DIR/install.sh"
-bash -n "$SCRIPTS_DIR/lib/lib-install.sh"
+for library in "$SCRIPTS_DIR"/lib/*.sh; do
+  bash -n "$library"
+done
 
 [[ ! -e "$SCRIPTS_DIR/mac-install.sh" ]] || fail 'old Mac installer still exists'
 [[ ! -e "$SCRIPTS_DIR/linux-install.sh" ]] || fail 'old Linux installer still exists'

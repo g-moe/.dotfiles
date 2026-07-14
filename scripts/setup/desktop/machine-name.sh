@@ -14,17 +14,10 @@ configure_machine_name_display() {
   esac
 }
 
-_machine_name() {
-  local name
-  name="$(awk -F'"' '$2 == "name" { print $4; exit }' "$ROOT_DIR/machine.json")"
-  [[ -n "$name" ]] || die 'Machine name is missing.'
-  printf '%s\n' "$name"
-}
-
 mac() {
   local agent_path binary_path name
 
-  name="$(_machine_name)"
+  name="$(machine_field "$ROOT_DIR/machine.json" name)"
   binary_path="$HOME/.local/bin/machine-name-menu-bar"
   agent_path="$HOME/Library/LaunchAgents/local.machine-name-menu-bar.plist"
   mkdir -p "$(dirname "$binary_path")" "$(dirname "$agent_path")"
@@ -58,7 +51,7 @@ EOF
 linux() {
   local extension_dir name shell_version uuid
 
-  name="$(_machine_name)"
+  name="$(machine_field "$ROOT_DIR/machine.json" name)"
   uuid='machine-name@local'
   extension_dir="$HOME/.local/share/gnome-shell/extensions/$uuid"
   shell_version="$(gnome-shell --version | awk '{print $3}' | cut -d. -f1)"

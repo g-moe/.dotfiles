@@ -1,17 +1,30 @@
 #!/usr/bin/env bash
 
-# Installer logging and step/error handling.
+# Shared logging and step/error handling.
+
+die() {
+  log_error "$*"
+  exit 1
+}
+
+log() {
+  printf '%s\n' "$*"
+}
+
+section() {
+  log_section "$*"
+}
 
 log_section() {
-  printf '\n==> %s\n' "$1"
+  printf '\n==> %s\n' "$*"
 }
 
 log_info() {
-  printf ' - %s\n' "$1"
+  printf ' - %s\n' "$*"
 }
 
 log_error() {
-  printf 'ERROR: %s\n' "$1" >&2
+  printf 'ERROR: %s\n' "$*" >&2
 }
 
 install_error_trap() {
