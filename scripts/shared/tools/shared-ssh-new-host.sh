@@ -185,18 +185,31 @@ read_key_details() {
   esac
 }
 
-copy_public_key() {
+copy_host_commands() {
   local copy_tool="$SCRIPT_DIR/shared-copy-to-clipboard.sh"
+  local host_commands public_key
 
-  log_section 'Public key'
+  log_section 'Host setup commands'
 
-  if [[ -x "$copy_tool" ]] && "$copy_tool" < "$pub_key_path"; then
-    log_info 'Copied public key to clipboard.'
+  IFS= read -r public_key < "$pub_key_path"
+  [[ -n "$public_key" ]] || fail "Public key is empty: $pub_key_path"
+
+  host_commands="$(cat <<EOF
+mkdir -p "\$HOME/.ssh"
+chmod 700 "\$HOME/.ssh"
+touch "\$HOME/.ssh/authorized_keys"
+chmod 600 "\$HOME/.ssh/authorized_keys"
+cat >> "\$HOME/.ssh/authorized_keys" <<'SSH_PUBLIC_KEY'
+$public_key
+SSH_PUBLIC_KEY
+EOF
+)"
+
+  if [[ -x "$copy_tool" ]] && printf '%s\n' "$host_commands" | "$copy_tool"; then
+    log_info 'Copied ssh host setup commands to clipboard.'
   else
     log_info "Public key file: $pub_key_path"
   fi
-
-  log_info 'No key contents were printed.'
 }
 
 print_host_instructions() {
@@ -207,15 +220,7 @@ print_host_instructions() {
     log_info "Use port $port if needed: ssh -p $port $remote_user@$host_name"
   fi
 
-  log_info 'On the host, run:'
-  printf '%s\n' \
-    'mkdir -p ~/.ssh' \
-    'chmod 700 ~/.ssh' \
-    'touch ~/.ssh/authorized_keys' \
-    'chmod 600 ~/.ssh/authorized_keys' \
-    'cat >> ~/.ssh/authorized_keys' \
-    '<paste clipboard contents here>' \
-    '<press Ctrl-D>' >/dev/tty
+  log_info 'On the host, paste and run the commands from your clipboard.'
 }
 
 write_ssh_config() {
@@ -247,7 +252,7 @@ main() {
   run_step 'Checking SSH tools' ensure_ready
   read_host_details
   read_key_details
-  copy_public_key
+  copy_host_commands
   print_host_instructions
   write_ssh_config
 }
