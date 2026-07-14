@@ -34,6 +34,7 @@ All installer runs happen inside UTM. Do not run the installer or its tests on t
 | Theme B        | Keep current theme                          | Keep current theme                         | Ubuntu passed; macOS pending                                                          |
 | Development    | Node, Zsh, tmux, VSCodium, and Skills       | Node, Zsh, tmux, VSCodium, and Skills      | Both passed                                                                           |
 | Input          | Pointer, touchpad, keyboard, and remapping  | Pointer, touchpad, keyboard, and remapping | Both passed                                                                           |
+| Default apps   | Chrome browser                              | Chrome or Brave browser, Ghostty terminal  | Pending clean VM check                                                                |
 | Files          | Associations, preferences, and sidebar      | Associations, preferences, and sidebar     | Both passed; macOS 26 skips protected associations and sidebar entries                |
 | Remote A       | Enable remote access                        | Enable remote access                       | Ubuntu passed; macOS pending                                                          |
 | Remote B       | Skip remote access                          | Skip remote access                         | Both passed                                                                           |
@@ -94,6 +95,7 @@ All installer runs happen inside UTM. Do not run the installer or its tests on t
 ## Desktop checks
 
 - The required apps open: VSCodium, Ghostty, Chrome or Brave, Firefox, Docker, OpenCode, and the platform matches for the other Mac apps.
+- Web links open in Chrome on macOS and Ubuntu AMD64 or Brave on Ubuntu ARM64. Ubuntu terminal requests open in Ghostty.
 - JetBrains Mono is available.
 - The Dock has the requested size, place, visibility, and app order.
 - The machine name is in the menu bar. On Ubuntu it is the only item centered in the top bar and the clock is on the right.

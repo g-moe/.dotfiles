@@ -18,7 +18,7 @@ This directory contains one macOS/Ubuntu installer plus separate Mac-only tools.
   - `setup/appearance/` — Wallpaper, screen saver, and theme.
   - `setup/input/` — Pointer, touchpad, keyboard, and key remapping.
   - `setup/desktop/` — Workspaces, desktop items, windows, Dock, and top bar.
-  - `setup/files/` — File associations and file browser settings.
+  - `setup/files/` — Default applications, file associations, and file browser settings.
   - `setup/access/` — Handoff, assistants, SSH, and screen sharing.
   - `setup/system/` — Updates, power, and final desktop refresh.
 - `shared/tools/` — Shared commands used outside the main installer.
