@@ -81,6 +81,9 @@ alias alias-ls='sed -nE "s/^[[:space:]]*alias[[:space:]]+([^=]+)=.*/\1/p" ~/.zsh
 # Reload zshrc
 alias reload='source ~/.zshrc'
 
+# Open files in VSCodium with the VS Code command
+alias code='codium'
+
 # List out directories with `cd` change directory
 unalias cd 2>/dev/null
 cd() {

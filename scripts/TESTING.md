@@ -109,6 +109,7 @@ All installer runs happen inside UTM. Do not run the installer or its tests on t
 - The machine name is in the menu bar. On Ubuntu it is the only item centered in the top bar and the clock is on the right.
 - The machine-color wallpaper, dark theme, pointer, touchpad, keyboard, workspaces, desktop icons, and window settings match the chosen run.
 - VSCodium owns the code and config file types.
+- In a new shell, `code --version` runs VSCodium and matches `codium --version`.
 - Finder or Files has the requested view, trash, and sidebar settings.
 - SSH and screen sharing work from the other guest when enabled.
 - Update and power settings match the chosen run.
