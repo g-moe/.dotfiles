@@ -46,7 +46,7 @@ The files are split by purpose:
 - `setup/apps` installs one app per file.
 - `setup/development` sets up Git, Node, Zsh, tmux, VSCodium, and agent Skills.
 - `setup/appearance` changes the wallpaper, screen saver, theme, and Linux icons.
-- `setup/input` changes the pointer, touchpad, keyboard, and key remapping.
+- `setup/input` changes the pointer, touchpad, keyboard, and key remapping. The keyboard setup uses a fast coding-friendly repeat rate and turns off macOS automatic text changes.
 - `setup/desktop` changes workspaces, desktop items, windows, the Dock, and the top bar.
 - `setup/files` changes default applications, file associations, and Finder or Files settings.
 - `setup/access` changes Handoff, assistants, SSH, and screen sharing.
