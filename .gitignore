@@ -3,12 +3,14 @@
 
 # Root files
 !/.gitignore
+!/TODO.md
 !/.nvmrc
 !/.oxfmtrc.json
 !/.zshrc
 !/AGENTS.md
 !/black.heic
 !/white.png
+!/icon.png
 !/package-lock.json
 !/package.json
 !/tsconfig.json
