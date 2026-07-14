@@ -54,6 +54,8 @@ The files are split by purpose:
 
 macOS uses Homebrew. Ubuntu uses APT when the app is available there. A vendor package is used only when Ubuntu does not carry the app.
 
+The Mac app list includes CleanShot X. Ubuntu skips that step because CleanShot X is only available for macOS.
+
 Ubuntu ships Firefox as a Snap. The Firefox strategy removes that copy and installs Mozilla's APT package so future Firefox updates stay under APT.
 
 On Linux, the installer detects the CPU once at startup. AMD64 installs Google Chrome and OpenWhispr. ARM64 installs Brave and whisper.cpp because Google and OpenWhispr do not publish matching Linux ARM packages. The rest of the Linux app list uses packages that publish both CPU types.
