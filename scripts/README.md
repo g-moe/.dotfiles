@@ -58,7 +58,7 @@ Ubuntu ships Firefox as a Snap. The Firefox strategy removes that copy and insta
 
 On Linux, the installer detects the CPU once at startup. AMD64 installs Google Chrome and OpenWhispr. ARM64 installs Brave and whisper.cpp because Google and OpenWhispr do not publish matching Linux ARM packages. The rest of the Linux app list uses packages that publish both CPU types.
 
-The files part makes Chrome the default Mac and Ubuntu AMD64 browser, Brave the default Ubuntu ARM64 browser, and Ghostty the default Ubuntu terminal. macOS has no system-wide default terminal setting, so Ghostty is not forced there.
+The files part makes Chrome the default Mac and Ubuntu AMD64 browser, Brave the default Ubuntu ARM64 browser, and Ghostty the default Ubuntu terminal. macOS shows its own approval prompt for the browser change; choose **Use Chrome** and the installer continues. macOS has no system-wide default terminal setting, so Ghostty is not forced there.
 
 The installer is for a clean machine. It has no move-old-files steps and no support for an older installer layout.
 

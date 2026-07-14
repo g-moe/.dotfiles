@@ -14,9 +14,27 @@ configure_default_applications() {
 }
 
 mac() {
+  local attempt
+
   load_homebrew || die 'Homebrew is not installed.'
-  duti -s com.google.Chrome http
-  duti -s com.google.Chrome https
+  if [[ "$(duti -d http 2>/dev/null || true)" == 'com.google.Chrome' &&
+    "$(duti -d https 2>/dev/null || true)" == 'com.google.Chrome' ]]; then
+    return 0
+  fi
+
+  # macOS asks the signed-in user to approve a default-browser change. Setting
+  # the HTTP handler opens that one system prompt and approval covers HTTPS too.
+  duti -s com.google.Chrome http >/dev/null 2>&1 || true
+  log 'Approve Chrome in the macOS default-browser prompt.'
+  for attempt in {1..120}; do
+    if [[ "$(duti -d http 2>/dev/null || true)" == 'com.google.Chrome' &&
+      "$(duti -d https 2>/dev/null || true)" == 'com.google.Chrome' ]]; then
+      return 0
+    fi
+    sleep 1
+  done
+
+  die 'Chrome was not approved as the default browser.'
 }
 
 linux() {
