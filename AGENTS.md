@@ -5,4 +5,13 @@
 
 ## Directory-Specific Rules
 
-- [`scripts/AGENTS.md`](scripts/AGENTS.md) — Guidelines for editing `scripts/` (lib barrel, helpers, file placement)
+- [`packages/installer/AGENTS.md`](packages/installer/AGENTS.md) — Machine installer rules and testing requirements
+
+## Package Boundaries
+
+- The root `package.json` is the public command entry point. Keep the existing `install:*` and `verify:machine` command names; they must call `packages/installer/install.sh` or its tests.
+- `packages/installer` may depend on every lower package because it installs and configures them. Nothing may depend on `packages/installer`.
+- `packages/lib/bash` is standalone and has no package dependencies. Reusable Bash libraries and cross-platform Bash tools belong there; every package may use it.
+- `packages/lib/ts` is standalone and has no package dependencies. Shared TypeScript belongs there; every package may use it. Keep its `.gitkeep` until shared TypeScript exists.
+- `packages/mac`, `packages/theming`, and `packages/vscode-ext` may depend on `packages/lib/bash` or `packages/lib/ts`, never on `packages/installer`.
+- Keep installer-only Bash helpers inside `packages/installer/lib`. Do not move package installation or OS validation into the shared Bash library.

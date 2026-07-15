@@ -73,26 +73,25 @@
 !/opencode/themes/
 !/opencode/themes/**
 
-# Scripts
-!/scripts/
-!/scripts/**
-
-# Custom themes
-!/custom-themes/
-!/custom-themes/create/
-!/custom-themes/create/**
-!/custom-themes/output/
-!/custom-themes/output/**
-!/custom-themes/vsce-package/
-!/custom-themes/vsce-package/**
-
-# VS Code extensions
-!/vscode-extensions/
-!/vscode-extensions/**
-/vscode-extensions/**/node_modules/
-/vscode-extensions/**/dist/
-/vscode-extensions/**/dist-test/
-/vscode-extensions/**/*.vsix
+# Packages
+!/packages/
+!/packages/installer/
+!/packages/installer/**
+!/packages/lib/
+!/packages/lib/bash/
+!/packages/lib/bash/**
+!/packages/lib/ts/
+!/packages/lib/ts/.gitkeep
+!/packages/mac/
+!/packages/mac/**
+!/packages/theming/
+!/packages/theming/**
+!/packages/vscode-ext/
+!/packages/vscode-ext/**
+/packages/**/node_modules/
+/packages/**/dist/
+/packages/**/dist-test/
+/packages/**/*.vsix
 
 # Generated system files
 .DS_Store

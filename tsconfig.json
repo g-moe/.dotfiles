@@ -2,10 +2,10 @@
 	"files": [],
 	"references": [
 		{
-			"path": "./custom-themes/create/tsconfig.json"
+			"path": "./packages/theming/create/tsconfig.json"
 		},
 		{
-			"path": "./vscode-extensions/better-vscode/tsconfig.test.json"
+			"path": "./packages/vscode-ext/tsconfig.test.json"
 		}
 	]
 }

@@ -8,12 +8,12 @@
 		"format:check": "oxfmt --check .",
 		"typecheck": "tsc -b --noEmit",
 		"typecheck:tsgo": "tsgo -b --noEmit",
-		"install:git": "bash scripts/install.sh --git",
-		"install:skills": "bash scripts/install.sh --skills",
-		"install:theme": "bash scripts/install.sh --theme",
-		"install:machine": "bash scripts/install.sh",
-		"install:test": "bash scripts/tests/strategy-shape.sh && bash scripts/tests/lib-install.sh && bash scripts/tests/dotfiles-layout.sh",
-		"verify:machine": "bash scripts/tests/installed-links.sh"
+		"install:git": "bash packages/installer/install.sh --git",
+		"install:skills": "bash packages/installer/install.sh --skills",
+		"install:theme": "bash packages/installer/install.sh --theme",
+		"install:machine": "bash packages/installer/install.sh",
+		"install:test": "bash packages/installer/tests/strategy-shape.sh && bash packages/installer/tests/lib-install.sh && bash packages/installer/tests/dotfiles-layout.sh",
+		"verify:machine": "bash packages/installer/tests/installed-links.sh"
 	},
 	"devDependencies": {
 		"@types/node": "24.13.1",
