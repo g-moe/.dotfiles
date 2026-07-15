@@ -8,6 +8,11 @@ ROOT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 
 usage='Use: bash scripts/install.sh [--apps|--development|--appearance|--input|--desktop|--files|--access|--system|--all|--git|--skills|--theme]'
 
+validate_root() {
+  [[ "$ROOT_DIR" == "$HOME/.dotfiles" ]] ||
+    die "Clone this repo to $HOME/.dotfiles before running the installer."
+}
+
 run_strategy() {
   local label="$1"
   local path="$2"
@@ -173,6 +178,7 @@ main() {
   fi
 
   detect_os
+  run_step 'Check dotfiles location' validate_root
   run_step 'Check this machine' validate_os
   run_step 'Check your user' validate_user
 

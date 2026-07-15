@@ -14,9 +14,17 @@ install_opencode() {
   esac
 }
 
+_configure() {
+  local target="$HOME/.config/opencode"
+
+  safe_symlink "$ROOT_DIR/opencode/opencode.jsonc" "$target/opencode.jsonc"
+  safe_symlink "$ROOT_DIR/opencode/tui.jsonc" "$target/tui.jsonc"
+  safe_symlink "$ROOT_DIR/opencode/themes/gtheme.json" "$target/themes/gtheme.json"
+}
+
 mac() {
   brew_cask opencode-desktop
-  safe_symlink "$ROOT_DIR/opencode" "$HOME/.config/opencode"
+  _configure
 }
 
 linux() {
@@ -26,7 +34,7 @@ linux() {
     "opencode-desktop-linux-${LINUX_ARCH}\\.deb$" .deb)"
   apt_install "$package"
   rm -f "$package"
-  safe_symlink "$ROOT_DIR/opencode" "$HOME/.config/opencode"
+  _configure
 }
 
 install_opencode "$1"

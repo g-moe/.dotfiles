@@ -49,7 +49,7 @@ linux() {
   local bookmarks directory target
   mkdir -p "$HOME/code" "$HOME/.config/gtk-3.0" "$HOME/.config/gtk-4.0"
   bookmarks="file://$HOME Home
-file://$ROOT_DIR .config
+file://$ROOT_DIR .dotfiles
 file://$HOME/code code
 file://$HOME/Desktop Desktop
 file://$HOME/Documents Documents

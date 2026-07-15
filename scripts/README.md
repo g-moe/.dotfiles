@@ -1,5 +1,7 @@
 # Machine installer
 
+The repo must live at `~/.dotfiles`. The installer links only the config files and config subfolders each app needs. It does not link whole Ghostty, Neovim, OpenCode, Karabiner, or tmux source folders.
+
 **One entry point:** `scripts/install.sh`. Every install path goes through it — full run, phase slices, and single strategies (`--git`, `--skills`, `--theme`). Do not run `scripts/setup/**` or `custom-themes/create/controller.ts` yourself for install.
 
 ```bash
@@ -12,6 +14,7 @@ npm run install:machine                 # → install.sh
 npm run install:git                     # → install.sh --git
 npm run install:skills                  # → install.sh --skills
 npm run install:theme                   # → install.sh --theme
+npm run verify:machine                  # verify installed links after a VM install
 ```
 
 Normal user only (not root). `sudo` is used where the OS needs it.

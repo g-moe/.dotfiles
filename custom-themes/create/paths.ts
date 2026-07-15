@@ -1,6 +1,8 @@
+import os from "os";
 import path from "path";
 
-const ROOT = "/Users/garrett/.config";
+const HOME = os.homedir();
+const ROOT = path.join(HOME, ".dotfiles");
 const CUSTOM_THEMES = path.join(ROOT, "custom-themes");
 const CREATE_ROOT = path.join(CUSTOM_THEMES, "create");
 const OUTPUT_ROOT = path.join(CUSTOM_THEMES, "output");
@@ -57,8 +59,8 @@ export const PATHS = {
 			light: path.join(ROOT, "nvim/colors/gtheme-light.lua"),
 		},
 		"oh-my-zsh": {
-			dark: "/Users/garrett/.oh-my-zsh/custom/themes/gtheme-dark.zsh-theme",
-			light: "/Users/garrett/.oh-my-zsh/custom/themes/gtheme-light.zsh-theme",
+			dark: path.join(HOME, ".oh-my-zsh/custom/themes/gtheme-dark.zsh-theme"),
+			light: path.join(HOME, ".oh-my-zsh/custom/themes/gtheme-light.zsh-theme"),
 		},
 	},
 } as const;

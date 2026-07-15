@@ -14,15 +14,23 @@ install_ghostty() {
   esac
 }
 
+_configure() {
+  local target="$HOME/.config/ghostty"
+
+  safe_symlink "$ROOT_DIR/ghostty/config" "$target/config"
+  safe_symlink "$ROOT_DIR/ghostty/themes/gtheme-dark" "$target/themes/gtheme-dark"
+  safe_symlink "$ROOT_DIR/ghostty/themes/gtheme-light" "$target/themes/gtheme-light"
+}
+
 mac() {
   brew_cask ghostty
-  safe_symlink "$ROOT_DIR/ghostty" "$HOME/.config/ghostty"
+  _configure
   [[ -d /Applications/Ghostty.app ]] || die 'Ghostty is missing after installation.'
 }
 
 linux() {
   apt_install ghostty
-  safe_symlink "$ROOT_DIR/ghostty" "$HOME/.config/ghostty"
+  _configure
   has ghostty || die 'Ghostty is missing after installation.'
 }
 

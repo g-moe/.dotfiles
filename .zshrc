@@ -94,7 +94,7 @@ cd() {
 alias ssh-ls='awk '\''tolower($1)=="host" {for (i=2; i<=NF; i++) if ($i !~ /[*?]/) print $i}'\'' ~/.ssh/config'
 
 # Walk through creating a new SSH host config
-alias ssh-new="$HOME/.config/scripts/shared/shared-ssh-new-host.sh"
+alias ssh-new="$HOME/.dotfiles/scripts/shared/shared-ssh-new-host.sh"
 
 # Copy to clipboard and print to terminal
 if command -v copy-to-clipboard >/dev/null 2>&1; then

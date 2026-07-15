@@ -12,7 +12,8 @@
 		"install:skills": "bash scripts/install.sh --skills",
 		"install:theme": "bash scripts/install.sh --theme",
 		"install:machine": "bash scripts/install.sh",
-		"install:test": "bash scripts/tests/strategy-shape.sh && bash scripts/tests/lib-install.sh"
+		"install:test": "bash scripts/tests/strategy-shape.sh && bash scripts/tests/lib-install.sh && bash scripts/tests/dotfiles-layout.sh",
+		"verify:machine": "bash scripts/tests/installed-links.sh"
 	},
 	"devDependencies": {
 		"@types/node": "24.13.1",

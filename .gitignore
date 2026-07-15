@@ -57,8 +57,6 @@
 !/opencode/
 !/opencode/opencode.json
 !/opencode/opencode.jsonc
-!/opencode/opencode.png
-!/opencode/package-lock.json
 !/opencode/tui.json
 !/opencode/tui.jsonc
 !/opencode/agent/
@@ -90,11 +88,6 @@
 /vscode-extensions/**/dist/
 /vscode-extensions/**/dist-test/
 /vscode-extensions/**/*.vsix
-
-# Zed
-!/zed/
-!/zed/keymaps.json
-!/zed/settings.json
 
 # Generated system files
 .DS_Store

@@ -14,14 +14,23 @@ install_neovim() {
   esac
 }
 
+_configure() {
+  local relative source target="$HOME/.config/nvim"
+
+  while IFS= read -r source; do
+    relative="${source#"$ROOT_DIR/nvim/"}"
+    safe_symlink "$source" "$target/$relative"
+  done < <(find "$ROOT_DIR/nvim" -type f | sort)
+}
+
 mac() {
   brew_formula neovim
-  safe_symlink "$ROOT_DIR/nvim" "$HOME/.config/nvim"
+  _configure
 }
 
 linux() {
   apt_install neovim
-  safe_symlink "$ROOT_DIR/nvim" "$HOME/.config/nvim"
+  _configure
 }
 
 install_neovim "$1"
