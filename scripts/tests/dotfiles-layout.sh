@@ -18,22 +18,21 @@ required_paths='
 .nvmrc
 .oxfmtrc.json
 .vscode
-.zshrc
 AGENTS.md
 TODO.md
-black.heic
 custom-themes
 ghostty/config
+images/icon.png
+images/white.png
 karabiner/karabiner.json
 nvim/init.lua
 opencode/opencode.jsonc
 scripts
 tmux/tmux.conf
-icon.png
 package-lock.json
 package.json
 tsconfig.json
-white.png
+zsh/.zshrc
 '
 while IFS= read -r path; do
   [[ -z "$path" || -e "$ROOT_DIR/$path" ]] || fail "missing $path"
@@ -45,13 +44,11 @@ allowed_roots='
 .nvmrc
 .oxfmtrc.json
 .vscode
-.zshrc
 AGENTS.md
 TODO.md
-black.heic
 custom-themes
 ghostty
-icon.png
+images
 karabiner
 nvim
 opencode
@@ -62,7 +59,7 @@ tmux
 tsconfig.json
 vscode
 vscode-extensions
-white.png
+zsh
 '
 while IFS= read -r root; do
   [[ -z "$root" ]] && continue
@@ -73,8 +70,15 @@ done < <(
   done | sort -u
 )
 
-for path in zed opencode/opencode.png opencode/package-lock.json; do
-  [[ ! -e "$ROOT_DIR/$path" ]] || fail "old config leftover is still present: $path"
+for path in \
+  zed \
+  opencode/opencode.png \
+  opencode/package-lock.json \
+  .zshrc \
+  black.heic \
+  icon.png \
+  white.png; do
+  [[ ! -e "$ROOT_DIR/$path" ]] || fail "old layout leftover is still present: $path"
 done
 
 for app in ghostty nvim opencode; do

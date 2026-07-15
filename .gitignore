@@ -6,14 +6,19 @@
 !/TODO.md
 !/.nvmrc
 !/.oxfmtrc.json
-!/.zshrc
 !/AGENTS.md
-!/black.heic
-!/white.png
-!/icon.png
 !/package-lock.json
 !/package.json
 !/tsconfig.json
+
+# Images
+!/images/
+!/images/icon.png
+!/images/white.png
+
+# Zsh
+!/zsh/
+!/zsh/.zshrc
 
 # VS Code
 !/.vscode/

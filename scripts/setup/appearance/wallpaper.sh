@@ -26,7 +26,7 @@ _wallpaper_path() {
   if [[ ! -s "$image_path" ]]; then
     temporary_dir="$(mktemp -d "${TMPDIR:-/tmp}/machine-wallpaper.XXXXXX")"
     temporary_path="$temporary_dir/wallpaper.png"
-    magick "$ROOT_DIR/white.png" \
+    magick "$ROOT_DIR/images/white.png" \
       -rotate 180 \
       -colorspace gray \
       +level-colors '#000000',"$color_hex" \

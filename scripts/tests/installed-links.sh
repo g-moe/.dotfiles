@@ -37,7 +37,7 @@ expect_link "$ROOT_DIR/opencode/opencode.jsonc" "$HOME/.config/opencode/opencode
 expect_link "$ROOT_DIR/opencode/tui.jsonc" "$HOME/.config/opencode/tui.jsonc"
 expect_link "$ROOT_DIR/opencode/themes/gtheme.json" "$HOME/.config/opencode/themes/gtheme.json"
 expect_link "$ROOT_DIR/tmux/tmux.conf" "$HOME/.tmux.conf"
-expect_link "$ROOT_DIR/.zshrc" "$HOME/.zshrc"
+expect_link "$ROOT_DIR/zsh/.zshrc" "$HOME/.zshrc"
 expect_link "$ROOT_DIR/scripts/shared/shared-copy-to-clipboard.sh" "$HOME/.local/bin/copy-to-clipboard"
 
 case "$(uname -s)" in
