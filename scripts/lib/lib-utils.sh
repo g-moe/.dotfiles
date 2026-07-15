@@ -15,7 +15,8 @@ has() {
 }
 
 # Create a symlink without replacing user-owned files, directories, or links.
-link_config() {
+# Usage: safe_symlink "$ROOT_DIR/ghostty" "$HOME/.config/ghostty"
+safe_symlink() {
   local source="$1"
   local target="$2"
 

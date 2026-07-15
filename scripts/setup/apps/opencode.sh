@@ -4,7 +4,7 @@ set -euo pipefail
 APP_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SCRIPTS_DIR="$(cd "$APP_DIR/../.." && pwd)"
 ROOT_DIR="$(cd "$SCRIPTS_DIR/.." && pwd)"
-. "$SCRIPTS_DIR/lib/lib-install.sh"
+. "$SCRIPTS_DIR/lib/lib.sh"
 
 install_opencode() {
   case "$1" in
@@ -16,7 +16,7 @@ install_opencode() {
 
 mac() {
   brew_cask opencode-desktop
-  link_config "$ROOT_DIR/opencode" "$HOME/.config/opencode"
+  safe_symlink "$ROOT_DIR/opencode" "$HOME/.config/opencode"
 }
 
 linux() {
@@ -26,7 +26,7 @@ linux() {
     "opencode-desktop-linux-${LINUX_ARCH}\\.deb$" .deb)"
   apt_install "$package"
   rm -f "$package"
-  link_config "$ROOT_DIR/opencode" "$HOME/.config/opencode"
+  safe_symlink "$ROOT_DIR/opencode" "$HOME/.config/opencode"
 }
 
 install_opencode "$1"

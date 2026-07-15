@@ -4,11 +4,7 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 LIB_DIR="$(cd "$SCRIPT_DIR/../../lib" && pwd)"
 
-. "$LIB_DIR/lib-logging.sh"
-. "$LIB_DIR/lib-interactive.sh"
-. "$LIB_DIR/lib-utils.sh"
-
-enable_install_error_trap
+. "$LIB_DIR/lib.sh"
 
 HOME_DIR="${HOME:-}"
 SSH_DIR="$HOME_DIR/.ssh"
@@ -112,7 +108,7 @@ read_host_details() {
   [[ "$host_alias" =~ ^[A-Za-z0-9._-]+$ ]] || die 'Use only letters, numbers, dots, underscores, and dashes in the alias.'
 
   if host_exists "$host_alias"; then
-    if ! interactive_confirm "Host '$host_alias' already exists. Overwrite it?" 'n'; then
+    if ! ask_binary "Host '$host_alias' already exists. Overwrite it?" 'n'; then
       die 'Host setup canceled.'
     fi
 
@@ -135,7 +131,7 @@ read_key_details() {
 
   log_section 'Key'
 
-  choice="$(choose 'SSH key:' \
+  choice="$(ask_select 'SSH key:' \
     'Skip' \
     'Generate a new key for this host' \
     'Use an existing key')"
@@ -151,7 +147,7 @@ read_key_details() {
       pub_key_path="$key_path.pub"
 
       if [[ -e "$key_path" || -e "$pub_key_path" ]]; then
-        if ! interactive_confirm "Key already exists. Overwrite $key_path?" 'n'; then
+        if ! ask_binary "Key already exists. Overwrite $key_path?" 'n'; then
           die 'Key generation canceled.'
         fi
 

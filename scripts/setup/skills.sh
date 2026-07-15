@@ -4,7 +4,7 @@ set -euo pipefail
 SETUP_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SCRIPTS_DIR="$(cd "$SETUP_DIR/.." && pwd)"
 ROOT_DIR="$(cd "$SCRIPTS_DIR/.." && pwd)"
-. "$SCRIPTS_DIR/lib/lib-install.sh"
+. "$SCRIPTS_DIR/lib/lib.sh"
 
 install_skills() {
   case "$1" in
@@ -28,7 +28,7 @@ _install() {
       [[ -f "$source/SKILL.md" ]] || continue
       skill="$(basename "$source")"
       target="$target_root/$skill"
-      link_config "$source" "$target"
+      safe_symlink "$source" "$target"
     done
   done
 }

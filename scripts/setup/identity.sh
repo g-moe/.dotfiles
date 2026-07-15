@@ -4,7 +4,7 @@ set -euo pipefail
 SETUP_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SCRIPTS_DIR="$(cd "$SETUP_DIR/.." && pwd)"
 ROOT_DIR="$(cd "$SCRIPTS_DIR/.." && pwd)"
-. "$SCRIPTS_DIR/lib/lib-install.sh"
+. "$SCRIPTS_DIR/lib/lib.sh"
 
 valid_machine_name() {
   [[ "$1" =~ ^[a-z0-9][a-z0-9-]{0,31}$ ]]
@@ -22,7 +22,7 @@ ask_machine_identity() {
     log 'Use 1-32 lowercase letters, numbers, or dashes.'
   done
 
-  color_choice="$(choose 'Machine color:' "${colors[@]}")"
+  color_choice="$(ask_select 'Machine color:' "${colors[@]}")"
   MACHINE_COLOR="${colors[$color_choice]}"
 
   umask 077
@@ -33,7 +33,7 @@ ask_machine_identity() {
 load_machine_identity() {
   local config="$ROOT_DIR/machine.json"
 
-  if [[ -f "$config" ]] && ! confirm 'Change the saved machine name and color?'; then
+  if [[ -f "$config" ]] && ! ask_binary 'Change the saved machine name and color?'; then
     MACHINE_NAME="$(machine_field "$config" name)"
     MACHINE_COLOR="$(machine_field "$config" color)"
     valid_machine_name "$MACHINE_NAME" || die "Bad machine name in $config"

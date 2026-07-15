@@ -3,10 +3,10 @@ set -euo pipefail
 
 APP_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SCRIPTS_DIR="$(cd "$APP_DIR/../.." && pwd)"
-. "$SCRIPTS_DIR/lib/lib-install.sh"
+. "$SCRIPTS_DIR/lib/lib.sh"
 
 install_nordvpn() {
-  if ! confirm 'Install NordVPN?'; then
+  if ! ask_binary 'Install NordVPN?'; then
     return
   fi
   case "$1" in

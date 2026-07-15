@@ -4,7 +4,7 @@ set -euo pipefail
 STRATEGY_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SCRIPTS_DIR="$(cd "$STRATEGY_DIR/../.." && pwd)"
 ROOT_DIR="$(cd "$SCRIPTS_DIR/.." && pwd)"
-. "$SCRIPTS_DIR/lib/lib-install.sh"
+. "$SCRIPTS_DIR/lib/lib.sh"
 
 configure_zsh() {
   case "$1" in
@@ -35,8 +35,8 @@ _configure() {
   mkdir -p "$custom/themes" "$HOME/.local/bin"
   cp "$ROOT_DIR/custom-themes/output/oh-my-zsh/gtheme-dark.zsh-theme" "$custom/themes/"
   cp "$ROOT_DIR/custom-themes/output/oh-my-zsh/gtheme-light.zsh-theme" "$custom/themes/"
-  link_config "$ROOT_DIR/.zshrc" "$HOME/.zshrc"
-  link_config "$ROOT_DIR/scripts/shared/tools/shared-copy-to-clipboard.sh" \
+  safe_symlink "$ROOT_DIR/.zshrc" "$HOME/.zshrc"
+  safe_symlink "$ROOT_DIR/scripts/shared/tools/shared-copy-to-clipboard.sh" \
     "$HOME/.local/bin/copy-to-clipboard"
   grep -qxF "$shell_path" /etc/shells ||
     printf '%s\n' "$shell_path" | sudo tee -a /etc/shells >/dev/null

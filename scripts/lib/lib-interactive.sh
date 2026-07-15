@@ -4,20 +4,20 @@
 
 # Present a numbered list of options and return the selected index (0-based).
 # Usage:
-#   choice="$(interactive_select "What do you want?" "Skip" "Option A" "Option B")"
+#   choice="$(ask_select "What do you want?" "Skip" "Option A" "Option B")"
 #   case "$choice" in
 #     0) echo "Skipped" ;;
 #     1) echo "Chose A" ;;
 #     2) echo "Chose B" ;;
 #   esac
-interactive_select() {
+ask_select() {
   local question="$1"
   shift
   local options=("$@")
   local choice
 
   if ((${#options[@]} == 0)); then
-    log_error 'interactive_select: no options provided.'
+    log_error 'ask_select: no options provided.'
     return 1
   fi
 
@@ -39,51 +39,13 @@ interactive_select() {
   done
 }
 
-choose() {
-  interactive_select "$@"
-}
-
-# Read one line of input and print the answer.
-# If a default is provided and the user presses enter, print the default.
-# Usage:
-#   hostname="$(interactive_read "Hostname" "my-mac")"
-interactive_read() {
-  local question="$1"
-  local default="${2:-}"
-  local answer
-
-  if [[ -n "$default" ]]; then
-    printf '%s [%s]: ' "$question" "$default" >/dev/tty
-  else
-    printf '%s: ' "$question" >/dev/tty
-  fi
-
-  read -r answer </dev/tty
-  printf '%s\n' "${answer:-$default}"
-}
-
-read_value() {
-  interactive_read "$@"
-}
-
-read_secret() {
-  local prompt="$1"
-  local value
-
-  printf '%s: ' "$prompt" >/dev/tty
-  read -rs value </dev/tty
-  printf '\n' >/dev/tty
-  [[ -n "$value" ]] || die "$prompt cannot be empty."
-  printf '%s\n' "$value"
-}
-
 # Ask a yes/no question.
 # Returns 0 for yes and 1 for no, so it can be used directly in an if statement.
 # Usage:
-#   if interactive_confirm "Continue?" "y"; then
+#   if ask_binary "Continue?" "y"; then
 #     echo "Continuing"
 #   fi
-interactive_confirm() {
+ask_binary() {
   local question="$1"
   local default="${2:-y}"
   local answer
@@ -113,6 +75,36 @@ interactive_confirm() {
   done
 }
 
-confirm() {
-  [[ "$(choose "$1" 'No' 'Yes')" == 1 ]]
+# Read one line of input and print the answer.
+# If a default is provided and the user presses enter, print the default.
+# Usage:
+#   hostname="$(read_value "Hostname" "my-mac")"
+read_value() {
+  local question="$1"
+  local default="${2:-}"
+  local answer
+
+  if [[ -n "$default" ]]; then
+    printf '%s [%s]: ' "$question" "$default" >/dev/tty
+  else
+    printf '%s: ' "$question" >/dev/tty
+  fi
+
+  read -r answer </dev/tty
+  printf '%s\n' "${answer:-$default}"
+}
+
+# Read a secret from the terminal without echoing input.
+# Fails if the value is empty.
+# Usage:
+#   password="$(read_secret 'Remote Desktop password')"
+read_secret() {
+  local prompt="$1"
+  local value
+
+  printf '%s: ' "$prompt" >/dev/tty
+  read -rs value </dev/tty
+  printf '\n' >/dev/tty
+  [[ -n "$value" ]] || die "$prompt cannot be empty."
+  printf '%s\n' "$value"
 }

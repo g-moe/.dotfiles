@@ -12,7 +12,7 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-. "$SCRIPT_DIR/../lib/lib-utils.sh"
+. "$SCRIPT_DIR/../lib/lib.sh"
 
 # Bring Finder forward with a focused window, then run Raycast's built-in Window Management "Almost Maximize" command.
 # Default deeplink: raycast://extensions/raycast/window-management/almost-maximize

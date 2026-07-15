@@ -4,7 +4,7 @@ set -euo pipefail
 STRATEGY_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SCRIPTS_DIR="$(cd "$STRATEGY_DIR/../.." && pwd)"
 ROOT_DIR="$(cd "$SCRIPTS_DIR/.." && pwd)"
-. "$SCRIPTS_DIR/lib/lib-install.sh"
+. "$SCRIPTS_DIR/lib/lib.sh"
 
 configure_vscodium_settings() {
   case "$1" in
@@ -16,8 +16,8 @@ configure_vscodium_settings() {
 
 _configure() {
   local target="$1"
-  link_config "$ROOT_DIR/vscode/user/settings.json" "$target/settings.json"
-  link_config "$ROOT_DIR/vscode/user/keybindings.json" "$target/keybindings.json"
+  safe_symlink "$ROOT_DIR/vscode/user/settings.json" "$target/settings.json"
+  safe_symlink "$ROOT_DIR/vscode/user/keybindings.json" "$target/keybindings.json"
 }
 
 mac() {

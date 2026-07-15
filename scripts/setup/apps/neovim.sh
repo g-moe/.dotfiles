@@ -4,7 +4,7 @@ set -euo pipefail
 APP_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SCRIPTS_DIR="$(cd "$APP_DIR/../.." && pwd)"
 ROOT_DIR="$(cd "$SCRIPTS_DIR/.." && pwd)"
-. "$SCRIPTS_DIR/lib/lib-install.sh"
+. "$SCRIPTS_DIR/lib/lib.sh"
 
 install_neovim() {
   case "$1" in
@@ -16,12 +16,12 @@ install_neovim() {
 
 mac() {
   brew_formula neovim
-  link_config "$ROOT_DIR/nvim" "$HOME/.config/nvim"
+  safe_symlink "$ROOT_DIR/nvim" "$HOME/.config/nvim"
 }
 
 linux() {
   apt_install neovim
-  link_config "$ROOT_DIR/nvim" "$HOME/.config/nvim"
+  safe_symlink "$ROOT_DIR/nvim" "$HOME/.config/nvim"
 }
 
 install_neovim "$1"

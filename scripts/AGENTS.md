@@ -11,8 +11,8 @@ This directory contains one macOS/Ubuntu installer plus separate Mac-only tools.
 ## Structure
 
 - `install.sh` — The only installer entry point. It detects macOS or Ubuntu.
-- `lib/lib-install.sh` — The one shared library entry point used by setup files.
-- `lib/lib-logging.sh`, `lib/lib-interactive.sh`, `lib/lib-utils.sh`, and `lib/lib-packages.sh` — Focused logging, prompt, safe-link, download, and package helpers.
+- `lib/lib.sh` — Single shared library entry point (barrel). Sources the focused libraries and enables the error trap.
+- `lib/lib-logging.sh`, `lib/lib-run.sh`, `lib/lib-interactive.sh`, `lib/lib-utils.sh`, `lib/lib-packages.sh`, and `lib/lib-install.sh` — Focused logging, run/die/step handling, prompt, safe-link, download/package, and OS/machine helpers. Source only via `lib.sh`.
 - `setup/` — One strategy file per app or setting. Each file keeps its Mac and Linux commands together.
   - `setup/apps/` — Application installs.
   - `setup/development/` — Development tool setup.
@@ -34,9 +34,10 @@ This directory contains one macOS/Ubuntu installer plus separate Mac-only tools.
 - Every strategy file receives the OS as `$1`; its switch calls plain `mac()` or `linux()` functions.
 - Run each strategy in a new Bash process. This lets every file use the plain names `mac()` and `linux()` without clashes.
 - Register every strategy exactly once in `install.sh`; `tests/strategy-shape.sh` checks this.
-- Keep shared helpers in their matching library and expose them through `lib-install.sh`; do not copy helpers into setup files.
+- Keep shared helpers in their matching library and expose them through `lib.sh`; do not copy helpers into setup files or source focused libraries directly.
+- `lib.sh` enables `enable_error_trap` so failures report the step, command, and location.
 - Suppress both stdout and stderr with `silent cmd` (from `lib-utils.sh`), not `cmd >/dev/null 2>&1`. Keep raw `/dev/null` only when capturing output, redirecting one stream, assigning `PROFILE=/dev/null`, wrapping a heredoc, or inside `silent` itself.
-- Prefer `has`, `log`, `log_section`, `choose`, `read_value`, and `die` over local wrappers. Keep `interactive_confirm` when a typed y/n prompt with a default is required; `confirm` is numbered No/Yes.
+- Prefer `has`, `log`, `log_section`, `ask_select`, `ask_binary`, `read_value`, and `die` over local wrappers.
 - Keep one feature per strategy file. Do not group Skills, Node, Zsh, tmux, Dock, or other unrelated work.
 - Do not add migration steps, old-path cleanup, or compatibility branches. These installers target clean machines.
 - macOS uses Homebrew. Ubuntu uses APT unless the vendor does not publish an APT package.

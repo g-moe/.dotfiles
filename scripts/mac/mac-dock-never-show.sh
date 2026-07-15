@@ -4,11 +4,7 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 LIB_DIR="$SCRIPT_DIR/../lib"
 
-. "$LIB_DIR/lib-logging.sh"
-. "$LIB_DIR/lib-interactive.sh"
-. "$LIB_DIR/lib-utils.sh"
-
-enable_install_error_trap
+. "$LIB_DIR/lib.sh"
 
 enable_dock_never_show() {
   defaults write com.apple.dock autohide -bool true
@@ -28,7 +24,7 @@ disable_dock_never_show() {
 main() {
   local choice
 
-  choice="$(choose 'Dock visibility:' 'Skip' 'Never show Dock' 'Undo never-show override')"
+  choice="$(ask_select 'Dock visibility:' 'Skip' 'Never show Dock' 'Undo never-show override')"
 
   case "$choice" in
     0)

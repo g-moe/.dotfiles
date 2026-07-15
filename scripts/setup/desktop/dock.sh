@@ -3,7 +3,7 @@ set -euo pipefail
 
 STRATEGY_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SCRIPTS_DIR="$(cd "$STRATEGY_DIR/../.." && pwd)"
-. "$SCRIPTS_DIR/lib/lib-install.sh"
+. "$SCRIPTS_DIR/lib/lib.sh"
 
 configure_dock() {
   case "$1" in
@@ -32,14 +32,14 @@ mac() {
   defaults write com.apple.dock show-recents -bool false
   defaults write com.apple.dock magnification -bool true
 
-  choice="$(choose 'Dock visibility:' 'Leave unchanged' 'Hide automatically' 'Always show')"
+  choice="$(ask_select 'Dock visibility:' 'Leave unchanged' 'Hide automatically' 'Always show')"
   case "$choice" in
     0) ;;
     1) defaults write com.apple.dock autohide -bool true ;;
     2) defaults write com.apple.dock autohide -bool false ;;
   esac
 
-  choice="$(choose 'Dock icon size:' Small Medium Large)"
+  choice="$(ask_select 'Dock icon size:' Small Medium Large)"
   case "$choice" in
     0)
       defaults write com.apple.dock tilesize -int 32
@@ -55,7 +55,7 @@ mac() {
       ;;
   esac
 
-  choice="$(choose 'Dock position:' Bottom Left Right)"
+  choice="$(ask_select 'Dock position:' Bottom Left Right)"
   case "$choice" in
     0) defaults write com.apple.dock orientation -string bottom ;;
     1) defaults write com.apple.dock orientation -string left ;;
@@ -93,7 +93,7 @@ linux() {
   gsettings set org.gnome.shell.extensions.dash-to-dock click-action 'focus-or-previews'
   gsettings set org.gnome.shell.extensions.dash-to-dock scroll-action 'cycle-windows'
 
-  choice="$(choose 'Dock visibility:' 'Leave unchanged' 'Hide automatically' 'Always show')"
+  choice="$(ask_select 'Dock visibility:' 'Leave unchanged' 'Hide automatically' 'Always show')"
   case "$choice" in
     0) ;;
     1)
@@ -108,14 +108,14 @@ linux() {
       ;;
   esac
 
-  choice="$(choose 'Dock icon size:' Small Medium Large)"
+  choice="$(ask_select 'Dock icon size:' Small Medium Large)"
   case "$choice" in
     0) gsettings set org.gnome.shell.extensions.dash-to-dock dash-max-icon-size 32 ;;
     1) gsettings set org.gnome.shell.extensions.dash-to-dock dash-max-icon-size 48 ;;
     2) gsettings set org.gnome.shell.extensions.dash-to-dock dash-max-icon-size 64 ;;
   esac
 
-  choice="$(choose 'Dock position:' Bottom Left Right)"
+  choice="$(ask_select 'Dock position:' Bottom Left Right)"
   case "$choice" in
     0) gsettings set org.gnome.shell.extensions.dash-to-dock dock-position BOTTOM ;;
     1) gsettings set org.gnome.shell.extensions.dash-to-dock dock-position LEFT ;;

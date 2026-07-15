@@ -4,7 +4,7 @@ set -euo pipefail
 STRATEGY_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SCRIPTS_DIR="$(cd "$STRATEGY_DIR/../.." && pwd)"
 ROOT_DIR="$(cd "$SCRIPTS_DIR/.." && pwd)"
-. "$SCRIPTS_DIR/lib/lib-install.sh"
+. "$SCRIPTS_DIR/lib/lib.sh"
 
 configure_theme() {
   case "$1" in
@@ -16,7 +16,7 @@ configure_theme() {
 
 mac() {
   local color tint
-  confirm 'Set the dark theme and machine color?' || return 0
+  ask_binary 'Set the dark theme and machine color?' || return 0
   color="$(machine_field "$ROOT_DIR/machine.json" color)"
   tint="$(machine_color_tint "$color")"
   defaults write NSGlobalDomain AppleAccentColor -int 4
@@ -31,7 +31,7 @@ mac() {
 
 linux() {
   local accent color
-  confirm 'Set the dark theme and machine color?' || return 0
+  ask_binary 'Set the dark theme and machine color?' || return 0
   color="$(machine_field "$ROOT_DIR/machine.json" color)"
   case "$color" in
     aqua) accent=teal ;;

@@ -3,7 +3,7 @@ set -euo pipefail
 
 STRATEGY_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SCRIPTS_DIR="$(cd "$STRATEGY_DIR/../.." && pwd)"
-. "$SCRIPTS_DIR/lib/lib-install.sh"
+. "$SCRIPTS_DIR/lib/lib.sh"
 
 configure_power() {
   case "$1" in
@@ -15,7 +15,7 @@ configure_power() {
 
 _mode() {
   local choice
-  choice="$(choose 'Power mode:' Skip Normal Server)"
+  choice="$(ask_select 'Power mode:' Skip Normal Server)"
   case "$choice" in
     0) printf 'skip\n' ;;
     1) printf 'normal\n' ;;

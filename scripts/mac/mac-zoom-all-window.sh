@@ -10,7 +10,7 @@
 # @raycast.packageName Window Tools
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-. "$SCRIPT_DIR/../lib/lib-utils.sh"
+. "$SCRIPT_DIR/../lib/lib.sh"
 
 # Use Raycast's built-in Window Management "Maximize" command on every visible standard window.
 # Default deeplink: raycast://extensions/raycast/window-management/maximize

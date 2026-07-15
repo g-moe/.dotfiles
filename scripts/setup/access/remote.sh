@@ -3,7 +3,7 @@ set -euo pipefail
 
 STRATEGY_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SCRIPTS_DIR="$(cd "$STRATEGY_DIR/../.." && pwd)"
-. "$SCRIPTS_DIR/lib/lib-install.sh"
+. "$SCRIPTS_DIR/lib/lib.sh"
 
 configure_remote_access() {
   case "$1" in
@@ -15,7 +15,7 @@ configure_remote_access() {
 
 mac() {
   local state
-  confirm 'Enable SSH and Screen Sharing?' || return 0
+  ask_binary 'Enable SSH and Screen Sharing?' || return 0
   sudo launchctl enable system/com.openssh.sshd
   silent sudo launchctl load -w /System/Library/LaunchDaemons/ssh.plist || true
   sudo launchctl print system/com.openssh.sshd >/dev/null
@@ -30,7 +30,7 @@ mac() {
 
 linux() {
   local password tls_cert tls_dir tls_key username
-  confirm 'Enable SSH and GNOME Remote Desktop?' || return 0
+  ask_binary 'Enable SSH and GNOME Remote Desktop?' || return 0
   apt_install openssh-server gnome-remote-desktop openssl
   sudo systemctl enable --now ssh
   username="$(read_value 'Remote Desktop user name' "$USER")"

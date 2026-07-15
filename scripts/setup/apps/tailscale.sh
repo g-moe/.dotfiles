@@ -3,7 +3,7 @@ set -euo pipefail
 
 APP_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SCRIPTS_DIR="$(cd "$APP_DIR/../.." && pwd)"
-. "$SCRIPTS_DIR/lib/lib-install.sh"
+. "$SCRIPTS_DIR/lib/lib.sh"
 
 install_tailscale() {
   case "$1" in
@@ -16,7 +16,7 @@ install_tailscale() {
 mac() {
   local choice
 
-  choice="$(choose 'Install Tailscale as:' Skip 'Command-line service' 'Menu bar app')"
+  choice="$(ask_select 'Install Tailscale as:' Skip 'Command-line service' 'Menu bar app')"
   case "$choice" in
     0) ;;
     1)
@@ -30,7 +30,7 @@ mac() {
 linux() {
   local choice ID='' VERSION_CODENAME=''
 
-  choice="$(choose 'Install Tailscale?' Skip 'System service')"
+  choice="$(ask_select 'Install Tailscale?' Skip 'System service')"
   [[ "$choice" == 1 ]] || return 0
   # shellcheck disable=SC1091
   . /etc/os-release

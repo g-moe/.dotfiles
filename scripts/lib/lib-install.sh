@@ -1,12 +1,9 @@
 #!/usr/bin/env bash
 
-# One import for every setup file. The work lives in focused shared libraries.
-LIB_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-. "$LIB_DIR/lib-logging.sh"
-. "$LIB_DIR/lib-interactive.sh"
-. "$LIB_DIR/lib-utils.sh"
-. "$LIB_DIR/lib-packages.sh"
+# Operating-system and machine helpers. Sourced by lib.sh.
 
+# Detect mac or linux and export OS. On Linux also export LINUX_ARCH.
+# Usage: detect_os
 detect_os() {
   case "$(uname -s)" in
     Darwin) OS=mac ;;
@@ -25,6 +22,8 @@ detect_os() {
   export OS
 }
 
+# Require a supported OS after detect_os.
+# Usage: validate_os
 validate_os() {
   local ID='' VERSION_ID=''
 
@@ -41,12 +40,16 @@ validate_os() {
   esac
 }
 
+# Require a normal user with working sudo, not root.
+# Usage: validate_user
 validate_user() {
   [[ "$(id -u)" -ne 0 ]] || die 'Run the installer as your normal user, not with sudo.'
   has sudo || die 'sudo is required.'
   sudo -v
 }
 
+# Read a string field from machine.json.
+# Usage: name="$(machine_field "$ROOT_DIR/machine.json" name)"
 machine_field() {
   local config="$1"
   local field="$2"
@@ -57,6 +60,8 @@ machine_field() {
   printf '%s\n' "$value"
 }
 
+# Print "hex|tint" for a machine color name.
+# Usage: values="$(machine_color_values blue)"
 machine_color_values() {
   case "$1" in
     blue) printf '#458588|0.270588 0.521569 0.533333 0.250000\n' ;;
@@ -71,12 +76,16 @@ machine_color_values() {
   esac
 }
 
+# Print the hex color for a machine color name.
+# Usage: hex="$(machine_color_hex blue)"
 machine_color_hex() {
   local values
   values="$(machine_color_values "$1")"
   printf '%s\n' "${values%%|*}"
 }
 
+# Print the tint components for a machine color name.
+# Usage: tint="$(machine_color_tint blue)"
 machine_color_tint() {
   local values
   values="$(machine_color_values "$1")"

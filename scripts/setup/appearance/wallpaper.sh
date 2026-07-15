@@ -4,7 +4,7 @@ set -euo pipefail
 STRATEGY_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SCRIPTS_DIR="$(cd "$STRATEGY_DIR/../.." && pwd)"
 ROOT_DIR="$(cd "$SCRIPTS_DIR/.." && pwd)"
-. "$SCRIPTS_DIR/lib/lib-install.sh"
+. "$SCRIPTS_DIR/lib/lib.sh"
 
 configure_wallpaper() {
   case "$1" in
@@ -45,7 +45,7 @@ _wallpaper_path() {
 
 mac() {
   local image_path
-  confirm 'Set the machine-color wallpaper?' || return 0
+  ask_binary 'Set the machine-color wallpaper?' || return 0
   load_homebrew || die 'Homebrew is not installed.'
   image_path="$(_wallpaper_path)"
   /usr/bin/swift - "$image_path" <<'SWIFT'
@@ -60,7 +60,7 @@ SWIFT
 
 linux() {
   local image_path uri
-  confirm 'Set the machine-color wallpaper?' || return 0
+  ask_binary 'Set the machine-color wallpaper?' || return 0
   image_path="$(_wallpaper_path)"
   uri="file://$image_path"
   gsettings set org.gnome.desktop.background picture-uri "$uri"

@@ -4,7 +4,7 @@ set -euo pipefail
 STRATEGY_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SCRIPTS_DIR="$(cd "$STRATEGY_DIR/../.." && pwd)"
 ROOT_DIR="$(cd "$SCRIPTS_DIR/.." && pwd)"
-. "$SCRIPTS_DIR/lib/lib-install.sh"
+. "$SCRIPTS_DIR/lib/lib.sh"
 
 configure_tmux() {
   case "$1" in
@@ -17,8 +17,8 @@ configure_tmux() {
 _configure() {
   local tpm_source="$1"
 
-  link_config "$ROOT_DIR/tmux/tmux.conf" "$HOME/.tmux.conf"
-  link_config "$tpm_source" "$HOME/.tmux/plugins/tpm"
+  safe_symlink "$ROOT_DIR/tmux/tmux.conf" "$HOME/.tmux.conf"
+  safe_symlink "$tpm_source" "$HOME/.tmux/plugins/tpm"
   "$HOME/.tmux/plugins/tpm/bin/install_plugins"
 }
 

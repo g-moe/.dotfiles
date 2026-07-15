@@ -4,8 +4,7 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 LIB_DIR="$(cd "$SCRIPT_DIR/../../lib" && pwd)"
 
-. "$LIB_DIR/lib-logging.sh"
-. "$LIB_DIR/lib-utils.sh"
+. "$LIB_DIR/lib.sh"
 
 main() {
   if has pbcopy; then

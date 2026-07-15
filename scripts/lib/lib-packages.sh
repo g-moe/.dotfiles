@@ -2,6 +2,8 @@
 
 # Downloads and package installation shared by macOS and Ubuntu setup files.
 
+# Write root-owned file contents atomically through a temporary file.
+# Usage: install_root_file /etc/apt/sources.list.d/app.list "$content"
 install_root_file() {
   local path="$1"
   local content="$2"
@@ -13,6 +15,9 @@ install_root_file() {
   rm -f "$temporary_file"
 }
 
+# Download an APT signing key and install it under /usr/share/keyrings.
+# format is plain or dearmor. Optional fingerprint must match when provided.
+# Usage: install_apt_key "$url" /usr/share/keyrings/app.gpg dearmor "$fingerprint"
 install_apt_key() {
   local url="$1"
   local path="$2"
@@ -40,6 +45,9 @@ install_apt_key() {
   rm -f "$raw_file" "$output_file"
 }
 
+# Download the latest GitHub release asset matching a regex and verify its digest.
+# Prints the temporary file path.
+# Usage: package="$(download_github_asset owner/repo '\.deb$' .deb)"
 download_github_asset() {
   local repository="$1"
   local pattern="$2"
@@ -61,6 +69,9 @@ download_github_asset() {
   printf '%s\n' "$file"
 }
 
+# Load Homebrew into PATH when it is already installed.
+# Returns 1 when Homebrew is missing.
+# Usage: load_homebrew || die 'Homebrew is not installed.'
 load_homebrew() {
   local brew_bin=''
 
@@ -77,6 +88,8 @@ load_homebrew() {
   eval "$("$brew_bin" shellenv)"
 }
 
+# Install Homebrew when needed, then load it.
+# Usage: install_homebrew
 install_homebrew() {
   if load_homebrew; then
     return
@@ -86,20 +99,28 @@ install_homebrew() {
   load_homebrew || die 'Homebrew did not become available.'
 }
 
+# Install one or more Homebrew formulas.
+# Usage: brew_formula gh neovim
 brew_formula() {
   load_homebrew || die 'Homebrew is not installed.'
   brew install --no-ask --formula "$@"
 }
 
+# Install one or more Homebrew casks.
+# Usage: brew_cask ghostty
 brew_cask() {
   load_homebrew || die 'Homebrew is not installed.'
   brew install --no-ask --cask "$@"
 }
 
+# Install one or more APT packages.
+# Usage: apt_install curl jq
 apt_install() {
   sudo apt-get install -y "$@"
 }
 
+# Enable a GNOME Shell extension by UUID, adding it to the enabled list if needed.
+# Usage: enable_gnome_extension gsconnect@andyholmes.github.io
 enable_gnome_extension() {
   local uuid="$1"
   local enabled

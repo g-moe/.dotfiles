@@ -45,7 +45,7 @@ linux() {
 install_vscodium "$1"
 ```
 
-Every setup file loads `lib/lib-install.sh`. That file only joins the focused logging, prompt, safe-link, package, operating-system, and machine helpers; each shared helper has one implementation.
+Every script loads `lib/lib.sh`. That barrel joins the focused logging, run, prompt, safe-link, package, operating-system, and machine helpers and enables the shared error trap; each helper has one implementation.
 
 The files are split by purpose:
 

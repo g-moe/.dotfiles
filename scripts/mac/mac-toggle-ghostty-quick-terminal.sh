@@ -6,7 +6,7 @@
 # @raycast.mode silent
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-. "$SCRIPT_DIR/../lib/lib-utils.sh"
+. "$SCRIPT_DIR/../lib/lib.sh"
 
 silent osascript -e 'if application "Ghostty" is not running then tell application "Ghostty" to launch' \
   -e 'tell application "System Events" to tell process "Ghostty" to click menu item "Quick Terminal" of menu "View" of menu bar 1'

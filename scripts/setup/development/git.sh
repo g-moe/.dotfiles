@@ -3,10 +3,10 @@ set -euo pipefail
 
 STRATEGY_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SCRIPTS_DIR="$(cd "$STRATEGY_DIR/../.." && pwd)"
-. "$SCRIPTS_DIR/lib/lib-install.sh"
+. "$SCRIPTS_DIR/lib/lib.sh"
 
 configure_git() {
-  confirm 'Set up Git for this user?' || return 0
+  ask_binary 'Set up Git for this user?' || return 0
 
   case "$1" in
     mac) mac ;;
@@ -58,7 +58,7 @@ _configure() {
   fi
   if silent gh auth status --hostname github.com; then
     log 'GitHub is already signed in.'
-  elif confirm 'Sign in to GitHub in your browser?'; then
+  elif ask_binary 'Sign in to GitHub in your browser?'; then
     gh auth login --hostname github.com --web --git-protocol https
   else
     log 'Skipped GitHub sign-in.'
