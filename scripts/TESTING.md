@@ -28,7 +28,7 @@ All installer runs happen inside UTM. Do not run the installer or its tests on t
 | App install C  | Tailscale skipped                           | Tailscale service                          | Ubuntu service choice covered by A; macOS not run                                     |
 | Desktop A      | Dock hidden, small, bottom                  | Dock hidden, small, bottom                 | Both passed                                                                           |
 | Desktop B      | Dock shown, large, left                     | Dock shown, large, left                    | Ubuntu passed; macOS pending                                                          |
-| Desktop C      | Dock unchanged, medium, right               | Dock unchanged, medium, right              | Ubuntu passed; macOS pending                                                          |
+| Desktop C      | Dock unchanged; no size or position prompt  | Dock unchanged; no size or position prompt | Pending after the Dock skip fix                                                       |
 | Wallpaper A    | Apply machine wallpaper                     | Apply machine wallpaper                    | Both passed                                                                           |
 | Wallpaper B    | Keep current wallpaper                      | Keep current wallpaper                     | Ubuntu passed; macOS pending                                                          |
 | Theme A        | Apply dark theme and machine color          | Apply dark theme and machine color         | Both passed                                                                           |
@@ -39,7 +39,7 @@ All installer runs happen inside UTM. Do not run the installer or its tests on t
 | Default apps   | Chrome browser                              | Chrome or Brave browser, Ghostty terminal  | Both passed                                                                           |
 | Files          | Associations, preferences, and sidebar      | Associations, preferences, and sidebar     | Both passed; macOS 26 skips protected associations and sidebar entries                |
 | Remote A       | Enable remote access                        | Enable remote access                       | Ubuntu passed; macOS pending                                                          |
-| Remote B       | Skip remote access                          | Skip remote access                         | Both passed                                                                           |
+| Remote B       | Skip remote access                          | Skip remote access                         | Needs a new disposable-clone check after the prompt label change                      |
 | Power A        | Normal                                      | Normal                                     | Both passed                                                                           |
 | Power B        | Server                                      | Server                                     | Ubuntu passed; macOS pending                                                          |
 | Power C        | Skip                                        | Skip                                       | Ubuntu passed; macOS pending                                                          |
@@ -89,7 +89,7 @@ All installer runs happen inside UTM. Do not run the installer or its tests on t
 - The Ubuntu ARM64 app run passed, then the same app run passed again without a restore. Cloudflared, Fastfetch, GitHub CLI, Neovim, tmux, Ghostty, VSCodium, Codex, Docker, Brave, Firefox, whisper.cpp, Zsh, wl-copy, Tailscale, and NordVPN were checked from the guest.
 - VSCodium, Brave, Firefox, and Ghostty opened in the Ubuntu desktop. OpenCode installed and its server and window code stayed running, but its Electron window did not become visible under UTM's Wayland display. The guest had free memory, no out-of-memory report, and no app crash. This remains a UTM display limit rather than an ARM64 package failure.
 - The tracked wallpaper source is `white.png`. Ubuntu creates a 3840x2160 copy because UTM's virtual display rejected the 6016x3388 texture. The colored wallpaper appeared correctly in the guest. Both apply and skip choices passed.
-- All three Ubuntu Dock choice sets passed. Development passed after removing the bad tmux entry that made the plugin manager try to install itself. Input and file settings passed.
+- The hidden and shown Ubuntu Dock choices passed. The full Dock skip choice changed afterward and needs a new disposable-clone check. Development passed after removing the bad tmux entry that made the plugin manager try to install itself. Input and file settings passed.
 - Ubuntu SSH stayed enabled and active. GNOME Remote Desktop now creates a local TLS certificate and starts the matching headless service. Both enable and skip choices passed.
 - Normal, server, and skip power choices passed. The Linux power profile change uses `sudo`, and skip choices return success instead of stopping the installer.
 - The reusable Ubuntu `test-ready` snapshot contains only the clean OS, guest agent, and Expect. Test prep adds Git and SSH for automation, then makes a fresh clone. The full clean run and its second run started from that snapshot.

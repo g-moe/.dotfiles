@@ -15,7 +15,7 @@ configure_machine_name_display() {
 }
 
 mac() {
-  local agent_path binary_path name
+  local agent_path attempt binary_path name
 
   name="$(machine_field "$ROOT_DIR/machine.json" name)"
   binary_path="$HOME/.local/bin/machine-name-menu-bar"
@@ -45,6 +45,12 @@ SWIFT
 EOF
 )" >"$agent_path"
   launchctl bootout "gui/$(id -u)/local.machine-name-menu-bar" >/dev/null 2>&1 || true
+  for attempt in {1..50}; do
+    if launchctl bootstrap "gui/$(id -u)" "$agent_path" >/dev/null 2>&1; then
+      return
+    fi
+    sleep 0.1
+  done
   launchctl bootstrap "gui/$(id -u)" "$agent_path"
 }
 

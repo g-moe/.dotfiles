@@ -25,6 +25,9 @@ _mac_app() {
 mac() {
   local choice
 
+  choice="$(choose 'Dock setup:' 'Leave unchanged' 'Hide automatically' 'Always show')"
+  [[ "$choice" != 0 ]] || return 0
+
   defaults write com.apple.dock mineffect -string scale
   defaults write com.apple.dock minimize-to-application -bool false
   defaults write com.apple.dock launchanim -bool false
@@ -32,9 +35,7 @@ mac() {
   defaults write com.apple.dock show-recents -bool false
   defaults write com.apple.dock magnification -bool true
 
-  choice="$(choose 'Dock visibility:' 'Leave unchanged' 'Hide automatically' 'Always show')"
   case "$choice" in
-    0) ;;
     1) defaults write com.apple.dock autohide -bool true ;;
     2) defaults write com.apple.dock autohide -bool false ;;
   esac
@@ -85,6 +86,9 @@ _require_linux_app() {
 linux() {
   local choice desktop_file
 
+  choice="$(choose 'Dock setup:' 'Leave unchanged' 'Hide automatically' 'Always show')"
+  [[ "$choice" != 0 ]] || return 0
+
   gsettings set org.gnome.shell.extensions.dash-to-dock extend-height false
   gsettings set org.gnome.shell.extensions.dash-to-dock show-mounts false
   gsettings set org.gnome.shell.extensions.dash-to-dock show-trash false
@@ -93,9 +97,7 @@ linux() {
   gsettings set org.gnome.shell.extensions.dash-to-dock click-action 'focus-or-previews'
   gsettings set org.gnome.shell.extensions.dash-to-dock scroll-action 'cycle-windows'
 
-  choice="$(choose 'Dock visibility:' 'Leave unchanged' 'Hide automatically' 'Always show')"
   case "$choice" in
-    0) ;;
     1)
       gsettings set org.gnome.shell.extensions.dash-to-dock dock-fixed false
       gsettings set org.gnome.shell.extensions.dash-to-dock autohide true
