@@ -11,16 +11,8 @@ log() {
   printf '%s\n' "$*"
 }
 
-section() {
-  log_section "$*"
-}
-
 log_section() {
   printf '\n==> %s\n' "$*"
-}
-
-log_info() {
-  printf ' - %s\n' "$*"
 }
 
 log_error() {

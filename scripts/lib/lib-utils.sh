@@ -14,11 +14,6 @@ has() {
   silent command -v "$1"
 }
 
-# Older standalone tools use the longer name.
-has_command() {
-  has "$@"
-}
-
 # Create a symlink without replacing user-owned files, directories, or links.
 link_config() {
   local source="$1"

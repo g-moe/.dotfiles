@@ -34,9 +34,8 @@ if (link_config "$source_file" "$temporary_dir/machine.json" 2>/dev/null); then
 fi
 
 has bash || fail 'has did not find Bash'
-has_command bash || fail 'has_command did not reuse has'
 
-for function_name in die log section run_step choose read_value read_secret confirm has link_config; do
+for function_name in die log log_section run_step choose read_value read_secret confirm has link_config; do
   count="$(grep -h "^${function_name}()" "$SCRIPTS_DIR"/lib/*.sh | wc -l | tr -d ' ')"
   expect_equal "$count" 1
 done

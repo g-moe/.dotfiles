@@ -137,7 +137,7 @@ main() {
   run_step 'Check your user' validate_user
   run_strategy 'Machine name and color' identity.sh
   run_phase "$phase"
-  section 'Done'
+  log_section 'Done'
   log "$OS $phase setup is complete."
 }
 

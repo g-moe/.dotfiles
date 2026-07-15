@@ -4,6 +4,7 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 LIB_DIR="$(cd "$SCRIPT_DIR/../../lib" && pwd)"
 
+. "$LIB_DIR/lib-logging.sh"
 . "$LIB_DIR/lib-utils.sh"
 
 main() {
@@ -22,9 +23,7 @@ main() {
     return
   fi
 
-  printf '%s\n' \
-    'ERROR: No usable clipboard command found (pbcopy, wl-copy, or xclip).' >&2
-  return 1
+  die 'No usable clipboard command found (pbcopy, wl-copy, or xclip).'
 }
 
 main "$@"

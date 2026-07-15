@@ -15,24 +15,24 @@ enable_dock_never_show() {
   defaults write com.apple.dock autohide-delay -float 999
   defaults write com.apple.dock autohide-time-modifier -float 0
 
-  log_info 'Dock configured to stay hidden.'
+  log 'Dock configured to stay hidden.'
 }
 
 disable_dock_never_show() {
   silent defaults delete com.apple.dock autohide-delay || true
   silent defaults delete com.apple.dock autohide-time-modifier || true
 
-  log_info 'Dock hidden-delay override removed.'
+  log 'Dock hidden-delay override removed.'
 }
 
 main() {
   local choice
 
-  choice="$(interactive_select 'Dock visibility:' 'Skip' 'Never show Dock' 'Undo never-show override')"
+  choice="$(choose 'Dock visibility:' 'Skip' 'Never show Dock' 'Undo never-show override')"
 
   case "$choice" in
     0)
-      log_info 'Skipping Dock visibility changes.'
+      log 'Skipping Dock visibility changes.'
       return
       ;;
     1)
