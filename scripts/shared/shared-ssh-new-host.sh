@@ -1,8 +1,12 @@
 #!/usr/bin/env bash
+# Interactive helper to add an SSH Host block: alias, hostname, user, port, and key.
+# Can generate a new key or reuse an existing one, then copies remote setup commands
+# (authorized_keys install) to the clipboard. Aliased as ssh-new in .zshrc.
+
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-LIB_DIR="$(cd "$SCRIPT_DIR/../../lib" && pwd)"
+LIB_DIR="$(cd "$SCRIPT_DIR/../lib" && pwd)"
 
 . "$LIB_DIR/lib.sh"
 
