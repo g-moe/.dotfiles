@@ -16,7 +16,7 @@ install_tailscale() {
 mac() {
   local choice
 
-  choice="$(ask_select 'Install Tailscale as:' Skip 'Command-line service' 'Menu bar app')"
+  choice="$(ask_choice 'Install Tailscale as:' Skip 'Command-line service' 'Menu bar app')"
   case "$choice" in
     0) ;;
     1)
@@ -30,7 +30,7 @@ mac() {
 linux() {
   local choice ID='' VERSION_CODENAME=''
 
-  choice="$(ask_select 'Install Tailscale?' Skip 'System service')"
+  choice="$(ask_choice 'Install Tailscale?' Skip 'System service')"
   [[ "$choice" == 1 ]] || return 0
   # shellcheck disable=SC1091
   . /etc/os-release

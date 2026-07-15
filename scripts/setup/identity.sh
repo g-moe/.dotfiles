@@ -22,7 +22,7 @@ ask_machine_identity() {
     log 'Use 1-32 lowercase letters, numbers, or dashes.'
   done
 
-  color_choice="$(ask_select 'Machine color:' "${colors[@]}")"
+  color_choice="$(ask_choice 'Machine color:' "${colors[@]}")"
   MACHINE_COLOR="${colors[$color_choice]}"
 
   umask 077

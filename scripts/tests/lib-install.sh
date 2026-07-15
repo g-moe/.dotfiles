@@ -35,7 +35,7 @@ fi
 
 has bash || fail 'has did not find Bash'
 
-for function_name in die log log_section run_step ask_select ask_binary read_value read_secret has safe_symlink; do
+for function_name in die log log_section run_step ask_choice ask_binary read_value read_secret has safe_symlink; do
   count="$(grep -h "^${function_name}()" "$SCRIPTS_DIR"/lib/*.sh | wc -l | tr -d ' ')"
   expect_equal "$count" 1
 done

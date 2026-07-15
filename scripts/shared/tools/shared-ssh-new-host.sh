@@ -131,7 +131,7 @@ read_key_details() {
 
   log_section 'Key'
 
-  choice="$(ask_select 'SSH key:' \
+  choice="$(ask_choice 'SSH key:' \
     'Skip' \
     'Generate a new key for this host' \
     'Use an existing key')"

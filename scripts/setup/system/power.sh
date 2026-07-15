@@ -15,7 +15,7 @@ configure_power() {
 
 _mode() {
   local choice
-  choice="$(ask_select 'Power mode:' Skip Normal Server)"
+  choice="$(ask_choice 'Power mode:' Skip Normal Server)"
   case "$choice" in
     0) printf 'skip\n' ;;
     1) printf 'normal\n' ;;

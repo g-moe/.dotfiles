@@ -1,23 +1,23 @@
 #!/usr/bin/env bash
 
-# Terminal prompts used by installer domains and tools.
+# Choice and yes/no prompts. Sourced by lib.sh.
 
 # Present a numbered list of options and return the selected index (0-based).
 # Usage:
-#   choice="$(ask_select "What do you want?" "Skip" "Option A" "Option B")"
+#   choice="$(ask_choice "What do you want?" "Skip" "Option A" "Option B")"
 #   case "$choice" in
 #     0) echo "Skipped" ;;
 #     1) echo "Chose A" ;;
 #     2) echo "Chose B" ;;
 #   esac
-ask_select() {
+ask_choice() {
   local question="$1"
   shift
   local options=("$@")
   local choice
 
   if ((${#options[@]} == 0)); then
-    log_error 'ask_select: no options provided.'
+    log_error 'ask_choice: no options provided.'
     return 1
   fi
 
@@ -73,38 +73,4 @@ ask_binary() {
 
     log_error 'Please answer yes or no.'
   done
-}
-
-# Read one line of input and print the answer.
-# If a default is provided and the user presses enter, print the default.
-# Usage:
-#   hostname="$(read_value "Hostname" "my-mac")"
-read_value() {
-  local question="$1"
-  local default="${2:-}"
-  local answer
-
-  if [[ -n "$default" ]]; then
-    printf '%s [%s]: ' "$question" "$default" >/dev/tty
-  else
-    printf '%s: ' "$question" >/dev/tty
-  fi
-
-  read -r answer </dev/tty
-  printf '%s\n' "${answer:-$default}"
-}
-
-# Read a secret from the terminal without echoing input.
-# Fails if the value is empty.
-# Usage:
-#   password="$(read_secret 'Remote Desktop password')"
-read_secret() {
-  local prompt="$1"
-  local value
-
-  printf '%s: ' "$prompt" >/dev/tty
-  read -rs value </dev/tty
-  printf '\n' >/dev/tty
-  [[ -n "$value" ]] || die "$prompt cannot be empty."
-  printf '%s\n' "$value"
 }
