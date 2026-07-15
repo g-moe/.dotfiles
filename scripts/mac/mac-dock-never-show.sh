@@ -24,7 +24,7 @@ disable_dock_never_show() {
 main() {
   local choice
 
-  choice="$(ask_choice 'Dock visibility:' 'Skip' 'Never show Dock' 'Undo never-show override')"
+  choice="$(ask_choice 'Dock never-show:' Skip Enable Disable)"
 
   case "$choice" in
     0)

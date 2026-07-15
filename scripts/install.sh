@@ -94,7 +94,8 @@ configure_access() {
   run_strategy 'Apple Intelligence' access/apple-intelligence.sh
   run_strategy 'Voice assistant' access/voice-assistant.sh
   run_strategy 'Headless access' access/headless.sh
-  run_strategy 'Remote access' access/remote.sh
+  run_strategy 'SSH' access/ssh.sh
+  run_strategy 'VNC' access/vnc.sh
 }
 
 configure_system() {

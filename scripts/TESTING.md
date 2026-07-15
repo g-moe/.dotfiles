@@ -38,8 +38,12 @@ All installer runs happen inside UTM. Do not run the installer or its tests on t
 | Input          | Pointer, touchpad, keyboard, and remapping  | Pointer, touchpad, keyboard, and remapping | Both passed                                                                           |
 | Default apps   | Chrome browser                              | Chrome or Brave browser, Ghostty terminal  | Both passed                                                                           |
 | Files          | Associations, preferences, and sidebar      | Associations, preferences, and sidebar     | Both passed; macOS 26 skips protected associations and sidebar entries                |
-| Remote A       | Enable remote access                        | Enable remote access                       | Ubuntu passed; macOS pending                                                          |
-| Remote B       | Skip remote access                          | Skip remote access                         | Needs a new disposable-clone check after the prompt label change                      |
+| SSH A          | Enable SSH                                  | Enable SSH                                 | Pending after SSH/VNC Skip/Enable/Disable prompts                                     |
+| SSH B          | Skip SSH                                    | Skip SSH                                   | Pending after SSH/VNC Skip/Enable/Disable prompts                                     |
+| SSH C          | Disable SSH                                 | Disable SSH                                | Pending after SSH/VNC Skip/Enable/Disable prompts                                     |
+| VNC A          | Enable Screen Sharing                       | Enable GNOME Remote Desktop                | Pending after SSH/VNC Skip/Enable/Disable prompts                                     |
+| VNC B          | Skip Screen Sharing                         | Skip GNOME Remote Desktop                  | Pending after SSH/VNC Skip/Enable/Disable prompts                                     |
+| VNC C          | Disable Screen Sharing                      | Disable GNOME Remote Desktop               | Pending after SSH/VNC Skip/Enable/Disable prompts                                     |
 | Power A        | Normal                                      | Normal                                     | Both passed                                                                           |
 | Power B        | Server                                      | Server                                     | Ubuntu passed; macOS pending                                                          |
 | Power C        | Skip                                        | Skip                                       | Ubuntu passed; macOS pending                                                          |

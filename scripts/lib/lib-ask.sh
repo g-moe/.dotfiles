@@ -3,12 +3,20 @@
 # Choice and yes/no prompts. Sourced by lib.sh.
 
 # Present a numbered list of options and return the selected index (0-based).
+#
+# When a menu is exactly Skip / Enable / Disable, use these labels and indices:
+#   ask_choice 'Feature:' Skip Enable Disable
+#   0 = Skip
+#   1 = Enable
+#   2 = Disable
+# Do not force unrelated menus into that triad (sizes, colors, modes, etc.).
+#
 # Usage:
-#   choice="$(ask_choice "What do you want?" "Skip" "Option A" "Option B")"
+#   choice="$(ask_choice 'SSH:' Skip Enable Disable)"
 #   case "$choice" in
-#     0) echo "Skipped" ;;
-#     1) echo "Chose A" ;;
-#     2) echo "Chose B" ;;
+#     0) return 0 ;;
+#     1) enable_ssh ;;
+#     2) disable_ssh ;;
 #   esac
 ask_choice() {
   local question="$1"

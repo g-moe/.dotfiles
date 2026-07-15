@@ -55,7 +55,7 @@ The files are split by purpose:
 - `setup/input` changes the pointer, touchpad, keyboard, and key remapping. The keyboard setup uses a fast coding-friendly repeat rate and turns off macOS automatic text changes.
 - `setup/desktop` changes workspaces, desktop items, windows, the Dock, and the top bar.
 - `setup/files` changes default applications, file associations, and Finder or Files settings.
-- `setup/access` changes Handoff, assistants, SSH, and screen sharing.
+- `setup/access` changes Handoff, assistants, SSH, and VNC.
 - `setup/system` changes updates and power.
 
 macOS uses Homebrew. Ubuntu uses APT when the app is available there. A vendor package is used only when Ubuntu does not carry the app.

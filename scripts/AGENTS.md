@@ -20,7 +20,7 @@ This directory contains one macOS/Ubuntu installer plus separate Mac-only tools.
   - `setup/input/` — Pointer, touchpad, keyboard, and key remapping.
   - `setup/desktop/` — Workspaces, desktop items, windows, Dock, and top bar.
   - `setup/files/` — Default applications, file associations, and file browser settings.
-  - `setup/access/` — Handoff, assistants, SSH, and screen sharing.
+  - `setup/access/` — Handoff, assistants, SSH, and VNC.
   - `setup/system/` — Updates, power, and final desktop refresh.
 - `shared/tools/` — Shared commands used outside the main installer.
 - `mac/` — Mac-only tools that are not part of machine setup.
@@ -38,6 +38,7 @@ This directory contains one macOS/Ubuntu installer plus separate Mac-only tools.
 - `lib.sh` enables `enable_error_trap` so failures report the step, command, and location.
 - Suppress both stdout and stderr with `silent cmd` (from `lib-utils.sh`), not `cmd >/dev/null 2>&1`. Keep raw `/dev/null` only when capturing output, redirecting one stream, assigning `PROFILE=/dev/null`, wrapping a heredoc, or inside `silent` itself.
 - Prefer `has`, `log`, `log_section`, `ask_choice`, `ask_binary`, `read_value`, and `die` over local wrappers.
+- When a prompt is Skip / Enable / Disable, use `ask_choice 'Feature:' Skip Enable Disable` with **0 = Skip**, **1 = Enable**, **2 = Disable**. Do not reshape other menus into that triad.
 - Keep one feature per strategy file. Do not group Skills, Node, Zsh, tmux, Dock, or other unrelated work.
 - Do not add migration steps, old-path cleanup, or compatibility branches. These installers target clean machines.
 - macOS uses Homebrew. Ubuntu uses APT unless the vendor does not publish an APT package.
