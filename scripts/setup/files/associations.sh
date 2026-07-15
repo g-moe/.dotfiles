@@ -23,13 +23,13 @@ _mac_handler() {
   local extension="$1"
   local temporary_file uti
 
-  duti -s com.vscodium "$extension" all 2>/dev/null && return
-  duti -s com.vscodium "$extension" editor 2>/dev/null && return
+  silent duti -s com.vscodium "$extension" all && return
+  silent duti -s com.vscodium "$extension" editor && return
   temporary_file="$(mktemp "${TMPDIR:-/tmp}/vscodium.XXXXXX.$extension")"
   uti="$(mdls -name kMDItemContentType -raw "$temporary_file" 2>/dev/null || true)"
   rm -f "$temporary_file"
   [[ -n "$uti" && "$uti" != '(null)' && "$uti" != '*' ]] || return 0
-  duti -s com.vscodium "$uti" all 2>/dev/null || duti -s com.vscodium "$uti" editor
+  silent duti -s com.vscodium "$uti" all || duti -s com.vscodium "$uti" editor
 }
 
 mac() {

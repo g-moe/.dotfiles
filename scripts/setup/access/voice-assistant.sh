@@ -19,7 +19,7 @@ mac() {
   defaults write com.apple.Siri UserHasDeclinedEnable -bool true
   defaults write com.apple.assistant.support 'Siri Data Sharing Opt-In Status' -int 2
   defaults write com.apple.SetupAssistant DidSeeSiriSetup -bool true
-  killall Siri >/dev/null 2>&1 || true
+  silent killall Siri || true
 }
 
 linux() {

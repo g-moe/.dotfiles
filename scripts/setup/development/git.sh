@@ -37,7 +37,7 @@ _configure() {
   done
   while true; do
     branch="$(read_value 'Default branch' "$branch")"
-    git check-ref-format --branch "$branch" >/dev/null 2>&1 && break
+    silent git check-ref-format --branch "$branch" && break
     log 'Enter a valid branch name.'
   done
 
@@ -56,7 +56,7 @@ _configure() {
     log 'GitHub CLI is not installed; skipped GitHub sign-in.'
     return 0
   fi
-  if gh auth status --hostname github.com >/dev/null 2>&1; then
+  if silent gh auth status --hostname github.com; then
     log 'GitHub is already signed in.'
   elif confirm 'Sign in to GitHub in your browser?'; then
     gh auth login --hostname github.com --web --git-protocol https

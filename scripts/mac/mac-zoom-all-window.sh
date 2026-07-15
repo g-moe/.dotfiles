@@ -9,10 +9,13 @@
 # @raycast.icon 🪟
 # @raycast.packageName Window Tools
 
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+. "$SCRIPT_DIR/../lib/lib-utils.sh"
+
 # Use Raycast's built-in Window Management "Maximize" command on every visible standard window.
 # Default deeplink: raycast://extensions/raycast/window-management/maximize
-if ! osascript -e 'tell application "System Events" to tell process "Finder" to count windows' >/dev/null 2>&1; then
-  osascript -e 'display notification "Grant Raycast access in Privacy & Security > Accessibility, then run again." with title "Zoom All Windows"' >/dev/null 2>&1
+if ! silent osascript -e 'tell application "System Events" to tell process "Finder" to count windows'; then
+  silent osascript -e 'display notification "Grant Raycast access in Privacy & Security > Accessibility, then run again." with title "Zoom All Windows"'
   exit 0
 fi
 
@@ -73,12 +76,12 @@ APPLESCRIPT
 )
 
 if [ $? -ne 0 ]; then
-  osascript -e 'display notification "Window automation failed while applying Raycast Maximize." with title "Zoom All Windows"' >/dev/null 2>&1
+  silent osascript -e 'display notification "Window automation failed while applying Raycast Maximize." with title "Zoom All Windows"'
   exit 0
 fi
 
 if ! [ "${actions:-0}" -gt 0 ] 2>/dev/null; then
-  osascript -e 'display notification "No windows were targeted." with title "Zoom All Windows"' >/dev/null 2>&1
+  silent osascript -e 'display notification "No windows were targeted." with title "Zoom All Windows"'
 fi
 
 exit 0

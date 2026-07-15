@@ -1,18 +1,23 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+LIB_DIR="$(cd "$SCRIPT_DIR/../../lib" && pwd)"
+
+. "$LIB_DIR/lib-utils.sh"
+
 main() {
-  if command -v pbcopy >/dev/null 2>&1; then
+  if has pbcopy; then
     pbcopy
     return
   fi
 
-  if [[ -n "${WAYLAND_DISPLAY:-}" ]] && command -v wl-copy >/dev/null 2>&1; then
+  if [[ -n "${WAYLAND_DISPLAY:-}" ]] && has wl-copy; then
     wl-copy
     return
   fi
 
-  if [[ -n "${DISPLAY:-}" ]] && command -v xclip >/dev/null 2>&1; then
+  if [[ -n "${DISPLAY:-}" ]] && has xclip; then
     xclip -selection clipboard -in
     return
   fi

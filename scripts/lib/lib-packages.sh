@@ -112,5 +112,5 @@ enable_gnome_extension() {
     esac
     gsettings set org.gnome.shell enabled-extensions "$enabled"
   fi
-  gnome-extensions enable "$uuid" >/dev/null 2>&1 || true
+  silent gnome-extensions enable "$uuid" || true
 }

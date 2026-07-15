@@ -19,8 +19,8 @@ enable_dock_never_show() {
 }
 
 disable_dock_never_show() {
-  defaults delete com.apple.dock autohide-delay 2>/dev/null || true
-  defaults delete com.apple.dock autohide-time-modifier 2>/dev/null || true
+  silent defaults delete com.apple.dock autohide-delay || true
+  silent defaults delete com.apple.dock autohide-time-modifier || true
 
   log_info 'Dock hidden-delay override removed.'
 }

@@ -61,8 +61,8 @@ mac() {
   defaults write com.apple.menuextra.clock ShowDayOfWeek -bool false
   defaults write com.apple.menuextra.clock ShowDayOfMonth -bool true
   defaults write com.apple.menuextra.clock ShowDate -int 0
-  killall ControlCenter >/dev/null 2>&1 || true
-  killall SystemUIServer >/dev/null 2>&1 || true
+  silent killall ControlCenter || true
+  silent killall SystemUIServer || true
 }
 
 linux() {

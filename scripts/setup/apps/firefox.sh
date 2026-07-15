@@ -42,7 +42,7 @@ EOF
 )"
   sudo apt-get update
 
-  if has snap && snap list firefox >/dev/null 2>&1; then
+  if has snap && silent snap list firefox; then
     sudo snap remove --purge firefox
   fi
   if installed_version="$(dpkg-query -W -f='${Version}' firefox 2>/dev/null)" &&

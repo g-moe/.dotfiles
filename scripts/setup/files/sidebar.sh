@@ -22,10 +22,10 @@ _mac_sidebar() {
     "$HOME/Desktop" "$HOME/Documents" "$HOME/Downloads" \
     "$HOME/Pictures" "$HOME/Movies" &
   pid=$!
-  while kill -0 "$pid" 2>/dev/null; do
+  while silent kill -0 "$pid"; do
     if ((seconds >= 10)); then
-      kill "$pid" 2>/dev/null || true
-      wait "$pid" 2>/dev/null || true
+      silent kill "$pid" || true
+      silent wait "$pid" || true
       return 1
     fi
     sleep 1

@@ -44,7 +44,7 @@ SWIFT
 </plist>
 EOF
 )" >"$agent_path"
-  launchctl bootout "gui/$(id -u)/local.machine-name-menu-bar" >/dev/null 2>&1 || true
+  silent launchctl bootout "gui/$(id -u)/local.machine-name-menu-bar" || true
   launchctl bootstrap "gui/$(id -u)" "$agent_path"
 }
 

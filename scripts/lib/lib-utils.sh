@@ -11,7 +11,7 @@ silent() {
 # Check if a command exists in PATH.
 # Usage: if has brew; then ...
 has() {
-  command -v "$1" >/dev/null 2>&1
+  silent command -v "$1"
 }
 
 # Older standalone tools use the longer name.

@@ -16,7 +16,7 @@ configure_handoff() {
 mac() {
   defaults -currentHost write com.apple.coreservices.useractivityd ActivityAdvertisingAllowed -bool false
   defaults -currentHost write com.apple.coreservices.useractivityd ActivityReceivingAllowed -bool false
-  killall useractivityd >/dev/null 2>&1 || true
+  silent killall useractivityd || true
 }
 
 linux() {

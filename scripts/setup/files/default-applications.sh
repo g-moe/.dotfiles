@@ -24,7 +24,7 @@ mac() {
 
   # macOS asks the signed-in user to approve a default-browser change. Setting
   # the HTTP handler opens that one system prompt and approval covers HTTPS too.
-  duti -s com.google.Chrome http >/dev/null 2>&1 || true
+  silent duti -s com.google.Chrome http || true
   log 'Approve Chrome in the macOS default-browser prompt.'
   for attempt in {1..120}; do
     if [[ "$(duti -d http 2>/dev/null || true)" == 'com.google.Chrome' &&

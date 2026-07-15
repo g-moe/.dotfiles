@@ -17,7 +17,7 @@ mac() {
   local state
   confirm 'Enable SSH and Screen Sharing?' || return 0
   sudo launchctl enable system/com.openssh.sshd
-  sudo launchctl load -w /System/Library/LaunchDaemons/ssh.plist >/dev/null 2>&1 || true
+  silent sudo launchctl load -w /System/Library/LaunchDaemons/ssh.plist || true
   sudo launchctl print system/com.openssh.sshd >/dev/null
   open 'x-apple.systempreferences:com.apple.Sharing-Settings.extension' || true
   printf 'Turn Screen Sharing on, then press Enter: ' >/dev/tty
@@ -40,10 +40,10 @@ linux() {
   tls_key="$tls_dir/rdp-tls.key"
   mkdir -p "$tls_dir"
   if [[ ! -s "$tls_cert" || ! -s "$tls_key" ]]; then
-    openssl req -new -newkey rsa:4096 -days 720 -nodes -x509 \
+    silent openssl req -new -newkey rsa:4096 -days 720 -nodes -x509 \
       -subj "/CN=$(hostname)" \
       -keyout "$tls_key" \
-      -out "$tls_cert" >/dev/null 2>&1
+      -out "$tls_cert"
     chmod 600 "$tls_key"
   fi
   grdctl --headless rdp set-tls-cert "$tls_cert"

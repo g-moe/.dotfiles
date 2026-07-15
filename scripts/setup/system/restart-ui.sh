@@ -16,7 +16,7 @@ restart_user_interface() {
 mac() {
   local service
   for service in sharedfilelistd Finder Dock Spotlight ControlCenter SystemUIServer; do
-    killall "$service" >/dev/null 2>&1 || true
+    silent killall "$service" || true
   done
 }
 

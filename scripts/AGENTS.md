@@ -35,6 +35,7 @@ This directory contains one macOS/Ubuntu installer plus separate Mac-only tools.
 - Run each strategy in a new Bash process. This lets every file use the plain names `mac()` and `linux()` without clashes.
 - Register every strategy exactly once in `install.sh`; `tests/strategy-shape.sh` checks this.
 - Keep shared helpers in their matching library and expose them through `lib-install.sh`; do not copy helpers into setup files.
+- Suppress both stdout and stderr with `silent cmd` (from `lib-utils.sh`), not `cmd >/dev/null 2>&1`. Keep raw `/dev/null` only when capturing output, redirecting one stream, assigning `PROFILE=/dev/null`, wrapping a heredoc, or inside `silent` itself.
 - Keep one feature per strategy file. Do not group Skills, Node, Zsh, tmux, Dock, or other unrelated work.
 - Do not add migration steps, old-path cleanup, or compatibility branches. These installers target clean machines.
 - macOS uses Homebrew. Ubuntu uses APT unless the vendor does not publish an APT package.

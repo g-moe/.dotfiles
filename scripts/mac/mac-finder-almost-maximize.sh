@@ -11,10 +11,13 @@
 
 set -euo pipefail
 
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+. "$SCRIPT_DIR/../lib/lib-utils.sh"
+
 # Bring Finder forward with a focused window, then run Raycast's built-in Window Management "Almost Maximize" command.
 # Default deeplink: raycast://extensions/raycast/window-management/almost-maximize
-if ! osascript -e 'tell application "System Events" to tell process "Finder" to count windows' >/dev/null 2>&1; then
-  osascript -e 'display notification "Grant Raycast access in Privacy & Security > Accessibility, then run again." with title "Finder Almost Maximize"' >/dev/null 2>&1
+if ! silent osascript -e 'tell application "System Events" to tell process "Finder" to count windows'; then
+  silent osascript -e 'display notification "Grant Raycast access in Privacy & Security > Accessibility, then run again." with title "Finder Almost Maximize"'
   exit 0
 fi
 
@@ -44,7 +47,7 @@ end tell
 
 APPLESCRIPT
 then
-  osascript -e 'display notification "Could not focus a Finder window." with title "Finder Almost Maximize"' >/dev/null 2>&1
+  silent osascript -e 'display notification "Could not focus a Finder window." with title "Finder Almost Maximize"'
   exit 0
 fi
 
