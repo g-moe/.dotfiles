@@ -25,6 +25,9 @@ _mac_app() {
 mac() {
   local choice
 
+  choice="$(ask_select 'Dock setup:' 'Leave unchanged' 'Hide automatically' 'Always show')"
+  [[ "$choice" != 0 ]] || return 0
+
   defaults write com.apple.dock mineffect -string scale
   defaults write com.apple.dock minimize-to-application -bool false
   defaults write com.apple.dock launchanim -bool false
@@ -34,7 +37,6 @@ mac() {
 
   choice="$(ask_select 'Dock visibility:' 'Leave unchanged' 'Hide automatically' 'Always show')"
   case "$choice" in
-    0) ;;
     1) defaults write com.apple.dock autohide -bool true ;;
     2) defaults write com.apple.dock autohide -bool false ;;
   esac
@@ -85,6 +87,9 @@ _require_linux_app() {
 linux() {
   local choice desktop_file
 
+  choice="$(ask_select 'Dock setup:' 'Leave unchanged' 'Hide automatically' 'Always show')"
+  [[ "$choice" != 0 ]] || return 0
+
   gsettings set org.gnome.shell.extensions.dash-to-dock extend-height false
   gsettings set org.gnome.shell.extensions.dash-to-dock show-mounts false
   gsettings set org.gnome.shell.extensions.dash-to-dock show-trash false
@@ -95,7 +100,6 @@ linux() {
 
   choice="$(ask_select 'Dock visibility:' 'Leave unchanged' 'Hide automatically' 'Always show')"
   case "$choice" in
-    0) ;;
     1)
       gsettings set org.gnome.shell.extensions.dash-to-dock dock-fixed false
       gsettings set org.gnome.shell.extensions.dash-to-dock autohide true

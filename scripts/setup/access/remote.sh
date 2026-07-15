@@ -14,8 +14,9 @@ configure_remote_access() {
 }
 
 mac() {
-  local state
-  ask_binary 'Enable SSH and Screen Sharing?' || return 0
+  local choice state
+  choice="$(choose 'Remote access:' Skip 'Enable SSH and Screen Sharing')"
+  [[ "$choice" == 1 ]] || return 0
   sudo launchctl enable system/com.openssh.sshd
   silent sudo launchctl load -w /System/Library/LaunchDaemons/ssh.plist || true
   sudo launchctl print system/com.openssh.sshd >/dev/null
@@ -30,7 +31,7 @@ mac() {
 
 linux() {
   local password tls_cert tls_dir tls_key username
-  ask_binary 'Enable SSH and GNOME Remote Desktop?' || return 0
+  confirm 'Enable SSH and GNOME Remote Desktop?' || return 0
   apt_install openssh-server gnome-remote-desktop openssl
   sudo systemctl enable --now ssh
   username="$(read_value 'Remote Desktop user name' "$USER")"
