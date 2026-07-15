@@ -41,8 +41,5 @@ linux() {
   _install
 }
 
-if [[ "$#" -eq 0 ]]; then
-  detect_os
-  set -- "$OS"
-fi
+[[ "$#" -eq 1 ]] || die 'Run via: bash scripts/install.sh --skills'
 install_skills "$1"

@@ -21,5 +21,5 @@ flowchart TD
   K --> P["install copy -> nvim/colors/*"]
   L --> Q["install copy -> ~/.oh-my-zsh/custom/themes/*"]
 
-  R["npm run theme"] --> B
+  R["bash scripts/install.sh --theme\n(npm run install:theme)"] --> B
 ```

@@ -12,15 +12,16 @@ npm run install:test
 
 ## Hard rules
 
-1. One stopped **base** per OS (OS installed, this repo’s installer never run on it).
-2. Every first-run test = **disposable clone**. Base stays stopped and untouched.
-3. Repo lives **inside** the guest (not a read-only share).
-4. macOS: log into the desktop before you start.
-5. Save the full terminal log (host `.test-logs/`, gitignored).
-6. Pass once → reboot same clone → run the **same** command again → check again.
-7. Pass = commands OK **and** desktop matches the checklist.
-8. Then delete the clone (or restore the snapshot for the next run).
-9. Iterate with `bash scripts/install.sh <phase>`; finals use no phase arg.
+1. Run install **only** via `bash scripts/install.sh` (or `npm run install:machine` / `install:git` / `install:skills` / `install:theme`). Never call `scripts/setup/…` or `custom-themes/create/controller.ts` directly for install.
+2. One stopped **base** per OS (OS installed, this repo’s installer never run on it).
+3. Every first-run test = **disposable clone**. Base stays stopped and untouched.
+4. Repo lives **inside** the guest (not a read-only share).
+5. macOS: log into the desktop before you start.
+6. Save the full terminal log (host `.test-logs/`, gitignored).
+7. Pass once → reboot same clone → run the **same** command again → check again.
+8. Pass = commands OK **and** desktop matches the checklist.
+9. Then delete the clone (or restore the snapshot for the next run).
+10. Iterate with `bash scripts/install.sh --<phase>`; finals use no arg.
 
 ## Guests
 
@@ -79,7 +80,7 @@ cp -c -f "$SNAP/config.plist" "$VM/config.plist"
 
 **Desktop** — apps open; browser/terminal defaults; JetBrains Mono; Dock; name in bar; wallpaper/theme/input/desktop; VSCodium/`code`; Finder/Files; SSH/VNC when enabled; updates/power; Skills linked.
 
-**Git** — `npm run install:git` only; skip leaves Git alone; accept → LFS + filters; name/email/branch stick; settings match `git.sh`; GitHub skip vs browser login; no `GITHUB_TOKEN` in a new shell.
+**Git** — `npm run install:git` / `install.sh --git` only; skip leaves Git alone; accept → LFS + filters; name/email/branch stick; settings match `git.sh`; GitHub skip vs browser login; no `GITHUB_TOKEN` in a new shell.
 
 ## Known limits
 

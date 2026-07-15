@@ -43,6 +43,14 @@ if [[ -n "$failed_skip_returns" ]]; then
   fail 'a skipped choice must use return 0'
 fi
 
+# Strategies are only launched by install.sh (with OS as $1). No standalone detect_os.
+standalone_detect="$(find "$SCRIPTS_DIR/setup" -type f -name '*.sh' \
+  -exec grep -nH 'detect_os' {} + || true)"
+if [[ -n "$standalone_detect" ]]; then
+  printf '%s\n' "$standalone_detect" >&2
+  fail 'setup files must not call detect_os; run them only via install.sh'
+fi
+
 bash -n "$SCRIPTS_DIR/install.sh"
 for library in "$SCRIPTS_DIR"/lib/*.sh; do
   bash -n "$library"
@@ -54,6 +62,19 @@ done
 if grep -RIEq 'linuxbrew|migrat(e|ion)|backwards?[ -]?compat' \
   "$SCRIPTS_DIR/install.sh" "$SCRIPTS_DIR/lib" "$SCRIPTS_DIR/setup"; then
   fail 'installer contains an old-system migration or compatibility path'
+fi
+
+# package.json machine-install scripts must invoke install.sh, not setup/*.sh directly.
+root_package="$(cd "$SCRIPTS_DIR/.." && pwd)/package.json"
+if [[ -f "$root_package" ]]; then
+  bad_npm="$(grep -E '"install:(git|skills|machine|theme)"' "$root_package" | grep -v 'scripts/install\.sh' || true)"
+  if [[ -n "$bad_npm" ]]; then
+    printf '%s\n' "$bad_npm" >&2
+    fail 'package.json install:git|skills|machine|theme must call scripts/install.sh'
+  fi
+  if grep -E '"install:[^"]+"\s*:\s*"bash scripts/setup/' "$root_package"; then
+    fail 'package.json must not invoke scripts/setup/ directly'
+  fi
 fi
 
 printf 'Strategy shape passed for every setup file.\n'

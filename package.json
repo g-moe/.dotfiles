@@ -8,9 +8,9 @@
 		"format:check": "oxfmt --check .",
 		"typecheck": "tsc -b --noEmit",
 		"typecheck:tsgo": "tsgo -b --noEmit",
-		"install:git": "bash scripts/setup/development/git.sh",
-		"install:skills": "bash scripts/setup/skills.sh",
-		"install:theme": "tsx custom-themes/create/controller.ts",
+		"install:git": "bash scripts/install.sh --git",
+		"install:skills": "bash scripts/install.sh --skills",
+		"install:theme": "bash scripts/install.sh --theme",
 		"install:machine": "bash scripts/install.sh",
 		"install:test": "bash scripts/tests/strategy-shape.sh && bash scripts/tests/lib-install.sh"
 	},

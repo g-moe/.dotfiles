@@ -6,6 +6,8 @@ ROOT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 
 . "$SCRIPT_DIR/lib/lib.sh"
 
+usage='Use: bash scripts/install.sh [--apps|--development|--appearance|--input|--desktop|--files|--access|--system|--all|--git|--skills|--theme]'
+
 run_strategy() {
   local label="$1"
   local path="$2"
@@ -48,14 +50,27 @@ install_apps() {
   run_strategy 'NordVPN' apps/nordvpn.sh
 }
 
-install_development() {
+install_git() {
   run_strategy 'Git, Git LFS, and GitHub login' development/git.sh
+}
+
+install_skills() {
+  run_strategy 'Agent skills' skills.sh
+}
+
+# Generate/install app theme packs (VS Code, Ghostty, nvim, …) from custom-themes/..
+install_theme() {
+  run_step 'Custom themes' bash -c 'cd "$1" && npx tsx custom-themes/create/controller.ts' bash "$ROOT_DIR"
+}
+
+install_development() {
+  install_git
   run_strategy 'Node.js 24' development/node.sh
   run_strategy 'Zsh' development/zsh.sh
   run_strategy 'tmux configuration' development/tmux.sh
   run_strategy 'VSCodium settings' development/vscodium-settings.sh
   run_strategy 'VSCodium extensions' development/vscodium-extensions.sh
-  run_strategy 'Agent skills' skills.sh
+  install_skills
 }
 
 configure_appearance() {
@@ -124,22 +139,61 @@ run_phase() {
       configure_access
       configure_system
       ;;
-    *) die 'Use: bash scripts/install.sh [apps|development|appearance|input|desktop|files|access|system|all]' ;;
+    *) die "$usage" ;;
+  esac
+}
+
+# Map one CLI arg to a mode. Phases also accept the bare name (apps) for older calls.
+parse_mode() {
+  case "$1" in
+    --git) printf 'git\n' ;;
+    --skills) printf 'skills\n' ;;
+    --theme) printf 'theme\n' ;;
+    --apps | apps) printf 'apps\n' ;;    
+    --development | development) printf 'development\n' ;;
+    --appearance | appearance) printf 'appearance\n' ;;
+    --input | input) printf 'input\n' ;;
+    --desktop | desktop) printf 'desktop\n' ;;
+    --files | files) printf 'files\n' ;;
+    --access | access) printf 'access\n' ;;
+    --system | system) printf 'system\n' ;;
+    --all | all) printf 'all\n' ;;
+    *) die "$usage" ;;
   esac
 }
 
 main() {
-  local phase="${1:-all}"
+  local mode
 
-  [[ "$#" -le 1 ]] ||
-    die 'Use: bash scripts/install.sh [apps|development|appearance|input|desktop|files|access|system|all]'
+  [[ "$#" -le 1 ]] || die "$usage"
+  if (($# == 0)); then
+    mode=all
+  else
+    mode="$(parse_mode "$1")"
+  fi
+
   detect_os
   run_step 'Check this machine' validate_os
   run_step 'Check your user' validate_user
-  run_strategy 'Machine name and color' identity.sh
-  run_phase "$phase"
+
+  case "$mode" in
+    git)
+      install_git
+      ;;
+    skills)
+      install_skills
+      ;;
+    theme)
+      install_theme
+      ;;
+    *)
+      run_strategy 'Machine name and color' identity.sh
+      run_phase "$mode"
+      ;;
+  esac
+
   log_section 'Done'
-  log "$OS $phase setup is complete."
+  log "$OS $mode setup is complete."
 }
 
 main "$@"

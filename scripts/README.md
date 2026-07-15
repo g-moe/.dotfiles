@@ -1,10 +1,17 @@
 # Machine installer
 
-One command sets up a clean **macOS** or **Ubuntu 26.04** (amd64 / arm64) machine:
+**One entry point:** `scripts/install.sh`. Every install path goes through it — full run, phase slices, and single strategies (`--git`, `--skills`, `--theme`). Do not run `scripts/setup/**` or `custom-themes/create/controller.ts` yourself for install.
 
 ```bash
-bash scripts/install.sh
-# npm run install:machine
+bash scripts/install.sh                 # full machine
+bash scripts/install.sh --apps          # one phase
+bash scripts/install.sh --git           # Git only
+bash scripts/install.sh --skills        # Skills only
+bash scripts/install.sh --theme         # custom-themes generate + install
+npm run install:machine                 # → install.sh
+npm run install:git                     # → install.sh --git
+npm run install:skills                  # → install.sh --skills
+npm run install:theme                   # → install.sh --theme
 ```
 
 Normal user only (not root). `sudo` is used where the OS needs it.
@@ -14,33 +21,30 @@ Normal user only (not root). `sudo` is used where the OS needs it.
 
 ---
 
-You start `install.sh`. It detects the OS, checks the user, asks for a **machine name and color**, writes gitignored `machine.json` at the repo root, then walks phases. No argument = all phases. A phase name = just that slice:
+`install.sh` detects the OS, checks the user, then either runs a single strategy or asks for a **machine name and color** (writes gitignored `machine.json`) and walks phases.
 
-```bash
-bash scripts/install.sh apps
-bash scripts/install.sh desktop
-```
+`--git`, `--skills`, and `--theme` skip the identity prompt. Phase flags (`--apps`, …) still ask for machine name/color first. No argument = all phases.
 
-Order: `apps` → `development` → `appearance` → `input` → `desktop` → `files` → `access` → `system`.
+Phase order: `apps` → `development` → `appearance` → `input` → `desktop` → `files` → `access` → `system`.
 
-| Phase | Covers |
-| --- | --- |
-| `apps` | Apps (Homebrew / APT / vendor) |
-| `development` | Git, Node, Zsh, tmux, VSCodium, Skills |
-| `appearance` | Wallpaper, screen saver, theme, icons |
-| `input` | Pointer, touchpad, keyboard, remapping |
-| `desktop` | Workspaces, items/widgets, windows, Dock, name in bar, top bar |
-| `files` | Defaults, associations, Finder/Files |
-| `access` | Handoff, assistants, headless notes, SSH, VNC |
-| `system` | Updates, power, UI refresh |
+| Phase         | Covers                                                         |
+| ------------- | -------------------------------------------------------------- |
+| `apps`        | Apps (Homebrew / APT / vendor)                                 |
+| `development` | Git, Node, Zsh, tmux, VSCodium, Skills                         |
+| `appearance`  | Wallpaper, screen saver, theme, icons                          |
+| `input`       | Pointer, touchpad, keyboard, remapping                         |
+| `desktop`     | Workspaces, items/widgets, windows, Dock, name in bar, top bar |
+| `files`       | Defaults, associations, Finder/Files                           |
+| `access`      | Handoff, assistants, headless notes, SSH, VNC                  |
+| `system`      | Updates, power, UI refresh                                     |
 
 ### Where things live
 
 ```
-install.sh          entry point
-setup/<phase>/…     one feature per file (Mac + Linux together)
-setup/identity.sh   always, before the phase
-setup/skills.sh     from development
+install.sh          **only** machine-install entry point
+setup/<phase>/…     strategies (launched by install.sh with OS as $1)
+setup/identity.sh   before phases (skipped for --git / --skills / --theme)
+setup/skills.sh     from development (also --skills)
 lib/lib.sh          only library entry (barrel)
 tests/              shape + lib checks
 shared/shared-*.sh  cross-OS tools outside install
@@ -70,19 +74,21 @@ Source `lib/lib.sh` at the top. Shape is enforced by `npm run install:test` (reg
 
 ### Prompts
 
-| Helper | Use |
-| --- | --- |
+| Helper       | Use                           |
+| ------------ | ----------------------------- |
 | `ask_choice` | Numbered menu → 0-based index |
-| `ask_binary` | Yes / no |
+| `ask_binary` | Yes / no                      |
 
 **Skip / Enable / Disable** is a real triad when those are the labels: `0` skip, `1` enable, `2` disable (SSH, VNC). Everything else keeps domain labels — Dock hide/show, sizes, colors, power Skip/Normal/Server, Tailscale install modes, etc.
 
-### Extra entry points
+### npm scripts
 
 ```bash
-npm run install:git      # Git + LFS + optional GitHub login
-npm run install:skills   # skill links only
-npm run install:test     # shape + lib (no VM)
+npm run install:machine  # → install.sh (full)
+npm run install:git      # → install.sh --git
+npm run install:skills   # → install.sh --skills
+npm run install:theme    # → install.sh --theme (custom-themes packs; not OS appearance)
+npm run install:test     # shape + lib checks (no VM)
 ```
 
 ### Platform quirks
