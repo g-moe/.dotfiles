@@ -1,47 +1,24 @@
-# Scripts Directory — Agent Rules
+# scripts/ — for agents
 
-This directory contains one macOS/Ubuntu installer plus separate Mac-only tools.
+How to edit this tree. What the installer _is_ → [README.md](README.md). How to VM-test → [TESTING.md](TESTING.md).
 
-## Workflow
+# DO
 
-1. Keep this file up to date when script layout or conventions change.
-2. Whitelist every new tracked file in the root `.gitignore`.
-3. Test installer changes only inside disposable clones of the clean UTM machines. Never run a test in a reusable base VM.
+- Keep these docs current; whitelist new tracked paths in the root `.gitignore`.
+- Source only `lib/lib.sh`. Put new helpers in the matching `lib/lib-*.sh`.
+- Prefer existing helpers (`die`, `has`, `log`, `silent`, `ask_choice`, `ask_binary`, …) over new locals.
+- Use `silent` to suppress both streams; Bash with `set -euo pipefail`.
+- One feature per `setup/` file, registered once in `install.sh`; match neighbor shape (`mac` / `linux`, `"$1"`).
+- Cross-OS tools → `shared/shared-*.sh`. Mac-only tools → `mac/mac-*.sh`. Linux-only tools → `linux/linux-*.sh`
+- `return 0` on skips; use `$LINUX_ARCH`; comment _why_.
+- Skip/Enable/Disable only when those labels fit (`0` / `1` / `2`).
+- Clean machines only. `npm run install:test` after shape/lib edits. VM tests only in disposable UTM clones.
 
-## Structure
+# DONT
 
-- `install.sh` — The only installer entry point. It detects macOS or Ubuntu.
-- `lib/lib.sh` — Single shared library entry point (barrel). Sources the focused libraries and enables the error trap.
-- `lib/lib-logging.sh`, `lib/lib-run.sh`, `lib/lib-ask.sh`, `lib/lib-read.sh`, `lib/lib-utils.sh`, `lib/lib-packages.sh`, and `lib/lib-install.sh` — Focused logging, run/die/step handling, choice/yes-no prompts, text/secret prompts, safe-link, download/package, and OS/machine helpers. Source only via `lib.sh`.
-- `setup/` — One strategy file per app or setting. Each file keeps its Mac and Linux commands together.
-  - `setup/apps/` — Application installs.
-  - `setup/development/` — Development tool setup.
-  - `setup/appearance/` — Wallpaper, screen saver, theme, and Linux icons.
-  - `setup/input/` — Pointer, touchpad, keyboard, and key remapping.
-  - `setup/desktop/` — Workspaces, desktop items, windows, Dock, and top bar.
-  - `setup/files/` — Default applications, file associations, and file browser settings.
-  - `setup/access/` — Handoff, assistants, SSH, and VNC.
-  - `setup/system/` — Updates, power, and final desktop refresh.
-- `shared/tools/` — Shared commands used outside the main installer.
-- `mac/` — Mac-only tools that are not part of machine setup.
-- Root `machine.json` — Ignored, machine-local name and color created by the installer.
-
-## Conventions
-
-- `install.sh` and executable tools use `set -euo pipefail`.
-- Use Bash because a clean machine does not have Node.js yet.
-- Name the switch function after the thing it changes, such as `install_vscodium` or `configure_dock`.
-- Every strategy file receives the OS as `$1`; its switch calls plain `mac()` or `linux()` functions.
-- Run each strategy in a new Bash process. This lets every file use the plain names `mac()` and `linux()` without clashes.
-- Register every strategy exactly once in `install.sh`; `tests/strategy-shape.sh` checks this.
-- Keep shared helpers in their matching library and expose them through `lib.sh`; do not copy helpers into setup files or source focused libraries directly.
-- `lib.sh` enables `enable_error_trap` so failures report the step, command, and location.
-- Suppress both stdout and stderr with `silent cmd` (from `lib-utils.sh`), not `cmd >/dev/null 2>&1`. Keep raw `/dev/null` only when capturing output, redirecting one stream, assigning `PROFILE=/dev/null`, wrapping a heredoc, or inside `silent` itself.
-- Prefer `has`, `log`, `log_section`, `ask_choice`, `ask_binary`, `read_value`, and `die` over local wrappers.
-- When a prompt is Skip / Enable / Disable, use `ask_choice 'Feature:' Skip Enable Disable` with **0 = Skip**, **1 = Enable**, **2 = Disable**. Do not reshape other menus into that triad.
-- Keep one feature per strategy file. Do not group Skills, Node, Zsh, tmux, Dock, or other unrelated work.
-- Do not add migration steps, old-path cleanup, or compatibility branches. These installers target clean machines.
-- macOS uses Homebrew. Ubuntu uses APT unless the vendor does not publish an APT package.
-- Ubuntu 26.04 supports amd64 and arm64. `detect_os` exports `LINUX_ARCH` once; setup files must use it instead of detecting the CPU again.
-- Use Google Chrome and OpenWhispr on amd64. Use Brave and whisper.cpp on arm64 because those vendors do not publish matching Linux ARM builds.
-- Keep true Mac-only tools under `mac/`; do not put normal Mac setup there.
+- Source focused libs directly, or reinvent helpers that already exist.
+- Use raw `>/dev/null 2>&1` when `silent` fits.
+- Park installer strategies in `mac/` or `shared/`, or dump scripts at `scripts/` root.
+- Reshape unrelated menus into Skip/Enable/Disable.
+- Add migrations / old-path cleanup / backwards-compat branches.
+- Touch a reusable base VM.
