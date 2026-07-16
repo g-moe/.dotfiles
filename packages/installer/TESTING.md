@@ -64,7 +64,7 @@ cp -c -f "$SNAP/config.plist" "$VM/config.plist"
 | Desktop C     | Dock unchanged                    | Same                            | Both                                |
 | Wallpaper A/B | Apply / keep                      | Same                            | Both                                |
 | Theme A/B     | Apply / keep                      | Same                            | Both                                |
-| Icons         | Built-in                          | MacTahoe blue dark              | Both                                |
+| Icons         | Built-in ClearLight               | Adwaita Colors (machine accent) | Both                                |
 | Development   | Node, Zsh, tmux, VSCodium, Skills | Same                            | Both                                |
 | Input         | Pointer…remapping                 | Same                            | Both                                |
 | Default apps  | Chrome                            | Chrome/Brave + Ghostty          | Both                                |

@@ -109,6 +109,6 @@ npm run install:test     # shape + lib checks (no VM)
 - **CleanShot X:** Mac only.
 - **Defaults:** Chrome (Mac + Ubuntu amd64) or Brave (Ubuntu arm64); Ghostty as Ubuntu terminal. Mac shows a system browser prompt — pick **Use Chrome**.
 - **Wallpaper:** from tracked `images/white.png` + machine color; Ubuntu forced to 3840×2160 for UTM.
-- **Icons:** Ubuntu gets pinned MacTahoe blue-dark; Mac keeps stock.
+- **Icons:** Ubuntu gets Adwaita Colors matched to machine color (aqua→teal, gray→slate); Mac keeps built-in.
 - **Git:** optional; defaults `garrett` / noreply email / `main`; GitHub login is a separate browser step; no token in the shell env.
 - **VNC:** Screen Sharing on Mac; headless GNOME Remote Desktop **VNC** on Ubuntu (not RDP), with VNC encryption off so macOS Screen Sharing can connect.
