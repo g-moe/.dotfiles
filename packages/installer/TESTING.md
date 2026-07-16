@@ -66,6 +66,19 @@ The last command must print nothing. After login, the session must be X11:
 loginctl show-session "$XDG_SESSION_ID" -p Type -p Name -p State
 ```
 
+When WhiteSur window decorations and icons are enabled:
+
+```bash
+xfconf-query -c xfwm4 -p /general/theme
+xfconf-query -c xsettings -p /Net/IconThemeName
+test -d ~/.themes/WhiteSur-Dark/xfwm4
+test -d ~/.local/share/icons/WhiteSur
+```
+
+The first two commands must print `WhiteSur-Dark` and `WhiteSur`. The
+appearance phase must not change the panel, dock, workspaces, wallpaper, or
+window-button placement.
+
 For VNC **Enable**:
 
 ```bash
@@ -84,15 +97,18 @@ Connect once while LightDM is showing, then log in through that VNC connection a
 | Clean full install             | Kept  | Pass      |
 | Reboot and second full install | Kept  | Pass      |
 | Xfce + LightDM + X11 check     | n/a   | Pass      |
+| WhiteSur icons + window frames | n/a   | Pass      |
 | VNC Skip / Disable / Enable    | Kept  | Pass      |
 | amd64 package paths            | n/a   | Code only |
 | arm64 full UTM proof           | n/a   | Pass      |
 
-Xfce appearance, input, panel, workspace, and window styling are not part of this installer change. Do not count those as failures. Application theme packs from `--theme` remain in scope.
+Only WhiteSur icons and the Xfce window frame are changed. Xfce input, panel,
+dock, workspace, wallpaper, and window-button placement stay unchanged.
+Application theme packs from `--theme` remain separate.
 
 ## Pass checklists
 
-**Debian desktop** — LightDM owns the login screen; the session is X11; Xfce opens; browser and Ghostty defaults work; apps open; VSCodium/`code`, files, SSH, VNC, updates, power, and Skills work; no extra desktop session is offered.
+**Debian desktop** — LightDM owns the login screen; the session is X11; Xfce opens; optional WhiteSur icons and window frames apply without rearranging the desktop; browser and Ghostty defaults work; apps open; VSCodium/`code`, files, SSH, VNC, updates, power, and Skills work; no extra desktop session is offered.
 
 **Git** — `npm run install:git` / `install.sh --git` only; skip leaves Git alone; accept → LFS + filters; name/email/branch stick; settings match `git.sh`; GitHub skip vs browser login; no `GITHUB_TOKEN` in a new shell.
 
@@ -108,4 +124,7 @@ Debian 13 arm64 passed in UTM on July 16, 2026. The first run found and fixed
 two live issues: terminal-default verification tried to launch Ghostty over
 SSH, and disabling x11vnc left a stale failed service state. The full rerun,
 post-reboot rerun, Xfce X11 session, LightDM greeter-to-desktop VNC connection
-on `:0`, and the VNC Skip / Disable / Enable choices then passed.
+on `:0`, and the VNC Skip / Disable / Enable choices then passed. A later
+appearance-only run and repeat run installed WhiteSur icons and window frames.
+The Xfce panel checksum and `O|SHMC` window-button order stayed unchanged, and
+the result was checked on the shared desktop with Thunar open.
