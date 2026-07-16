@@ -46,7 +46,6 @@ linux() {
     1)
       apt_install gnome-remote-desktop
       password="$(read_secret 'VNC password')"
-      gsettings set org.gnome.desktop.remote-desktop.vnc encryption "['none']"
       grdctl --headless vnc set-password "$password"
       grdctl --headless vnc enable
       silent grdctl --headless rdp disable || true
