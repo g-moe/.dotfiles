@@ -3,7 +3,6 @@ set -euo pipefail
 
 STRATEGY_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 INSTALLER_DIR="$(cd "$STRATEGY_DIR/../.." && pwd)"
-ROOT_DIR="$(cd "$INSTALLER_DIR/../.." && pwd)"
 . "$INSTALLER_DIR/lib/lib.sh"
 
 configure_icons() {
@@ -19,39 +18,37 @@ mac() {
 }
 
 linux() {
-  local accent archive color source_dir temporary_dir theme
-  local version='v2.6'
-  local checksum='8a25304dd641cdf3f096ec94d6b47dd7184aac8efb64a9995629cf3165dc8790'
+  local archive temporary_dir
+  local theme='GreyStone'
+  local commit='872ef715eeacebfdf57c38866195c52d118e9ced'
+  local checksum='931849f0ca1fa698bbdbfda7859cfb3397b39d45242f18287218b441c5c0573d'
 
   has gtk-update-icon-cache || die 'Ubuntu icon tools are missing.'
-  apt_install adwaita-icon-theme
-
-  color="$(machine_field "$ROOT_DIR/machine.json" color)"
-  case "$color" in
-    aqua) accent=teal ;;
-    gray) accent=slate ;;
-    *) accent="$color" ;;
-  esac
-  theme="Adwaita-$accent"
+  # GreyStone inherits Papirus-Dark for uncovered apps.
+  apt_install papirus-icon-theme
+  [[ -d /usr/share/icons/Papirus-Dark ]] ||
+    die 'Papirus-Dark is required by GreyStone but was not found.'
 
   archive="$(mktemp --suffix=.tar.gz)"
   temporary_dir="$(mktemp -d)"
   curl -fL \
-    "https://codeload.github.com/dpejoh/Adwaita-Colors/tar.gz/refs/tags/$version" \
+    "https://codeberg.org/StormRosenaa/GreyStone/raw/commit/$commit/GreyStone.tar.gz" \
     -o "$archive"
   printf '%s  %s\n' "$checksum" "$archive" | sha256sum --check --status ||
-    die 'Adwaita Colors checksum failed.'
+    die 'GreyStone icon theme checksum failed.'
   tar -xzf "$archive" -C "$temporary_dir"
-  source_dir="$temporary_dir/Adwaita-Colors-2.6"
-  bash "$source_dir/setup" -i "$accent"
+  mkdir -p "$HOME/.local/share/icons"
+  rm -rf "$HOME/.local/share/icons/$theme"
+  cp -a "$temporary_dir/$theme" "$HOME/.local/share/icons/$theme"
+  silent gtk-update-icon-cache -f "$HOME/.local/share/icons/$theme" || true
   rm -f "$archive"
   rm -rf "$temporary_dir"
 
   [[ -d "$HOME/.local/share/icons/$theme" ]] ||
-    die "Adwaita Colors theme missing after install: $theme"
+    die "GreyStone theme missing after install: $theme"
   gsettings set org.gnome.desktop.interface icon-theme "$theme"
   [[ "$(gsettings get org.gnome.desktop.interface icon-theme)" == "'$theme'" ]] ||
-    die 'The Adwaita Colors icon theme was not saved.'
+    die 'The GreyStone icon theme was not saved.'
 }
 
 configure_icons "$1"

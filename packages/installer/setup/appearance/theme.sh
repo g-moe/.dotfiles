@@ -40,7 +40,7 @@ linux() {
   esac
   gsettings set org.gnome.desktop.interface color-scheme prefer-dark
   gsettings set org.gnome.desktop.interface gtk-theme Yaru-dark
-  # Icon theme is owned by appearance/icons.sh (Adwaita Colors).
+  # Icon theme is owned by appearance/icons.sh (GreyStone).
   gsettings set org.gnome.desktop.interface accent-color "$accent"
 }
 
