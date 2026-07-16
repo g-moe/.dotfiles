@@ -71,13 +71,15 @@ When WhiteSur window decorations and icons are enabled:
 ```bash
 xfconf-query -c xfwm4 -p /general/theme
 xfconf-query -c xsettings -p /Net/IconThemeName
+xfconf-query -c xfwm4 -p /general/button_layout
+xfconf-query -c xfce4-panel -lv | grep tasklist
 test -d ~/.themes/WhiteSur-Dark/xfwm4
 test -d ~/.local/share/icons/WhiteSur
 ```
 
-The first two commands must print `WhiteSur-Dark` and `WhiteSur`. The
-appearance phase must not change the panel, dock, workspaces, wallpaper, or
-window-button placement.
+The first three commands must print `WhiteSur-Dark`, `WhiteSur`, and `CHM|`.
+The `grep` command must print nothing. The dock, workspaces, and wallpaper must
+stay unchanged.
 
 For VNC **Enable**:
 
@@ -98,17 +100,19 @@ Connect once while LightDM is showing, then log in through that VNC connection a
 | Reboot and second full install | Kept  | Pass      |
 | Xfce + LightDM + X11 check     | n/a   | Pass      |
 | WhiteSur icons + window frames | n/a   | Pass      |
+| Mac controls + clean top panel | n/a   | Pass      |
 | VNC Skip / Disable / Enable    | Kept  | Pass      |
 | amd64 package paths            | n/a   | Code only |
 | arm64 full UTM proof           | n/a   | Pass      |
 
-Only WhiteSur icons and the Xfce window frame are changed. Xfce input, panel,
-dock, workspace, wallpaper, and window-button placement stay unchanged.
+WhiteSur supplies the icons and Xfce window frame. Close, minimize, and
+maximize are placed on the left in Mac order, and the top panel does not show
+open windows. Xfce input, dock, workspace, and wallpaper stay unchanged.
 Application theme packs from `--theme` remain separate.
 
 ## Pass checklists
 
-**Debian desktop** — LightDM owns the login screen; the session is X11; Xfce opens; optional WhiteSur icons and window frames apply without rearranging the desktop; browser and Ghostty defaults work; apps open; VSCodium/`code`, files, SSH, VNC, updates, power, and Skills work; no extra desktop session is offered.
+**Debian desktop** — LightDM owns the login screen; the session is X11; Xfce opens; optional WhiteSur icons and window frames apply; Mac-order window buttons are on the left; the top panel has no open-window list; the dock, workspaces, and wallpaper stay put; browser and Ghostty defaults work; apps open; VSCodium/`code`, files, SSH, VNC, updates, power, and Skills work; no extra desktop session is offered.
 
 **Git** — `npm run install:git` / `install.sh --git` only; skip leaves Git alone; accept → LFS + filters; name/email/branch stick; settings match `git.sh`; GitHub skip vs browser login; no `GITHUB_TOKEN` in a new shell.
 
@@ -126,5 +130,7 @@ SSH, and disabling x11vnc left a stale failed service state. The full rerun,
 post-reboot rerun, Xfce X11 session, LightDM greeter-to-desktop VNC connection
 on `:0`, and the VNC Skip / Disable / Enable choices then passed. A later
 appearance-only run and repeat run installed WhiteSur icons and window frames.
-The Xfce panel checksum and `O|SHMC` window-button order stayed unchanged, and
-the result was checked on the shared desktop with Thunar open.
+A desktop-phase repeat caught and fixed an empty-list bug. Its final repeat and
+reboot kept `CHM|` controls on the left and removed the top-panel task list.
+The dock stayed unchanged, and the result was checked on the shared desktop
+with Thunar open.

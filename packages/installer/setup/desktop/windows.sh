@@ -23,7 +23,11 @@ mac() {
 }
 
 linux() {
-  log 'Xfce window changes are not part of this install.'
+  local layout='CHM|'
+
+  xfconf-query -c xfwm4 -p /general/button_layout -s "$layout"
+  [[ "$(xfconf-query -c xfwm4 -p /general/button_layout)" == "$layout" ]] ||
+    die 'The Mac-style window-button order was not saved.'
 }
 
 configure_windows "$1"

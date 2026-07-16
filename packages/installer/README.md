@@ -112,7 +112,7 @@ npm run install:test     # shape + lib checks (no VM)
 - **CleanShot X:** Mac only.
 - **Defaults:** Chrome (Mac + Debian amd64) or Brave (Debian arm64); Ghostty as the Debian terminal. Mac shows a system browser prompt — pick **Use Chrome**.
 - **Ghostty:** Mac uses Homebrew. Debian uses the checked AppImage release because Debian 13 has no `ghostty` package.
-- **Desktop styling:** Linux offers separate prompts for WhiteSur window decorations and WhiteSur icons. It does not switch the GTK application theme or change the panel, dock, workspaces, wallpaper, or window-button placement. App theme packs still use `--theme`.
+- **Desktop styling:** Linux offers separate prompts for WhiteSur window decorations and WhiteSur icons. The desktop phase puts close/minimize/maximize on the left in Mac order and removes the open-window list from the top panel. It does not switch the GTK application theme or change the dock, workspaces, or wallpaper. App theme packs still use `--theme`.
 - **Git:** optional; defaults `garrett` / noreply email / `main`; GitHub login is a separate browser step; no token in the shell env.
 - **Desktop check:** `system/desktop-environment.sh` requires `startxfce4`, `/usr/sbin/lightdm`, LightDM as the default display manager, and an Xfce X11 session.
 - **Display server:** `system/display-server.sh` sets LightDM’s default session to Xfce and removes other display-session choices. Reboot or sign out to apply it.
