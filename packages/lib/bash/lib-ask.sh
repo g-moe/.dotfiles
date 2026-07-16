@@ -4,19 +4,19 @@
 
 # Present a numbered list of options and return the selected index (0-based).
 #
-# When a menu is exactly Skip / Enable / Disable, use these labels and indices:
-#   ask_choice 'Feature:' Skip Enable Disable
+# When a menu is exactly Skip / Disable / Enable, use these labels and indices:
+#   ask_choice 'Feature:' Skip Disable Enable
 #   0 = Skip
-#   1 = Enable
-#   2 = Disable
+#   1 = Disable
+#   2 = Enable
 # Do not force unrelated menus into that triad (sizes, colors, modes, etc.).
 #
 # Usage:
-#   choice="$(ask_choice 'SSH:' Skip Enable Disable)"
+#   choice="$(ask_choice 'SSH:' Skip Disable Enable)"
 #   case "$choice" in
 #     0) return 0 ;;
-#     1) enable_ssh ;;
-#     2) disable_ssh ;;
+#     1) disable_ssh ;;
+#     2) enable_ssh ;;
 #   esac
 ask_choice() {
   local question="$1"

@@ -15,36 +15,36 @@ configure_ssh() {
 
 mac() {
   local choice
-  choice="$(ask_choice 'SSH:' Skip Enable Disable)"
+  choice="$(ask_choice 'SSH:' Skip Disable Enable)"
   case "$choice" in
     0) return 0 ;;
     1)
+      sudo launchctl disable system/com.openssh.sshd
+      silent sudo launchctl unload -w /System/Library/LaunchDaemons/ssh.plist || true
+      ;;
+    2)
       sudo launchctl enable system/com.openssh.sshd
       silent sudo launchctl load -w /System/Library/LaunchDaemons/ssh.plist || true
       sudo launchctl print system/com.openssh.sshd >/dev/null
-      ;;
-    2)
-      sudo launchctl disable system/com.openssh.sshd
-      silent sudo launchctl unload -w /System/Library/LaunchDaemons/ssh.plist || true
       ;;
   esac
 }
 
 linux() {
   local choice
-  choice="$(ask_choice 'SSH:' Skip Enable Disable)"
+  choice="$(ask_choice 'SSH:' Skip Disable Enable)"
   case "$choice" in
     0) return 0 ;;
     1)
-      apt_install openssh-server
-      sudo systemctl enable --now ssh
-      ;;
-    2)
       if has systemctl; then
         sudo systemctl disable --now ssh 2>/dev/null ||
           sudo systemctl disable --now ssh.service 2>/dev/null ||
           true
       fi
+      ;;
+    2)
+      apt_install openssh-server
+      sudo systemctl enable --now ssh
       ;;
   esac
 }

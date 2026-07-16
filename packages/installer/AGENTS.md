@@ -13,7 +13,7 @@ How to edit this tree. What the installer _is_ → [README.md](README.md). How t
 - One feature per `setup/` file, registered once in `install.sh`; match neighbor shape (`mac` / `linux`, `"$1"`).
 - Cross-OS tools → `packages/lib/bash/bin/`. Mac-only tools → `packages/mac/`. Do not park standalone tools in the installer.
 - `return 0` on skips; use `$LINUX_ARCH`; comment _why_.
-- Skip/Enable/Disable only when those labels fit (`0` / `1` / `2`).
+- Skip/Disable/Enable only when those labels fit (`0` / `1` / `2`).
 - Clean machines only. `npm run install:test` after shape/lib edits. VM tests only in disposable UTM clones.
 
 # DONT
@@ -22,6 +22,6 @@ How to edit this tree. What the installer _is_ → [README.md](README.md). How t
 - Source focused libs directly, or reinvent helpers that already exist.
 - Use raw `>/dev/null 2>&1` when `silent` fits.
 - Put standalone tools or unrelated app code in `packages/installer`, or dump scripts at the installer root.
-- Reshape unrelated menus into Skip/Enable/Disable.
+- Reshape unrelated menus into Skip/Disable/Enable.
 - Add migrations / old-path cleanup / backwards-compat branches.
 - Touch a reusable base VM.

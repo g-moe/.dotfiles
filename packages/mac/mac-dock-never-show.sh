@@ -24,7 +24,7 @@ disable_dock_never_show() {
 main() {
   local choice
 
-  choice="$(ask_choice 'Dock never-show:' Skip Enable Disable)"
+  choice="$(ask_choice 'Dock never-show:' Skip Disable Enable)"
 
   case "$choice" in
     0)
@@ -32,10 +32,10 @@ main() {
       return
       ;;
     1)
-      enable_dock_never_show
+      disable_dock_never_show
       ;;
     2)
-      disable_dock_never_show
+      enable_dock_never_show
       ;;
   esac
 

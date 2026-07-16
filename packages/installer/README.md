@@ -88,7 +88,7 @@ Source `packages/installer/lib/lib.sh` through the local installer-relative path
 | `ask_choice` | Numbered menu → 0-based index |
 | `ask_binary` | Yes / no                      |
 
-**Skip / Enable / Disable** is a real triad when those are the labels: `0` skip, `1` enable, `2` disable (SSH, VNC). Everything else keeps domain labels — Dock hide/show, sizes, colors, power Skip/Normal/Server, Tailscale install modes, etc.
+**Skip / Disable / Enable** is a real triad when those are the labels: `0` skip, `1` disable, `2` enable (SSH, VNC). Everything else keeps domain labels — Dock hide/show, sizes, colors, power Skip/Normal/Server, Tailscale install modes, etc.
 
 ### npm scripts
 
