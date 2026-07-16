@@ -28,10 +28,9 @@ mac() {
 }
 
 linux() {
-  local choice ID='' VERSION_CODENAME=''
+  local ID='' VERSION_CODENAME=''
 
-  choice="$(ask_choice 'Install Tailscale?' Skip 'System service')"
-  [[ "$choice" == 1 ]] || return 0
+  ask_binary 'Install Tailscale?' || return 0
   # shellcheck disable=SC1091
   . /etc/os-release
   install_apt_key \
