@@ -111,8 +111,8 @@ npm run install:test     # shape + lib checks (no VM)
 - **Firefox:** Debian’s `firefox-esr` package.
 - **CleanShot X:** Mac only.
 - **Defaults:** Chrome (Mac + Debian amd64) or Brave (Debian arm64); Ghostty as the Debian terminal. Mac shows a system browser prompt — pick **Use Chrome**.
-- **Ghostty:** Mac uses Homebrew. Debian uses the checked AppImage release because Debian 13 has no `ghostty` package.
-- **Desktop styling:** Linux offers separate prompts for WhiteSur window decorations and WhiteSur icons. The desktop phase puts close/minimize/maximize on the left in Mac order and removes the open-window list from the top panel. It does not switch the GTK application theme or change the dock, workspaces, or wallpaper. App theme packs still use `--theme`.
+- **Ghostty:** Mac uses Homebrew. Debian uses the checked AppImage release because Debian 13 has no `ghostty` package. Its launcher enables Mesa's OpenGL 4.3 path inside QEMU/UTM so the terminal also opens on the clean test VM.
+- **Desktop styling:** Linux offers separate prompts for WhiteSur desktop styling and WhiteSur icons. The desktop phase puts close/minimize/maximize on the left in Mac order, reduces the top panel to an icon menu and status items, and replaces the lower XFCE panel with a rounded WhiteSur Plank dock. Workspaces and wallpaper stay unchanged. App theme packs still use `--theme`.
 - **Git:** optional; defaults `garrett` / noreply email / `main`; GitHub login is a separate browser step; no token in the shell env.
 - **Desktop check:** `system/desktop-environment.sh` requires `startxfce4`, `/usr/sbin/lightdm`, LightDM as the default display manager, and an Xfce X11 session.
 - **Display server:** `system/display-server.sh` sets LightDM’s default session to Xfce and removes other display-session choices. Reboot or sign out to apply it.

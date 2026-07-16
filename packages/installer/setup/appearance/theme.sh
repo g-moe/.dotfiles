@@ -31,11 +31,11 @@ mac() {
 
 linux() {
   local archive source_dir temporary_dir
-  local theme='WhiteSur-Dark'
+  local theme='WhiteSur-Light'
   local commit='cd814d4286cbe4638390baacf4db5e66f4506f1a'
   local checksum='a26476c42bb4b9d0c590e5533a59bbc3555bd3290627292e0a0e7fe9db3c9078'
 
-  ask_binary 'Use WhiteSur window decorations?' || return 0
+  ask_binary 'Use WhiteSur desktop styling?' || return 0
   apt_install xfconf xz-utils
 
   archive="$(mktemp --suffix=.tar.gz)"
@@ -55,8 +55,11 @@ linux() {
   rm -rf "$temporary_dir"
 
   [[ -d "$HOME/.themes/$theme/xfwm4" ]] ||
-    die "WhiteSur window theme is missing: $theme"
+    die "WhiteSur desktop theme is missing: $theme"
+  xfconf-query -c xsettings -p /Net/ThemeName -s "$theme"
   xfconf-query -c xfwm4 -p /general/theme -s "$theme"
+  [[ "$(xfconf-query -c xsettings -p /Net/ThemeName)" == "$theme" ]] ||
+    die 'The WhiteSur GTK theme was not saved.'
   [[ "$(xfconf-query -c xfwm4 -p /general/theme)" == "$theme" ]] ||
     die 'The WhiteSur window theme was not saved.'
 }

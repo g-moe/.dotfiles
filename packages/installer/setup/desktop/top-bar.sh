@@ -68,7 +68,20 @@ mac() {
 linux() {
   local id plugin_type
   local panel_property='/panels/panel-1/plugin-ids'
-  local -a panel_ids=() kept_ids=() tasklist_ids=() set_args=()
+  local -a panel_ids=() kept_ids=() removed_ids=() set_args=()
+
+  if silent xfconf-query -c xfce4-panel -p /plugins/plugin-1/show-button-title; then
+    xfconf-query -c xfce4-panel -p /plugins/plugin-1/show-button-title -s false
+  else
+    xfconf-query -c xfce4-panel -p /plugins/plugin-1/show-button-title \
+      -n -t bool -s false
+  fi
+  if silent xfconf-query -c xfce4-panel -p /plugins/plugin-1/button-icon; then
+    xfconf-query -c xfce4-panel -p /plugins/plugin-1/button-icon -s start-here-symbolic
+  else
+    xfconf-query -c xfce4-panel -p /plugins/plugin-1/button-icon \
+      -n -t string -s start-here-symbolic
+  fi
 
   mapfile -t panel_ids < <(
     xfconf-query -c xfce4-panel -p "$panel_property" |
@@ -79,14 +92,13 @@ linux() {
     plugin_type="$(
       xfconf-query -c xfce4-panel -p "/plugins/plugin-$id" 2>/dev/null || true
     )"
-    if [[ "$plugin_type" == 'tasklist' ]]; then
-      tasklist_ids+=("$id")
-    else
-      kept_ids+=("$id")
-    fi
+    case "$plugin_type" in
+      pager | tasklist) removed_ids+=("$id") ;;
+      *) kept_ids+=("$id") ;;
+    esac
   done
 
-  ((${#tasklist_ids[@]})) || return 0
+  ((${#removed_ids[@]})) || return 0
   ((${#kept_ids[@]})) || die 'Removing the window list would empty the top panel.'
 
   set_args=(-a)
@@ -95,12 +107,13 @@ linux() {
   done
   xfconf-query -c xfce4-panel -p "$panel_property" "${set_args[@]}"
 
-  for id in "${tasklist_ids[@]}"; do
+  for id in "${removed_ids[@]}"; do
     xfconf-query -c xfce4-panel -p "/plugins/plugin-$id" -r -R
   done
 
-  if xfconf-query -c xfce4-panel -lv | awk '$2 == "tasklist" { found=1 } END { exit !found }'; then
-    die 'The open-window list is still present in the Xfce top panel.'
+  if xfconf-query -c xfce4-panel -lv |
+    awk '$2 == "pager" || $2 == "tasklist" { found=1 } END { exit !found }'; then
+    die 'The window or workspace list is still present in the Xfce top panel.'
   fi
 }
 

@@ -75,7 +75,123 @@ mac() {
 }
 
 linux() {
-  log 'Xfce panel changes are not part of this install.'
+  local id temporary_dir
+  local dock_path='/net/launchpad/plank/docks/dock1/'
+  local theme_dir="$HOME/.local/share/plank/themes/WhiteSur"
+  local launchers_dir="$HOME/.config/plank/dock1/launchers"
+  local autostart_file="$HOME/.config/autostart/plank.desktop"
+  local -a panel_ids=() panel_plugins=() kept_panels=() set_args=()
+
+  apt_install dconf-cli plank
+  temporary_dir="$(mktemp -d)"
+
+  cat >"$temporary_dir/dock.theme" <<'THEME'
+# WhiteSur Plank theme by Vince Liuice.
+[PlankTheme]
+TopRoundness=23
+BottomRoundness=23
+LineWidth=0
+OuterStrokeColor=0;;0;;0;;0
+FillStartColor=209;;209;;209;;150
+FillEndColor=209;;209;;209;;150
+InnerStrokeColor=210;;210;;210;;50
+
+[PlankDockTheme]
+HorizPadding=1
+TopPadding=2
+BottomPadding=2
+ItemPadding=3
+IndicatorSize=5
+IconShadowSize=0
+UrgentBounceHeight=2
+LaunchBounceHeight=0.7
+FadeOpacity=1
+ClickTime=300
+UrgentBounceTime=0
+LaunchBounceTime=600
+ActiveTime=300
+SlideTime=100
+FadeTime=250
+HideTime=200
+GlowSize=0
+GlowTime=0
+GlowPulseTime=0
+UrgentHueShift=150
+ItemMoveTime=200
+CascadeHide=true
+BadgeColor=0;;0;;0;;0
+THEME
+
+  cat >"$temporary_dir/plank.desktop" <<'AUTOSTART'
+[Desktop Entry]
+Type=Application
+Name=Plank
+Comment=Mac-style application dock
+Exec=plank
+OnlyShowIn=XFCE;
+Terminal=false
+Hidden=false
+AUTOSTART
+
+  mkdir -p "$theme_dir" "$launchers_dir" "$(dirname "$autostart_file")"
+  install -m 0644 "$temporary_dir/dock.theme" "$theme_dir/dock.theme"
+  install -m 0644 "$temporary_dir/plank.desktop" "$autostart_file"
+
+  printf '%s\n' '[PlankDockItemPreferences]' \
+    'Launcher=file:///usr/share/applications/thunar.desktop' \
+    >"$launchers_dir/01-thunar.dockitem"
+  printf '%s\n' '[PlankDockItemPreferences]' \
+    'Launcher=file:///usr/local/share/applications/com.mitchellh.ghostty.desktop' \
+    >"$launchers_dir/02-ghostty.dockitem"
+  printf '%s\n' '[PlankDockItemPreferences]' \
+    'Launcher=file:///usr/share/applications/codium.desktop' \
+    >"$launchers_dir/03-codium.dockitem"
+  printf '%s\n' '[PlankDockItemPreferences]' \
+    'Launcher=file:///usr/share/applications/brave-browser.desktop' \
+    >"$launchers_dir/04-browser.dockitem"
+
+  silent dbus-run-session -- dconf write /net/launchpad/plank/enabled-docks "['dock1']"
+  silent dbus-run-session -- dconf write "${dock_path}theme" "'WhiteSur'"
+  silent dbus-run-session -- dconf write "${dock_path}icon-size" 48
+  silent dbus-run-session -- dconf write "${dock_path}zoom-enabled" true
+  silent dbus-run-session -- dconf write "${dock_path}zoom-percent" 135
+  silent dbus-run-session -- dconf write "${dock_path}show-dock-item" false
+  silent dbus-run-session -- dconf write "${dock_path}lock-items" true
+  silent dbus-run-session -- dconf write "${dock_path}dock-items" \
+    "['01-thunar.dockitem', '02-ghostty.dockitem', '03-codium.dockitem', '04-browser.dockitem']"
+
+  [[ "$(dbus-run-session -- dconf read "${dock_path}theme")" == "'WhiteSur'" ]] ||
+    die 'The WhiteSur Plank theme was not saved.'
+  [[ -f "$theme_dir/dock.theme" && -f "$autostart_file" ]] ||
+    die 'The Plank theme or startup entry is missing.'
+
+  mapfile -t panel_ids < <(
+    xfconf-query -c xfce4-panel -p /panels | awk '/^[0-9]+$/ { print }'
+  )
+  for id in "${panel_ids[@]}"; do
+    if [[ "$id" == 2 ]]; then
+      mapfile -t panel_plugins < <(
+        xfconf-query -c xfce4-panel -p /panels/panel-2/plugin-ids |
+          awk '/^[0-9]+$/ { print }'
+      )
+    else
+      kept_panels+=("$id")
+    fi
+  done
+
+  if ((${#panel_plugins[@]})); then
+    set_args=(-a)
+    for id in "${kept_panels[@]}"; do
+      set_args+=(-t int -s "$id")
+    done
+    xfconf-query -c xfce4-panel -p /panels "${set_args[@]}"
+    xfconf-query -c xfce4-panel -p /panels/panel-2 -r -R
+    for id in "${panel_plugins[@]}"; do
+      xfconf-query -c xfce4-panel -p "/plugins/plugin-$id" -r -R
+    done
+  fi
+
+  rm -rf "$temporary_dir"
 }
 
 configure_dock "$1"

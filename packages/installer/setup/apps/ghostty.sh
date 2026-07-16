@@ -29,7 +29,7 @@ mac() {
 }
 
 linux() {
-  local appimage appimage_arch
+  local appimage appimage_arch launcher
 
   case "$LINUX_ARCH" in
     amd64) appimage_arch=x86_64 ;;
@@ -41,7 +41,21 @@ linux() {
   appimage="$(download_github_asset pkgforge-dev/ghostty-appimage \
     "^Ghostty-.*-${appimage_arch}\\.AppImage$" .AppImage)"
   sudo install -D -m 0755 "$appimage" /opt/ghostty/ghostty.AppImage
-  sudo ln -sfn /opt/ghostty/ghostty.AppImage /usr/local/bin/ghostty
+  launcher="$(mktemp)"
+  cat >"$launcher" <<'LAUNCHER'
+#!/usr/bin/env bash
+set -euo pipefail
+
+# QEMU's virtual GPU reports OpenGL 3.3 even though Mesa can run Ghostty's
+# required 4.3 path. Real hardware keeps its native Mesa version.
+if [[ "$(systemd-detect-virt 2>/dev/null || true)" != none ]]; then
+  export MESA_GL_VERSION_OVERRIDE="${MESA_GL_VERSION_OVERRIDE:-4.3}"
+  export MESA_GLSL_VERSION_OVERRIDE="${MESA_GLSL_VERSION_OVERRIDE:-430}"
+fi
+
+exec /opt/ghostty/ghostty.AppImage "$@"
+LAUNCHER
+  sudo install -D -m 0755 "$launcher" /usr/local/bin/ghostty
   install_root_file /usr/local/share/applications/com.mitchellh.ghostty.desktop \
     '[Desktop Entry]
 Type=Application
@@ -51,7 +65,7 @@ Exec=/usr/local/bin/ghostty
 Icon=utilities-terminal
 Categories=System;TerminalEmulator;
 Terminal=false'
-  rm -f "$appimage"
+  rm -f "$appimage" "$launcher"
   _configure
   has ghostty || die 'Ghostty is missing after installation.'
 }
