@@ -21,7 +21,7 @@ mac() {
 }
 
 linux() {
-  log 'GNOME settings are live. A reboot applies X11 (display server), the machine-name extension, and the host name.'
+  log 'Reboot to load XFCE/LightDM/X11. GNOME-oriented settings may not apply until those strategies are ported.'
 }
 
 restart_user_interface "$1"

@@ -123,6 +123,7 @@ configure_access() {
 }
 
 configure_system() {
+  run_strategy 'Desktop environment' system/desktop-environment.sh
   run_strategy 'Display server' system/display-server.sh
   run_strategy 'Software updates' system/updates.sh
   run_strategy 'Power' system/power.sh

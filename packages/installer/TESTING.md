@@ -71,7 +71,8 @@ cp -c -f "$SNAP/config.plist" "$VM/config.plist"
 | Files         | Assoc / prefs / sidebar           | Same                            | Both; Mac 26 skips protected bits   |
 | SSH A/B/C     | Enable / Skip / Disable           | Same                            | Enable + skip both; disable pending |
 | VNC A/B/C     | Screen Sharing triad              | x11vnc live X11 session on :0   | Skip both; enable/disable pending   |
-| Display server | n/a (Mac)                        | Always force X11 via GDM        | Linux path                          |
+| Desktop env    | n/a (Mac)                         | Hard switch XFCE+LightDM; purge GNOME session | Linux path               |
+| Display server | n/a (Mac)                        | LightDM → XFCE X11; drop Wayland sessions | Linux path                    |
 | Power A/B/C   | Normal / Server / Skip            | Same                            | Both                                |
 | Full clean    | Normal choices                    | Normal choices                  | Both                                |
 | Second run    | Reboot + again                    | Reboot + again                  | Both ×2                             |

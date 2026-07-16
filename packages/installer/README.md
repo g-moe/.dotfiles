@@ -41,7 +41,7 @@ Phase order: `apps` → `development` → `appearance` → `input` → `desktop`
 | `desktop`     | Workspaces, items/widgets, windows, Dock, name in bar, top bar |
 | `files`       | Defaults, associations, Finder/Files                           |
 | `access`      | Handoff, assistants, headless notes, SSH, VNC                  |
-| `system`      | Display server (X11), updates, power, UI refresh               |
+| `system`      | Desktop (XFCE), display server (X11), updates, power, UI refresh |
 
 ### Where things live
 
@@ -111,5 +111,6 @@ npm run install:test     # shape + lib checks (no VM)
 - **Wallpaper:** from tracked `images/white.png` + machine color; Ubuntu forced to 3840×2160 for UTM.
 - **Icons:** Ubuntu gets GreyStone (inherits Papirus-Dark); Mac keeps built-in.
 - **Git:** optional; defaults `garrett` / noreply email / `main`; GitHub login is a separate browser step; no token in the shell env.
-- **Display server:** Ubuntu always forces X11 via GDM `WaylandEnable=false` (`system/display-server.sh`). Re-login or reboot to apply.
-- **VNC:** Screen Sharing on Mac; on Ubuntu, a boot-level `x11vnc` system service shares `:0` (password in `/etc/x11vnc.passwd`, port 5900), including the greeter before login. Expects X11 from the display-server strategy.
+- **Desktop environment:** Ubuntu hard-switches to XFCE + LightDM and purges the GNOME session stack (`gdm3`, `ubuntu-session`, `ubuntu-desktop*`) — not a side-by-side install (`system/desktop-environment.sh`).
+- **Display server:** Ubuntu locks LightDM to the XFCE X11 session and removes Wayland session entries (`system/display-server.sh`). Reboot to apply. GNOME on Ubuntu 26.04 is Wayland-only, so GDM tweaks are not used.
+- **VNC:** Screen Sharing on Mac; on Ubuntu, a boot-level `x11vnc` system service shares `:0` (password in `/etc/x11vnc.passwd`, port 5900), including the greeter before login. Expects XFCE/X11 from the strategies above.

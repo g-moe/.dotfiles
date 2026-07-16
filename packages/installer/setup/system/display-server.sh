@@ -17,32 +17,26 @@ mac() {
   return 0
 }
 
-# Force the GDM login path onto Xorg. Wayland breaks classic shared-desktop VNC.
-linux_gdm_conf() {
-  local candidate
-  for candidate in /etc/gdm3/custom.conf /etc/gdm/custom.conf; do
-    [[ -f "$candidate" ]] || continue
-    printf '%s\n' "$candidate"
-    return 0
-  done
-  return 1
-}
-
+# LightDM + XFCE X11 only. Wayland session entries are removed so login cannot
+# pick GNOME/XFCE Wayland. Desktop packages are system/desktop-environment.sh.
 linux() {
-  local conf
-  conf="$(linux_gdm_conf)" || die 'GDM custom.conf not found; cannot force X11.'
+  [[ -x /usr/sbin/lightdm ]] || die 'LightDM is required; run the desktop-environment strategy first.'
+  [[ "$(cat /etc/X11/default-display-manager 2>/dev/null || true)" == /usr/sbin/lightdm ]] ||
+    die 'LightDM must be the default display manager before forcing X11.'
 
-  if grep -qE '^[[:space:]]*#?WaylandEnable=' "$conf"; then
-    sudo sed -i -E 's/^[[:space:]]*#?WaylandEnable=.*/WaylandEnable=false/' "$conf"
-  elif grep -qE '^[[:space:]]*\[daemon\]' "$conf"; then
-    sudo sed -i -E '/^[[:space:]]*\[daemon\]/a WaylandEnable=false' "$conf"
-  else
-    printf '\n[daemon]\nWaylandEnable=false\n' | silent sudo tee -a "$conf"
+  install_root_file /etc/lightdm/lightdm.conf.d/50-machine-x11.conf \
+    '[Seat:*]
+user-session=xfce
+greeter-session=lightdm-gtk-greeter'
+
+  # Session .desktop files only — do not purge xfce4-session (still needed for X11).
+  if [[ -d /usr/share/wayland-sessions ]]; then
+    sudo find /usr/share/wayland-sessions -type f -name '*.desktop' -delete
   fi
 
-  grep -qE '^WaylandEnable=false$' "$conf" ||
-    die "Failed to force X11 in $conf."
-  log 'Display server set to X11 (Xorg). Re-login or reboot to apply.'
+  [[ -f /usr/share/xsessions/xfce.desktop || -f /usr/share/xsessions/xfce4.desktop ]] ||
+    die 'XFCE X11 session is missing under /usr/share/xsessions/.'
+  log 'Display server locked to X11 (LightDM → XFCE). Reboot to apply.'
 }
 
 configure_display_server "$1"

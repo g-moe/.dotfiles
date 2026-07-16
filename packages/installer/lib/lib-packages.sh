@@ -116,7 +116,21 @@ brew_cask() {
 # Install one or more APT packages.
 # Usage: apt_install curl jq
 apt_install() {
-  sudo apt-get install -y "$@"
+  sudo DEBIAN_FRONTEND=noninteractive apt-get install -y "$@"
+}
+
+# Purge one or more APT packages when installed.
+# Usage: apt_purge gdm3 ubuntu-session
+apt_purge() {
+  local package packages=()
+
+  for package in "$@"; do
+    dpkg-query -W -f='${Status}' "$package" 2>/dev/null | grep -q 'install ok installed' ||
+      continue
+    packages+=("$package")
+  done
+  ((${#packages[@]})) || return 0
+  sudo DEBIAN_FRONTEND=noninteractive apt-get remove --purge -y "${packages[@]}"
 }
 
 # Enable a GNOME Shell extension by UUID, adding it to the enabled list if needed.
