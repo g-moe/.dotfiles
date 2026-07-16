@@ -56,9 +56,9 @@ cp -c -f "$SNAP/config.plist" "$VM/config.plist"
 
 | Run           | macOS                             | Ubuntu                          | Status                              |
 | ------------- | --------------------------------- | ------------------------------- | ----------------------------------- |
-| App A         | Tailscale CLI + NordVPN yes       | Tailscale service + NordVPN yes | Both ×2                             |
+| App A         | Tailscale CLI + NordVPN yes       | Tailscale yes + NordVPN yes     | Both ×2                             |
 | App B         | Tailscale menu bar + NordVPN no   | Both skip                       | Both; Mac ×2                        |
-| App C         | Tailscale skip                    | Tailscale service               | Both                                |
+| App C         | Tailscale skip                    | Tailscale yes                   | Both                                |
 | Desktop A     | Dock hidden, small, bottom        | Same                            | Both                                |
 | Desktop B     | Dock shown, large, left/right     | Same                            | Both                                |
 | Desktop C     | Dock unchanged                    | Same                            | Both                                |
@@ -70,7 +70,7 @@ cp -c -f "$SNAP/config.plist" "$VM/config.plist"
 | Default apps  | Chrome                            | Chrome/Brave + Ghostty          | Both                                |
 | Files         | Assoc / prefs / sidebar           | Same                            | Both; Mac 26 skips protected bits   |
 | SSH A/B/C     | Enable / Skip / Disable           | Same                            | Enable + skip both; disable pending |
-| VNC A/B/C     | Screen Sharing triad              | GNOME Remote Desktop triad      | Skip both; enable/disable pending   |
+| VNC A/B/C     | Screen Sharing triad              | GNOME VNC triad (not RDP)       | Skip both; enable/disable pending   |
 | Power A/B/C   | Normal / Server / Skip            | Same                            | Both                                |
 | Full clean    | Normal choices                    | Normal choices                  | Both                                |
 | Second run    | Reboot + again                    | Reboot + again                  | Both ×2                             |

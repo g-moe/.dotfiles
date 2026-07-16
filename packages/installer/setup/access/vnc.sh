@@ -39,35 +39,24 @@ mac() {
 }
 
 linux() {
-  local choice password tls_cert tls_dir tls_key username
+  local choice password
   choice="$(ask_choice 'VNC:' Skip Enable Disable)"
   case "$choice" in
     0) return 0 ;;
     1)
-      apt_install gnome-remote-desktop openssl
-      username="$(read_value 'Remote Desktop user name' "$USER")"
-      password="$(read_secret 'Remote Desktop password')"
-      tls_dir="${XDG_DATA_HOME:-$HOME/.local/share}/gnome-remote-desktop"
-      tls_cert="$tls_dir/rdp-tls.crt"
-      tls_key="$tls_dir/rdp-tls.key"
-      mkdir -p "$tls_dir"
-      if [[ ! -s "$tls_cert" || ! -s "$tls_key" ]]; then
-        silent openssl req -new -newkey rsa:4096 -days 720 -nodes -x509 \
-          -subj "/CN=$(hostname)" \
-          -keyout "$tls_key" \
-          -out "$tls_cert"
-        chmod 600 "$tls_key"
-      fi
-      grdctl --headless rdp set-tls-cert "$tls_cert"
-      grdctl --headless rdp set-tls-key "$tls_key"
-      grdctl --headless rdp set-credentials "$username" "$password"
-      grdctl --headless rdp enable
+      apt_install gnome-remote-desktop
+      password="$(read_secret 'VNC password')"
+      gsettings set org.gnome.desktop.remote-desktop.vnc encryption "['none']"
+      grdctl --headless vnc set-password "$password"
+      grdctl --headless vnc enable
+      silent grdctl --headless rdp disable || true
       systemctl --user enable --now gnome-remote-desktop-headless.service
       systemctl --user is-active --quiet gnome-remote-desktop-headless.service ||
         die 'GNOME Remote Desktop did not start.'
       ;;
     2)
       if has grdctl; then
+        silent grdctl --headless vnc disable || true
         silent grdctl --headless rdp disable || true
       fi
       silent systemctl --user disable --now gnome-remote-desktop-headless.service || true
