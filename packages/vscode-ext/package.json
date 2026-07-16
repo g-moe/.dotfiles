@@ -1,0 +1,104 @@
+{
+	"name": "better-vscode",
+	"displayName": "better-vscode",
+	"version": "0.0.1",
+	"private": true,
+	"description": "Editor productivity tools for VS Code, starting with better-errors.",
+	"categories": [
+		"Other"
+	],
+	"keywords": [
+		"diagnostics",
+		"errors",
+		"llm",
+		"prompt",
+		"typescript"
+	],
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/g-moe/.dotfiles.git"
+	},
+	"publisher": "gary-ix",
+	"main": "./dist/extension.js",
+	"scripts": {
+		"clean": "rm -rf dist dist-test better-vscode.vsix",
+		"build": "npm run clean && npm run compile",
+		"compile": "tsc -p ./",
+		"compile-tests": "npm run clean && tsc -p ./tsconfig.test.json",
+		"package:vsix": "vsce package --out better-vscode.vsix",
+		"test": "npm run compile-tests && node --test \"dist-test/test/**/*.test.js\"",
+		"watch": "tsc -watch -p ./",
+		"install:cursor": "npm run package:vsix && ELECTRON_RUN_AS_NODE=1 \"/Applications/Cursor.app/Contents/MacOS/Cursor\" \"/Applications/Cursor.app/Contents/Resources/app/out/cli.js\" --install-extension \"./better-vscode.vsix\" --force",
+		"install:codium": "npm run build && npm run package:vsix && codium --install-extension \"./better-vscode.vsix\" --force"
+	},
+	"devDependencies": {
+		"@types/node": "24.13.1",
+		"@types/vscode": "^1.96.0",
+		"@vscode/vsce": "^3.7.0",
+		"typescript": "6.0.3"
+	},
+	"contributes": {
+		"commands": [
+			{
+				"command": "betterErrors.copyError",
+				"title": "better-errors: Copy Error"
+			},
+			{
+				"command": "betterErrors.toggleEnabled",
+				"title": "better-errors: Toggle Enabled"
+			}
+		],
+		"menus": {
+			"editor/title": [
+				{
+					"command": "betterErrors.copyError",
+					"group": "navigation@1000",
+					"when": "editorTextFocus"
+				}
+			],
+			"editor/context": [
+				{
+					"command": "betterErrors.copyError",
+					"group": "navigation@1000",
+					"when": "editorTextFocus"
+				}
+			]
+		},
+		"configuration": {
+			"title": "better-vscode",
+			"properties": {
+				"betterErrors.enabled": {
+					"type": "boolean",
+					"default": true,
+					"description": "Enable better-errors commands and CodeLens actions."
+				},
+				"betterErrors.includeWorkspaceRelativePath": {
+					"type": "boolean",
+					"default": true,
+					"description": "Include the workspace-relative file path in copied prompts."
+				},
+				"betterErrors.includeSelection": {
+					"type": "boolean",
+					"default": true,
+					"description": "Include the active editor selection when building a prompt."
+				},
+				"betterErrors.contextLineCount": {
+					"type": "number",
+					"default": 12,
+					"minimum": 0,
+					"maximum": 100,
+					"description": "Number of surrounding lines to include around the diagnostic range."
+				}
+			}
+		}
+	},
+	"activationEvents": [
+		"onStartupFinished"
+	],
+	"icon": "icon.png",
+	"engines": {
+		"node": ">=24 <25",
+		"vscode": "^1.96.0"
+	}
+}

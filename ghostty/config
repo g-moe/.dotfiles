@@ -24,8 +24,8 @@ unfocused-split-opacity = 0.65
 keybind = super+shift+p=unbind
 keybind = ctrl+alt+shift+p=toggle_command_palette
 
-# CMD - open .config
-command-palette-entry = title:"Open .config in Cursor",description:"Open ~/.config in a new Cursor window.",action:"text:open -n -a \"Cursor\" --args \"$HOME/.config\"\n"
+# CMD - open .dotfiles
+command-palette-entry = title:"Open .dotfiles in Cursor",description:"Open ~/.dotfiles in a new Cursor window.",action:"text:open -n -a \"Cursor\" --args \"$HOME/.dotfiles\"\n"
 
 # CMD - open .zshrc
 command-palette-entry = title:"Open .zshrc in Cursor",description:"Open ~/.zshrc in a new Cursor window.",action:"text:open -n -a \"Cursor\" --args \"$HOME/.zshrc\"\n"

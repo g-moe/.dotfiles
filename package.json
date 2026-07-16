@@ -8,11 +8,12 @@
 		"format:check": "oxfmt --check .",
 		"typecheck": "tsc -b --noEmit",
 		"typecheck:tsgo": "tsgo -b --noEmit",
-		"skills:install": "tsx scripts/skills-install.ts",
-		"theme:install": "tsx custom-themes/create/controller.ts",
-		"vscode-install": "bash scripts/vscode-install.sh",
-		"mac:install": "bash scripts/mac-install.sh",
-		"mac:uninstall": "bash scripts/mac-uninstall.sh"
+		"install:git": "bash packages/installer/install.sh --git",
+		"install:skills": "bash packages/installer/install.sh --skills",
+		"install:theme": "bash packages/installer/install.sh --theme",
+		"install:machine": "bash packages/installer/install.sh",
+		"install:test": "bash packages/installer/tests/strategy-shape.sh && bash packages/installer/tests/lib-install.sh && bash packages/installer/tests/dotfiles-layout.sh",
+		"verify:machine": "bash packages/installer/tests/installed-links.sh"
 	},
 	"devDependencies": {
 		"@types/node": "24.13.1",

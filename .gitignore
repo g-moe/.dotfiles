@@ -1,148 +1,98 @@
-# Ignore everything
+# Ignore everything by default
 *
 
-!.gitignore
+# Root files
+!/.gitignore
+!/TODO.md
+!/.nvmrc
+!/.oxfmtrc.json
+!/AGENTS.md
+!/package-lock.json
+!/package.json
+!/tsconfig.json
 
-# root files
-!package.json
-!package-lock.json
-!tsconfig.json
-!.nvmrc
-!.oxfmtrc.json
-!AGENTS.md
-!black.heic
-!.vscode/
-!.vscode/settings.json
-!.vscode/extensions.json
-!vscode/
-!vscode/user/
-!vscode/user/settings.json
-!vscode/user/keybindings.json
-!vscode/user/extensions.json
-!.agents/
-!.agents/skills/
-!.agents/skills/**
-!.agents/skills/ponytail/
-!.agents/skills/ponytail/**
-!.agents/skills/ponytail-audit/
-!.agents/skills/ponytail-audit/**
+# Images
+!/images/
+!/images/icon.png
+!/images/white.png
 
-# aerospace
-!aerospace/
-!aerospace/aerospace.toml
+# Zsh
+!/zsh/
+!/zsh/.zshrc
 
-# borders
-!borders/
-!borders/bordersrc
+# VS Code
+!/.vscode/
+!/.vscode/extensions.json
+!/.vscode/settings.json
+!/vscode/
+!/vscode/user/
+!/vscode/user/extensions.json
+!/vscode/user/keybindings.json
+!/vscode/user/settings.json
 
-# karabiner
-!karabiner/
-!karabiner/karabiner.json
+# Skills
+!/.agents/
+!/.agents/skills/
+!/.agents/skills/**
 
-# ghostty
-!ghostty/
-!ghostty/config
-!ghostty/themes/
-!ghostty/themes/**
+# Karabiner
+!/karabiner/
+!/karabiner/karabiner.json
+
+# Ghostty
+!/ghostty/
+!/ghostty/config
+!/ghostty/themes/
+!/ghostty/themes/**
 
 # tmux
-!tmux/
-!tmux/tmux.conf
+!/tmux/
+!/tmux/tmux.conf
 
-# nvim
-!nvim/
-!nvim/init.lua
-!nvim/lua/
-!nvim/lua/config/
-!nvim/lua/config/**
-!nvim/lua/plugins/
-!nvim/lua/plugins/**
+# Neovim
+!/nvim/
+!/nvim/init.lua
+!/nvim/lua/
+!/nvim/lua/config/
+!/nvim/lua/config/**
+!/nvim/lua/plugins/
+!/nvim/lua/plugins/**
 
-# opencode
-!opencode/
-!opencode/opencode.json
-!opencode/opencode.jsonc
-!opencode/tui.json
-!opencode/tui.jsonc
-!opencode/opencode.png
+# OpenCode
+!/opencode/
+!/opencode/opencode.json
+!/opencode/opencode.jsonc
+!/opencode/tui.json
+!/opencode/tui.jsonc
+!/opencode/agent/
+!/opencode/agent/**
+!/opencode/commands/
+!/opencode/commands/**
+!/opencode/plugins/
+!/opencode/plugins/**
+!/opencode/themes/
+!/opencode/themes/**
 
-!opencode/agent/
-!opencode/agent/**
+# Packages
+!/packages/
+!/packages/installer/
+!/packages/installer/**
+!/packages/lib/
+!/packages/lib/bash/
+!/packages/lib/bash/**
+!/packages/lib/ts/
+!/packages/lib/ts/.gitkeep
+!/packages/mac/
+!/packages/mac/**
+!/packages/theming/
+!/packages/theming/**
+!/packages/vscode-ext/
+!/packages/vscode-ext/**
+/packages/**/node_modules/
+/packages/**/dist/
+/packages/**/dist-test/
+/packages/**/*.vsix
 
-!opencode/commands/
-!opencode/commands/**
-
-!opencode/plugins/
-!opencode/plugins/**
-
-!opencode/themes/
-!opencode/themes/**
-
-
-# Scripts
-!scripts/
-!scripts/AGENTS.md
-!scripts/lib/
-!scripts/lib/**
-!scripts/mac-only/
-!scripts/mac-only/**
-!scripts/mac-only/install/mac-power-mode.ts
-!scripts/mac-install.sh
-!scripts/mac-uninstall.sh
-!scripts/skills-install.ts
-!scripts/setup-tailscale-cli.sh
-!scripts/ssh-new-host.sh
-!scripts/vscode-install.sh
-!scripts/mac-only/
-!scripts/mac-only/cursor/
-!scripts/mac-only/cursor/cursor-staged-editing.sh
-!scripts/mac-only/finder-almost-maximize.sh
-!scripts/mac-only/zen-switcher/
-!scripts/mac-only/zen-switcher/**
-!scripts/mac-only/toggle-ghostty-quick-terminal.sh
-!scripts/mac-only/zoom-all-window.sh
-!scripts/mac-only/arc-main-window.sh
-!scripts/mac-only/arc-window-toggle.sh
-!scripts/mac-only/window-toggle/
-!scripts/mac-only/window-toggle/**
-
-# launchd
-!launchd/
-!launchd/com.garrett.cursor-staged-editing-watch.plist
-
-# home-assistant helpers
-!.home-assistant/
-!.home-assistant/README.md
-!.home-assistant/tv-volume
-!.home-assistant/tv-volume.env.example
-.home-assistant/tv-volume.env
-
-# custom-themes
-!custom-themes/
-!custom-themes/create/
-!custom-themes/create/**
-!custom-themes/output/
-!custom-themes/output/**
-!custom-themes/vsce-package/
-!custom-themes/vsce-package/**
-
-# vscode-extensions
-!vscode-extensions/
-!vscode-extensions/**
-vscode-extensions/**/node_modules/
-vscode-extensions/**/node_modules/**
-vscode-extensions/**/dist/
-vscode-extensions/**/dist/**
-vscode-extensions/**/dist-test/
-vscode-extensions/**/dist-test/**
-vscode-extensions/**/*.vsix
-
-# zed
-!zed/
-!zed/keymaps.json
-!zed/settings.json
-
-# misc
+# Generated system files
 .DS_Store
 *.tsbuildinfo
-**/.DS_Store
