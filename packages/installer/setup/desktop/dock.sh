@@ -35,7 +35,6 @@ mac() {
   defaults write com.apple.dock show-recents -bool false
   defaults write com.apple.dock magnification -bool true
 
-  choice="$(ask_choice 'Dock visibility:' 'Leave unchanged' 'Hide automatically' 'Always show')"
   case "$choice" in
     1) defaults write com.apple.dock autohide -bool true ;;
     2) defaults write com.apple.dock autohide -bool false ;;
@@ -98,7 +97,6 @@ linux() {
   gsettings set org.gnome.shell.extensions.dash-to-dock click-action 'focus-or-previews'
   gsettings set org.gnome.shell.extensions.dash-to-dock scroll-action 'cycle-windows'
 
-  choice="$(ask_choice 'Dock visibility:' 'Leave unchanged' 'Hide automatically' 'Always show')"
   case "$choice" in
     1)
       gsettings set org.gnome.shell.extensions.dash-to-dock dock-fixed false
