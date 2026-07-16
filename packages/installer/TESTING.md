@@ -70,7 +70,7 @@ cp -c -f "$SNAP/config.plist" "$VM/config.plist"
 | Default apps  | Chrome                            | Chrome/Brave + Ghostty          | Both                                |
 | Files         | Assoc / prefs / sidebar           | Same                            | Both; Mac 26 skips protected bits   |
 | SSH A/B/C     | Enable / Skip / Disable           | Same                            | Enable + skip both; disable pending |
-| VNC A/B/C     | Screen Sharing triad              | GNOME VNC triad (not RDP)       | Skip both; enable/disable pending   |
+| VNC A/B/C     | Screen Sharing triad              | Rebuild GRD+VNC session share   | Skip both; enable/disable pending   |
 | Power A/B/C   | Normal / Server / Skip            | Same                            | Both                                |
 | Full clean    | Normal choices                    | Normal choices                  | Both                                |
 | Second run    | Reboot + again                    | Reboot + again                  | Both ×2                             |

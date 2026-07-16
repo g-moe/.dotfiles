@@ -111,4 +111,4 @@ npm run install:test     # shape + lib checks (no VM)
 - **Wallpaper:** from tracked `images/white.png` + machine color; Ubuntu forced to 3840×2160 for UTM.
 - **Icons:** Ubuntu gets Adwaita Colors matched to machine color (aqua→teal, gray→slate); Mac keeps built-in.
 - **Git:** optional; defaults `garrett` / noreply email / `main`; GitHub login is a separate browser step; no token in the shell env.
-- **VNC:** Screen Sharing on Mac; headless GNOME Remote Desktop **VNC** on Ubuntu (not RDP).
+- **VNC:** Screen Sharing on Mac; on Ubuntu, rebuild `gnome-remote-desktop` with `-Dvnc=true` (held) and share the live GNOME session (stock Ubuntu is RDP-only).
