@@ -21,7 +21,7 @@ mac() {
 }
 
 linux() {
-  log 'GNOME settings are live. A reboot loads the machine-name extension and the new host name.'
+  log 'GNOME settings are live. A reboot applies X11 (display server), the machine-name extension, and the host name.'
 }
 
 restart_user_interface "$1"
