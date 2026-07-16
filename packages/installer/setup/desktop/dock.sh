@@ -64,27 +64,40 @@ mac() {
   esac
 
   defaults write com.apple.dock persistent-apps -array
-  _mac_app '/System/Applications/Apps.app'
+  _mac_app '/System/Library/CoreServices/Finder.app'
   _mac_app '/System/Applications/Mission Control.app'
-  _mac_app '/System/Applications/iPhone Mirroring.app'
-  _mac_app '/System/Applications/Passwords.app'
   _mac_app '/System/Applications/System Settings.app'
-  _mac_app '/System/Applications/Utilities/Activity Monitor.app'
-  _mac_app '/System/Applications/Notes.app'
   _mac_app '/Applications/Ghostty.app'
-  _mac_app '/Applications/OpenCode.app'
-  _mac_app '/Applications/Codex.app'
   _mac_app '/Applications/VSCodium.app'
+  _mac_app '/Applications/Google Chrome.app'
   defaults write com.apple.dock persistent-others -array
   killall Dock
 }
 
 _require_linux_app() {
-  [[ -f "/usr/share/applications/$1" ]] || die "Missing Dock application: $1"
+  [[ -f "/usr/share/applications/$1" || -f "$HOME/.local/share/applications/$1" ]] ||
+    die "Missing Dock application: $1"
+}
+
+# Mission Control stand-in: wmctrl -k works for show-desktop on GNOME (incl. many Wayland sessions).
+_linux_show_desktop() {
+  local desktop_dir="$HOME/.local/share/applications"
+  apt_install wmctrl
+  mkdir -p "$desktop_dir"
+  cat >"$desktop_dir/show-desktop.desktop" <<'EOF'
+[Desktop Entry]
+Type=Application
+Name=Show Desktop
+Comment=Hide all windows and show the desktop
+Icon=desktop
+Exec=wmctrl -k on
+Terminal=false
+StartupNotify=false
+EOF
 }
 
 linux() {
-  local choice desktop_file
+  local browser choice desktop_file
 
   choice="$(ask_choice 'Dock setup:' 'Leave unchanged' 'Hide automatically' 'Always show')"
   [[ "$choice" != 0 ]] || return 0
@@ -124,24 +137,29 @@ linux() {
     2) gsettings set org.gnome.shell.extensions.dash-to-dock dock-position RIGHT ;;
   esac
 
+  case "$LINUX_ARCH" in
+    amd64) browser='google-chrome.desktop' ;;
+    arm64) browser='brave-browser.desktop' ;;
+    *) die "No Dock browser is configured for $LINUX_ARCH" ;;
+  esac
+
+  _linux_show_desktop
   for desktop_file in \
-    org.gnome.seahorse.Application.desktop \
+    org.gnome.Nautilus.desktop \
+    show-desktop.desktop \
     org.gnome.Settings.desktop \
-    org.gnome.SystemMonitor.desktop \
-    org.gnome.Notes.desktop \
     com.mitchellh.ghostty.desktop \
-    ai.opencode.desktop.desktop \
-    codium.desktop; do
+    codium.desktop \
+    "$browser"; do
     _require_linux_app "$desktop_file"
   done
   gsettings set org.gnome.shell favorite-apps "[
-    'org.gnome.seahorse.Application.desktop',
+    'org.gnome.Nautilus.desktop',
+    'show-desktop.desktop',
     'org.gnome.Settings.desktop',
-    'org.gnome.SystemMonitor.desktop',
-    'org.gnome.Notes.desktop',
     'com.mitchellh.ghostty.desktop',
-    'ai.opencode.desktop.desktop',
-    'codium.desktop'
+    'codium.desktop',
+    '$browser'
   ]"
 }
 

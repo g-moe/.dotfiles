@@ -78,7 +78,7 @@ cp -c -f "$SNAP/config.plist" "$VM/config.plist"
 
 ## Pass checklists
 
-**Desktop** — apps open; browser/terminal defaults; JetBrains Mono; Dock; name in bar; wallpaper/theme/input/desktop; VSCodium/`code`; Finder/Files; SSH/VNC when enabled; updates/power; Skills linked.
+**Desktop** — apps open; browser/terminal defaults; JetBrains Mono; Dock (Finder/Files → Mission Control/Show Desktop → Settings → Ghostty → VSCodium → Chrome/Brave); name in bar; wallpaper/theme/input/desktop; VSCodium/`code`; Finder/Files; SSH/VNC when enabled; updates/power; Skills linked.
 
 **Git** — `npm run install:git` / `install.sh --git` only; skip leaves Git alone; accept → LFS + filters; name/email/branch stick; settings match `git.sh`; GitHub skip vs browser login; no `GITHUB_TOKEN` in a new shell.
 
