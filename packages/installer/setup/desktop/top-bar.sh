@@ -66,9 +66,9 @@ mac() {
 }
 
 linux() {
-  local id plugin_type
+  local actions_id='' expander_id='' id plugin_type
   local panel_property='/panels/panel-1/plugin-ids'
-  local -a panel_ids=() kept_ids=() removed_ids=() set_args=()
+  local -a panel_ids=() kept_ids=() ordered_ids=() removed_ids=() set_args=()
 
   if silent xfconf-query -c xfce4-panel -p /plugins/plugin-1/show-button-title; then
     xfconf-query -c xfce4-panel -p /plugins/plugin-1/show-button-title -s false
@@ -77,10 +77,10 @@ linux() {
       -n -t bool -s false
   fi
   if silent xfconf-query -c xfce4-panel -p /plugins/plugin-1/button-icon; then
-    xfconf-query -c xfce4-panel -p /plugins/plugin-1/button-icon -s start-here-symbolic
+    xfconf-query -c xfce4-panel -p /plugins/plugin-1/button-icon -s penguin-symbolic
   else
     xfconf-query -c xfce4-panel -p /plugins/plugin-1/button-icon \
-      -n -t string -s start-here-symbolic
+      -n -t string -s penguin-symbolic
   fi
 
   mapfile -t panel_ids < <(
@@ -94,12 +94,30 @@ linux() {
     )"
     case "$plugin_type" in
       pager | tasklist) removed_ids+=("$id") ;;
-      *) kept_ids+=("$id") ;;
+      *)
+        kept_ids+=("$id")
+        if [[ "$plugin_type" == actions ]]; then
+          actions_id="$id"
+        fi
+        if [[ "$plugin_type" == separator ]] &&
+          [[ "$(xfconf-query -c xfce4-panel \
+            -p "/plugins/plugin-$id/expand" 2>/dev/null || true)" == true ]]; then
+          expander_id="$id"
+        fi
+        ;;
     esac
   done
 
-  ((${#removed_ids[@]})) || return 0
   ((${#kept_ids[@]})) || die 'Removing the window list would empty the top panel.'
+
+  if [[ -n "$actions_id" && -n "$expander_id" ]]; then
+    for id in "${kept_ids[@]}"; do
+      [[ "$id" == "$actions_id" ]] && continue
+      ordered_ids+=("$id")
+      [[ "$id" == "$expander_id" ]] && ordered_ids+=("$actions_id")
+    done
+    kept_ids=("${ordered_ids[@]}")
+  fi
 
   set_args=(-a)
   for id in "${kept_ids[@]}"; do

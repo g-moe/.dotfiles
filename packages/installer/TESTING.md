@@ -83,8 +83,9 @@ test -f ~/.config/autostart/plank.desktop
 
 The first four commands must print `WhiteSur-Light`, `WhiteSur-Light`,
 `WhiteSur`, and `CHM|`. The `grep` command must print nothing and the Plank
-command must print `WhiteSur`. The top panel must use an icon-only application
-menu, the lower XFCE panel must be gone, and Plank must have a rounded
+command must print `WhiteSur`. The top panel must use an icon-only penguin menu,
+with the user name first in the right status group. The lower XFCE panel must
+be gone, and Plank must have a rounded
 translucent background. Workspaces and wallpaper must stay unchanged.
 
 For VNC **Enable**:
