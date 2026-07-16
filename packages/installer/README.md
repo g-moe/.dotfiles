@@ -21,6 +21,8 @@ npm run verify:machine                  # verify installed links after a VM inst
 
 Normal user only (not root). `sudo` is used where the OS needs it.
 
+The only supported Linux base is **Debian 13 (trixie), amd64 or arm64**. In the Debian installer, select **Xfce**, **SSH server**, and **standard system utilities**. The normal user must have `sudo`. The machine installer expects Xfce, LightDM, and the X11 session to already exist; it does not install or replace the desktop.
+
 - Agents editing this tree: [AGENTS.md](AGENTS.md)
 - VM tests: [TESTING.md](TESTING.md)
 
@@ -30,7 +32,7 @@ Normal user only (not root). `sudo` is used where the OS needs it.
 
 `--git`, `--skills`, and `--theme` skip the identity prompt. Phase flags (`--apps`, …) still ask for machine name/color first. No argument = all phases.
 
-Phase order: `apps` → `development` → `appearance` → `input` → `desktop` → `files` → `access` → `system`.
+Normal phase runs start with a Linux-only desktop check and X11 setup, then use this order: `apps` → `development` → `appearance` → `input` → `desktop` → `files` → `access` → `system`. The check runs before every phase flag, so VNC never runs before LightDM and X11 are ready.
 
 | Phase         | Covers                                                         |
 | ------------- | -------------------------------------------------------------- |
@@ -41,7 +43,7 @@ Phase order: `apps` → `development` → `appearance` → `input` → `desktop`
 | `desktop`     | Workspaces, items/widgets, windows, Dock, name in bar, top bar |
 | `files`       | Defaults, associations, Finder/Files                           |
 | `access`      | Handoff, assistants, headless notes, SSH, VNC                  |
-| `system`      | Desktop (XFCE), display server (X11), updates, power, UI refresh |
+| `system`      | Updates, power, UI refresh                                     |
 
 ### Where things live
 
@@ -102,15 +104,22 @@ npm run install:test     # shape + lib checks (no VM)
 
 ### Platform quirks
 
-- **Packages:** Homebrew on Mac; APT on Ubuntu unless the vendor has no APT package.
+- **Linux:** Debian 13 (trixie) only, with Xfce + LightDM + X11 installed by the Debian installer.
+- **Packages:** Homebrew on Mac; APT on Debian unless the vendor has no APT package.
 - **Clean only:** no “move my old dotfiles” path.
 - **`$LINUX_ARCH`:** set once. amd64 → Chrome + OpenWhispr; arm64 → Brave + whisper.cpp.
-- **Firefox (Ubuntu):** Snap removed; Mozilla APT installed.
+- **Firefox:** Debian’s `firefox-esr` package.
 - **CleanShot X:** Mac only.
-- **Defaults:** Chrome (Mac + Ubuntu amd64) or Brave (Ubuntu arm64); Ghostty as Ubuntu terminal. Mac shows a system browser prompt — pick **Use Chrome**.
-- **Wallpaper:** from tracked `images/white.png` + machine color; Ubuntu forced to 3840×2160 for UTM.
-- **Icons:** Ubuntu gets GreyStone (inherits Papirus-Dark); Mac keeps built-in.
+- **Defaults:** Chrome (Mac + Debian amd64) or Brave (Debian arm64); Ghostty as the Debian terminal. Mac shows a system browser prompt — pick **Use Chrome**.
+- **Ghostty:** Mac uses Homebrew. Debian uses the checked AppImage release because Debian 13 has no `ghostty` package.
+- **Desktop styling:** Xfce appearance, input, panel, and window changes are intentionally left alone. App theme packs still use `--theme`.
 - **Git:** optional; defaults `garrett` / noreply email / `main`; GitHub login is a separate browser step; no token in the shell env.
-- **Desktop environment:** Ubuntu hard-switches to XFCE + LightDM and purges the GNOME session stack (`gdm3`, `ubuntu-session`, `ubuntu-desktop*`) — not a side-by-side install (`system/desktop-environment.sh`).
-- **Display server:** Ubuntu locks LightDM to the XFCE X11 session and removes Wayland session entries (`system/display-server.sh`). Reboot to apply. GNOME on Ubuntu 26.04 is Wayland-only, so GDM tweaks are not used.
-- **VNC:** Screen Sharing on Mac; on Ubuntu, a boot-level `x11vnc` system service shares `:0` (password in `/etc/x11vnc.passwd`, port 5900), including the greeter before login. Expects XFCE/X11 from the strategies above.
+- **Desktop check:** `system/desktop-environment.sh` requires `startxfce4`, `/usr/sbin/lightdm`, LightDM as the default display manager, and an Xfce X11 session.
+- **Display server:** `system/display-server.sh` sets LightDM’s default session to Xfce and removes other display-session choices. Reboot or sign out to apply it.
+- **VNC:** Screen Sharing on Mac; on Debian, a boot-level root `x11vnc` service shares the live X11 display on `:0`, including the LightDM greeter before login. Its password is `/etc/x11vnc.passwd` and it listens on port 5900. If `:0` is down during an SSH install, the enabled service keeps retrying until the display starts.
+
+To keep VNC off the public network, tunnel it through SSH and connect the VNC client to `localhost:5900`:
+
+```bash
+ssh -L 5900:localhost:5900 user@debian-host
+```

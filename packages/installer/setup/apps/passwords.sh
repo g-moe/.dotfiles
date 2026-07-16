@@ -18,7 +18,7 @@ mac() {
 }
 
 linux() {
-  apt_install seahorse
+  apt_install keepassxc
 }
 
 install_passwords "$1"

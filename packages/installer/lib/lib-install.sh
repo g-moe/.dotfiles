@@ -9,11 +9,11 @@ detect_os() {
     Darwin) OS=mac ;;
     Linux)
       OS=linux
-      has dpkg || die 'Ubuntu package tools are missing.'
+      has dpkg || die 'Debian package tools are missing.'
       LINUX_ARCH="$(dpkg --print-architecture)"
       case "$LINUX_ARCH" in
         amd64 | arm64) ;;
-        *) die "Ubuntu amd64 or arm64 is required; found $LINUX_ARCH." ;;
+        *) die "Debian amd64 or arm64 is required; found $LINUX_ARCH." ;;
       esac
       export LINUX_ARCH
       ;;
@@ -25,16 +25,18 @@ detect_os() {
 # Require a supported OS after detect_os.
 # Usage: validate_os
 validate_os() {
-  local ID='' VERSION_ID=''
+  local ID='' VERSION_CODENAME='' VERSION_ID=''
 
   case "$OS" in
     mac) ;;
     linux)
-      [[ -r /etc/os-release ]] || die 'Ubuntu identification file is missing.'
+      [[ -r /etc/os-release ]] || die 'Debian identification file is missing.'
       # shellcheck disable=SC1091
       . /etc/os-release
-      [[ "$ID" == ubuntu && "$VERSION_ID" == 26.04 ]] ||
-        die "Ubuntu 26.04 is required; found ${ID:-unknown} ${VERSION_ID:-unknown}."
+      [[ "$ID" == debian && "$VERSION_ID" == 13 && "$VERSION_CODENAME" == trixie ]] ||
+        die "Debian 13 (trixie) is required; found ${ID:-unknown} ${VERSION_ID:-unknown} (${VERSION_CODENAME:-unknown})."
+      LINUX_CODENAME="$VERSION_CODENAME"
+      export LINUX_CODENAME
       ;;
     *) die "Unsupported OS value: $OS" ;;
   esac

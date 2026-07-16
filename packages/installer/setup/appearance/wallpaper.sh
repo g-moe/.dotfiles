@@ -21,7 +21,6 @@ _wallpaper_path() {
   color_hex="$(machine_color_hex "$color")"
   color_key="${color_hex#\#}"
   output_size=6016x3388
-  [[ "$OS" != linux ]] || output_size=3840x2160
   image_path="$ROOT_DIR/.machine-wallpaper-$color_key-$output_size.png"
   if [[ ! -s "$image_path" ]]; then
     temporary_dir="$(mktemp -d "${TMPDIR:-/tmp}/machine-wallpaper.XXXXXX")"
@@ -59,13 +58,7 @@ SWIFT
 }
 
 linux() {
-  local image_path uri
-  ask_binary 'Set the machine-color wallpaper?' || return 0
-  image_path="$(_wallpaper_path)"
-  uri="file://$image_path"
-  gsettings set org.gnome.desktop.background picture-uri "$uri"
-  gsettings set org.gnome.desktop.background picture-uri-dark "$uri"
-  gsettings set org.gnome.desktop.background picture-options zoom
+  log 'Xfce wallpaper changes are not part of this install.'
 }
 
 configure_wallpaper "$1"

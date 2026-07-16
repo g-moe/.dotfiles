@@ -19,7 +19,7 @@ mac() {
 }
 
 linux() {
-  log 'Ubuntu has no built-in AI assistant enabled.'
+  log 'Debian has no built-in AI assistant enabled.'
 }
 
 configure_apple_intelligence "$1"

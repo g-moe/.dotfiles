@@ -19,7 +19,7 @@ mac() {
 }
 
 linux() {
-  log 'GNOME does not place widgets on the desktop.'
+  log 'Xfce desktop widget changes are not part of this install.'
 }
 
 configure_widgets "$1"

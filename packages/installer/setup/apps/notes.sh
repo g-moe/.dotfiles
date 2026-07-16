@@ -18,7 +18,7 @@ mac() {
 }
 
 linux() {
-  apt_install bijiben
+  apt_install xpad
 }
 
 install_notes "$1"

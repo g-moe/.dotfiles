@@ -23,7 +23,7 @@ mac() {
 }
 
 linux() {
-  log 'Ubuntu has no built-in voice assistant enabled.'
+  log 'Debian has no built-in voice assistant enabled.'
 }
 
 configure_voice_assistant "$1"

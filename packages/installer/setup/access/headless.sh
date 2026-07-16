@@ -29,7 +29,7 @@ linux() {
   root_source="$(findmnt -no SOURCE /)"
   root_type="$(lsblk -no TYPE "$root_source" 2>/dev/null || true)"
   if [[ "$root_type" == crypt ]]; then
-    log 'Disk encryption blocks remote access after a cold boot until someone unlocks Ubuntu.'
+    log 'Disk encryption blocks remote access after a cold boot until someone unlocks Debian.'
   fi
 }
 

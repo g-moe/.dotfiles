@@ -32,6 +32,12 @@ done < <(sed -nE "s/.*run_strategy '[^']+' ([^[:space:]]+)$/\1/p" "$INSTALLER_DI
 grep -Fq 'LINUX_ARCH="$(dpkg --print-architecture)"' \
   "$INSTALLER_DIR/lib/lib-install.sh" ||
   fail 'lib-install.sh does not detect the Linux CPU architecture'
+grep -Fq '"$ID" == debian' "$INSTALLER_DIR/lib/lib-install.sh" ||
+  fail 'lib-install.sh does not require Debian'
+grep -Fq '"$VERSION_ID" == 13' "$INSTALLER_DIR/lib/lib-install.sh" ||
+  fail 'lib-install.sh does not require Debian 13'
+grep -Fq '"$VERSION_CODENAME" == trixie' "$INSTALLER_DIR/lib/lib-install.sh" ||
+  fail 'lib-install.sh does not require trixie'
 architecture_reads="$(find "$INSTALLER_DIR/setup" -type f -name '*.sh' \
   -exec grep -nH 'dpkg --print-architecture' {} + || true)"
 if [[ -n "$architecture_reads" ]]; then
@@ -76,6 +82,45 @@ done < <(find "$ROOT_DIR/packages/mac" -type f -name '*.sh' | sort)
 if grep -RIEq 'linuxbrew|migrat(e|ion)|backwards?[ -]?compat' \
   "$INSTALLER_DIR/install.sh" "$INSTALLER_DIR/lib" "$INSTALLER_DIR/setup"; then
   fail 'installer contains an old-system migration or compatibility path'
+fi
+
+if grep -RIEq 'ubuntu|gnome|gdm|gsettings|add-apt-repository|(^|[^a-z])snap([^a-z]|$)' \
+  "$INSTALLER_DIR/install.sh" "$INSTALLER_DIR/lib" "$INSTALLER_DIR/setup"; then
+  fail 'installer contains a removed Linux desktop or package path'
+fi
+
+grep -Fq 'https://download.docker.com/linux/debian' \
+  "$INSTALLER_DIR/setup/apps/docker.sh" ||
+  fail 'Docker must use its Debian repository'
+grep -Fq 'stable/debian/${LINUX_CODENAME}' \
+  "$INSTALLER_DIR/setup/apps/tailscale.sh" ||
+  fail 'Tailscale must use its Debian repository'
+if grep -Fq 'apt_install' "$INSTALLER_DIR/setup/system/desktop-environment.sh"; then
+  fail 'the desktop check must not install a desktop environment'
+fi
+
+all_phase="$(sed -n '/^    all)/,/^      ;;/p' "$INSTALLER_DIR/install.sh")"
+desktop_line="$(grep -n 'prepare_linux_desktop' <<<"$all_phase" | head -n 1 | cut -d: -f1)"
+apps_line="$(grep -n 'install_apps' <<<"$all_phase" | head -n 1 | cut -d: -f1)"
+[[ -n "$desktop_line" && -n "$apps_line" && "$desktop_line" -lt "$apps_line" ]] ||
+  fail 'the Linux desktop and X11 check must run before normal phases'
+grep -Fq '[[ "$mode" == all ]] || prepare_linux_desktop' "$INSTALLER_DIR/install.sh" ||
+  fail 'phase flags must run the Linux desktop and X11 check'
+
+vnc_strategy="$INSTALLER_DIR/setup/access/vnc.sh"
+grep -Fq '/etc/systemd/system/x11vnc.service' "$vnc_strategy" ||
+  fail 'VNC must use a boot-level system service'
+grep -Fq -- '-display :0' "$vnc_strategy" ||
+  fail 'VNC must share display :0'
+grep -Fq '/etc/x11vnc.passwd' "$vnc_strategy" ||
+  fail 'VNC must use the root-owned password file'
+if grep -Fq 'systemctl --user' "$vnc_strategy"; then
+  fail 'VNC must not use a user service'
+fi
+
+if grep -IEqi 'ubuntu|gnome|gdm|gsettings' \
+  "$INSTALLER_DIR/README.md" "$INSTALLER_DIR/TESTING.md"; then
+  fail 'installer docs still describe the removed Linux target'
 fi
 
 # package.json machine-install scripts must invoke install.sh, not setup/*.sh directly.

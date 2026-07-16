@@ -20,9 +20,6 @@ mac() {
 
 linux() {
   sudo apt-get update
-  apt_install software-properties-common
-  sudo add-apt-repository -y universe
-  sudo apt-get update
   apt_install build-essential ca-certificates curl file git gpg jq procps
 }
 

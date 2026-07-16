@@ -67,11 +67,6 @@ linux() {
   [[ "$mode" != skip ]] || return 0
   profile=balanced
   [[ "$mode" == normal ]] || profile=performance
-  gsettings set org.gnome.settings-daemon.plugins.power idle-dim false
-  gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-ac-type nothing
-  gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-ac-timeout 0
-  gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-battery-type nothing
-  gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-battery-timeout 0
   if has powerprofilesctl && powerprofilesctl list | grep -Fq "$profile:"; then
     sudo powerprofilesctl set "$profile"
   fi

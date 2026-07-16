@@ -23,10 +23,7 @@ mac() {
 }
 
 linux() {
-  gsettings set org.gnome.shell.extensions.ding show-home false
-  gsettings set org.gnome.shell.extensions.ding show-trash false
-  gsettings set org.gnome.shell.extensions.ding show-volumes false
-  gsettings set org.gnome.shell.extensions.ding show-network-volumes false
+  log 'Xfce desktop item changes are not part of this install.'
 }
 
 configure_desktop_items "$1"

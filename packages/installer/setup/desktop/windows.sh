@@ -23,9 +23,7 @@ mac() {
 }
 
 linux() {
-  gsettings set org.gnome.desktop.wm.preferences action-double-click-titlebar toggle-maximize
-  gsettings set org.gnome.mutter edge-tiling false
-  gsettings set org.gnome.mutter center-new-windows true
+  log 'Xfce window changes are not part of this install.'
 }
 
 configure_windows "$1"

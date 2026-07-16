@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Copy stdin to the system clipboard on macOS (pbcopy) or Linux (wl-copy / xclip).
+# Copy stdin to the system clipboard on macOS (pbcopy) or Linux X11 (xclip).
 # Symlinked to ~/.local/bin/copy-to-clipboard by the Zsh setup.
 
 set -euo pipefail
@@ -15,17 +15,12 @@ main() {
     return
   fi
 
-  if [[ -n "${WAYLAND_DISPLAY:-}" ]] && has wl-copy; then
-    wl-copy
-    return
-  fi
-
   if [[ -n "${DISPLAY:-}" ]] && has xclip; then
     xclip -selection clipboard -in
     return
   fi
 
-  die 'No usable clipboard command found (pbcopy, wl-copy, or xclip).'
+  die 'No usable clipboard command found (pbcopy or xclip).'
 }
 
 main "$@"

@@ -21,7 +21,7 @@ mac() {
 }
 
 linux() {
-  log 'Reboot to load XFCE/LightDM/X11. GNOME-oriented settings may not apply until those strategies are ported.'
+  log 'Reboot or sign out to load the configured Xfce X11 session.'
 }
 
 restart_user_interface "$1"

@@ -20,13 +20,13 @@ mac() {
 
 linux() {
   case "$LINUX_ARCH" in
-    amd64) install_google_chrome ;;
-    arm64) install_brave ;;
+    amd64) linux_install_google_chrome ;;
+    arm64) linux_install_brave ;;
     *) die "No Chrome-family browser is configured for $LINUX_ARCH" ;;
   esac
 }
 
-install_google_chrome() {
+linux_install_google_chrome() {
   install_apt_key \
     https://dl.google.com/linux/linux_signing_key.pub \
     /usr/share/keyrings/google-chrome.gpg \
@@ -45,7 +45,7 @@ EOF
   has google-chrome || die 'Google Chrome is missing after installation.'
 }
 
-install_brave() {
+linux_install_brave() {
   install_apt_key \
     https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg \
     /usr/share/keyrings/brave-browser-archive-keyring.gpg

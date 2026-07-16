@@ -17,26 +17,25 @@ mac() {
   return 0
 }
 
-# LightDM + XFCE X11 only. Wayland session entries are removed so login cannot
-# pick GNOME/XFCE Wayland. Desktop packages are system/desktop-environment.sh.
+# LightDM + Xfce X11 only. The Debian installer supplies all desktop packages.
 linux() {
-  [[ -x /usr/sbin/lightdm ]] || die 'LightDM is required; run the desktop-environment strategy first.'
+  [[ -x /usr/sbin/lightdm ]] || die 'LightDM is required; install Debian with the Xfce desktop task selected.'
   [[ "$(cat /etc/X11/default-display-manager 2>/dev/null || true)" == /usr/sbin/lightdm ]] ||
-    die 'LightDM must be the default display manager before forcing X11.'
+    die 'LightDM must be the default display manager.'
 
   install_root_file /etc/lightdm/lightdm.conf.d/50-machine-x11.conf \
     '[Seat:*]
 user-session=xfce
 greeter-session=lightdm-gtk-greeter'
 
-  # Session .desktop files only — do not purge xfce4-session (still needed for X11).
+  # Only session choices are removed; Xfce's X11 session stays installed.
   if [[ -d /usr/share/wayland-sessions ]]; then
     sudo find /usr/share/wayland-sessions -type f -name '*.desktop' -delete
   fi
 
   [[ -f /usr/share/xsessions/xfce.desktop || -f /usr/share/xsessions/xfce4.desktop ]] ||
-    die 'XFCE X11 session is missing under /usr/share/xsessions/.'
-  log 'Display server locked to X11 (LightDM → XFCE). Reboot to apply.'
+    die 'The Xfce X11 session is missing under /usr/share/xsessions/.'
+  log 'LightDM will start the Xfce X11 session. Reboot or sign out to apply it.'
 }
 
 configure_display_server "$1"

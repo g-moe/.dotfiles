@@ -29,7 +29,29 @@ mac() {
 }
 
 linux() {
-  apt_install ghostty
+  local appimage appimage_arch
+
+  case "$LINUX_ARCH" in
+    amd64) appimage_arch=x86_64 ;;
+    arm64) appimage_arch=aarch64 ;;
+    *) die "No Ghostty build is configured for $LINUX_ARCH" ;;
+  esac
+
+  apt_install libfuse2t64
+  appimage="$(download_github_asset pkgforge-dev/ghostty-appimage \
+    "^Ghostty-.*-${appimage_arch}\\.AppImage$" .AppImage)"
+  sudo install -D -m 0755 "$appimage" /opt/ghostty/ghostty.AppImage
+  sudo ln -sfn /opt/ghostty/ghostty.AppImage /usr/local/bin/ghostty
+  install_root_file /usr/local/share/applications/com.mitchellh.ghostty.desktop \
+    '[Desktop Entry]
+Type=Application
+Name=Ghostty
+Comment=Fast terminal emulator
+Exec=/usr/local/bin/ghostty
+Icon=utilities-terminal
+Categories=System;TerminalEmulator;
+Terminal=false'
+  rm -f "$appimage"
   _configure
   has ghostty || die 'Ghostty is missing after installation.'
 }

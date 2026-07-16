@@ -18,7 +18,7 @@ mac() {
 }
 
 linux() {
-  apt_install wl-clipboard xclip
+  apt_install xclip
 }
 
 install_clipboard_tools "$1"

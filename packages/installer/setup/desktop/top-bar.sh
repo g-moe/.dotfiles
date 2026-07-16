@@ -66,13 +66,7 @@ mac() {
 }
 
 linux() {
-  gsettings set org.gnome.desktop.interface clock-format 24h
-  gsettings set org.gnome.desktop.interface clock-show-date true
-  gsettings set org.gnome.desktop.interface clock-show-seconds true
-  gsettings set org.gnome.desktop.interface clock-show-weekday false
-  gsettings set org.gnome.desktop.interface show-battery-percentage false
-  enable_gnome_extension gsconnect@andyholmes.github.io
-  enable_gnome_extension system-monitor@gnome-shell-extensions.gcampax.github.com
+  log 'Xfce panel changes are not part of this install.'
 }
 
 configure_top_bar "$1"

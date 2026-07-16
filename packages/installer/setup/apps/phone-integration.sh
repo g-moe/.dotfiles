@@ -18,7 +18,7 @@ mac() {
 }
 
 linux() {
-  apt_install gnome-shell-extension-gsconnect gnome-shell-extension-gsconnect-browsers
+  apt_install kdeconnect
 }
 
 install_phone_integration "$1"

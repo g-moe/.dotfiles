@@ -29,11 +29,7 @@ mac() {
 }
 
 linux() {
-  gsettings set org.gnome.desktop.privacy remove-old-trash-files true
-  gsettings set org.gnome.desktop.privacy old-files-age 30
-  gsettings set org.gnome.nautilus.preferences recursive-search local-only
-  gsettings set org.gnome.nautilus.preferences default-folder-viewer list-view
-  gsettings set org.gnome.shell.extensions.ding show-volumes false
+  log 'Thunar preference changes are not part of this install.'
 }
 
 configure_file_preferences "$1"

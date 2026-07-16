@@ -30,18 +30,7 @@ mac() {
 }
 
 linux() {
-  local accent color
-  ask_binary 'Set the dark theme and machine color?' || return 0
-  color="$(machine_field "$ROOT_DIR/machine.json" color)"
-  case "$color" in
-    aqua) accent=teal ;;
-    gray) accent=slate ;;
-    *) accent="$color" ;;
-  esac
-  gsettings set org.gnome.desktop.interface color-scheme prefer-dark
-  gsettings set org.gnome.desktop.interface gtk-theme Yaru-dark
-  # Icon theme is owned by appearance/icons.sh (GreyStone).
-  gsettings set org.gnome.desktop.interface accent-color "$accent"
+  log 'Xfce theme changes are not part of this install.'
 }
 
 configure_theme "$1"

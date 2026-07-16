@@ -19,13 +19,13 @@ mac() {
 
 linux() {
   case "$LINUX_ARCH" in
-    amd64) install_openwhispr ;;
-    arm64) install_whisper_cpp ;;
+    amd64) linux_install_openwhispr ;;
+    arm64) linux_install_whisper_cpp ;;
     *) die "No voice transcription tool is configured for $LINUX_ARCH" ;;
   esac
 }
 
-link_system_command() {
+linux_link_system_command() {
   local binary="$1"
   local target="/usr/local/bin/$2"
 
@@ -40,31 +40,32 @@ link_system_command() {
   fi
 }
 
-install_openwhispr() {
+linux_install_openwhispr() {
   local package
 
   package="$(download_github_asset OpenWhispr/openwhispr \
     'OpenWhispr-.*-linux-amd64\.deb$' .deb)"
   apt_install "$package"
   rm -f "$package"
-  link_system_command /opt/OpenWhispr/open-whispr open-whispr
+  linux_link_system_command /opt/OpenWhispr/open-whispr open-whispr
   has open-whispr || die 'OpenWhispr did not become available.'
 }
 
-install_whisper_cpp() {
+linux_install_whisper_cpp() {
   local archive source_dir temporary_dir
 
   log 'OpenWhispr has no Linux ARM build; installing whisper.cpp.'
   archive="$(download_github_asset ggml-org/whisper.cpp \
-    '^whisper-bin-ubuntu-arm64\.tar\.gz$' .tar.gz)"
+    '^whisper-bin-[^-]+-arm64\.tar\.gz$' .tar.gz)"
   temporary_dir="$(mktemp -d)"
   tar -xzf "$archive" -C "$temporary_dir"
-  source_dir="$temporary_dir/whisper-bin-ubuntu-arm64"
+  source_dir="$(find "$temporary_dir" -maxdepth 1 -type d -name 'whisper-bin-*-arm64' | head -n 1)"
+  [[ -n "$source_dir" ]] || die 'The whisper.cpp archive directory is missing.'
   [[ -x "$source_dir/whisper-cli" ]] ||
     die 'The whisper.cpp archive did not contain whisper-cli.'
   sudo install -d -m 0755 /opt/whisper.cpp
   sudo cp -a --no-preserve=ownership "$source_dir/." /opt/whisper.cpp/
-  link_system_command /opt/whisper.cpp/whisper-cli whisper-cli
+  linux_link_system_command /opt/whisper.cpp/whisper-cli whisper-cli
   rm -rf "$temporary_dir" "$archive"
   has whisper-cli || die 'whisper.cpp did not become available.'
 }

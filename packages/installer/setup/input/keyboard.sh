@@ -25,9 +25,7 @@ mac() {
 }
 
 linux() {
-  gsettings set org.gnome.desktop.peripherals.keyboard repeat true
-  gsettings set org.gnome.desktop.peripherals.keyboard repeat-interval 30
-  gsettings set org.gnome.desktop.peripherals.keyboard delay 225
+  log 'Xfce keyboard changes are not part of this install.'
 }
 
 configure_keyboard "$1"
