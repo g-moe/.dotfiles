@@ -89,6 +89,7 @@ linux() {
     0) return 0 ;;
     1)
       silent sudo systemctl disable --now x11vnc.service || true
+      silent sudo systemctl reset-failed x11vnc.service || true
       ;;
     2)
       apt_install iproute2 x11vnc

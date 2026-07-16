@@ -81,12 +81,12 @@ Connect once while LightDM is showing, then log in through that VNC connection a
 | Check                          | macOS | Debian 13 |
 | ------------------------------ | ----- | --------- |
 | No-VM installer tests          | Pass  | Pass      |
-| Clean full install             | Kept  | Pending   |
-| Reboot and second full install | Kept  | Pending   |
-| Xfce + LightDM + X11 check     | n/a   | Pending   |
-| VNC Skip / Disable / Enable    | Kept  | Pending   |
+| Clean full install             | Kept  | Pass      |
+| Reboot and second full install | Kept  | Pass      |
+| Xfce + LightDM + X11 check     | n/a   | Pass      |
+| VNC Skip / Disable / Enable    | Kept  | Pass      |
 | amd64 package paths            | n/a   | Code only |
-| arm64 full UTM proof           | n/a   | Pending   |
+| arm64 full UTM proof           | n/a   | Pass      |
 
 Xfce appearance, input, panel, workspace, and window styling are not part of this installer change. Do not count those as failures. Application theme packs from `--theme` remain in scope.
 
@@ -104,4 +104,8 @@ Xfce appearance, input, panel, workspace, and window styling are not part of thi
 
 ## Recent full proofs
 
-The Debian 13 proof is pending on a fresh disposable UTM clone. Earlier Linux runs do not count for this target.
+Debian 13 arm64 passed in UTM on July 16, 2026. The first run found and fixed
+two live issues: terminal-default verification tried to launch Ghostty over
+SSH, and disabling x11vnc left a stale failed service state. The full rerun,
+post-reboot rerun, Xfce X11 session, LightDM greeter-to-desktop VNC connection
+on `:0`, and the VNC Skip / Disable / Enable choices then passed.
