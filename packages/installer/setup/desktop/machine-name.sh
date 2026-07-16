@@ -92,7 +92,7 @@ export default class MachineNameExtension extends Extension {
     this._dateParent.remove_child(this._dateMenu);
     Main.panel._rightBox.insert_child_at_index(this._dateMenu, 0);
     this._indicator = new Indicator();
-    Main.panel.addToStatusArea(this.uuid, this._indicator, 0, 'center');
+    Main.panel.addToStatusArea(this.uuid, this._indicator, 0, 'right');
   }
 
   disable() {

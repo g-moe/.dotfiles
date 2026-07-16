@@ -102,8 +102,8 @@ configure_desktop() {
   run_strategy 'Desktop widgets' desktop/widgets.sh
   run_strategy 'Windows' desktop/windows.sh
   run_strategy 'Dock' desktop/dock.sh
-  run_strategy 'Machine name display' desktop/machine-name.sh
   run_strategy 'Top bar' desktop/top-bar.sh
+  run_strategy 'Machine name display' desktop/machine-name.sh
 }
 
 configure_files() {
