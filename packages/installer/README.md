@@ -109,6 +109,7 @@ npm run install:test     # shape + lib checks (no VM)
 - **Clean only:** no “move my old dotfiles” path.
 - **`$LINUX_ARCH`:** set once. amd64 → Chrome + OpenWhispr; arm64 → Brave + whisper.cpp.
 - **Firefox:** Debian’s `firefox-esr` package.
+- **Codex:** Mac installs the ChatGPT app, which now includes Codex; Linux installs the Codex CLI.
 - **CleanShot X:** Mac only.
 - **Defaults:** Chrome (Mac + Debian amd64) or Brave (Debian arm64); Ghostty as the Debian terminal. Mac shows a system browser prompt — pick **Use Chrome**.
 - **Ghostty:** Mac uses Homebrew. Debian uses the checked AppImage release because Debian 13 has no `ghostty` package. Its launcher enables Mesa's OpenGL 4.3 path inside QEMU/UTM so the terminal also opens on the clean test VM.
