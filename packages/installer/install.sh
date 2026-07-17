@@ -87,6 +87,7 @@ configure_appearance() {
   run_strategy 'Screen saver' appearance/screensaver.sh
   run_strategy 'Theme' appearance/theme.sh
   run_strategy 'Icons' appearance/icons.sh
+  run_strategy 'Login screen' appearance/login-screen.sh
 }
 
 configure_input() {

@@ -118,6 +118,14 @@ if grep -Fq 'systemctl --user' "$vnc_strategy"; then
   fail 'VNC must not use a user service'
 fi
 
+login_strategy="$INSTALLER_DIR/setup/appearance/login-screen.sh"
+grep -Fq '/etc/lightdm/lightdm-gtk-greeter.conf' "$login_strategy" ||
+  fail 'login styling must configure the existing LightDM GTK greeter'
+grep -Fq '/usr/local/share/backgrounds/machine-login.png' "$login_strategy" ||
+  fail 'the LightDM background must be readable outside the user home'
+grep -Fq 'hide-user-image=true' "$login_strategy" ||
+  fail 'the LightDM login must not show an avatar'
+
 if grep -IEqi 'ubuntu|gnome|gdm|gsettings' \
   "$INSTALLER_DIR/README.md" "$INSTALLER_DIR/TESTING.md"; then
   fail 'installer docs still describe the removed Linux target'

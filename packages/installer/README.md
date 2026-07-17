@@ -38,7 +38,7 @@ Normal phase runs start with a Linux-only desktop check and X11 setup, then use 
 | ------------- | -------------------------------------------------------------- |
 | `apps`        | Apps (Homebrew / APT / vendor)                                 |
 | `development` | Git, Node, Zsh, tmux, VSCodium, Skills                         |
-| `appearance`  | Wallpaper, screen saver, theme, icons                          |
+| `appearance`  | Wallpaper, screen saver, theme, icons, login screen            |
 | `input`       | Pointer, touchpad, keyboard, remapping                         |
 | `desktop`     | Workspaces, items/widgets, windows, Dock, name in bar, top bar |
 | `files`       | Defaults, associations, Finder/Files                           |
@@ -114,6 +114,7 @@ npm run install:test     # shape + lib checks (no VM)
 - **Defaults:** Chrome (Mac + Debian amd64) or Brave (Debian arm64); Ghostty as the Debian terminal. Mac shows a system browser prompt — pick **Use Chrome**.
 - **Ghostty:** Mac uses Homebrew. Debian uses the checked AppImage release because Debian 13 has no `ghostty` package. Its launcher enables Mesa's OpenGL 4.3 path inside QEMU/UTM so the terminal also opens on the clean test VM.
 - **Desktop styling:** Linux offers separate prompts for WhiteSur desktop styling and WhiteSur icons. The desktop phase puts close/minimize/maximize on the left in Mac order, uses a penguin application menu, starts the right status group with the user name, and replaces the lower XFCE panel with a rounded WhiteSur Plank dock. Workspaces and wallpaper stay unchanged. App theme packs still use `--theme`.
+- **Login screen:** Debian keeps the LightDM GTK greeter and gives it a machine-color background, no avatar, JetBrains Mono, a centered login, and a minimal status bar. It reuses WhiteSur when selected earlier in the appearance phase and falls back to Adwaita otherwise.
 - **Git:** optional; defaults `garrett` / noreply email / `main`; GitHub login is a separate browser step; no token in the shell env.
 - **Desktop check:** `system/desktop-environment.sh` requires `startxfce4`, `/usr/sbin/lightdm`, LightDM as the default display manager, and an Xfce X11 session.
 - **Display server:** `system/display-server.sh` sets LightDM’s default session to Xfce and removes other display-session choices. Reboot or sign out to apply it.

@@ -88,6 +88,18 @@ with the user name first in the right status group. The lower XFCE panel must
 be gone, and Plank must have a rounded
 translucent background. Workspaces and wallpaper must stay unchanged.
 
+For the styled LightDM login screen:
+
+```bash
+grep -E '^(background|theme-name|icon-theme-name|font-name|position|hide-user-image|indicators)=' \
+  /etc/lightdm/lightdm-gtk-greeter.conf
+test -s /usr/local/share/backgrounds/machine-login.png
+```
+
+After reboot or sign out, confirm the machine-color background, avatar-free
+centered login, JetBrains Mono, and top status bar appear. When WhiteSur was
+selected, the greeter must use it; otherwise it must use Adwaita.
+
 For VNC **Enable**:
 
 ```bash
@@ -107,6 +119,7 @@ Connect once while LightDM is showing, then log in through that VNC connection a
 | Reboot and second full install | Kept  | Pass      |
 | Xfce + LightDM + X11 check     | n/a   | Pass      |
 | WhiteSur desktop + icons       | n/a   | Pass      |
+| Styled LightDM login screen    | n/a   | Pass      |
 | Rounded Plank dock             | n/a   | Pass      |
 | Mac controls + clean top panel | n/a   | Pass      |
 | VNC Skip / Disable / Enable    | Kept  | Pass      |
@@ -121,7 +134,7 @@ from `--theme` remain separate.
 
 ## Pass checklists
 
-**Debian desktop** — LightDM owns the login screen; the session is X11; Xfce opens; optional WhiteSur desktop styling and icons apply; Mac-order window buttons are on the left; the top panel has no open-window list; the rounded Plank dock opens the pinned apps and shows running apps; workspaces and wallpaper stay put; browser and Ghostty defaults work; apps open; VSCodium/`code`, files, SSH, VNC, updates, power, and Skills work; no extra desktop session is offered.
+**Debian desktop** — LightDM owns the styled login screen; the session is X11; Xfce opens; optional WhiteSur desktop styling and icons apply; Mac-order window buttons are on the left; the top panel has no open-window list; the rounded Plank dock opens the pinned apps and shows running apps; workspaces and wallpaper stay put; browser and Ghostty defaults work; apps open; VSCodium/`code`, files, SSH, VNC, updates, power, and Skills work; no extra desktop session is offered.
 
 **Git** — `npm run install:git` / `install.sh --git` only; skip leaves Git alone; accept → LFS + filters; name/email/branch stick; settings match `git.sh`; GitHub skip vs browser login; no `GITHUB_TOKEN` in a new shell.
 
@@ -148,3 +161,6 @@ The final repeat and reboot kept `CHM|` controls on the left, the top status bar
 clean, and the rounded dock running. Thunar, VSCodium, Brave, and Ghostty were
 checked from the dock. Ghostty's first launch exposed QEMU's OpenGL 3.3 report;
 the Debian launcher now selects Mesa's working 4.3 path inside virtual machines.
+The styled LightDM screen then passed after a full run, reboot, and repeat run:
+WhiteSur, JetBrains Mono, the centered avatar-free login, machine-color
+background, and minimal top bar all appeared as configured.
