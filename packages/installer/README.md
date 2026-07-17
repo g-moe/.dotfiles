@@ -107,7 +107,8 @@ npm run install:test     # shape + lib checks (no VM)
 - **Linux:** Debian 13 (trixie) only, with Xfce + LightDM + X11 installed by the Debian installer.
 - **Packages:** Homebrew on Mac; APT on Debian unless the vendor has no APT package.
 - **Clean only:** no “move my old dotfiles” path.
-- **`$LINUX_ARCH`:** set once. amd64 → Chrome + OpenWhispr; arm64 → Brave + whisper.cpp.
+- **`$LINUX_ARCH`:** set once. amd64 → Chrome; arm64 → Brave.
+- **Voice dictation:** VoiceInk on Mac; skipped on Linux.
 - **Firefox:** Debian’s `firefox-esr` package.
 - **Codex:** Mac installs the ChatGPT app, which now includes Codex; Linux installs the Codex CLI.
 - **CleanShot X:** Mac only.
