@@ -14,7 +14,8 @@ has() {
   silent command -v "$1"
 }
 
-# Create a symlink without replacing user-owned files, directories, or links.
+# Create a symlink, asking before replacing an existing file or different link.
+# Never replace a real directory.
 # Usage: safe_symlink "$ROOT_DIR/ghostty/config" "$HOME/.config/ghostty/config"
 safe_symlink() {
   local source="$1"
@@ -29,6 +30,10 @@ safe_symlink() {
   if [[ -L "$target" && "$(readlink "$target")" == "$source" ]]; then
     return
   fi
-  [[ ! -e "$target" && ! -L "$target" ]] || die "Refusing to replace $target"
+  if [[ -e "$target" || -L "$target" ]]; then
+    [[ ! -d "$target" || -L "$target" ]] || die "Refusing to replace directory $target"
+    ask_binary "Replace $target with a symlink?" n || die "Refusing to replace $target"
+    rm "$target"
+  fi
   ln -s "$source" "$target"
 }

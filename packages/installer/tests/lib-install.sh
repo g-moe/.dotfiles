@@ -31,9 +31,35 @@ printf 'source\n' >"$source_file"
 safe_symlink "$source_file" "$target_file"
 safe_symlink "$source_file" "$target_file"
 expect_equal "$(readlink "$target_file")" "$source_file"
-if (safe_symlink "$source_file" "$temporary_dir/machine.json" 2>/dev/null); then
-  fail 'safe_symlink replaced an existing file'
+
+existing_file="$temporary_dir/existing-file"
+printf 'existing\n' >"$existing_file"
+ask_binary() { return 0; }
+safe_symlink "$source_file" "$existing_file"
+expect_equal "$(readlink "$existing_file")" "$source_file"
+
+other_source="$temporary_dir/other-source"
+existing_link="$temporary_dir/existing-link"
+printf 'other\n' >"$other_source"
+ln -s "$other_source" "$existing_link"
+safe_symlink "$source_file" "$existing_link"
+expect_equal "$(readlink "$existing_link")" "$source_file"
+
+declined_file="$temporary_dir/declined-file"
+printf 'keep\n' >"$declined_file"
+ask_binary() { return 1; }
+if (safe_symlink "$source_file" "$declined_file" 2>/dev/null); then
+  fail 'safe_symlink replaced a declined file'
 fi
+expect_equal "$(cat "$declined_file")" keep
+
+existing_directory="$temporary_dir/existing-directory"
+mkdir "$existing_directory"
+ask_binary() { return 0; }
+if (safe_symlink "$source_file" "$existing_directory" 2>/dev/null); then
+  fail 'safe_symlink replaced an existing directory'
+fi
+[[ -d "$existing_directory" ]] || fail 'safe_symlink removed an existing directory'
 
 has bash || fail 'has did not find Bash'
 
