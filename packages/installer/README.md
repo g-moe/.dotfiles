@@ -19,8 +19,9 @@ npm run verify:machine                  # verify installed links after a VM inst
 
 `--theme` uses Node from `--development` and VSCodium from `--apps`. It loads NVM and Homebrew commands itself, including when it runs from a fresh Bash session.
 
-Every successful installer run recommends a reboot and asks whether to reboot
-now. The default answer is no. Choosing yes reboots either macOS or Linux.
+Successful full and system-phase runs recommend a reboot and ask whether to
+reboot now. The default answer is no. Choosing yes reboots either macOS or
+Linux. Smaller phase runs and the Git, Skills, and theme commands do not ask.
 
 Normal user only (not root). `sudo` is used where the OS needs it.
 

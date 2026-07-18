@@ -120,6 +120,9 @@ check_phase="$(sed -n '/^check_linux_desktop() {/,/^}/p' "$INSTALLER_DIR/install
 if grep -Fq 'display-server.sh' <<<"$check_phase"; then
   fail 'the common Linux desktop check must not configure the display server'
 fi
+finish_install="$(sed -n '/^finish_install() {/,/^}/p' "$INSTALLER_DIR/install.sh")"
+grep -Fq '[[ "$mode" == all || "$mode" == system ]] || return 0' <<<"$finish_install" ||
+  fail 'only full and system-phase runs may offer to reboot the machine'
 
 vnc_strategy="$INSTALLER_DIR/setup/access/vnc.sh"
 grep -Fq '/etc/systemd/system/x11vnc.service' "$vnc_strategy" ||

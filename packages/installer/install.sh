@@ -184,6 +184,8 @@ finish_install() {
 
   log_section 'Done'
   log "$os $mode setup is complete."
+
+  [[ "$mode" == all || "$mode" == system ]] || return 0
   log 'A reboot is recommended.'
 
   if ask_binary 'Reboot now?' n; then
