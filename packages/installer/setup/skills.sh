@@ -16,6 +16,7 @@ install_skills() {
 
 _install() {
   local skill source target target_root
+  local links=()
 
   for target_root in \
     "$HOME/.agents/skills" \
@@ -28,9 +29,11 @@ _install() {
       [[ -f "$source/SKILL.md" ]] || continue
       skill="$(basename "$source")"
       target="$target_root/$skill"
-      safe_symlink "$source" "$target"
+      links+=("$source" "$target")
     done
   done
+
+  safe_symlink_group 'Agent skills' "${links[@]}"
 }
 
 mac() {

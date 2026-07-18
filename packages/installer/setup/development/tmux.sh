@@ -17,8 +17,9 @@ configure_tmux() {
 _configure() {
   local tpm_source="$1"
 
-  safe_symlink "$ROOT_DIR/tmux/tmux.conf" "$HOME/.tmux.conf"
-  safe_symlink "$tpm_source" "$HOME/.tmux/plugins/tpm"
+  safe_symlink_group tmux \
+    "$ROOT_DIR/tmux/tmux.conf" "$HOME/.tmux.conf" \
+    "$tpm_source" "$HOME/.tmux/plugins/tpm"
   "$HOME/.tmux/plugins/tpm/bin/install_plugins"
 }
 

@@ -17,9 +17,10 @@ install_ghostty() {
 _configure() {
   local target="$HOME/.config/ghostty"
 
-  safe_symlink "$ROOT_DIR/ghostty/config" "$target/config"
-  safe_symlink "$ROOT_DIR/ghostty/themes/gtheme-dark" "$target/themes/gtheme-dark"
-  safe_symlink "$ROOT_DIR/ghostty/themes/gtheme-light" "$target/themes/gtheme-light"
+  safe_symlink_group Ghostty \
+    "$ROOT_DIR/ghostty/config" "$target/config" \
+    "$ROOT_DIR/ghostty/themes/gtheme-dark" "$target/themes/gtheme-dark" \
+    "$ROOT_DIR/ghostty/themes/gtheme-light" "$target/themes/gtheme-light"
 }
 
 mac() {

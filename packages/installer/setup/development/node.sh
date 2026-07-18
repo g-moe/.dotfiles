@@ -19,6 +19,8 @@ _install() {
 
   version="$(tr -d '[:space:]' <"$ROOT_DIR/.nvmrc")"
   if ! load_nvm; then
+    # NVM refuses a missing custom NVM_DIR when XDG_CONFIG_HOME is set.
+    mkdir -p "$HOME/.nvm"
     PROFILE=/dev/null NVM_DIR="$HOME/.nvm" \
       /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh)"
     load_nvm || die 'NVM did not become available.'

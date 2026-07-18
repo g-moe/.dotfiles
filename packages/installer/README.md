@@ -90,7 +90,7 @@ Source `packages/installer/lib/lib.sh` through the local installer-relative path
 | `ask_choice` | Numbered menu → 0-based index |
 | `ask_binary` | Yes / no                      |
 
-When link setup finds an existing file or a link pointing somewhere else, it asks before replacing it and defaults to no. It never replaces a real directory.
+Before setting up a group of links, such as Agent skills or Neovim, the installer checks the whole group. If it finds existing files or links pointing somewhere else, it asks once whether to **Skip** or **Replace with symlinks** for that group. Skip leaves each existing item alone while still creating missing links. It never replaces a real directory.
 
 **Skip / Disable / Enable** is a real triad when those are the labels: `0` skip, `1` disable, `2` enable (SSH, VNC). Everything else keeps domain labels — Dock hide/show, sizes, colors, power Skip/Normal/Server, Tailscale install modes, etc.
 
@@ -119,6 +119,7 @@ npm run install:test     # shape + lib checks (no VM)
 - **Desktop styling:** Linux offers separate prompts for WhiteSur desktop styling and WhiteSur icons. The desktop phase puts close/minimize/maximize on the left in Mac order, uses a penguin application menu, starts the right status group with the user name, and replaces the lower XFCE panel with a rounded WhiteSur Plank dock. Workspaces and wallpaper stay unchanged. App theme packs still use `--theme`.
 - **Login screen:** Debian keeps the LightDM GTK greeter and gives it a machine-color background, no avatar, JetBrains Mono, a centered login, and a minimal status bar. It reuses WhiteSur when selected earlier in the appearance phase and falls back to Adwaita otherwise.
 - **Git:** optional; defaults `garrett` / noreply email / `main`; GitHub login is a separate browser step; no token in the shell env.
+- **Node:** NVM is installed in `~/.nvm`, including when `XDG_CONFIG_HOME` is set.
 - **Desktop check:** `system/desktop-environment.sh` requires `startxfce4`, `/usr/sbin/lightdm`, LightDM as the default display manager, and an Xfce X11 session.
 - **Display server:** `system/display-server.sh` sets LightDM’s default session to Xfce and removes other display-session choices. Reboot or sign out to apply it.
 - **VNC:** Screen Sharing on Mac; on Debian, a boot-level root `x11vnc` service shares the live X11 display on `:0`, including the LightDM greeter before login. Its password is `/etc/x11vnc.passwd` and it listens on port 5900. If `:0` is down during an SSH install, the enabled service keeps retrying until the display starts.

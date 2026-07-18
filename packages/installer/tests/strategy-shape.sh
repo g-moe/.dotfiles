@@ -66,6 +66,9 @@ grep -Fq 'load_homebrew ||' "$INSTALLER_DIR/install.sh" ||
   fail 'install.sh must load Homebrew commands before running --theme on macOS'
 grep -Fq '"install:codium"' "$ROOT_DIR/packages/theming/create/controller.ts" ||
   fail '--theme must install its VSIX into VSCodium'
+grep -Fq 'mkdir -p "$HOME/.nvm"' \
+  "$INSTALLER_DIR/setup/development/node.sh" ||
+  fail 'Node setup must create its fixed NVM directory before installing NVM'
 for library in "$INSTALLER_DIR"/lib/*.sh; do
   bash -n "$library"
 done

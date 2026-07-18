@@ -34,7 +34,7 @@ expect_equal "$(readlink "$target_file")" "$source_file"
 
 existing_file="$temporary_dir/existing-file"
 printf 'existing\n' >"$existing_file"
-ask_binary() { return 0; }
+ask_choice() { printf '1\n'; }
 safe_symlink "$source_file" "$existing_file"
 expect_equal "$(readlink "$existing_file")" "$source_file"
 
@@ -45,25 +45,50 @@ ln -s "$other_source" "$existing_link"
 safe_symlink "$source_file" "$existing_link"
 expect_equal "$(readlink "$existing_link")" "$source_file"
 
-declined_file="$temporary_dir/declined-file"
-printf 'keep\n' >"$declined_file"
-ask_binary() { return 1; }
-if (safe_symlink "$source_file" "$declined_file" 2>/dev/null); then
-  fail 'safe_symlink replaced a declined file'
-fi
-expect_equal "$(cat "$declined_file")" keep
+skipped_file="$temporary_dir/skipped-file"
+printf 'keep\n' >"$skipped_file"
+ask_choice() { printf '0\n'; }
+safe_symlink "$source_file" "$skipped_file"
+expect_equal "$(cat "$skipped_file")" keep
 
 existing_directory="$temporary_dir/existing-directory"
 mkdir "$existing_directory"
-ask_binary() { return 0; }
-if (safe_symlink "$source_file" "$existing_directory" 2>/dev/null); then
-  fail 'safe_symlink replaced an existing directory'
-fi
+safe_symlink "$source_file" "$existing_directory"
 [[ -d "$existing_directory" ]] || fail 'safe_symlink removed an existing directory'
+
+group_source_a="$temporary_dir/group-source-a"
+group_source_b="$temporary_dir/group-source-b"
+group_target_a="$temporary_dir/group-target-a"
+group_target_b="$temporary_dir/group-target-b"
+prompt_log="$temporary_dir/prompts"
+printf 'a\n' >"$group_source_a"
+printf 'b\n' >"$group_source_b"
+printf 'old a\n' >"$group_target_a"
+printf 'old b\n' >"$group_target_b"
+ask_choice() {
+  printf 'prompted\n' >>"$prompt_log"
+  printf '1\n'
+}
+safe_symlink_group 'Test group' \
+  "$group_source_a" "$group_target_a" \
+  "$group_source_b" "$group_target_b"
+expect_equal "$(wc -l <"$prompt_log" | tr -d ' ')" 1
+expect_equal "$(readlink "$group_target_a")" "$group_source_a"
+expect_equal "$(readlink "$group_target_b")" "$group_source_b"
+
+group_skip_existing="$temporary_dir/group-skip-existing"
+group_skip_missing="$temporary_dir/group-skip-missing"
+printf 'keep\n' >"$group_skip_existing"
+ask_choice() { printf '0\n'; }
+safe_symlink_group 'Skipped group' \
+  "$group_source_a" "$group_skip_existing" \
+  "$group_source_b" "$group_skip_missing"
+expect_equal "$(cat "$group_skip_existing")" keep
+expect_equal "$(readlink "$group_skip_missing")" "$group_source_b"
 
 has bash || fail 'has did not find Bash'
 
-for function_name in die log log_section run_step ask_choice ask_binary read_value read_secret has safe_symlink; do
+for function_name in die log log_section run_step ask_choice ask_binary read_value read_secret has safe_symlink safe_symlink_group; do
   count="$(grep -h "^${function_name}()" "$BASH_LIB_DIR"/*.sh | wc -l | tr -d ' ')"
   expect_equal "$count" 1
 done
