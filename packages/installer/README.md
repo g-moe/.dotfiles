@@ -32,7 +32,7 @@ The only supported Linux base is **Debian 13 (trixie), amd64 or arm64**. In the 
 
 ---
 
-`install.sh` detects the OS, checks the user, then either runs a single strategy or asks for a **machine name and color** (writes gitignored `machine.json`) and walks phases.
+`install.sh` detects the OS, checks the user, then either runs a single strategy or asks for a **machine name and color** (writes the name, color, and resolved hex value to gitignored `machine.json`) and walks phases.
 
 `--git`, `--skills`, and `--theme` skip the identity prompt. Phase flags (`--apps`, …) still ask for machine name/color first. No argument = all phases.
 

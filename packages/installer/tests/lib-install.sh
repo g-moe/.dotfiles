@@ -19,9 +19,10 @@ expect_equal() {
 temporary_dir="$(mktemp -d)"
 trap 'rm -rf "$temporary_dir"' EXIT
 
-printf '{\n  "name": "test-vm",\n  "color": "blue"\n}\n' >"$temporary_dir/machine.json"
+printf '{\n  "name": "test-vm",\n  "color": "blue",\n  "colorHex": "#458588"\n}\n' >"$temporary_dir/machine.json"
 expect_equal "$(machine_field "$temporary_dir/machine.json" name)" test-vm
 expect_equal "$(machine_field "$temporary_dir/machine.json" color)" blue
+expect_equal "$(machine_field "$temporary_dir/machine.json" colorHex)" '#458588'
 expect_equal "$(machine_color_hex blue)" '#458588'
 expect_equal "$(machine_color_tint blue)" '0.270588 0.521569 0.533333 0.250000'
 
