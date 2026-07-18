@@ -203,8 +203,14 @@ grep -Fq 'hs.window.animationDuration = 0' "$center_fill_config" ||
   fail 'Center + Fill must disable Hammerspoon window animations'
 grep -Fq 'win:isMaximizable() == true' "$center_fill_config" ||
   fail 'Center + Fill must leave fixed-size windows at their original size'
-grep -Fq 'win:setFrame(win:screen():frame(), 0)' "$center_fill_config" ||
+grep -Fq 'local gap = 16' "$center_fill_config" ||
+  fail 'Center + Fill must leave a 16-pixel gap around resizable windows'
+grep -Fq 'local frame = win:screen():frame()' "$center_fill_config" ||
   fail 'Center + Fill must use the current screen usable frame'
+grep -Fq 'w = frame.w - gap * 2' "$center_fill_config" ||
+  fail 'Center + Fill must remove the gap from both sides of the window width'
+grep -Fq 'h = frame.h - gap * 2' "$center_fill_config" ||
+  fail 'Center + Fill must remove the gap from both sides of the window height'
 grep -Fq 'win:centerOnScreen(nil, true, 0)' "$center_fill_config" ||
   fail 'Center + Fill must center fixed-size windows without resizing them'
 for event in windowCreated windowFocused windowUnminimized; do

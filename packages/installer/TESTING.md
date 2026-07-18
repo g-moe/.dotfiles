@@ -173,7 +173,7 @@ pgrep -x Hammerspoon
 
 The stored name must be `center-fill`, both marked loader lines must appear, the `BEGIN` count must be `1`, the login file must be valid, and Hammerspoon must be running. Add user-owned Lua above and below the marked block, rerun Enable, and confirm the user code stays intact and the loader is not duplicated. Repeat once with `init.lua` as a symlink and confirm the symlink remains in place.
 
-Open a normal resizable window and confirm it fills the current screen inside the menu bar and Dock without entering Full Screen or another Space. Open a fixed-size dialog and confirm its size stays unchanged while it moves to the center. Repeat with a window on another screen, a newly opened window, a focused window, and a window restored from the Dock. There must be no movement animation, tiling, or gaps.
+Open a normal resizable window and confirm it fills the current screen inside the menu bar and Dock with a 16-pixel gap on every side, without entering Full Screen or another Space. Open a fixed-size dialog and confirm its size stays unchanged while it moves to the center. Repeat with a window on another screen, a newly opened window, a focused window, and a window restored from the Dock. There must be no movement animation or tiling.
 
 For **Disable**, confirm the managed lines and saved name are gone and Hammerspoon reloads when it was running. User Lua must remain. The installer login file must be removed when no other Hammerspoon code remains and kept when other Hammerspoon code remains. Hammerspoon itself and other window tools must remain installed and unchanged.
 
