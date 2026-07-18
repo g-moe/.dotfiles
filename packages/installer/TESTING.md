@@ -110,13 +110,19 @@ the right app opens. The lower panel and Plank must be absent.
 For Xfce Terminal:
 
 ```bash
-grep -E '^(FontName|MiscMenubarDefault|MiscToolbarDefault|MiscBordersDefault|ScrollingBar|ColorBackground)=' \
-  ~/.config/xfce4/terminal/terminalrc
+xfconf-query -c xfce4-terminal -p /font-name
+xfconf-query -c xfce4-terminal -p /misc-menubar-default
+xfconf-query -c xfce4-terminal -p /misc-toolbar-default
+xfconf-query -c xfce4-terminal -p /misc-borders-default
+xfconf-query -c xfce4-terminal -p /scrolling-bar
+xfconf-query -c xfce4-terminal -p /color-background
 ```
 
 It must use JetBrains Mono 12, hide the menu bar and toolbar, hide the scroll
 bar, keep normal window borders and controls, and use the dark `#111817`
-background.
+background. These values must come from the live `xfce4-terminal` settings
+channel; current Xfce Terminal only imports `terminalrc` before that channel
+exists.
 
 When the machine-color wallpaper is enabled:
 

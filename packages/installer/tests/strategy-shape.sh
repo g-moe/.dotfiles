@@ -175,9 +175,10 @@ done
   fail 'the top-bar CSS is missing'
 
 terminal_strategy="$INSTALLER_DIR/setup/apps/terminal.sh"
-grep -Fq 'config/xfce/terminalrc' "$terminal_strategy" ||
-  fail 'Linux must configure the existing Xfce Terminal'
-grep -Fqx 'MiscBordersDefault=TRUE' "$INSTALLER_DIR/config/xfce/terminalrc" ||
+grep -Fq 'xfconf_set xfce4-terminal /font-name' "$terminal_strategy" ||
+  fail 'Linux must configure Xfce Terminal through its live settings channel'
+grep -Fq 'xfconf_set xfce4-terminal /misc-borders-default bool true' \
+  "$terminal_strategy" ||
   fail 'Xfce Terminal must keep normal window borders and controls'
 if grep -Eqi 'ghostty|kitty|alacritty' <(sed -n '/^linux()/,/^}/p' "$terminal_strategy"); then
   fail 'Linux terminal setup must not install or configure another terminal'

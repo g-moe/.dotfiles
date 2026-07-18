@@ -30,16 +30,37 @@ mac() {
 }
 
 linux() {
-  local color color_hex target
+  local color color_hex
 
+  apt_install xfconf
   color="$(machine_field "$ROOT_DIR/machine.json" color)"
   color_hex="$(machine_color_hex "$color")"
-  target="$HOME/.config/xfce4/terminal/terminalrc"
-  mkdir -p "$(dirname "$target")"
-  sed "s/@RICE_ACCENT@/$color_hex/g" \
-    "$INSTALLER_DIR/config/xfce/terminalrc" >"$target"
-  grep -Fqx 'FontName=JetBrains Mono 12' "$target" ||
-    die 'The Xfce Terminal settings were not saved.'
+
+  xfconf_set xfce4-terminal /font-use-system bool false
+  xfconf_set xfce4-terminal /font-name string 'JetBrains Mono 12'
+  xfconf_set xfce4-terminal /misc-menubar-default bool false
+  xfconf_set xfce4-terminal /misc-toolbar-default bool false
+  xfconf_set xfce4-terminal /misc-borders-default bool true
+  xfconf_set xfce4-terminal /misc-always-show-tabs bool false
+  xfconf_set xfce4-terminal /scrolling-bar string TERMINAL_SCROLLBAR_NONE
+  xfconf_set xfce4-terminal /background-mode string TERMINAL_BACKGROUND_SOLID
+  xfconf_set xfce4-terminal /background-darkness double 1.0
+  xfconf_set xfce4-terminal /color-background string '#111817'
+  xfconf_set xfce4-terminal /color-foreground string '#ebdbb2'
+  xfconf_set xfce4-terminal /color-cursor string "$color_hex"
+  xfconf_set xfce4-terminal /color-cursor-use-default bool false
+  xfconf_set xfce4-terminal /color-selection string "$color_hex"
+  xfconf_set xfce4-terminal /color-selection-use-default bool false
+  xfconf_set xfce4-terminal /color-bold string '#fbf1c7'
+  xfconf_set xfce4-terminal /color-bold-use-default bool false
+  xfconf_set xfce4-terminal /color-palette string \
+    '#1d2021;#cc241d;#98971a;#d79921;#458588;#b16286;#689d6a;#a89984;#928374;#fb4934;#b8bb26;#fabd2f;#83a598;#d3869b;#8ec07c;#ebdbb2'
+  xfconf_set xfce4-terminal /tab-activity-color string "$color_hex"
+
+  [[ "$(xfconf-query -c xfce4-terminal -p /font-name)" == 'JetBrains Mono 12' ]] ||
+    die 'The Xfce Terminal font was not saved.'
+  [[ "$(xfconf-query -c xfce4-terminal -p /misc-borders-default)" == true ]] ||
+    die 'The Xfce Terminal window borders were not enabled.'
 }
 
 install_terminal "$1"
