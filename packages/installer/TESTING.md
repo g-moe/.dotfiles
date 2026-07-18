@@ -110,12 +110,13 @@ the right app opens. The lower panel and Plank must be absent.
 For Xfce Terminal:
 
 ```bash
-grep -E '^(FontName|MiscMenubarDefault|MiscToolbarDefault|ScrollingBar|ColorBackground)=' \
+grep -E '^(FontName|MiscMenubarDefault|MiscToolbarDefault|MiscBordersDefault|ScrollingBar|ColorBackground)=' \
   ~/.config/xfce4/terminal/terminalrc
 ```
 
 It must use JetBrains Mono 12, hide the menu bar and toolbar, hide the scroll
-bar, and use the dark `#111817` background.
+bar, keep normal window borders and controls, and use the dark `#111817`
+background.
 
 When the machine-color wallpaper is enabled:
 
@@ -126,7 +127,9 @@ find ~/.dotfiles -maxdepth 1 -type f -name '.machine-wallpaper-*.png' -size +0c
 
 Every `last-image` entry must point to the generated machine wallpaper, every
 matching `image-style` entry must be `5`, and the desktop must show the same
-machine-color artwork used on macOS.
+machine-color artwork used on macOS. The installer creates missing entries for
+every connected monitor and workspace, so a changed display name cannot leave
+Xfce using its default wallpaper.
 
 For the styled LightDM login screen:
 

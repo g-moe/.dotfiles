@@ -58,33 +58,48 @@ SWIFT
 }
 
 linux() {
-  local image_path property style_property
-  local -a wallpaper_properties=()
+  local image_path monitor property style_property workspace workspace_count
+  local -a active_monitors=() wallpaper_properties=()
 
   ask_binary 'Set the machine-color wallpaper?' || return 0
-  apt_install imagemagick xfconf
+  apt_install imagemagick xfconf x11-xserver-utils
   image_path="$(_wallpaper_path)"
 
-  mapfile -t wallpaper_properties < <(
-    xfconf-query -c xfce4-desktop -l | awk '/\/last-image$/ { print }'
+  mapfile -t active_monitors < <(
+    xrandr --listactivemonitors | awk 'NR > 1 { print $NF }'
   )
-  ((${#wallpaper_properties[@]})) ||
-    die 'Xfce has no wallpaper settings. Log into the Xfce desktop once, then run the appearance phase again.'
+  ((${#active_monitors[@]})) ||
+    die 'Xfce has no active monitor. Log into the Xfce desktop, then run the appearance phase again.'
+
+  workspace_count="$(
+    xfconf-query -c xfwm4 -p /general/workspace_count 2>/dev/null || true
+  )"
+  [[ "$workspace_count" =~ ^[1-9][0-9]*$ ]] || workspace_count=1
+
+  mapfile -t wallpaper_properties < <(
+    {
+      xfconf-query -c xfce4-desktop -l | awk '/\/last-image$/ { print }'
+      for monitor in "${active_monitors[@]}"; do
+        for ((workspace = 0; workspace < workspace_count; workspace++)); do
+          printf '/backdrop/screen0/monitor%s/workspace%s/last-image\n' \
+            "$monitor" "$workspace"
+        done
+      done
+    } | sort -u
+  )
 
   for property in "${wallpaper_properties[@]}"; do
-    xfconf-query -c xfce4-desktop -p "$property" -s "$image_path"
+    xfconf_set xfce4-desktop "$property" string "$image_path"
     style_property="${property%/last-image}/image-style"
-    if silent xfconf-query -c xfce4-desktop -p "$style_property"; then
-      xfconf-query -c xfce4-desktop -p "$style_property" -s 5
-    else
-      xfconf-query -c xfce4-desktop -p "$style_property" -n -t int -s 5
-    fi
+    xfconf_set xfce4-desktop "$style_property" int 5
 
     [[ "$(xfconf-query -c xfce4-desktop -p "$property")" == "$image_path" ]] ||
       die "The Xfce wallpaper was not saved: $property"
     [[ "$(xfconf-query -c xfce4-desktop -p "$style_property")" == 5 ]] ||
       die "The Xfce wallpaper style was not saved: $style_property"
   done
+
+  silent xfdesktop --reload || die 'Xfce could not reload the wallpaper settings.'
 }
 
 configure_wallpaper "$1"

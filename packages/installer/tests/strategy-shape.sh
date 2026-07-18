@@ -177,6 +177,8 @@ done
 terminal_strategy="$INSTALLER_DIR/setup/apps/terminal.sh"
 grep -Fq 'config/xfce/terminalrc' "$terminal_strategy" ||
   fail 'Linux must configure the existing Xfce Terminal'
+grep -Fqx 'MiscBordersDefault=TRUE' "$INSTALLER_DIR/config/xfce/terminalrc" ||
+  fail 'Xfce Terminal must keep normal window borders and controls'
 if grep -Eqi 'ghostty|kitty|alacritty' <(sed -n '/^linux()/,/^}/p' "$terminal_strategy"); then
   fail 'Linux terminal setup must not install or configure another terminal'
 fi
@@ -233,10 +235,14 @@ grep -Fq 'launchctl print "$service"' "$machine_name_strategy" ||
 wallpaper_strategy="$INSTALLER_DIR/setup/appearance/wallpaper.sh"
 grep -Fq 'xfconf-query -c xfce4-desktop' "$wallpaper_strategy" ||
   fail 'Linux wallpaper setup must configure Xfce'
-grep -Fq "awk '/\\/last-image\$/ { print }'" "$wallpaper_strategy" ||
-  fail 'Linux wallpaper setup must cover every Xfce desktop and workspace'
+grep -Fq 'xrandr --listactivemonitors' "$wallpaper_strategy" ||
+  fail 'Linux wallpaper setup must find the active monitor names'
+grep -Fq '/backdrop/screen0/monitor%s/workspace%s/last-image' "$wallpaper_strategy" ||
+  fail 'Linux wallpaper setup must create missing monitor and workspace settings'
 grep -Fq 'style_property="${property%/last-image}/image-style"' "$wallpaper_strategy" ||
   fail 'Linux wallpaper setup must set the image style'
+grep -Fq 'xfdesktop --reload' "$wallpaper_strategy" ||
+  fail 'Linux wallpaper setup must reload the active Xfce desktop'
 
 if grep -IEqi 'ubuntu|gnome|gdm|gsettings' \
   "$INSTALLER_DIR/README.md" "$INSTALLER_DIR/TESTING.md"; then
