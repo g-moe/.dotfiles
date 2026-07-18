@@ -30,8 +30,8 @@ mac() {
 }
 
 linux() {
-  local archive source_dir temporary_dir
-  local theme='WhiteSur-Light'
+  local archive color color_hex notification_css source_dir temporary_dir
+  local theme='WhiteSur-Dark'
   local commit='cd814d4286cbe4638390baacf4db5e66f4506f1a'
   local checksum='a26476c42bb4b9d0c590e5533a59bbc3555bd3290627292e0a0e7fe9db3c9078'
 
@@ -56,12 +56,34 @@ linux() {
 
   [[ -d "$HOME/.themes/$theme/xfwm4" ]] ||
     die "WhiteSur desktop theme is missing: $theme"
-  xfconf-query -c xsettings -p /Net/ThemeName -s "$theme"
-  xfconf-query -c xfwm4 -p /general/theme -s "$theme"
+  xfconf_set xsettings /Net/ThemeName string "$theme"
+  xfconf_set xsettings /Gtk/FontName string 'DejaVu Sans 10'
+  xfconf_set xsettings /Gtk/MonospaceFontName string 'JetBrains Mono 10'
+  xfconf_set xsettings /Xft/Antialias int 1
+  xfconf_set xsettings /Xft/Hinting int 1
+  xfconf_set xsettings /Xft/HintStyle string hintslight
+  xfconf_set xsettings /Xft/RGBA string rgb
+  xfconf_set xfwm4 /general/theme string "$theme"
+
+  color="$(machine_field "$ROOT_DIR/machine.json" color)"
+  color_hex="$(machine_color_hex "$color")"
+  notification_css="$HOME/.themes/Rice/xfce-notify-4.0/gtk.css"
+  mkdir -p "$(dirname "$notification_css")"
+  {
+    printf '@define-color rice_accent %s;\n' "$color_hex"
+    cat "$INSTALLER_DIR/config/xfce/notifications.css"
+  } >"$notification_css"
+  xfconf_set xfce4-notifyd /theme string Rice
+  xfconf_set xfce4-notifyd /expire-timeout int 5
+  xfconf_set xfce4-notifyd /do-slideout bool false
+  xfconf_set xfce4-notifyd /notify-location string top-right
+
   [[ "$(xfconf-query -c xsettings -p /Net/ThemeName)" == "$theme" ]] ||
     die 'The WhiteSur GTK theme was not saved.'
   [[ "$(xfconf-query -c xfwm4 -p /general/theme)" == "$theme" ]] ||
     die 'The WhiteSur window theme was not saved.'
+  [[ "$(xfconf-query -c xfce4-notifyd -p /theme)" == Rice ]] ||
+    die 'The notification theme was not saved.'
 }
 
 configure_theme "$1"

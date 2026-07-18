@@ -73,21 +73,49 @@ xfconf-query -c xsettings -p /Net/ThemeName
 xfconf-query -c xfwm4 -p /general/theme
 xfconf-query -c xsettings -p /Net/IconThemeName
 xfconf-query -c xfwm4 -p /general/button_layout
-xfconf-query -c xfce4-panel -lv | grep -E 'pager|tasklist'
-dconf read /net/launchpad/plank/docks/dock1/theme
-test -d ~/.themes/WhiteSur-Light/xfwm4
+xfconf-query -c xfce4-desktop -p /desktop-icons/style
+xfconf-query -c xfce4-notifyd -p /theme
+test -d ~/.themes/WhiteSur-Dark/xfwm4
 test -d ~/.local/share/icons/WhiteSur
-test -f ~/.local/share/plank/themes/WhiteSur/dock.theme
-test -f ~/.config/autostart/plank.desktop
 ```
 
-The first four commands must print `WhiteSur-Light`, `WhiteSur-Light`,
-`WhiteSur`, and `CHM|`. The `grep` command must print nothing and the Plank
-command must print `WhiteSur`. The top panel must use an icon-only penguin menu,
-with the user name first in the right status group. The lower XFCE panel must
-be gone, and Plank must have a rounded
-translucent background. Workspaces must stay unchanged; wallpaper is checked
-separately below.
+The six values must print `WhiteSur-Dark`, `WhiteSur-Dark`, `WhiteSur`, `CHM|`,
+`0`, and `Rice`. Thunar must use the same dark GTK theme. Workspaces must stay
+unchanged; wallpaper and the top bar are checked separately below.
+
+For the single top bar:
+
+```bash
+xfconf-query -c xfce4-panel -p /panels
+xfconf-query -c xfce4-panel -p /panels/panel-1/plugin-ids
+xfconf-query -c xfce4-panel -p /plugins/plugin-1/button-icon
+xfconf-query -c xfce4-panel -p /plugins/plugin-8/digital-time-format
+xfconf-query -c xfce4-panel -p /plugins/plugin-10/items | grep -Fx '+restart'
+xfconf-query -c xfce4-panel -lv | grep -E 'pager|tasklist'
+test -f ~/.config/xfce4/panel/launcher-11/thunar.desktop
+test -f ~/.config/xfce4/panel/launcher-12/xfce4-terminal.desktop
+test -f ~/.config/xfce4/panel/launcher-13/codium.desktop
+test -f ~/.config/gtk-3.0/gtk.css
+test ! -e ~/.config/autostart/plank.desktop
+! dpkg-query -W plank 2>/dev/null
+```
+
+The panel list must contain only `1`. The plugin order must be application menu,
+Files, Terminal, VSCodium, browser, expanding space, user menu, tray, and clock
+with their separators. The icon path must be `/usr/local/share/icons/tux.svg`.
+The clock format must be `%b %d  %H:%M`, the Restart line must print, and the
+pager/tasklist check must print nothing. Click all four launchers and confirm
+the right app opens. The lower panel and Plank must be absent.
+
+For Xfce Terminal:
+
+```bash
+grep -E '^(FontName|MiscMenubarDefault|MiscToolbarDefault|ScrollingBar|ColorBackground)=' \
+  ~/.config/xfce4/terminal/terminalrc
+```
+
+It must use JetBrains Mono 12, hide the menu bar and toolbar, hide the scroll
+bar, and use the dark `#111817` background.
 
 When the machine-color wallpaper is enabled:
 
@@ -106,11 +134,20 @@ For the styled LightDM login screen:
 grep -E '^(background|theme-name|icon-theme-name|font-name|position|hide-user-image|indicators)=' \
   /etc/lightdm/lightdm-gtk-greeter.conf
 test -s /usr/local/share/backgrounds/machine-login.png
+test -s /usr/local/share/icons/tux.svg
+test -s /var/lib/AccountsService/icons/"$(id -un)".png
+sudo grep -F "Icon=/var/lib/AccountsService/icons/$(id -un).png" \
+  /var/lib/AccountsService/users/"$(id -un)"
+grep -F 'greeter-hide-users=false' /etc/lightdm/lightdm.conf.d/90-rice-greeter.conf
+grep -F 'greeter-show-manual-login=false' /etc/lightdm/lightdm.conf.d/90-rice-greeter.conf
+sudo grep -F "last-user=$(id -un)" /var/lib/lightdm/.cache/lightdm-gtk-greeter/state
+test -s /var/lib/lightdm/.config/gtk-3.0/gtk.css
 ```
 
-After reboot or sign out, confirm the machine-color background, avatar-free
-centered login, JetBrains Mono, and top status bar appear. When WhiteSur was
-selected, the greeter must use it; otherwise it must use Adwaita.
+After reboot or sign out, confirm the machine-color background, centered dark
+card, selected real local user, full-color Tux avatar, JetBrains Mono, and small
+top bar appear. The card must be centered on both axes. The top bar must not
+show the hostname, manual `Other...` login, or extra session choices.
 
 For VNC **Enable**:
 

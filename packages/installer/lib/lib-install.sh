@@ -120,3 +120,38 @@ machine_color_tint() {
   values="$(machine_color_values "$1")"
   printf '%s\n' "${values#*|}"
 }
+
+# Set one Xfce value, creating it when the property does not exist yet.
+# Usage: xfconf_set xsettings /Net/ThemeName string WhiteSur-Dark
+xfconf_set() {
+  local channel="$1"
+  local property="$2"
+  local type="$3"
+  local value="$4"
+
+  if silent xfconf-query -c "$channel" -p "$property"; then
+    xfconf-query -c "$channel" -p "$property" -s "$value"
+  else
+    xfconf-query -c "$channel" -p "$property" -n -t "$type" -s "$value"
+  fi
+}
+
+# Replace one Xfce array. Remaining arguments are values of the same type.
+# Usage: xfconf_set_array xfce4-panel /panels int 1
+xfconf_set_array() {
+  local channel="$1"
+  local property="$2"
+  local type="$3"
+  local value
+  local -a arguments=(-a)
+  shift 3
+
+  (($#)) || die "No values were provided for $channel $property"
+  if ! silent xfconf-query -c "$channel" -p "$property"; then
+    arguments=(-n -a)
+  fi
+  for value in "$@"; do
+    arguments+=(-t "$type" -s "$value")
+  done
+  xfconf-query -c "$channel" -p "$property" "${arguments[@]}"
+}

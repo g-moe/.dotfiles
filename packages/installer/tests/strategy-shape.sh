@@ -126,8 +126,60 @@ grep -Fq '/etc/lightdm/lightdm-gtk-greeter.conf' "$login_strategy" ||
   fail 'login styling must configure the existing LightDM GTK greeter'
 grep -Fq '/usr/local/share/backgrounds/machine-login.png' "$login_strategy" ||
   fail 'the LightDM background must be readable outside the user home'
-grep -Fq 'hide-user-image=true' "$login_strategy" ||
-  fail 'the LightDM login must not show an avatar'
+grep -Fq 'hide-user-image=false' "$login_strategy" ||
+  fail 'the LightDM login must show the Tux avatar'
+grep -Fq 'position=50%,center 50%,center' "$login_strategy" ||
+  fail 'the LightDM login must be centered on both axes'
+grep -Fq 'greeter-hide-users=false' "$login_strategy" ||
+  fail 'the LightDM login must show the real local user'
+grep -Fq 'greeter-show-manual-login=false' "$login_strategy" ||
+  fail 'the LightDM login must not default to a manual user prompt'
+grep -Fq 'last-user=$user' "$login_strategy" ||
+  fail 'the LightDM login must select the real local user'
+[[ -f "$INSTALLER_DIR/config/xfce/login-screen.css" ]] ||
+  fail 'the LightDM login CSS is missing'
+
+icons_strategy="$INSTALLER_DIR/setup/appearance/icons.sh"
+grep -Fq '_linux_install_tux' "$icons_strategy" ||
+  fail 'the icon step must install the checked Tux artwork'
+grep -Fq 'cd503ad510e16ff2869f959cf57b892bb2175a6874ff696b495bd94fd7db9743' \
+  "$icons_strategy" || fail 'the Tux SVG checksum is missing'
+
+theme_strategy="$INSTALLER_DIR/setup/appearance/theme.sh"
+grep -Fq "local theme='WhiteSur-Dark'" "$theme_strategy" ||
+  fail 'Linux must use the dark WhiteSur desktop theme'
+grep -Fq 'xfce4-notifyd /theme string Rice' "$theme_strategy" ||
+  fail 'the dark notification theme must be selected'
+[[ -f "$INSTALLER_DIR/config/xfce/notifications.css" ]] ||
+  fail 'the notification CSS is missing'
+
+dock_strategy="$INSTALLER_DIR/setup/desktop/dock.sh"
+if grep -Eqi 'plank|dockitem|dconf' "$dock_strategy"; then
+  fail 'the Linux dock strategy must not install or configure Plank'
+fi
+grep -Fq 'xfconf_set_array xfce4-panel /panels int' "$dock_strategy" ||
+  fail 'the lower Xfce panel must be removed through Xfce settings'
+
+top_bar_strategy="$INSTALLER_DIR/setup/desktop/top-bar.sh"
+grep -Fq '/usr/local/share/icons/tux.svg' "$top_bar_strategy" ||
+  fail 'the top bar must use the checked full-color Tux icon'
+grep -Fq "'%b %d  %H:%M'" "$top_bar_strategy" ||
+  fail 'the top-bar clock must omit the weekday'
+grep -Fq '+restart' "$top_bar_strategy" ||
+  fail 'the top-bar user menu must include Restart'
+for launcher in thunar.desktop xfce4-terminal.desktop codium.desktop; do
+  grep -Fq "$launcher" "$top_bar_strategy" ||
+    fail "the top bar is missing $launcher"
+done
+[[ -f "$INSTALLER_DIR/config/xfce/panel.css" ]] ||
+  fail 'the top-bar CSS is missing'
+
+terminal_strategy="$INSTALLER_DIR/setup/apps/terminal.sh"
+grep -Fq 'config/xfce/terminalrc' "$terminal_strategy" ||
+  fail 'Linux must configure the existing Xfce Terminal'
+if grep -Eqi 'ghostty|kitty|alacritty' <(sed -n '/^linux()/,/^}/p' "$terminal_strategy"); then
+  fail 'Linux terminal setup must not install or configure another terminal'
+fi
 
 windows_strategy="$INSTALLER_DIR/setup/desktop/windows.sh"
 center_fill_config="$INSTALLER_DIR/config/window-management/center-fill.lua"

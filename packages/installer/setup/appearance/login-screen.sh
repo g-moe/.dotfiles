@@ -19,12 +19,12 @@ mac() {
 }
 
 linux() {
-  local background color color_hex config icon_theme='Adwaita'
-  local output_size='3840x2160' temporary_dir theme='Adwaita'
-  local icon_source="$HOME/.local/share/icons/WhiteSur"
-  local theme_source="$HOME/.themes/WhiteSur-Light"
+  local account_file avatar background color color_hex config css_file greeter_state
+  local icon_name icon_source icon_theme='Adwaita' output_size='3840x2160'
+  local temporary_dir user user_path
 
-  apt_install fonts-jetbrains-mono imagemagick lightdm-gtk-greeter
+  apt_install accountsservice fonts-jetbrains-mono imagemagick lightdm-gtk-greeter
+  has busctl || die 'AccountsService control is missing.'
   [[ "$(cat /etc/X11/default-display-manager 2>/dev/null || true)" == /usr/sbin/lightdm ]] ||
     die 'LightDM must be the default display manager.'
 
@@ -46,23 +46,35 @@ linux() {
   background='/usr/local/share/backgrounds/machine-login.png'
   sudo install -D -m 0644 "$temporary_dir/login.png" "$background"
 
-  if [[ -d "$theme_source" ]]; then
-    sudo rm -rf /usr/local/share/themes/WhiteSur-Light
-    sudo install -d -m 0755 /usr/local/share/themes
-    sudo cp -a --no-preserve=ownership "$theme_source" /usr/local/share/themes/
-    theme='WhiteSur-Light'
-  fi
-  if [[ -d "$icon_source" ]]; then
-    sudo rm -rf /usr/local/share/icons/WhiteSur
+  for icon_source in "$HOME/.local/share/icons"/WhiteSur*; do
+    [[ -d "$icon_source" ]] || continue
+    icon_name="$(basename "$icon_source")"
+    sudo rm -rf "/usr/local/share/icons/$icon_name"
     sudo install -d -m 0755 /usr/local/share/icons
     sudo cp -a --no-preserve=ownership "$icon_source" /usr/local/share/icons/
-    icon_theme='WhiteSur'
-  fi
+    [[ "$icon_name" == WhiteSur-dark ]] && icon_theme='WhiteSur-dark'
+  done
+
+  [[ -s /usr/local/share/icons/tux.png ]] ||
+    die 'The Tux avatar is missing. Run the appearance phase again.'
+  user="$(id -un)"
+  avatar="/var/lib/AccountsService/icons/$user.png"
+  account_file="/var/lib/AccountsService/users/$user"
+  user_path="/org/freedesktop/Accounts/User$(id -u)"
+  sudo install -D -m 0644 /usr/local/share/icons/tux.png "$avatar"
+  silent sudo busctl call org.freedesktop.Accounts "$user_path" \
+    org.freedesktop.Accounts.User SetIconFile s "$avatar"
+
+  css_file="$temporary_dir/login-screen.css"
+  sed "s/@RICE_ACCENT@/$color_hex/g" \
+    "$INSTALLER_DIR/config/xfce/login-screen.css" >"$css_file"
+  sudo install -D -o lightdm -g lightdm -m 0644 "$css_file" \
+    /var/lib/lightdm/.config/gtk-3.0/gtk.css
 
   config="[greeter]
 background=$background
 user-background=false
-theme-name=$theme
+theme-name=Adwaita-dark
 icon-theme-name=$icon_theme
 cursor-theme-name=Adwaita
 cursor-theme-size=24
@@ -71,20 +83,37 @@ xft-antialias=true
 xft-dpi=96
 xft-hintstyle=slight
 xft-rgba=rgb
-position=50% 50%
-hide-user-image=true
+position=50%,center 50%,center
+hide-user-image=false
 panel-position=top
-clock-format=%a %b %d  %H:%M
-indicators=~host;~spacer;~layout;~session;~clock;~power
+clock-format=%b %d  %H:%M
+indicators=~spacer;~clock;~power
 transition-duration=0
 transition-type=none
 screensaver-timeout=0"
   install_root_file /etc/lightdm/lightdm-gtk-greeter.conf "$config"
+  install_root_file /etc/lightdm/lightdm.conf.d/90-rice-greeter.conf \
+    $'[Seat:*]\ngreeter-hide-users=false\ngreeter-show-manual-login=false\ngreeter-allow-guest=false'
+
+  greeter_state="[greeter]
+last-user=$user
+last-session=lightdm-xsession"
+  sudo install -d -o lightdm -g lightdm -m 0755 \
+    /var/lib/lightdm/.cache/lightdm-gtk-greeter
+  install_root_file /var/lib/lightdm/.cache/lightdm-gtk-greeter/state "$greeter_state"
+  sudo chown lightdm:lightdm /var/lib/lightdm/.cache/lightdm-gtk-greeter/state
   rm -rf "$temporary_dir"
 
   [[ -s "$background" ]] || die 'Login screen background is missing.'
   grep -Fqx "background=$background" /etc/lightdm/lightdm-gtk-greeter.conf ||
     die 'The LightDM login background was not saved.'
+  grep -Fqx 'position=50%,center 50%,center' /etc/lightdm/lightdm-gtk-greeter.conf ||
+    die 'The LightDM login was not centered.'
+  sudo grep -Fqx "Icon=$avatar" "$account_file" ||
+    die 'The LightDM Tux avatar was not saved.'
+  sudo grep -Fqx "last-user=$user" \
+    /var/lib/lightdm/.cache/lightdm-gtk-greeter/state ||
+    die 'The LightDM login user was not saved.'
   log 'LightDM login styling will appear after reboot or sign out.'
 }
 

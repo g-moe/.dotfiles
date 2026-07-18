@@ -23,7 +23,9 @@ mac() {
 }
 
 linux() {
-  log 'Xfce desktop item changes are not part of this install.'
+  xfconf_set xfce4-desktop /desktop-icons/style int 0
+  [[ "$(xfconf-query -c xfce4-desktop -p /desktop-icons/style)" == 0 ]] ||
+    die 'Desktop icons were not hidden.'
 }
 
 configure_desktop_items "$1"

@@ -40,7 +40,7 @@ Normal phase runs start with a Linux-only desktop check and X11 setup, then use 
 | `development` | Git, Node, Zsh, tmux, VSCodium, Skills                                   |
 | `appearance`  | Wallpaper, screen saver, theme, icons, login screen                      |
 | `input`       | Pointer, touchpad, keyboard, remapping                                   |
-| `desktop`     | Workspaces, items/widgets, window management, Dock, name in bar, top bar |
+| `desktop`     | Workspaces, items/widgets, windows, lower panel, top bar, name display   |
 | `files`       | Defaults, associations, Finder/Files                                     |
 | `access`      | Handoff, assistants, headless notes, SSH, VNC                            |
 | `system`      | Updates, power, UI refresh                                               |
@@ -118,9 +118,10 @@ npm run install:test     # shape + lib checks (no VM)
 - **Codex:** Mac installs the ChatGPT app, which now includes Codex; Linux installs the Codex CLI.
 - **CleanShot X:** Mac only.
 - **Defaults:** Chrome (Mac + Debian amd64) or Brave (Debian arm64). Debian keeps Xfce Terminal as installed by the OS. Mac shows a system browser prompt — pick **Use Chrome**.
-- **Terminal:** Mac installs and configures Ghostty through Homebrew. Debian installs and configures nothing, keeping Xfce Terminal.
-- **Desktop styling:** Linux offers separate prompts for the machine-color wallpaper, WhiteSur desktop styling, and WhiteSur icons. The desktop phase puts close/minimize/maximize on the left in Mac order, uses a penguin application menu, starts the right status group with the user name, and replaces the lower Xfce panel with a rounded WhiteSur Plank dock. Workspaces stay unchanged. App theme packs still use `--theme`.
-- **Login screen:** Debian keeps the LightDM GTK greeter and gives it a machine-color background, no avatar, JetBrains Mono, a centered login, and a minimal status bar. It reuses WhiteSur when selected earlier in the appearance phase and falls back to Adwaita otherwise.
+- **Terminal:** Mac installs and configures Ghostty through Homebrew. Debian keeps Xfce Terminal and gives it the rice font, colors, and minimal controls without installing another terminal.
+- **Desktop styling:** Linux offers separate prompts for the machine-color wallpaper, WhiteSur Dark styling, and WhiteSur icons. The desktop phase hides desktop icons, puts close/minimize/maximize on the left, removes the lower panel, and builds one compact dark top bar. Full-color Tux opens the application menu; Files, Terminal, VSCodium, and the installed Chrome-family browser open directly beside it. The right side has the user menu, tray, and a date/time without the weekday. Restart is in the user menu. There is no Plank or window list. Workspaces stay unchanged. App theme packs still use `--theme`.
+- **Login screen:** Debian keeps the LightDM GTK greeter and gives it the machine-color background, a centered dark login card, the real local user, a full-color Tux avatar, JetBrains Mono, and a small top status bar. The hostname and extra session controls stay out of the bar.
+- **Tux artwork:** The checked panel and login images come from the canonical [Tux file on Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Tux.svg), credited there to Larry Ewing, Simon Budig, and Garrett LeSage.
 - **Git:** optional; defaults `garrett` / noreply email / `main`; GitHub login is a separate browser step; no token in the shell env.
 - **Node:** NVM is installed in `~/.nvm`, including when `XDG_CONFIG_HOME` is set.
 - **Desktop check:** `system/desktop-environment.sh` requires `startxfce4`, `/usr/sbin/lightdm`, LightDM as the default display manager, and an Xfce X11 session.

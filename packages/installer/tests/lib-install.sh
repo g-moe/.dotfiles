@@ -25,6 +25,27 @@ expect_equal "$(machine_field "$temporary_dir/machine.json" color)" blue
 expect_equal "$(machine_color_hex blue)" '#458588'
 expect_equal "$(machine_color_tint blue)" '0.270588 0.521569 0.533333 0.250000'
 
+xfconf_log="$temporary_dir/xfconf.log"
+xfconf-query() {
+  printf '%s\n' "$*" >>"$xfconf_log"
+  if [[ "$*" != *' -s '* && "$*" == *' /missing'* ]]; then
+    return 1
+  fi
+}
+xfconf_set test /existing string value
+xfconf_set test /missing string value
+xfconf_set_array test /existing-array int 1 2
+xfconf_set_array test /missing-array int 1 2
+grep -Fqx -- '-c test -p /existing -s value' "$xfconf_log" ||
+  fail 'xfconf_set did not update an existing value'
+grep -Fqx -- '-c test -p /missing -n -t string -s value' "$xfconf_log" ||
+  fail 'xfconf_set did not create a missing value'
+grep -Fqx -- '-c test -p /existing-array -a -t int -s 1 -t int -s 2' "$xfconf_log" ||
+  fail 'xfconf_set_array did not update an existing array'
+grep -Fqx -- '-c test -p /missing-array -n -a -t int -s 1 -t int -s 2' "$xfconf_log" ||
+  fail 'xfconf_set_array did not create a missing array'
+unset -f xfconf-query
+
 source_file="$temporary_dir/source"
 target_file="$temporary_dir/links/target"
 printf 'source\n' >"$source_file"

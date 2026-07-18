@@ -30,7 +30,16 @@ mac() {
 }
 
 linux() {
-  return 0
+  local color color_hex target
+
+  color="$(machine_field "$ROOT_DIR/machine.json" color)"
+  color_hex="$(machine_color_hex "$color")"
+  target="$HOME/.config/xfce4/terminal/terminalrc"
+  mkdir -p "$(dirname "$target")"
+  sed "s/@RICE_ACCENT@/$color_hex/g" \
+    "$INSTALLER_DIR/config/xfce/terminalrc" >"$target"
+  grep -Fqx 'FontName=JetBrains Mono 12' "$target" ||
+    die 'The Xfce Terminal settings were not saved.'
 }
 
 install_terminal "$1"
