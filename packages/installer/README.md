@@ -131,7 +131,7 @@ npm run install:test     # shape + lib checks (no VM)
 - **Node:** NVM is installed in `~/.nvm`, including when `XDG_CONFIG_HOME` is set.
 - **Desktop check:** `system/desktop-environment.sh` requires `startxfce4`, `/usr/sbin/lightdm`, LightDM as the default display manager, and an Xfce X11 session.
 - **Display server:** `system/display-server.sh` sets LightDM’s default session to Xfce and removes other display-session choices. Reboot or sign out to apply it.
-- **VNC:** Screen Sharing on Mac; on Debian, a boot-level root `x11vnc` service shares the live X11 display on `:0`, including the LightDM greeter before login. Its password is `/etc/x11vnc.passwd` and it listens on port 5900. If `:0` is down during an SSH install, the enabled service keeps retrying until the display starts.
+- **VNC:** Screen Sharing on Mac; on Debian, a boot-level root `x11vnc` service shares the live X11 display on `:0`, including the LightDM greeter before login. Its password is `/etc/x11vnc.passwd` and it listens only on localhost port 5900. If `:0` is down during an SSH install, the enabled service keeps retrying until the display starts.
 
 To keep VNC off the public network, tunnel it through SSH and connect the VNC client to `localhost:5900`:
 

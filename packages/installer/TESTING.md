@@ -165,10 +165,15 @@ For VNC **Enable**:
 ```bash
 sudo systemctl is-enabled x11vnc.service
 sudo systemctl is-active x11vnc.service
-sudo ss -ltnp | grep ':5900'
+sudo ss -ltnp | grep -E '127\.0\.0\.1:5900|\[::1\]:5900'
 ```
 
-Connect once while LightDM is showing, then log in through that VNC connection and confirm it stays on the same `:0` desktop. Confirm local mouse and keyboard changes are visible in VNC and VNC input is visible locally. For **Disable**, the service must be disabled and stopped. For **Skip**, its prior state must not change.
+The listener must only use a loopback address. Connect through the documented
+SSH tunnel while LightDM is showing, then log in through that VNC connection
+and confirm it stays on the same `:0` desktop. Confirm local mouse and keyboard
+changes are visible in VNC and VNC input is visible locally. For **Disable**,
+the service must be disabled and stopped. For **Skip**, its prior state must not
+change.
 
 ## macOS window-management checks
 

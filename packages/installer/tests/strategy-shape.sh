@@ -123,6 +123,8 @@ grep -Fq -- '-display :0' "$vnc_strategy" ||
   fail 'VNC must share display :0'
 grep -Fq '/etc/x11vnc.passwd' "$vnc_strategy" ||
   fail 'VNC must use the root-owned password file'
+grep -Fq -- '-localhost' "$vnc_strategy" ||
+  fail 'VNC must only listen on localhost for SSH tunneling'
 if grep -Fq 'systemctl --user' "$vnc_strategy"; then
   fail 'VNC must not use a user service'
 fi

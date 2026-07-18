@@ -50,7 +50,7 @@ StartLimitIntervalSec=0
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/x11vnc -display :0 -auth guess -forever -shared -rfbauth /etc/x11vnc.passwd -rfbport 5900 -noxdamage -repeat
+ExecStart=/usr/bin/x11vnc -display :0 -auth guess -forever -shared -rfbauth /etc/x11vnc.passwd -rfbport 5900 -localhost -noxdamage -repeat
 Restart=always
 RestartSec=5
 
