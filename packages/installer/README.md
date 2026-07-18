@@ -35,7 +35,7 @@ The only supported Linux base is **Debian 13 (trixie), amd64 or arm64**. In the 
 
 `--git`, `--skills`, and `--theme` skip the identity prompt. Phase flags (`--apps`, …) still ask for machine name/color first. No argument = all phases.
 
-Normal phase runs start with a Linux-only desktop check and X11 setup, then use this order: `apps` → `development` → `appearance` → `input` → `desktop` → `files` → `access` → `system`. The check runs before every phase flag, so VNC never runs before LightDM and X11 are ready.
+Normal phase runs start with a read-only Linux desktop check, then use this order: `apps` → `development` → `appearance` → `input` → `desktop` → `files` → `access` → `system`. The check runs before every phase flag, so Linux work only starts after Xfce, LightDM, and X11 are ready. Changes to the LightDM X11 session stay in the system phase.
 
 | Phase         | Covers                                                                   |
 | ------------- | ------------------------------------------------------------------------ |
@@ -46,7 +46,7 @@ Normal phase runs start with a Linux-only desktop check and X11 setup, then use 
 | `desktop`     | Workspaces, items/widgets, windows, lower panel, top bar, name display   |
 | `files`       | Defaults, associations, Finder/Files                                     |
 | `access`      | Handoff, assistants, headless notes, SSH, VNC                            |
-| `system`      | Updates, power, UI refresh                                               |
+| `system`      | LightDM X11 session, updates, power, UI refresh                          |
 
 ### Where things live
 

@@ -108,13 +108,18 @@ if grep -Fq 'apt_install' "$INSTALLER_DIR/setup/system/desktop-environment.sh"; 
   fail 'the desktop check must not install a desktop environment'
 fi
 
-all_phase="$(sed -n '/^    all)/,/^      ;;/p' "$INSTALLER_DIR/install.sh")"
-desktop_line="$(grep -n 'prepare_linux_desktop' <<<"$all_phase" | head -n 1 | cut -d: -f1)"
-apps_line="$(grep -n 'install_apps' <<<"$all_phase" | head -n 1 | cut -d: -f1)"
-[[ -n "$desktop_line" && -n "$apps_line" && "$desktop_line" -lt "$apps_line" ]] ||
-  fail 'the Linux desktop and X11 check must run before normal phases'
-grep -Fq '[[ "$mode" == all ]] || prepare_linux_desktop' "$INSTALLER_DIR/install.sh" ||
-  fail 'phase flags must run the Linux desktop and X11 check'
+main_body="$(sed -n '/^main() {/,/^}/p' "$INSTALLER_DIR/install.sh")"
+desktop_line="$(grep -n 'check_linux_desktop' <<<"$main_body" | head -n 1 | cut -d: -f1)"
+phase_line="$(grep -n 'run_phase "$mode"' <<<"$main_body" | head -n 1 | cut -d: -f1)"
+[[ -n "$desktop_line" && -n "$phase_line" && "$desktop_line" -lt "$phase_line" ]] ||
+  fail 'the read-only Linux desktop check must run before normal phases'
+system_phase="$(sed -n '/^configure_system() {/,/^}/p' "$INSTALLER_DIR/install.sh")"
+grep -Fq "system/display-server.sh" <<<"$system_phase" ||
+  fail 'X11 configuration must stay in the system phase'
+check_phase="$(sed -n '/^check_linux_desktop() {/,/^}/p' "$INSTALLER_DIR/install.sh")"
+if grep -Fq 'display-server.sh' <<<"$check_phase"; then
+  fail 'the common Linux desktop check must not configure the display server'
+fi
 
 vnc_strategy="$INSTALLER_DIR/setup/access/vnc.sh"
 grep -Fq '/etc/systemd/system/x11vnc.service' "$vnc_strategy" ||

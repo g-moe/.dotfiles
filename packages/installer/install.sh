@@ -123,13 +123,13 @@ configure_access() {
   run_strategy 'VNC' access/vnc.sh
 }
 
-prepare_linux_desktop() {
+check_linux_desktop() {
   [[ "$OS" == linux ]] || return 0
   run_strategy 'Check desktop environment' system/desktop-environment.sh
-  run_strategy 'Configure X11 session' system/display-server.sh
 }
 
 configure_system() {
+  run_strategy 'Configure X11 session' system/display-server.sh
   run_strategy 'Software updates' system/updates.sh
   run_strategy 'Power' system/power.sh
   run_strategy 'Refresh the desktop' system/restart-ui.sh
@@ -146,7 +146,6 @@ run_phase() {
     access) configure_access ;;
     system) configure_system ;;
     all)
-      prepare_linux_desktop
       install_apps
       install_development
       configure_appearance
@@ -220,7 +219,7 @@ main() {
       ;;
     *)
       run_strategy 'Machine name and color' identity.sh
-      [[ "$mode" == all ]] || prepare_linux_desktop
+      check_linux_desktop
       run_phase "$mode"
       ;;
   esac
