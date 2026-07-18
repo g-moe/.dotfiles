@@ -86,7 +86,19 @@ The first four commands must print `WhiteSur-Light`, `WhiteSur-Light`,
 command must print `WhiteSur`. The top panel must use an icon-only penguin menu,
 with the user name first in the right status group. The lower XFCE panel must
 be gone, and Plank must have a rounded
-translucent background. Workspaces and wallpaper must stay unchanged.
+translucent background. Workspaces must stay unchanged; wallpaper is checked
+separately below.
+
+When the machine-color wallpaper is enabled:
+
+```bash
+xfconf-query -c xfce4-desktop -lv | grep -E '/(last-image|image-style) '
+find ~/.dotfiles -maxdepth 1 -type f -name '.machine-wallpaper-*.png' -size +0c
+```
+
+Every `last-image` entry must point to the generated machine wallpaper, every
+matching `image-style` entry must be `5`, and the desktop must show the same
+machine-color artwork used on macOS.
 
 For the styled LightDM login screen:
 
@@ -120,6 +132,7 @@ Connect once while LightDM is showing, then log in through that VNC connection a
 | Xfce + LightDM + X11 check     | n/a   | Pass      |
 | WhiteSur desktop + icons       | n/a   | Pass      |
 | Styled LightDM login screen    | n/a   | Pass      |
+| Machine-color wallpaper        | Kept  | Pending   |
 | Rounded Plank dock             | n/a   | Pass      |
 | Mac controls + clean top panel | n/a   | Pass      |
 | VNC Skip / Disable / Enable    | Kept  | Pass      |
@@ -129,12 +142,13 @@ Connect once while LightDM is showing, then log in through that VNC connection a
 WhiteSur supplies the GTK styling, icons, Xfce window frame, and Plank dock
 theme. Close, minimize, and maximize are placed on the left in Mac order. The
 top panel uses an icon menu and status items without window or workspace lists.
-Xfce input, workspace, and wallpaper stay unchanged. Application theme packs
-from `--theme` remain separate.
+Xfce input and workspace settings stay unchanged. The appearance phase can set
+the same generated machine-color wallpaper used on macOS. Application theme
+packs from `--theme` remain separate.
 
 ## Pass checklists
 
-**Debian desktop** — LightDM owns the styled login screen; the session is X11; Xfce opens; optional WhiteSur desktop styling and icons apply; Mac-order window buttons are on the left; the top panel has no open-window list; the rounded Plank dock opens the pinned apps and shows running apps; workspaces and wallpaper stay put; browser and Ghostty defaults work; apps open; VSCodium/`code`, files, SSH, VNC, updates, power, and Skills work; no extra desktop session is offered.
+**Debian desktop** — LightDM owns the styled login screen; the session is X11; Xfce opens; the optional machine-color wallpaper, WhiteSur desktop styling, and icons apply; Mac-order window buttons are on the left; the top panel has no open-window list; the rounded Plank dock opens the pinned apps and shows running apps; workspaces stay put; browser and Ghostty defaults work; apps open; VSCodium/`code`, files, SSH, VNC, updates, power, and Skills work; no extra desktop session is offered.
 
 **Git** — `npm run install:git` / `install.sh --git` only; skip leaves Git alone; accept → LFS + filters; name/email/branch stick; settings match `git.sh`; GitHub skip vs browser login; no `GITHUB_TOKEN` in a new shell.
 
@@ -164,3 +178,6 @@ the Debian launcher now selects Mesa's working 4.3 path inside virtual machines.
 The styled LightDM screen then passed after a full run, reboot, and repeat run:
 WhiteSur, JetBrains Mono, the centered avatar-free login, machine-color
 background, and minimal top bar all appeared as configured.
+
+The Xfce desktop wallpaper was restored after that proof and still needs an
+appearance-phase run and repeat run in a disposable Debian VM.

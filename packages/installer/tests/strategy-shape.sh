@@ -129,6 +129,14 @@ grep -Fq '/usr/local/share/backgrounds/machine-login.png' "$login_strategy" ||
 grep -Fq 'hide-user-image=true' "$login_strategy" ||
   fail 'the LightDM login must not show an avatar'
 
+wallpaper_strategy="$INSTALLER_DIR/setup/appearance/wallpaper.sh"
+grep -Fq 'xfconf-query -c xfce4-desktop' "$wallpaper_strategy" ||
+  fail 'Linux wallpaper setup must configure Xfce'
+grep -Fq "awk '/\\/last-image\$/ { print }'" "$wallpaper_strategy" ||
+  fail 'Linux wallpaper setup must cover every Xfce desktop and workspace'
+grep -Fq 'style_property="${property%/last-image}/image-style"' "$wallpaper_strategy" ||
+  fail 'Linux wallpaper setup must set the image style'
+
 if grep -IEqi 'ubuntu|gnome|gdm|gsettings' \
   "$INSTALLER_DIR/README.md" "$INSTALLER_DIR/TESTING.md"; then
   fail 'installer docs still describe the removed Linux target'

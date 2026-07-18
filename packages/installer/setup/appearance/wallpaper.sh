@@ -58,7 +58,33 @@ SWIFT
 }
 
 linux() {
-  log 'Xfce wallpaper changes are not part of this install.'
+  local image_path property style_property
+  local -a wallpaper_properties=()
+
+  ask_binary 'Set the machine-color wallpaper?' || return 0
+  apt_install imagemagick xfconf
+  image_path="$(_wallpaper_path)"
+
+  mapfile -t wallpaper_properties < <(
+    xfconf-query -c xfce4-desktop -l | awk '/\/last-image$/ { print }'
+  )
+  ((${#wallpaper_properties[@]})) ||
+    die 'Xfce has no wallpaper settings. Log into the Xfce desktop once, then run the appearance phase again.'
+
+  for property in "${wallpaper_properties[@]}"; do
+    xfconf-query -c xfce4-desktop -p "$property" -s "$image_path"
+    style_property="${property%/last-image}/image-style"
+    if silent xfconf-query -c xfce4-desktop -p "$style_property"; then
+      xfconf-query -c xfce4-desktop -p "$style_property" -s 5
+    else
+      xfconf-query -c xfce4-desktop -p "$style_property" -n -t int -s 5
+    fi
+
+    [[ "$(xfconf-query -c xfce4-desktop -p "$property")" == "$image_path" ]] ||
+      die "The Xfce wallpaper was not saved: $property"
+    [[ "$(xfconf-query -c xfce4-desktop -p "$style_property")" == 5 ]] ||
+      die "The Xfce wallpaper style was not saved: $style_property"
+  done
 }
 
 configure_wallpaper "$1"
