@@ -129,6 +129,37 @@ grep -Fq '/usr/local/share/backgrounds/machine-login.png' "$login_strategy" ||
 grep -Fq 'hide-user-image=true' "$login_strategy" ||
   fail 'the LightDM login must not show an avatar'
 
+windows_strategy="$INSTALLER_DIR/setup/desktop/windows.sh"
+center_fill_config="$INSTALLER_DIR/config/window-management/center-fill.lua"
+grep -Fq "ask_choice 'Window management' Skip Disable Enable" "$windows_strategy" ||
+  fail 'macOS window management must offer Skip / Disable / Enable'
+grep -Fq "ask_choice 'Window configuration' 'Center + Fill'" "$windows_strategy" ||
+  fail 'Center + Fill must use a second configuration prompt'
+grep -Fq "0) configuration='center-fill'" "$windows_strategy" ||
+  fail 'Center + Fill must be stored by its stable center-fill name'
+grep -Fq '0) return 0 ;;' "$windows_strategy" ||
+  fail 'skipping window management must return before making changes'
+grep -Fq 'BEGIN dotfiles installer: window management' "$windows_strategy" ||
+  fail 'the Hammerspoon loader must use marked managed lines'
+grep -Fq 'com.dotfiles.window-management.hammerspoon.plist' "$windows_strategy" ||
+  fail 'Hammerspoon startup must use an installer-owned login file'
+grep -Fq 'mac_hammerspoon_has_other_configuration' "$windows_strategy" ||
+  fail 'disabling must keep Hammerspoon startup when other configuration remains'
+grep -Fq 'hs.window.animationDuration = 0' "$center_fill_config" ||
+  fail 'Center + Fill must disable Hammerspoon window animations'
+grep -Fq 'win:isMaximizable() == true' "$center_fill_config" ||
+  fail 'Center + Fill must leave fixed-size windows at their original size'
+grep -Fq 'win:setFrame(win:screen():frame(), 0)' "$center_fill_config" ||
+  fail 'Center + Fill must use the current screen usable frame'
+grep -Fq 'win:centerOnScreen(nil, true, 0)' "$center_fill_config" ||
+  fail 'Center + Fill must center fixed-size windows without resizing them'
+for event in windowCreated windowFocused windowUnminimized; do
+  grep -Fq "hs.window.filter.$event" "$center_fill_config" ||
+    fail "Center + Fill does not handle $event"
+done
+grep -Fq 'centerFillWindowWatcher:getWindows()' "$center_fill_config" ||
+  fail 'Center + Fill must apply to existing windows when it loads'
+
 wallpaper_strategy="$INSTALLER_DIR/setup/appearance/wallpaper.sh"
 grep -Fq 'xfconf-query -c xfce4-desktop' "$wallpaper_strategy" ||
   fail 'Linux wallpaper setup must configure Xfce'

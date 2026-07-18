@@ -122,6 +122,24 @@ sudo ss -ltnp | grep ':5900'
 
 Connect once while LightDM is showing, then log in through that VNC connection and confirm it stays on the same `:0` desktop. Confirm local mouse and keyboard changes are visible in VNC and VNC input is visible locally. For **Disable**, the service must be disabled and stopped. For **Skip**, its prior state must not change.
 
+## macOS window-management checks
+
+Run the desktop phase three times on a disposable macOS guest. For **Skip**, compare Hammerspoon, `~/.hammerspoon`, login items, and running processes before and after; nothing may change. For **Enable**, select **Center + Fill**, grant Hammerspoon Accessibility permission yourself, and check:
+
+```bash
+cat ~/.hammerspoon/.dotfiles-window-configuration
+grep -n 'dotfiles installer: window management' ~/.hammerspoon/init.lua
+grep -c 'BEGIN dotfiles installer: window management' ~/.hammerspoon/init.lua
+plutil -lint ~/Library/LaunchAgents/com.dotfiles.window-management.hammerspoon.plist
+pgrep -x Hammerspoon
+```
+
+The stored name must be `center-fill`, both marked loader lines must appear, the `BEGIN` count must be `1`, the login file must be valid, and Hammerspoon must be running. Add user-owned Lua above and below the marked block, rerun Enable, and confirm the user code stays intact and the loader is not duplicated. Repeat once with `init.lua` as a symlink and confirm the symlink remains in place.
+
+Open a normal resizable window and confirm it fills the current screen inside the menu bar and Dock without entering Full Screen or another Space. Open a fixed-size dialog and confirm its size stays unchanged while it moves to the center. Repeat with a window on another screen, a newly opened window, a focused window, and a window restored from the Dock. There must be no movement animation, tiling, or gaps.
+
+For **Disable**, confirm the managed lines and saved name are gone and Hammerspoon reloads when it was running. User Lua must remain. The installer login file must be removed when no other Hammerspoon code remains and kept when other Hammerspoon code remains. Hammerspoon itself and other window tools must remain installed and unchanged.
+
 ## Current proof status
 
 | Check                          | macOS | Debian 13 |
@@ -136,6 +154,7 @@ Connect once while LightDM is showing, then log in through that VNC connection a
 | Rounded Plank dock             | n/a   | Pass      |
 | Mac controls + clean top panel | n/a   | Pass      |
 | VNC Skip / Disable / Enable    | Kept  | Pass      |
+| Window management              | Code  | n/a       |
 | amd64 package paths            | n/a   | Code only |
 | arm64 full UTM proof           | n/a   | Pass      |
 

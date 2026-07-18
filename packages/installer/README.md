@@ -34,22 +34,23 @@ The only supported Linux base is **Debian 13 (trixie), amd64 or arm64**. In the 
 
 Normal phase runs start with a Linux-only desktop check and X11 setup, then use this order: `apps` → `development` → `appearance` → `input` → `desktop` → `files` → `access` → `system`. The check runs before every phase flag, so VNC never runs before LightDM and X11 are ready.
 
-| Phase         | Covers                                                         |
-| ------------- | -------------------------------------------------------------- |
-| `apps`        | Apps (Homebrew / APT / vendor)                                 |
-| `development` | Git, Node, Zsh, tmux, VSCodium, Skills                         |
-| `appearance`  | Wallpaper, screen saver, theme, icons, login screen            |
-| `input`       | Pointer, touchpad, keyboard, remapping                         |
-| `desktop`     | Workspaces, items/widgets, windows, Dock, name in bar, top bar |
-| `files`       | Defaults, associations, Finder/Files                           |
-| `access`      | Handoff, assistants, headless notes, SSH, VNC                  |
-| `system`      | Updates, power, UI refresh                                     |
+| Phase         | Covers                                                                   |
+| ------------- | ------------------------------------------------------------------------ |
+| `apps`        | Apps (Homebrew / APT / vendor)                                           |
+| `development` | Git, Node, Zsh, tmux, VSCodium, Skills                                   |
+| `appearance`  | Wallpaper, screen saver, theme, icons, login screen                      |
+| `input`       | Pointer, touchpad, keyboard, remapping                                   |
+| `desktop`     | Workspaces, items/widgets, window management, Dock, name in bar, top bar |
+| `files`       | Defaults, associations, Finder/Files                                     |
+| `access`      | Handoff, assistants, headless notes, SSH, VNC                            |
+| `system`      | Updates, power, UI refresh                                               |
 
 ### Where things live
 
 ```
 packages/installer/install.sh       **only** machine-install entry point
 packages/installer/setup/<phase>/…  strategies (launched by install.sh with OS as $1)
+packages/installer/config/          installer-owned configuration loaded by strategies
 packages/installer/setup/identity.sh before phases (skipped for --git / --skills / --theme)
 packages/installer/setup/skills.sh  from development (also --skills)
 packages/installer/lib/lib.sh       installer library entry point
@@ -93,6 +94,8 @@ Source `packages/installer/lib/lib.sh` through the local installer-relative path
 Before setting up a group of links, such as Agent skills or Neovim, the installer checks the whole group. If it finds existing files or links pointing somewhere else, it asks once whether to **Skip** or **Replace with symlinks** for that group. Skip leaves each existing item alone while still creating missing links. It never replaces a real directory.
 
 **Skip / Disable / Enable** is a real triad when those are the labels: `0` skip, `1` disable, `2` enable (SSH, VNC). Everything else keeps domain labels — Dock hide/show, sizes, colors, power Skip/Normal/Server, Tailscale install modes, etc.
+
+On macOS, **Window management** uses the same triad. Skip touches nothing. Disable removes only the installer-managed Hammerspoon loader and `center-fill` state. Enable then asks for a named **Window configuration**; the first configuration is `center-fill`, backed by Hammerspoon. Its rule fills resizable windows inside the menu bar and Dock, centers fixed-size windows without resizing them, and never uses macOS Full Screen. The installer preserves other `~/.hammerspoon/init.lua` code and keeps Hammerspoon startup when other Hammerspoon code remains. Accessibility permission must still be granted by the user in System Settings.
 
 ### npm scripts
 
