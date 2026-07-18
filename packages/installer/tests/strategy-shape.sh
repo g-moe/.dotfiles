@@ -197,6 +197,8 @@ grep -Fq 'com.dotfiles.window-management.hammerspoon.plist' "$windows_strategy" 
   fail 'Hammerspoon startup must use an installer-owned login file'
 grep -Fq 'mac_hammerspoon_has_other_configuration' "$windows_strategy" ||
   fail 'disabling must keep Hammerspoon startup when other configuration remains'
+grep -Fq 'open -g "$hammerspoon_app"' "$windows_strategy" ||
+  fail 'Hammerspoon must launch by path before macOS can find a fresh install by name'
 grep -Fq 'hs.window.animationDuration = 0' "$center_fill_config" ||
   fail 'Center + Fill must disable Hammerspoon window animations'
 grep -Fq 'win:isMaximizable() == true' "$center_fill_config" ||
@@ -211,6 +213,10 @@ for event in windowCreated windowFocused windowUnminimized; do
 done
 grep -Fq 'centerFillWindowWatcher:getWindows()' "$center_fill_config" ||
   fail 'Center + Fill must apply to existing windows when it loads'
+
+machine_name_strategy="$INSTALLER_DIR/setup/desktop/machine-name.sh"
+grep -Fq 'launchctl print "$service"' "$machine_name_strategy" ||
+  fail 'machine-name display must wait for its old launch agent to stop'
 
 wallpaper_strategy="$INSTALLER_DIR/setup/appearance/wallpaper.sh"
 grep -Fq 'xfconf-query -c xfce4-desktop' "$wallpaper_strategy" ||

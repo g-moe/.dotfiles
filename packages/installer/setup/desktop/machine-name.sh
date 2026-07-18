@@ -15,11 +15,13 @@ configure_machine_name_display() {
 }
 
 mac() {
-  local agent_path attempt binary_path name
+  local agent_path binary_path domain name service
 
   name="$(machine_field "$ROOT_DIR/machine.json" name)"
   binary_path="$HOME/.local/bin/machine-name-menu-bar"
   agent_path="$HOME/Library/LaunchAgents/local.machine-name-menu-bar.plist"
+  domain="gui/$(id -u)"
+  service="$domain/local.machine-name-menu-bar"
   mkdir -p "$(dirname "$binary_path")" "$(dirname "$agent_path")"
   xcrun swiftc -o "$binary_path" - <<'SWIFT'
 import AppKit
@@ -44,8 +46,17 @@ SWIFT
 </plist>
 EOF
 )" >"$agent_path"
-  silent launchctl bootout "gui/$(id -u)/local.machine-name-menu-bar" || true
-  launchctl bootstrap "gui/$(id -u)" "$agent_path"
+  if launchctl print "$service" >/dev/null 2>&1; then
+    silent launchctl bootout "$service"
+    for _ in 1 2 3 4 5 6 7 8 9 10; do
+      launchctl print "$service" >/dev/null 2>&1 || break
+      sleep 0.1
+    done
+    if launchctl print "$service" >/dev/null 2>&1; then
+      die 'The old machine-name menu item did not stop.'
+    fi
+  fi
+  launchctl bootstrap "$domain" "$agent_path"
 }
 
 linux() {

@@ -71,12 +71,22 @@ mac_enable_center_fill() {
 }
 
 mac_install_hammerspoon() {
-  if [[ -d /Applications/Hammerspoon.app || -d "$HOME/Applications/Hammerspoon.app" ]]; then
+  if mac_hammerspoon_app >/dev/null; then
     return 0
   fi
 
   install_homebrew
   brew_cask hammerspoon
+}
+
+mac_hammerspoon_app() {
+  if [[ -d /Applications/Hammerspoon.app ]]; then
+    printf '%s\n' /Applications/Hammerspoon.app
+  elif [[ -d "$HOME/Applications/Hammerspoon.app" ]]; then
+    printf '%s\n' "$HOME/Applications/Hammerspoon.app"
+  else
+    return 1
+  fi
 }
 
 mac_remove_hammerspoon_loader() {
@@ -155,7 +165,9 @@ mac_hammerspoon_has_other_configuration() {
 }
 
 mac_restart_hammerspoon() {
-  local was_running=false
+  local hammerspoon_app was_running=false
+
+  hammerspoon_app="$(mac_hammerspoon_app)" || die 'Hammerspoon is not installed.'
 
   if pgrep -x Hammerspoon >/dev/null; then
     was_running=true
@@ -167,7 +179,7 @@ mac_restart_hammerspoon() {
     silent pkill -x Hammerspoon || true
   fi
 
-  open -g -a Hammerspoon
+  open -g "$hammerspoon_app"
   if [[ "$was_running" == true ]]; then
     log 'Reloaded Hammerspoon.'
   else
