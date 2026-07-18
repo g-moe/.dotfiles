@@ -190,6 +190,8 @@ grep -Fq 'greeter-show-manual-login=false' "$login_strategy" ||
   fail 'the LightDM login must not default to a manual user prompt'
 grep -Fq 'last-user=$user' "$login_strategy" ||
   fail 'the LightDM login must select the real local user'
+grep -Fq 'render_machine_background' "$login_strategy" ||
+  fail 'the LightDM login must use the shared machine-background renderer'
 [[ -f "$INSTALLER_DIR/config/xfce/login-screen.css" ]] ||
   fail 'the LightDM login CSS is missing'
 
@@ -206,6 +208,8 @@ grep -Fq "local theme='WhiteSur-Dark'" "$theme_strategy" ||
   fail 'Linux must use the dark WhiteSur desktop theme'
 grep -Fq 'xfce4-notifyd /theme string Rice' "$theme_strategy" ||
   fail 'the dark notification theme must be selected'
+grep -Fq 'extract_github_source_archive' "$theme_strategy" ||
+  fail 'the desktop theme must use the shared checked-archive helper'
 [[ -f "$INSTALLER_DIR/config/xfce/notifications.css" ]] ||
   fail 'the notification CSS is missing'
 
@@ -321,6 +325,11 @@ grep -Fq 'style_property="${property%/last-image}/image-style"' "$wallpaper_stra
   fail 'Linux wallpaper setup must set the image style'
 grep -Fq 'xfdesktop --reload' "$wallpaper_strategy" ||
   fail 'Linux wallpaper setup must reload the active Xfce desktop'
+grep -Fq 'render_machine_background' "$wallpaper_strategy" ||
+  fail 'wallpaper setup must use the shared machine-background renderer'
+
+grep -Fq 'extract_github_source_archive' "$icons_strategy" ||
+  fail 'the icon theme must use the shared checked-archive helper'
 
 if grep -IEqi 'ubuntu|gnome|gdm|gsettings' \
   "$INSTALLER_DIR/README.md" "$INSTALLER_DIR/TESTING.md"; then

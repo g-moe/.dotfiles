@@ -31,17 +31,8 @@ linux() {
   temporary_dir="$(mktemp -d)"
   color="$(machine_field "$ROOT_DIR/machine.json" color)"
   color_hex="$(machine_color_hex "$color")"
-  magick "$ROOT_DIR/images/white.png" \
-    -rotate 180 \
-    -colorspace gray \
-    +level-colors '#000000',"$color_hex" \
-    -resize "$output_size!" \
-    "$temporary_dir/base.png" || die 'Could not color the login background.'
-  magick "$temporary_dir/base.png" \
-    \( -size 1504x847 radial-gradient:white-black +level '25%,100%' -resize "$output_size!" \) \
-    -compose multiply \
-    -composite \
-    "$temporary_dir/login.png" || die 'Could not create the login background.'
+  render_machine_background \
+    "$ROOT_DIR/images/white.png" "$color_hex" "$output_size" "$temporary_dir/login.png"
 
   background='/usr/local/share/backgrounds/machine-login.png'
   sudo install -D -m 0644 "$temporary_dir/login.png" "$background"

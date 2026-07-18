@@ -26,6 +26,58 @@ expect_equal "$(machine_field "$temporary_dir/machine.json" colorHex)" '#458588'
 expect_equal "$(machine_color_hex blue)" '#458588'
 expect_equal "$(machine_color_tint blue)" '0.270588 0.521569 0.533333 0.250000'
 
+magick_log="$temporary_dir/magick.log"
+magick() {
+  local output=''
+  for output in "$@"; do :; done
+  printf '%s\n' "$*" >"$magick_log"
+  printf 'rendered\n' >"$output"
+}
+background="$temporary_dir/background.png"
+render_machine_background source.png '#458588' 100x50 "$background"
+expect_equal "$(cat "$background")" rendered
+expect_equal "$(wc -l <"$magick_log" | tr -d ' ')" 1
+grep -Fq -- '-resize 100x50!' "$magick_log" ||
+  fail 'render_machine_background did not use the requested size'
+unset -f magick
+
+curl() {
+  local output=''
+  while (($#)); do
+    case "$1" in
+      -o)
+        output="$2"
+        shift 2
+        ;;
+      *) shift ;;
+    esac
+  done
+  printf 'archive\n' >"$output"
+}
+sha256sum() {
+  return 0
+}
+tar() {
+  local destination=''
+  while (($#)); do
+    case "$1" in
+      -C)
+        destination="$2"
+        shift 2
+        ;;
+      *) shift ;;
+    esac
+  done
+  mkdir -p "$destination/repo-deadbeef"
+}
+archive_destination="$temporary_dir/archive"
+source_directory="$(
+  extract_github_source_archive \
+    owner/repo deadbeef checksum "$archive_destination"
+)"
+expect_equal "$source_directory" "$archive_destination/repo-deadbeef"
+unset -f curl sha256sum tar
+
 retry_attempts=0
 eventually_succeeds() {
   ((retry_attempts += 1))

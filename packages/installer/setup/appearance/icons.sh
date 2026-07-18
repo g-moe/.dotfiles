@@ -53,7 +53,7 @@ _linux_install_tux() {
 }
 
 linux() {
-  local archive source_dir temporary_dir
+  local source_dir temporary_dir
   local theme='WhiteSur'
   local commit='be13578d05bc1ada81a0243516340d8892ebaccc'
   local checksum='731cffec0e4960e85c0524e9bc5045bb4068da285ca05ce263dff4343a393959'
@@ -63,18 +63,13 @@ linux() {
   ask_binary 'Use WhiteSur icons?' || return 0
   apt_install libgtk-3-bin xfconf
 
-  archive="$(mktemp --suffix=.tar.gz)"
   temporary_dir="$(mktemp -d)"
-  curl -fsSL \
-    "https://codeload.github.com/vinceliuice/WhiteSur-icon-theme/tar.gz/$commit" \
-    -o "$archive"
-  printf '%s  %s\n' "$checksum" "$archive" | sha256sum --check --status ||
-    die 'WhiteSur icon theme checksum failed.'
-  tar -xzf "$archive" -C "$temporary_dir"
-  source_dir="$temporary_dir/WhiteSur-icon-theme-$commit"
+  source_dir="$(
+    extract_github_source_archive \
+      vinceliuice/WhiteSur-icon-theme "$commit" "$checksum" "$temporary_dir"
+  )"
 
   bash "$source_dir/install.sh" -d "$HOME/.local/share/icons" -t default
-  rm -f "$archive"
   rm -rf "$temporary_dir"
 
   [[ -d "$HOME/.local/share/icons/$theme" ]] ||

@@ -15,7 +15,7 @@ configure_wallpaper() {
 }
 
 _wallpaper_path() {
-  local color color_hex color_key image_path output_size temporary_dir temporary_path
+  local color color_hex color_key image_path output_size
 
   color="$(machine_field "$ROOT_DIR/machine.json" color)"
   color_hex="$(machine_color_hex "$color")"
@@ -23,21 +23,8 @@ _wallpaper_path() {
   output_size=6016x3388
   image_path="$ROOT_DIR/.machine-wallpaper-$color_key-$output_size.png"
   if [[ ! -s "$image_path" ]]; then
-    temporary_dir="$(mktemp -d "${TMPDIR:-/tmp}/machine-wallpaper.XXXXXX")"
-    temporary_path="$temporary_dir/wallpaper.png"
-    magick "$ROOT_DIR/images/white.png" \
-      -rotate 180 \
-      -colorspace gray \
-      +level-colors '#000000',"$color_hex" \
-      -resize "$output_size!" \
-      "$temporary_path" || die 'Could not color the wallpaper.'
-    magick "$temporary_path" \
-      \( -size 1504x847 radial-gradient:white-black +level '25%,100%' -resize "$output_size!" \) \
-      -compose multiply \
-      -composite \
-      "$image_path" || die 'Could not create the wallpaper.'
-    rm -rf "$temporary_dir"
-    [[ -s "$image_path" ]] || die 'Wallpaper image is empty.'
+    render_machine_background \
+      "$ROOT_DIR/images/white.png" "$color_hex" "$output_size" "$image_path"
   fi
   printf '%s\n' "$image_path"
 }

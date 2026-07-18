@@ -69,6 +69,37 @@ download_github_asset() {
   printf '%s\n' "$file"
 }
 
+# Download, verify, and extract a pinned GitHub source archive.
+# Prints the extracted source directory.
+# Usage: source_dir="$(extract_github_source_archive owner/repo "$commit" "$checksum" "$destination")"
+extract_github_source_archive() {
+  local repository="$1"
+  local commit="$2"
+  local checksum="$3"
+  local destination="$4"
+  local archive source_dir
+
+  archive="$(mktemp)"
+  if ! curl -fsSL "https://codeload.github.com/$repository/tar.gz/$commit" -o "$archive"; then
+    rm -f "$archive"
+    die "Could not download the $repository source archive."
+  fi
+  if ! printf '%s  %s\n' "$checksum" "$archive" | sha256sum --check --status; then
+    rm -f "$archive"
+    die "$repository source archive checksum failed."
+  fi
+  mkdir -p "$destination"
+  if ! tar -xzf "$archive" -C "$destination"; then
+    rm -f "$archive"
+    die "Could not extract the $repository source archive."
+  fi
+  rm -f "$archive"
+
+  source_dir="$destination/${repository##*/}-$commit"
+  [[ -d "$source_dir" ]] || die "Extracted source directory is missing: $source_dir"
+  printf '%s\n' "$source_dir"
+}
+
 # Load Homebrew into PATH when it is already installed.
 # Returns 1 when Homebrew is missing.
 # Usage: load_homebrew || die 'Homebrew is not installed.'

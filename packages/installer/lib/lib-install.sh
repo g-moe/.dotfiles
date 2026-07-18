@@ -121,6 +121,38 @@ machine_color_tint() {
   printf '%s\n' "${values#*|}"
 }
 
+# Render the shared machine-color artwork at one size.
+# Usage: render_machine_background "$source" "$color_hex" 6016x3388 "$output"
+render_machine_background() {
+  local source="$1"
+  local color_hex="$2"
+  local output_size="$3"
+  local output="$4"
+  local temporary_dir temporary_path
+
+  mkdir -p "$(dirname "$output")"
+  temporary_dir="$(mktemp -d "$(dirname "$output")/.machine-background.XXXXXX")"
+  temporary_path="$temporary_dir/background.png"
+  if ! magick "$source" \
+    -rotate 180 \
+    -colorspace gray \
+    +level-colors '#000000',"$color_hex" \
+    -resize "$output_size!" \
+    \( -size 1504x847 radial-gradient:white-black +level '25%,100%' -resize "$output_size!" \) \
+    -compose multiply \
+    -composite \
+    "$temporary_path"; then
+    rm -rf "$temporary_dir"
+    die 'Could not create the machine background.'
+  fi
+  if [[ ! -s "$temporary_path" ]]; then
+    rm -rf "$temporary_dir"
+    die 'Machine background image is empty.'
+  fi
+  mv "$temporary_path" "$output"
+  rm -rf "$temporary_dir"
+}
+
 # Set one Xfce value, creating it when the property does not exist yet.
 # Usage: xfconf_set xsettings /Net/ThemeName string WhiteSur-Dark
 xfconf_set() {
