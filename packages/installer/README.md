@@ -1,6 +1,6 @@
 # Machine installer
 
-The repo must live at `~/.dotfiles`. The installer links only the config files and config subfolders each app needs. It does not link whole Ghostty, Neovim, OpenCode, Karabiner, or tmux source folders.
+The repo must live at `~/.dotfiles`. The installer links only the config files and config subfolders each app needs. On Mac, that includes Ghostty's config and themes. It does not link whole Ghostty, Neovim, OpenCode, Karabiner, or tmux source folders.
 
 **One entry point:** `packages/installer/install.sh`. Every install path goes through it — full run, phase slices, and single strategies (`--git`, `--skills`, `--theme`). Do not run `packages/installer/setup/**` or `packages/theming/create/controller.ts` yourself for install.
 
@@ -114,8 +114,8 @@ npm run install:test     # shape + lib checks (no VM)
 - **Firefox:** Debian’s `firefox-esr` package.
 - **Codex:** Mac installs the ChatGPT app, which now includes Codex; Linux installs the Codex CLI.
 - **CleanShot X:** Mac only.
-- **Defaults:** Chrome (Mac + Debian amd64) or Brave (Debian arm64); Ghostty as the Debian terminal. Mac shows a system browser prompt — pick **Use Chrome**.
-- **Ghostty:** Mac uses Homebrew. Debian uses the checked AppImage release because Debian 13 has no `ghostty` package. Its launcher enables Mesa's OpenGL 4.3 path inside QEMU/UTM so the terminal also opens on the clean test VM.
+- **Defaults:** Chrome (Mac + Debian amd64) or Brave (Debian arm64). Debian keeps Xfce Terminal as installed by the OS. Mac shows a system browser prompt — pick **Use Chrome**.
+- **Terminal:** Mac installs and configures Ghostty through Homebrew. Debian installs and configures nothing, keeping Xfce Terminal.
 - **Desktop styling:** Linux offers separate prompts for the machine-color wallpaper, WhiteSur desktop styling, and WhiteSur icons. The desktop phase puts close/minimize/maximize on the left in Mac order, uses a penguin application menu, starts the right status group with the user name, and replaces the lower Xfce panel with a rounded WhiteSur Plank dock. Workspaces stay unchanged. App theme packs still use `--theme`.
 - **Login screen:** Debian keeps the LightDM GTK greeter and gives it a machine-color background, no avatar, JetBrains Mono, a centered login, and a minimal status bar. It reuses WhiteSur when selected earlier in the appearance phase and falls back to Adwaita otherwise.
 - **Git:** optional; defaults `garrett` / noreply email / `main`; GitHub login is a separate browser step; no token in the shell env.

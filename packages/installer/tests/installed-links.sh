@@ -24,10 +24,6 @@ for app in ghostty nvim opencode karabiner; do
   [[ ! -L "$HOME/.config/$app" ]] || fail "$HOME/.config/$app links a whole folder"
 done
 
-expect_link "$ROOT_DIR/ghostty/config" "$HOME/.config/ghostty/config"
-expect_link "$ROOT_DIR/ghostty/themes/gtheme-dark" "$HOME/.config/ghostty/themes/gtheme-dark"
-expect_link "$ROOT_DIR/ghostty/themes/gtheme-light" "$HOME/.config/ghostty/themes/gtheme-light"
-
 while IFS= read -r source; do
   relative="${source#"$ROOT_DIR/nvim/"}"
   expect_link "$source" "$HOME/.config/nvim/$relative"
@@ -42,6 +38,9 @@ expect_link "$ROOT_DIR/packages/lib/bash/bin/shared-copy-to-clipboard.sh" "$HOME
 
 case "$(uname -s)" in
   Darwin)
+    expect_link "$ROOT_DIR/ghostty/config" "$HOME/.config/ghostty/config"
+    expect_link "$ROOT_DIR/ghostty/themes/gtheme-dark" "$HOME/.config/ghostty/themes/gtheme-dark"
+    expect_link "$ROOT_DIR/ghostty/themes/gtheme-light" "$HOME/.config/ghostty/themes/gtheme-light"
     expect_link "$ROOT_DIR/karabiner/karabiner.json" "$HOME/.config/karabiner/karabiner.json"
     vscodium="$HOME/Library/Application Support/VSCodium/User"
     ;;

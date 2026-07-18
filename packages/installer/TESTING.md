@@ -127,8 +127,8 @@ Connect once while LightDM is showing, then log in through that VNC connection a
 | Check                          | macOS | Debian 13 |
 | ------------------------------ | ----- | --------- |
 | No-VM installer tests          | Pass  | Pass      |
-| Clean full install             | Kept  | Pass      |
-| Reboot and second full install | Kept  | Pass      |
+| Clean full install             | Kept  | Pending   |
+| Reboot and second full install | Kept  | Pending   |
 | Xfce + LightDM + X11 check     | n/a   | Pass      |
 | WhiteSur desktop + icons       | n/a   | Pass      |
 | Styled LightDM login screen    | n/a   | Pass      |
@@ -148,7 +148,7 @@ packs from `--theme` remain separate.
 
 ## Pass checklists
 
-**Debian desktop** — LightDM owns the styled login screen; the session is X11; Xfce opens; the optional machine-color wallpaper, WhiteSur desktop styling, and icons apply; Mac-order window buttons are on the left; the top panel has no open-window list; the rounded Plank dock opens the pinned apps and shows running apps; workspaces stay put; browser and Ghostty defaults work; apps open; VSCodium/`code`, files, SSH, VNC, updates, power, and Skills work; no extra desktop session is offered.
+**Debian desktop** — LightDM owns the styled login screen; the session is X11; Xfce opens; the optional machine-color wallpaper, WhiteSur desktop styling, and icons apply; Mac-order window buttons are on the left; the top panel has no open-window list; the rounded Plank dock opens the pinned apps and shows running apps; workspaces stay put; the browser default works and Xfce Terminal opens from the dock; apps open; VSCodium/`code`, files, SSH, VNC, updates, power, and Skills work; no extra desktop session is offered.
 
 **Git** — `npm run install:git` / `install.sh --git` only; skip leaves Git alone; accept → LFS + filters; name/email/branch stick; settings match `git.sh`; GitHub skip vs browser login; no `GITHUB_TOKEN` in a new shell.
 
@@ -159,6 +159,9 @@ packs from `--theme` remain separate.
 - macOS: protected associations / Finder sidebar — installer skips instead of fighting prompts.
 
 ## Recent full proofs
+
+The Linux terminal step became a no-op on July 18, 2026, so its next clean
+Debian run and repeat are pending.
 
 Debian 13 arm64 passed in UTM on July 16, 2026. The first run found and fixed
 two live issues: terminal-default verification tried to launch Ghostty over

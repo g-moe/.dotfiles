@@ -38,7 +38,7 @@ mac() {
 }
 
 linux() {
-  local browser terminal='com.mitchellh.ghostty.desktop'
+  local browser
 
   case "$LINUX_ARCH" in
     amd64) browser='google-chrome.desktop' ;;
@@ -46,15 +46,10 @@ linux() {
     *) die "No default browser is configured for $LINUX_ARCH" ;;
   esac
 
-  apt_install xdg-terminal-exec
   xdg-settings set default-web-browser "$browser"
-  mkdir -p "$HOME/.config"
-  printf '%s\n' "$terminal" >"$HOME/.config/xdg-terminals.list"
 
   [[ "$(xdg-settings get default-web-browser)" == "$browser" ]] ||
     die 'The default browser was not saved.'
-  [[ "$(<"$HOME/.config/xdg-terminals.list")" == "$terminal" ]] ||
-    die 'Ghostty was not saved as the default terminal.'
 }
 
 configure_default_applications "$1"

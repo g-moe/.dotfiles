@@ -141,8 +141,8 @@ AUTOSTART
     'Launcher=file:///usr/share/applications/thunar.desktop' \
     >"$launchers_dir/01-thunar.dockitem"
   printf '%s\n' '[PlankDockItemPreferences]' \
-    'Launcher=file:///usr/local/share/applications/com.mitchellh.ghostty.desktop' \
-    >"$launchers_dir/02-ghostty.dockitem"
+    'Launcher=file:///usr/share/applications/xfce4-terminal.desktop' \
+    >"$launchers_dir/02-terminal.dockitem"
   printf '%s\n' '[PlankDockItemPreferences]' \
     'Launcher=file:///usr/share/applications/codium.desktop' \
     >"$launchers_dir/03-codium.dockitem"
@@ -158,7 +158,7 @@ AUTOSTART
   silent dbus-run-session -- dconf write "${dock_path}show-dock-item" false
   silent dbus-run-session -- dconf write "${dock_path}lock-items" true
   silent dbus-run-session -- dconf write "${dock_path}dock-items" \
-    "['01-thunar.dockitem', '02-ghostty.dockitem', '03-codium.dockitem', '04-browser.dockitem']"
+    "['01-thunar.dockitem', '02-terminal.dockitem', '03-codium.dockitem', '04-browser.dockitem']"
 
   [[ "$(dbus-run-session -- dconf read "${dock_path}theme")" == "'WhiteSur'" ]] ||
     die 'The WhiteSur Plank theme was not saved.'
