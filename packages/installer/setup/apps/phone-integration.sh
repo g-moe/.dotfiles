@@ -15,6 +15,7 @@ install_phone_integration() {
 
 mac() {
   log 'iPhone Mirroring is built into macOS.'
+  return 0
 }
 
 linux() {

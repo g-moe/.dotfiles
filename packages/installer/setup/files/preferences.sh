@@ -30,6 +30,7 @@ mac() {
 
 linux() {
   log 'Thunar preference changes are not part of this install.'
+  return 0
 }
 
 configure_file_preferences "$1"

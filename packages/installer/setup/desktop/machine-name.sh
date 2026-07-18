@@ -46,13 +46,13 @@ SWIFT
 </plist>
 EOF
 )" >"$agent_path"
-  if launchctl print "$service" >/dev/null 2>&1; then
+  if silent launchctl print "$service"; then
     silent launchctl bootout "$service"
     for _ in 1 2 3 4 5 6 7 8 9 10; do
-      launchctl print "$service" >/dev/null 2>&1 || break
+      silent launchctl print "$service" || break
       sleep 0.1
     done
-    if launchctl print "$service" >/dev/null 2>&1; then
+    if silent launchctl print "$service"; then
       die 'The old machine-name menu item did not stop.'
     fi
   fi
@@ -61,6 +61,7 @@ EOF
 
 linux() {
   log 'Xfce panel machine-name display is not part of this install.'
+  return 0
 }
 
 configure_machine_name_display "$1"

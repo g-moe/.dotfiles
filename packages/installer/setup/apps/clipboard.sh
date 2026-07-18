@@ -15,6 +15,7 @@ install_clipboard_tools() {
 
 mac() {
   log 'pbcopy and pbpaste are built into macOS.'
+  return 0
 }
 
 linux() {

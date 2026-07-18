@@ -20,6 +20,7 @@ mac() {
 
 linux() {
   log 'Debian has no built-in AI assistant enabled.'
+  return 0
 }
 
 configure_apple_intelligence "$1"

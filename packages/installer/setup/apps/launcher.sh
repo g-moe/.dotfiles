@@ -19,6 +19,7 @@ mac() {
 
 linux() {
   log 'The Xfce Whisker Menu provides application search.'
+  return 0
 }
 
 install_launcher "$1"

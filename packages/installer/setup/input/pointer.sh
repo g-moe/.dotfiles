@@ -29,6 +29,7 @@ mac() {
 
 linux() {
   log 'Xfce pointer changes are not part of this install.'
+  return 0
 }
 
 configure_pointer "$1"

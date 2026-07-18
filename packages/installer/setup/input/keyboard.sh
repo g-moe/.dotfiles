@@ -26,6 +26,7 @@ mac() {
 
 linux() {
   log 'Xfce keyboard changes are not part of this install.'
+  return 0
 }
 
 configure_keyboard "$1"

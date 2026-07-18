@@ -52,6 +52,7 @@ mac() {
 
 linux() {
   log 'Xfce touchpad changes are not part of this install.'
+  return 0
 }
 
 configure_touchpad "$1"

@@ -15,6 +15,7 @@ install_passwords() {
 
 mac() {
   log 'Passwords is built into macOS.'
+  return 0
 }
 
 linux() {

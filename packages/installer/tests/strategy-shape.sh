@@ -7,6 +7,7 @@ ROOT_DIR="$(cd "$INSTALLER_DIR/../.." && pwd)"
 BASH_LIB_DIR="$ROOT_DIR/packages/lib/bash"
 architecture_reads=''
 failed_skip_returns=''
+log_only_skips=''
 
 fail() {
   printf 'FAIL: %s\n' "$1" >&2
@@ -49,6 +50,41 @@ failed_skip_returns="$(find "$INSTALLER_DIR/setup" -type f -name '*.sh' \
 if [[ -n "$failed_skip_returns" ]]; then
   printf '%s\n' "$failed_skip_returns" >&2
   fail 'a skipped choice must use return 0'
+fi
+log_only_skips="$(
+  awk '
+    /^(mac|linux)\(\) \{$/ {
+      in_platform = 1
+      start = FNR
+      has_log = 0
+      has_return = 0
+      only_skip_lines = 1
+      next
+    }
+    in_platform && /^}$/ {
+      if (has_log && only_skip_lines && !has_return) {
+        print FILENAME ":" start
+      }
+      in_platform = 0
+      next
+    }
+    in_platform {
+      if ($0 ~ /^[[:space:]]*$/ || $0 ~ /^[[:space:]]*#/) next
+      if ($0 ~ /^[[:space:]]*log /) {
+        has_log = 1
+        next
+      }
+      if ($0 ~ /^[[:space:]]*return 0[[:space:]]*$/) {
+        has_return = 1
+        next
+      }
+      only_skip_lines = 0
+    }
+  ' $(find "$INSTALLER_DIR/setup" -type f -name '*.sh' | sort)
+)"
+if [[ -n "$log_only_skips" ]]; then
+  printf '%s\n' "$log_only_skips" >&2
+  fail 'a log-only platform skip must end with return 0'
 fi
 
 # Strategies are only launched by install.sh (with OS as $1). No standalone detect_os.
@@ -133,6 +169,8 @@ grep -Fq '/etc/x11vnc.passwd' "$vnc_strategy" ||
   fail 'VNC must use the root-owned password file'
 grep -Fq -- '-localhost' "$vnc_strategy" ||
   fail 'VNC must only listen on localhost for SSH tunneling'
+grep -Fq 'retry 10 1 linux_vnc_service_is_ready' "$vnc_strategy" ||
+  fail 'VNC readiness must use the shared retry helper'
 if grep -Fq 'systemctl --user' "$vnc_strategy"; then
   fail 'VNC must not use a user service'
 fi
@@ -160,6 +198,8 @@ grep -Fq '_linux_install_tux' "$icons_strategy" ||
   fail 'the icon step must install the checked Tux artwork'
 grep -Fq 'cd503ad510e16ff2869f959cf57b892bb2175a6874ff696b495bd94fd7db9743' \
   "$icons_strategy" || fail 'the Tux SVG checksum is missing'
+grep -Fq 'xfconf_set xsettings /Net/IconThemeName string "$theme"' "$icons_strategy" ||
+  fail 'icon setup must use the shared Xfce settings helper'
 
 theme_strategy="$INSTALLER_DIR/setup/appearance/theme.sh"
 grep -Fq "local theme='WhiteSur-Dark'" "$theme_strategy" ||
@@ -267,7 +307,7 @@ grep -Fq 'centerFillWindowWatcher:getWindows()' "$center_fill_config" ||
   fail 'Center + Fill must apply to existing windows when it loads'
 
 machine_name_strategy="$INSTALLER_DIR/setup/desktop/machine-name.sh"
-grep -Fq 'launchctl print "$service"' "$machine_name_strategy" ||
+grep -Fq 'silent launchctl print "$service"' "$machine_name_strategy" ||
   fail 'machine-name display must wait for its old launch agent to stop'
 
 wallpaper_strategy="$INSTALLER_DIR/setup/appearance/wallpaper.sh"

@@ -15,6 +15,7 @@ install_notes() {
 
 mac() {
   log 'Notes is built into macOS.'
+  return 0
 }
 
 linux() {

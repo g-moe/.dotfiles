@@ -23,6 +23,7 @@ mac() {
 
 linux() {
   log 'Xfce screen saver changes are not part of this install.'
+  return 0
 }
 
 configure_screensaver "$1"

@@ -26,6 +26,7 @@ mac() {
 
 linux() {
   log 'Xfce workspace changes are not part of this install.'
+  return 0
 }
 
 configure_workspaces "$1"

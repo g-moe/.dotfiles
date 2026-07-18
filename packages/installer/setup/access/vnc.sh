@@ -71,15 +71,8 @@ linux_store_vnc_password() {
 }
 
 linux_vnc_service_is_ready() {
-  local _
-  for _ in 1 2 3 4 5 6 7 8 9 10; do
-    if systemctl is-active --quiet x11vnc.service &&
-      ss -ltn | grep -qE '[:.]5900[[:space:]]'; then
-      return 0
-    fi
-    sleep 1
-  done
-  return 1
+  systemctl is-active --quiet x11vnc.service &&
+    ss -ltn | grep -qE '[:.]5900[[:space:]]'
 }
 
 linux() {
@@ -101,7 +94,8 @@ linux() {
       linux_install_vnc_service
       silent sudo systemctl restart x11vnc.service || true
       if [[ -S /tmp/.X11-unix/X0 ]]; then
-        linux_vnc_service_is_ready || die 'x11vnc did not start on display :0.'
+        retry 10 1 linux_vnc_service_is_ready ||
+          die 'x11vnc did not start on display :0.'
       else
         # Display manager has not created :0 yet (common during SSH installs).
         log 'VNC service enabled; it will attach when display :0 is up.'

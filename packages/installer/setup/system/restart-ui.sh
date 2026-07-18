@@ -22,6 +22,7 @@ mac() {
 
 linux() {
   log 'Reboot or sign out to load the configured Xfce X11 session.'
+  return 0
 }
 
 restart_user_interface "$1"

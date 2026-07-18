@@ -79,7 +79,7 @@ linux() {
 
   [[ -d "$HOME/.local/share/icons/$theme" ]] ||
     die "WhiteSur icon theme is missing: $theme"
-  xfconf-query -c xsettings -p /Net/IconThemeName -s "$theme"
+  xfconf_set xsettings /Net/IconThemeName string "$theme"
   [[ "$(xfconf-query -c xsettings -p /Net/IconThemeName)" == "$theme" ]] ||
     die 'The WhiteSur icon theme was not saved.'
 }

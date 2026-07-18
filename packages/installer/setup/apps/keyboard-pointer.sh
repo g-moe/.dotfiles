@@ -19,6 +19,7 @@ mac() {
 
 linux() {
   log 'Xfce keyboard navigation is built in.'
+  return 0
 }
 
 install_keyboard_pointer "$1"
