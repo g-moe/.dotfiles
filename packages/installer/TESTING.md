@@ -171,7 +171,7 @@ plutil -lint ~/Library/LaunchAgents/com.dotfiles.window-management.hammerspoon.p
 pgrep -x Hammerspoon
 ```
 
-The stored name must be `center-fill`, both marked loader lines must appear, the `BEGIN` count must be `1`, the login file must be valid, and Hammerspoon must be running. Add user-owned Lua above and below the marked block, rerun Enable, and confirm the user code stays intact and the loader is not duplicated. Repeat once with `init.lua` as a symlink and confirm the symlink remains in place.
+The stored name must be `center-fill`, both marked loader lines must appear, the `BEGIN` count must be `1`, the login file must be valid, and Hammerspoon must be running. On a clean first install, Enable must wait for the app and process and finish without a second installer run. Add user-owned Lua above and below the marked block, rerun Enable, and confirm the user code stays intact and the loader is not duplicated. Repeat once with `init.lua` as a symlink and confirm the symlink remains in place.
 
 Open a normal resizable window and confirm it fills the current screen inside the menu bar and Dock with a 16-pixel gap on every side, without entering Full Screen or another Space. Open a fixed-size dialog and confirm its size stays unchanged while it moves to the center. Repeat with a window on another screen, a newly opened window, a focused window, and a window restored from the Dock. There must be no movement animation or tiling.
 
@@ -218,10 +218,11 @@ generated machine-color wallpaper used on macOS. Application theme packs from
 
 On July 18, 2026, a fresh Hammerspoon install exposed a macOS app-name lookup
 delay, and the same run exposed a launchd stop/start race in the machine-name
-menu item. Window management now opens the installed app by its exact path, and
-the menu item waits for its old process to stop before starting again. Both
-direct checks and the no-VM installer tests passed; a full installer rerun is
-still pending.
+menu item. Window management now opens the installed app by its exact path,
+waits for the app bundle and running process, and reports a clear failure if
+either never appears. The menu item waits for its old process to stop before
+starting again. The no-VM installer tests passed; another clean Hammerspoon
+install is pending.
 
 The finished Linux rice was added to the installer and passed a clean Debian 13
 arm64 full install, saved setting checks, reboot, login-screen check, desktop

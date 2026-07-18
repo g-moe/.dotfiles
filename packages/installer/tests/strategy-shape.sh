@@ -199,6 +199,12 @@ grep -Fq 'mac_hammerspoon_has_other_configuration' "$windows_strategy" ||
   fail 'disabling must keep Hammerspoon startup when other configuration remains'
 grep -Fq 'open -g "$hammerspoon_app"' "$windows_strategy" ||
   fail 'Hammerspoon must launch by path before macOS can find a fresh install by name'
+grep -Fq 'retry 20 0.5 mac_hammerspoon_app' "$windows_strategy" ||
+  fail 'a fresh Hammerspoon install must wait for the app bundle to appear'
+grep -Fq 'retry 20 0.5 silent open -g "$hammerspoon_app"' "$windows_strategy" ||
+  fail 'a fresh Hammerspoon install must retry opening the app'
+grep -Fq 'retry 40 0.25 pgrep -x Hammerspoon' "$windows_strategy" ||
+  fail 'Hammerspoon startup must be confirmed by its running process'
 grep -Fq 'hs.window.animationDuration = 0' "$center_fill_config" ||
   fail 'Center + Fill must disable Hammerspoon window animations'
 grep -Fq 'win:isMaximizable() == true' "$center_fill_config" ||

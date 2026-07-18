@@ -77,6 +77,8 @@ mac_install_hammerspoon() {
 
   install_homebrew
   brew_cask hammerspoon
+  retry 20 0.5 mac_hammerspoon_app >/dev/null ||
+    die 'Hammerspoon did not appear after installation.'
 }
 
 mac_hammerspoon_app() {
@@ -167,7 +169,8 @@ mac_hammerspoon_has_other_configuration() {
 mac_restart_hammerspoon() {
   local hammerspoon_app was_running=false
 
-  hammerspoon_app="$(mac_hammerspoon_app)" || die 'Hammerspoon is not installed.'
+  hammerspoon_app="$(retry 20 0.5 mac_hammerspoon_app)" ||
+    die 'Hammerspoon is not installed.'
 
   if pgrep -x Hammerspoon >/dev/null; then
     was_running=true
@@ -179,7 +182,10 @@ mac_restart_hammerspoon() {
     silent pkill -x Hammerspoon || true
   fi
 
-  open -g "$hammerspoon_app"
+  retry 20 0.5 silent open -g "$hammerspoon_app" ||
+    die 'Hammerspoon could not be opened after installation.'
+  retry 40 0.25 pgrep -x Hammerspoon >/dev/null ||
+    die 'Hammerspoon opened but did not start.'
   if [[ "$was_running" == true ]]; then
     log 'Reloaded Hammerspoon.'
   else

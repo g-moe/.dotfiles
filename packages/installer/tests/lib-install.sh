@@ -25,6 +25,17 @@ expect_equal "$(machine_field "$temporary_dir/machine.json" color)" blue
 expect_equal "$(machine_color_hex blue)" '#458588'
 expect_equal "$(machine_color_tint blue)" '0.270588 0.521569 0.533333 0.250000'
 
+retry_attempts=0
+eventually_succeeds() {
+  ((retry_attempts += 1))
+  ((retry_attempts == 3))
+}
+retry 3 0 eventually_succeeds || fail 'retry stopped before the command succeeded'
+expect_equal "$retry_attempts" 3
+if retry 2 0 false; then
+  fail 'retry succeeded after every attempt failed'
+fi
+
 xfconf_log="$temporary_dir/xfconf.log"
 xfconf-query() {
   printf '%s\n' "$*" >>"$xfconf_log"
@@ -109,7 +120,7 @@ expect_equal "$(readlink "$group_skip_missing")" "$group_source_b"
 
 has bash || fail 'has did not find Bash'
 
-for function_name in die log log_section run_step ask_choice ask_binary read_value read_secret has safe_symlink safe_symlink_group; do
+for function_name in die log log_section run_step ask_choice ask_binary read_value read_secret has retry safe_symlink safe_symlink_group; do
   count="$(grep -h "^${function_name}()" "$BASH_LIB_DIR"/*.sh | wc -l | tr -d ' ')"
   expect_equal "$count" 1
 done

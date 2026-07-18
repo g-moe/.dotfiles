@@ -14,6 +14,21 @@ has() {
   silent command -v "$1"
 }
 
+# Retry a command until it succeeds or runs out of attempts.
+# Usage: retry 20 0.5 command arg
+retry() {
+  local attempts="$1"
+  local delay="$2"
+  local attempt
+  shift 2
+
+  for ((attempt = 1; attempt <= attempts; attempt++)); do
+    "$@" && return 0
+    ((attempt == attempts)) || sleep "$delay"
+  done
+  return 1
+}
+
 # Create a symlink. Existing files and different links can be skipped or replaced.
 # A supplied choice avoids another prompt: 0 skips, 1 replaces.
 # Never replace a real directory.
