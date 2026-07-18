@@ -65,6 +65,7 @@ mac() {
 
   defaults write com.apple.dock persistent-apps -array
   _mac_app '/System/Library/CoreServices/Finder.app'
+  _mac_app '/System/Applications/Apps.app'
   _mac_app '/System/Applications/Mission Control.app'
   _mac_app '/System/Applications/System Settings.app'
   _mac_app '/Applications/Ghostty.app'

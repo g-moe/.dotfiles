@@ -157,6 +157,10 @@ dock_strategy="$INSTALLER_DIR/setup/desktop/dock.sh"
 if grep -Eqi 'plank|dockitem|dconf' "$dock_strategy"; then
   fail 'the Linux dock strategy must not install or configure Plank'
 fi
+finder_line="$(grep -n "_mac_app '/System/Library/CoreServices/Finder.app'" "$dock_strategy" | cut -d: -f1)"
+apps_line="$(grep -n "_mac_app '/System/Applications/Apps.app'" "$dock_strategy" | cut -d: -f1)"
+[[ -n "$finder_line" && -n "$apps_line" && "$apps_line" -eq $((finder_line + 1)) ]] ||
+  fail 'Apps.app must be immediately after Finder in the macOS Dock'
 grep -Fq 'xfconf_set_array xfce4-panel /panels int' "$dock_strategy" ||
   fail 'the lower Xfce panel must be removed through Xfce settings'
 
@@ -182,6 +186,23 @@ grep -Fq 'xfconf_set xfce4-terminal /misc-borders-default bool true' \
   fail 'Xfce Terminal must keep normal window borders and controls'
 if grep -Eqi 'ghostty|kitty|alacritty' <(sed -n '/^linux()/,/^}/p' "$terminal_strategy"); then
   fail 'Linux terminal setup must not install or configure another terminal'
+fi
+
+sidebar_strategy="$INSTALLER_DIR/setup/files/sidebar.sh"
+sidebar_helper="$INSTALLER_DIR/setup/files/finder-sidebar.js"
+[[ -f "$sidebar_helper" ]] || fail 'the macOS Finder sidebar helper is missing'
+grep -Fq 'finder-sidebar.js' "$sidebar_strategy" ||
+  fail 'macOS must use the Finder sidebar script'
+grep -Fq 'NSKeyedArchiver.archivedDataWithRootObject' "$sidebar_helper" ||
+  fail 'macOS must write Finder sidebar favorites'
+grep -Fq 'Privacy_AllFiles' "$sidebar_strategy" ||
+  fail 'macOS must offer Full Disk Access when Finder blocks the sidebar'
+grep -Fq '"$HOME" "$ROOT_DIR" "$HOME/code"' "$sidebar_strategy" ||
+  fail 'macOS must pin the dotfiles repo after Home'
+grep -Fq 'file://$ROOT_DIR .dotfiles' "$sidebar_strategy" ||
+  fail 'Linux must pin the dotfiles repo as .dotfiles'
+if grep -Fq 'leaving the sidebar unchanged' "$sidebar_strategy"; then
+  fail 'macOS must not leave an old .config sidebar item in place'
 fi
 
 windows_strategy="$INSTALLER_DIR/setup/desktop/windows.sh"

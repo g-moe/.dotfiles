@@ -17,7 +17,7 @@ configure_file_sidebar() {
 _mac_sidebar() {
   local pid seconds=0
 
-  osascript -l JavaScript "$STRATEGY_DIR/finder-sidebar.js" \
+  /usr/bin/osascript -l JavaScript "$STRATEGY_DIR/finder-sidebar.js" \
     "$HOME" "$ROOT_DIR" "$HOME/code" /Applications \
     "$HOME/Desktop" "$HOME/Documents" "$HOME/Downloads" \
     "$HOME/Pictures" "$HOME/Movies" &
@@ -35,14 +35,20 @@ _mac_sidebar() {
 }
 
 mac() {
-  local major_version
-  major_version="$(sw_vers -productVersion | cut -d. -f1)"
-  if ((major_version >= 26)); then
-    log 'macOS 26 protects Finder sidebar files; leaving the sidebar unchanged.'
+  mkdir -p "$HOME/code"
+  if _mac_sidebar; then
     return 0
   fi
-  mkdir -p "$HOME/code"
-  _mac_sidebar || log 'macOS did not allow Finder sidebar changes; continuing.'
+
+  log 'Finder sidebar setup needs Full Disk Access for this terminal app.'
+  /usr/bin/open 'x-apple.systempreferences:com.apple.preference.security?Privacy_AllFiles' || true
+  if [[ ! -t 0 ]]; then
+    die 'Grant Full Disk Access, then run the files phase again.'
+  fi
+
+  printf 'Grant Full Disk Access, then press Enter to retry: ' >/dev/tty
+  read -r </dev/tty
+  _mac_sidebar || die 'Finder sidebar setup still does not have Full Disk Access.'
 }
 
 linux() {

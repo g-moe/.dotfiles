@@ -97,6 +97,8 @@ test -f ~/.config/xfce4/panel/launcher-12/xfce4-terminal.desktop
 test -f ~/.config/xfce4/panel/launcher-13/codium.desktop
 test -f ~/.config/gtk-3.0/gtk.css
 test ! -e ~/.config/autostart/plank.desktop
+grep -Fq "file://$HOME/.dotfiles .dotfiles" ~/.config/gtk-3.0/bookmarks
+grep -Fq "file://$HOME/.dotfiles .dotfiles" ~/.config/gtk-4.0/bookmarks
 ! dpkg-query -W plank 2>/dev/null
 ```
 
@@ -170,6 +172,9 @@ Connect once while LightDM is showing, then log in through that VNC connection a
 
 ## macOS window-management checks
 
+After the desktop phase, confirm Apps is immediately after Finder in the Dock,
+followed by Mission Control, Settings, Ghostty, VSCodium, and Chrome.
+
 Run the desktop phase three times on a disposable macOS guest. For **Skip**, compare Hammerspoon, `~/.hammerspoon`, login items, and running processes before and after; nothing may change. For **Enable**, select **Center + Fill**, grant Hammerspoon Accessibility permission yourself, and check:
 
 ```bash
@@ -186,6 +191,13 @@ Open a normal resizable window and confirm it fills the current screen inside th
 
 For **Disable**, confirm the managed lines and saved name are gone and Hammerspoon reloads when it was running. User Lua must remain. The installer login file must be removed when no other Hammerspoon code remains and kept when other Hammerspoon code remains. Hammerspoon itself and other window tools must remain installed and unchanged.
 
+## File sidebar checks
+
+After the files phase, Finder on macOS and Thunar on Debian must show
+`.dotfiles` immediately after Home, followed by `code`. Neither sidebar may
+show `.config` in that position. The Debian bookmark commands above check both
+GTK bookmark files. Check Finder visually after the first run and the repeat.
+
 ## Current proof status
 
 | Check                          | macOS | Debian 13 |
@@ -199,6 +211,7 @@ For **Disable**, confirm the managed lines and saved name are gone and Hammerspo
 | Dark top bar + app launchers   | n/a   | Pass      |
 | Tux login + centered dark card | n/a   | Pass      |
 | VNC Skip / Disable / Enable    | Kept  | Pass      |
+| `.dotfiles` file sidebar       | Code  | Code      |
 | Window management              | Code  | n/a       |
 | amd64 package paths            | n/a   | Code only |
 | arm64 full UTM proof           | n/a   | Pass      |
@@ -221,9 +234,15 @@ generated machine-color wallpaper used on macOS. Application theme packs from
 
 - Mac UTM: Docker installs; engine needs nested virt (unavailable).
 - Debian UTM: virtual-machine apps may not run guests without nested virt.
-- macOS: protected associations / Finder sidebar — installer skips instead of fighting prompts.
+- macOS: protected file associations — installer skips instead of fighting prompts.
 
 ## Recent full proofs
+
+On July 18, 2026, the macOS sidebar setup restored its earlier JavaScript
+writer and Full Disk Access retry so macOS 26 can replace the old `.config`
+favorite with `.dotfiles`. Linux now has checks that require the same
+`.dotfiles` bookmark in both GTK bookmark files. The no-VM installer tests pass;
+clean VM proof of these sidebar checks is pending.
 
 On July 18, 2026, a fresh Hammerspoon install exposed a macOS app-name lookup
 delay, and the same run exposed a launchd stop/start race in the machine-name
