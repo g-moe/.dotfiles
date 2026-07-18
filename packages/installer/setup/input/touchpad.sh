@@ -51,13 +51,8 @@ mac() {
 }
 
 linux() {
-  gsettings set org.gnome.desktop.peripherals.touchpad speed 1.0
-  gsettings set org.gnome.desktop.peripherals.touchpad tap-to-click true
-  gsettings set org.gnome.desktop.peripherals.touchpad click-method fingers
-  gsettings set org.gnome.desktop.peripherals.touchpad natural-scroll false
-  gsettings set org.gnome.desktop.peripherals.touchpad two-finger-scrolling-enabled false
-  gsettings set org.gnome.desktop.peripherals.touchpad edge-scrolling-enabled false
-  gsettings set org.gnome.desktop.peripherals.touchpad send-events enabled
+  log 'Xfce touchpad changes are not part of this install.'
+  return 0
 }
 
 configure_touchpad "$1"

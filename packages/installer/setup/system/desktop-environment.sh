@@ -17,38 +17,20 @@ mac() {
   return 0
 }
 
-# Noninteractive: LightDM becomes the only display manager.
-linux_select_lightdm() {
-  sudo debconf-set-selections <<'EOF'
-lightdm shared/default-x-display-manager select lightdm
-gdm3 shared/default-x-display-manager select lightdm
-EOF
-  printf '%s\n' /usr/sbin/lightdm | silent sudo tee /etc/X11/default-display-manager
-  sudo DEBIAN_FRONTEND=noninteractive dpkg-reconfigure lightdm
-}
-
-# Hard cut: drop the Ubuntu GNOME session stack so XFCE is the desktop.
-linux_purge_gnome_desktop() {
-  apt_purge gdm3 ubuntu-session ubuntu-desktop ubuntu-desktop-minimal
-  sudo apt-get autoremove --purge -y
-}
-
 linux() {
-  # Seed debconf before install so apt never prompts for the display manager.
-  sudo debconf-set-selections <<'EOF'
-lightdm shared/default-x-display-manager select lightdm
-gdm3 shared/default-x-display-manager select lightdm
-EOF
-  printf '%s\n' /usr/sbin/lightdm | silent sudo tee /etc/X11/default-display-manager
-
-  apt_install xfce4 xfce4-goodies lightdm lightdm-gtk-greeter
-  linux_select_lightdm
-  linux_purge_gnome_desktop
-
+  has startxfce4 ||
+    die 'Xfce is missing. Install Debian 13 with the Xfce desktop task selected.'
+  [[ -x /usr/sbin/lightdm ]] ||
+    die 'LightDM is missing. Install Debian 13 with the Xfce desktop task selected.'
   [[ "$(cat /etc/X11/default-display-manager 2>/dev/null || true)" == /usr/sbin/lightdm ]] ||
-    die 'LightDM is not the default display manager.'
-  has startxfce4 || die 'XFCE did not install (startxfce4 missing).'
-  log 'Desktop environment is XFCE + LightDM (GNOME session stack purged). Reboot.'
+    die 'LightDM must be the default display manager. Reinstall Debian with the Xfce desktop task selected.'
+  [[ -f /usr/share/xsessions/xfce.desktop || -f /usr/share/xsessions/xfce4.desktop ]] ||
+    die 'The Xfce X11 session is missing under /usr/share/xsessions/.'
+  if systemctl is-active --quiet display-manager.service; then
+    systemctl is-active --quiet lightdm.service ||
+      die 'Another display manager is running. Start LightDM, then run the installer again.'
+  fi
+  log 'Debian Xfce and LightDM are ready.'
 }
 
 configure_desktop_environment "$1"

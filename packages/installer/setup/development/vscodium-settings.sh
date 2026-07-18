@@ -16,8 +16,9 @@ configure_vscodium_settings() {
 
 _configure() {
   local target="$1"
-  safe_symlink "$ROOT_DIR/vscode/user/settings.json" "$target/settings.json"
-  safe_symlink "$ROOT_DIR/vscode/user/keybindings.json" "$target/keybindings.json"
+  safe_symlink_group 'VSCodium settings' \
+    "$ROOT_DIR/vscode/user/settings.json" "$target/settings.json" \
+    "$ROOT_DIR/vscode/user/keybindings.json" "$target/keybindings.json"
 }
 
 mac() {

@@ -25,11 +25,8 @@ mac() {
 }
 
 linux() {
-  gsettings set org.gnome.mutter dynamic-workspaces false
-  gsettings set org.gnome.desktop.wm.preferences num-workspaces 4
-  gsettings set org.gnome.mutter workspaces-only-on-primary false
-  gsettings set org.gnome.desktop.wm.preferences focus-new-windows smart
-  gsettings set org.gnome.shell.app-switcher current-workspace-only false
+  log 'Xfce workspace changes are not part of this install.'
+  return 0
 }
 
 configure_workspaces "$1"

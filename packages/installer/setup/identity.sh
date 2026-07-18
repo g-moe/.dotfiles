@@ -24,10 +24,15 @@ ask_machine_identity() {
 
   color_choice="$(ask_choice 'Machine color:' "${colors[@]}")"
   MACHINE_COLOR="${colors[$color_choice]}"
+}
 
+write_machine_identity() {
+  local color_hex
+
+  color_hex="$(machine_color_hex "$MACHINE_COLOR")"
   umask 077
-  printf '{\n  "name": "%s",\n  "color": "%s"\n}\n' \
-    "$MACHINE_NAME" "$MACHINE_COLOR" >"$ROOT_DIR/machine.json"
+  printf '{\n  "name": "%s",\n  "color": "%s",\n  "colorHex": "%s"\n}\n' \
+    "$MACHINE_NAME" "$MACHINE_COLOR" "$color_hex" >"$ROOT_DIR/machine.json"
 }
 
 load_machine_identity() {
@@ -41,6 +46,7 @@ load_machine_identity() {
   else
     ask_machine_identity
   fi
+  write_machine_identity
   export MACHINE_NAME MACHINE_COLOR
 }
 

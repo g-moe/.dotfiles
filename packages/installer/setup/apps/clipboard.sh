@@ -15,10 +15,11 @@ install_clipboard_tools() {
 
 mac() {
   log 'pbcopy and pbpaste are built into macOS.'
+  return 0
 }
 
 linux() {
-  apt_install wl-clipboard xclip
+  apt_install xclip
 }
 
 install_clipboard_tools "$1"

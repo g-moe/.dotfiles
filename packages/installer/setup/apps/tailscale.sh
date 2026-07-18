@@ -28,16 +28,12 @@ mac() {
 }
 
 linux() {
-  local ID='' VERSION_CODENAME=''
-
   ask_binary 'Install Tailscale?' || return 0
-  # shellcheck disable=SC1091
-  . /etc/os-release
   install_apt_key \
-    "https://pkgs.tailscale.com/stable/ubuntu/${VERSION_CODENAME}.noarmor.gpg" \
+    "https://pkgs.tailscale.com/stable/debian/${LINUX_CODENAME}.noarmor.gpg" \
     /usr/share/keyrings/tailscale-archive-keyring.gpg
   install_root_file /etc/apt/sources.list.d/tailscale.list "$(curl -fsSL \
-    "https://pkgs.tailscale.com/stable/ubuntu/${VERSION_CODENAME}.tailscale-keyring.list")"
+    "https://pkgs.tailscale.com/stable/debian/${LINUX_CODENAME}.tailscale-keyring.list")"
   sudo apt-get update
   apt_install tailscale
   sudo systemctl enable --now tailscaled.service

@@ -14,7 +14,7 @@ install_codex() {
 }
 
 mac() {
-  brew_cask codex-app
+  brew_cask chatgpt
 }
 
 linux() {

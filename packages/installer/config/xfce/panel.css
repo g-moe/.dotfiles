@@ -1,0 +1,29 @@
+@define-color rice_accent @RICE_ACCENT@;
+@define-color rice_panel rgba(14, 22, 24, 0.94);
+
+.xfce4-panel.background {
+	background-color: @rice_panel;
+	color: #f2f4f3;
+}
+
+.xfce4-panel button {
+	background-color: transparent;
+	background-image: none;
+	border: 0;
+	border-radius: 8px;
+	box-shadow: none;
+	color: #f2f4f3;
+	margin: 3px 1px;
+	padding: 0 6px;
+}
+
+.xfce4-panel button:hover,
+.xfce4-panel button:checked {
+	background-color: alpha(@rice_accent, 0.18);
+	color: #ffffff;
+}
+
+.xfce4-panel menu {
+	border: 1px solid alpha(@rice_accent, 0.28);
+	border-radius: 10px;
+}

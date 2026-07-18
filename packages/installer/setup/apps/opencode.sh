@@ -17,9 +17,10 @@ install_opencode() {
 _configure() {
   local target="$HOME/.config/opencode"
 
-  safe_symlink "$ROOT_DIR/opencode/opencode.jsonc" "$target/opencode.jsonc"
-  safe_symlink "$ROOT_DIR/opencode/tui.jsonc" "$target/tui.jsonc"
-  safe_symlink "$ROOT_DIR/opencode/themes/gtheme.json" "$target/themes/gtheme.json"
+  safe_symlink_group OpenCode \
+    "$ROOT_DIR/opencode/opencode.jsonc" "$target/opencode.jsonc" \
+    "$ROOT_DIR/opencode/tui.jsonc" "$target/tui.jsonc" \
+    "$ROOT_DIR/opencode/themes/gtheme.json" "$target/themes/gtheme.json"
 }
 
 mac() {

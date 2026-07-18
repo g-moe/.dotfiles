@@ -46,11 +46,12 @@ linux_install_vnc_service() {
 Description=x11vnc shared desktop on :0
 After=display-manager.service
 Wants=display-manager.service
+StartLimitIntervalSec=0
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/x11vnc -display :0 -auth guess -forever -shared -rfbauth /etc/x11vnc.passwd -rfbport 5900 -noxdamage -repeat
-Restart=on-failure
+ExecStart=/usr/bin/x11vnc -display :0 -auth guess -forever -shared -rfbauth /etc/x11vnc.passwd -rfbport 5900 -localhost -noxdamage -repeat
+Restart=always
 RestartSec=5
 
 [Install]
@@ -70,12 +71,8 @@ linux_store_vnc_password() {
 }
 
 linux_vnc_service_is_ready() {
-  local _
-  for _ in 1 2 3 4 5 6 7 8 9 10; do
-    systemctl is-active --quiet x11vnc.service && return 0
-    sleep 1
-  done
-  return 1
+  systemctl is-active --quiet x11vnc.service &&
+    ss -ltn | grep -qE '[:.]5900[[:space:]]'
 }
 
 linux() {
@@ -85,17 +82,20 @@ linux() {
     0) return 0 ;;
     1)
       silent sudo systemctl disable --now x11vnc.service || true
+      silent sudo systemctl reset-failed x11vnc.service || true
       ;;
     2)
-      apt_install x11vnc
+      apt_install iproute2 x11vnc
       password="$(read_secret 'VNC password')"
       # Classic VNC passwords are capped at 8 characters.
+      [[ -n "$password" ]] || die 'VNC password cannot be empty.'
       [[ "${#password}" -le 8 ]] || die 'VNC password must be 8 characters or fewer.'
       linux_store_vnc_password "$password"
       linux_install_vnc_service
       silent sudo systemctl restart x11vnc.service || true
       if [[ -S /tmp/.X11-unix/X0 ]]; then
-        linux_vnc_service_is_ready || die 'x11vnc did not start on display :0.'
+        retry 10 1 linux_vnc_service_is_ready ||
+          die 'x11vnc did not start on display :0.'
       else
         # Display manager has not created :0 yet (common during SSH installs).
         log 'VNC service enabled; it will attach when display :0 is up.'

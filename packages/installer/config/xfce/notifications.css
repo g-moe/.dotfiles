@@ -1,0 +1,15 @@
+#XfceNotifyWindow {
+	background-color: rgba(14, 22, 24, 0.96);
+	border: 1px solid alpha(@rice_accent, 0.55);
+	border-radius: 14px;
+	color: #f2f4f3;
+}
+
+#XfceNotifyWindow label#summary {
+	color: @rice_accent;
+	font-weight: 700;
+}
+
+#XfceNotifyWindow progressbar progress {
+	background-color: @rice_accent;
+}

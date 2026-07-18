@@ -16,11 +16,14 @@ install_neovim() {
 
 _configure() {
   local relative source target="$HOME/.config/nvim"
+  local links=()
 
   while IFS= read -r source; do
     relative="${source#"$ROOT_DIR/nvim/"}"
-    safe_symlink "$source" "$target/$relative"
+    links+=("$source" "$target/$relative")
   done < <(find "$ROOT_DIR/nvim" -type f | sort)
+
+  safe_symlink_group Neovim "${links[@]}"
 }
 
 mac() {

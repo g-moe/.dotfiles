@@ -18,17 +18,13 @@ mac() {
 }
 
 linux() {
-  local ID='' VERSION_CODENAME=''
-
-  # shellcheck disable=SC1091
-  . /etc/os-release
   install_apt_key \
-    https://download.docker.com/linux/ubuntu/gpg \
+    https://download.docker.com/linux/debian/gpg \
     /etc/apt/keyrings/docker.asc
   install_root_file /etc/apt/sources.list.d/docker.sources "$(cat <<EOF
 Types: deb
-URIs: https://download.docker.com/linux/ubuntu
-Suites: $VERSION_CODENAME
+URIs: https://download.docker.com/linux/debian
+Suites: $LINUX_CODENAME
 Components: stable
 Architectures: $LINUX_ARCH
 Signed-By: /etc/apt/keyrings/docker.asc

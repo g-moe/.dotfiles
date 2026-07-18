@@ -18,7 +18,7 @@ mac() {
 }
 
 linux() {
-  apt_install ddcui
+  return 0
 }
 
 install_display_controls "$1"

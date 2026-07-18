@@ -18,7 +18,8 @@ mac() {
 }
 
 linux() {
-  log 'GNOME Overview provides application and file search.'
+  log 'The Xfce Whisker Menu provides application search.'
+  return 0
 }
 
 install_launcher "$1"

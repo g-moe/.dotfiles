@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Downloads and package installation shared by macOS and Ubuntu setup files.
+# Downloads and package installation shared by macOS and Debian setup files.
 
 # Write root-owned file contents atomically through a temporary file.
 # Usage: install_root_file /etc/apt/sources.list.d/app.list "$content"
@@ -69,6 +69,37 @@ download_github_asset() {
   printf '%s\n' "$file"
 }
 
+# Download, verify, and extract a pinned GitHub source archive.
+# Prints the extracted source directory.
+# Usage: source_dir="$(extract_github_source_archive owner/repo "$commit" "$checksum" "$destination")"
+extract_github_source_archive() {
+  local repository="$1"
+  local commit="$2"
+  local checksum="$3"
+  local destination="$4"
+  local archive source_dir
+
+  archive="$(mktemp)"
+  if ! curl -fsSL "https://codeload.github.com/$repository/tar.gz/$commit" -o "$archive"; then
+    rm -f "$archive"
+    die "Could not download the $repository source archive."
+  fi
+  if ! printf '%s  %s\n' "$checksum" "$archive" | sha256sum --check --status; then
+    rm -f "$archive"
+    die "$repository source archive checksum failed."
+  fi
+  mkdir -p "$destination"
+  if ! tar -xzf "$archive" -C "$destination"; then
+    rm -f "$archive"
+    die "Could not extract the $repository source archive."
+  fi
+  rm -f "$archive"
+
+  source_dir="$destination/${repository##*/}-$commit"
+  [[ -d "$source_dir" ]] || die "Extracted source directory is missing: $source_dir"
+  printf '%s\n' "$source_dir"
+}
+
 # Load Homebrew into PATH when it is already installed.
 # Returns 1 when Homebrew is missing.
 # Usage: load_homebrew || die 'Homebrew is not installed.'
@@ -117,35 +148,4 @@ brew_cask() {
 # Usage: apt_install curl jq
 apt_install() {
   sudo DEBIAN_FRONTEND=noninteractive apt-get install -y "$@"
-}
-
-# Purge one or more APT packages when installed.
-# Usage: apt_purge gdm3 ubuntu-session
-apt_purge() {
-  local package packages=()
-
-  for package in "$@"; do
-    dpkg-query -W -f='${Status}' "$package" 2>/dev/null | grep -q 'install ok installed' ||
-      continue
-    packages+=("$package")
-  done
-  ((${#packages[@]})) || return 0
-  sudo DEBIAN_FRONTEND=noninteractive apt-get remove --purge -y "${packages[@]}"
-}
-
-# Enable a GNOME Shell extension by UUID, adding it to the enabled list if needed.
-# Usage: enable_gnome_extension gsconnect@andyholmes.github.io
-enable_gnome_extension() {
-  local uuid="$1"
-  local enabled
-
-  enabled="$(gsettings get org.gnome.shell enabled-extensions)"
-  if [[ "$enabled" != *"'$uuid'"* ]]; then
-    case "$enabled" in
-      '[]' | '@as []') enabled="['$uuid']" ;;
-      *) enabled="${enabled%]}, '$uuid']" ;;
-    esac
-    gsettings set org.gnome.shell enabled-extensions "$enabled"
-  fi
-  silent gnome-extensions enable "$uuid" || true
 }

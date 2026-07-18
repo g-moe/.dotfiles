@@ -15,10 +15,11 @@ install_passwords() {
 
 mac() {
   log 'Passwords is built into macOS.'
+  return 0
 }
 
 linux() {
-  apt_install seahorse
+  return 0
 }
 
 install_passwords "$1"

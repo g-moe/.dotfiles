@@ -30,18 +30,55 @@ mac() {
 }
 
 linux() {
-  local accent color
-  ask_binary 'Set the dark theme and machine color?' || return 0
+  local color color_hex notification_css source_dir temporary_dir
+  local theme='WhiteSur-Dark'
+  local commit='cd814d4286cbe4638390baacf4db5e66f4506f1a'
+  local checksum='a26476c42bb4b9d0c590e5533a59bbc3555bd3290627292e0a0e7fe9db3c9078'
+
+  ask_binary 'Use WhiteSur desktop styling?' || return 0
+  apt_install xfconf xz-utils
+
+  temporary_dir="$(mktemp -d)"
+  source_dir="$(
+    extract_github_source_archive \
+      vinceliuice/WhiteSur-gtk-theme "$commit" "$checksum" "$temporary_dir"
+  )"
+
+  mkdir -p "$HOME/.themes"
+  rm -rf "$HOME/.themes/$theme"
+  tar -xJf "$source_dir/release/$theme.tar.xz" -C "$HOME/.themes"
+  rm -rf "$temporary_dir"
+
+  [[ -d "$HOME/.themes/$theme/xfwm4" ]] ||
+    die "WhiteSur desktop theme is missing: $theme"
+  xfconf_set xsettings /Net/ThemeName string "$theme"
+  xfconf_set xsettings /Gtk/FontName string 'DejaVu Sans 10'
+  xfconf_set xsettings /Gtk/MonospaceFontName string 'JetBrains Mono 10'
+  xfconf_set xsettings /Xft/Antialias int 1
+  xfconf_set xsettings /Xft/Hinting int 1
+  xfconf_set xsettings /Xft/HintStyle string hintslight
+  xfconf_set xsettings /Xft/RGBA string rgb
+  xfconf_set xfwm4 /general/theme string "$theme"
+
   color="$(machine_field "$ROOT_DIR/machine.json" color)"
-  case "$color" in
-    aqua) accent=teal ;;
-    gray) accent=slate ;;
-    *) accent="$color" ;;
-  esac
-  gsettings set org.gnome.desktop.interface color-scheme prefer-dark
-  gsettings set org.gnome.desktop.interface gtk-theme Yaru-dark
-  # Icon theme is owned by appearance/icons.sh (GreyStone).
-  gsettings set org.gnome.desktop.interface accent-color "$accent"
+  color_hex="$(machine_color_hex "$color")"
+  notification_css="$HOME/.themes/Rice/xfce-notify-4.0/gtk.css"
+  mkdir -p "$(dirname "$notification_css")"
+  {
+    printf '@define-color rice_accent %s;\n' "$color_hex"
+    cat "$INSTALLER_DIR/config/xfce/notifications.css"
+  } >"$notification_css"
+  xfconf_set xfce4-notifyd /theme string Rice
+  xfconf_set xfce4-notifyd /expire-timeout int 5
+  xfconf_set xfce4-notifyd /do-slideout bool false
+  xfconf_set xfce4-notifyd /notify-location string top-right
+
+  [[ "$(xfconf-query -c xsettings -p /Net/ThemeName)" == "$theme" ]] ||
+    die 'The WhiteSur GTK theme was not saved.'
+  [[ "$(xfconf-query -c xfwm4 -p /general/theme)" == "$theme" ]] ||
+    die 'The WhiteSur window theme was not saved.'
+  [[ "$(xfconf-query -c xfce4-notifyd -p /theme)" == Rice ]] ||
+    die 'The notification theme was not saved.'
 }
 
 configure_theme "$1"

@@ -15,10 +15,11 @@ install_phone_integration() {
 
 mac() {
   log 'iPhone Mirroring is built into macOS.'
+  return 0
 }
 
 linux() {
-  apt_install gnome-shell-extension-gsconnect gnome-shell-extension-gsconnect-browsers
+  return 0
 }
 
 install_phone_integration "$1"

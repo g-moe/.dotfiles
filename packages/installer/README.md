@@ -1,6 +1,6 @@
 # Machine installer
 
-The repo must live at `~/.dotfiles`. The installer links only the config files and config subfolders each app needs. It does not link whole Ghostty, Neovim, OpenCode, Karabiner, or tmux source folders.
+The repo must live at `~/.dotfiles`. The installer links only the config files and config subfolders each app needs. On Mac, that includes Ghostty's config and themes. It does not link whole Ghostty, Neovim, OpenCode, Karabiner, or tmux source folders.
 
 **One entry point:** `packages/installer/install.sh`. Every install path goes through it — full run, phase slices, and single strategies (`--git`, `--skills`, `--theme`). Do not run `packages/installer/setup/**` or `packages/theming/create/controller.ts` yourself for install.
 
@@ -19,35 +19,42 @@ npm run verify:machine                  # verify installed links after a VM inst
 
 `--theme` uses Node from `--development` and VSCodium from `--apps`. It loads NVM and Homebrew commands itself, including when it runs from a fresh Bash session.
 
+Successful full and system-phase runs recommend a reboot and ask whether to
+reboot now. The default answer is no. Choosing yes reboots either macOS or
+Linux. Smaller phase runs and the Git, Skills, and theme commands do not ask.
+
 Normal user only (not root). `sudo` is used where the OS needs it.
+
+The only supported Linux base is **Debian 13 (trixie), amd64 or arm64**. In the Debian installer, select **Xfce**, **SSH server**, and **standard system utilities**. The normal user must have `sudo`. The machine installer expects Xfce, LightDM, and the X11 session to already exist; it does not install or replace the desktop.
 
 - Agents editing this tree: [AGENTS.md](AGENTS.md)
 - VM tests: [TESTING.md](TESTING.md)
 
 ---
 
-`install.sh` detects the OS, checks the user, then either runs a single strategy or asks for a **machine name and color** (writes gitignored `machine.json`) and walks phases.
+`install.sh` detects the OS, checks the user, then either runs a single strategy or asks for a **machine name and color** (writes the name, color, and resolved hex value to gitignored `machine.json`) and walks phases.
 
 `--git`, `--skills`, and `--theme` skip the identity prompt. Phase flags (`--apps`, …) still ask for machine name/color first. No argument = all phases.
 
-Phase order: `apps` → `development` → `appearance` → `input` → `desktop` → `files` → `access` → `system`.
+Normal phase runs start with a read-only Linux desktop check, then use this order: `apps` → `development` → `appearance` → `input` → `desktop` → `files` → `access` → `system`. The check runs before every phase flag, so Linux work only starts after Xfce, LightDM, and X11 are ready. Changes to the LightDM X11 session stay in the system phase.
 
-| Phase         | Covers                                                         |
-| ------------- | -------------------------------------------------------------- |
-| `apps`        | Apps (Homebrew / APT / vendor)                                 |
-| `development` | Git, Node, Zsh, tmux, VSCodium, Skills                         |
-| `appearance`  | Wallpaper, screen saver, theme, icons                          |
-| `input`       | Pointer, touchpad, keyboard, remapping                         |
-| `desktop`     | Workspaces, items/widgets, windows, Dock, name in bar, top bar |
-| `files`       | Defaults, associations, Finder/Files                           |
-| `access`      | Handoff, assistants, headless notes, SSH, VNC                  |
-| `system`      | Desktop (XFCE), display server (X11), updates, power, UI refresh |
+| Phase         | Covers                                                                 |
+| ------------- | ---------------------------------------------------------------------- |
+| `apps`        | Apps (Homebrew / APT / vendor)                                         |
+| `development` | Git, Node, Zsh, tmux, VSCodium, Skills                                 |
+| `appearance`  | Wallpaper, screen saver, theme, icons, login screen                    |
+| `input`       | Pointer, touchpad, keyboard, remapping                                 |
+| `desktop`     | Workspaces, items/widgets, windows, lower panel, top bar, name display |
+| `files`       | Defaults, associations, Finder/Files                                   |
+| `access`      | Handoff, assistants, headless notes, SSH, VNC                          |
+| `system`      | LightDM X11 session, updates, power, UI refresh                        |
 
 ### Where things live
 
 ```
 packages/installer/install.sh       **only** machine-install entry point
 packages/installer/setup/<phase>/…  strategies (launched by install.sh with OS as $1)
+packages/installer/config/          installer-owned configuration loaded by strategies
 packages/installer/setup/identity.sh before phases (skipped for --git / --skills / --theme)
 packages/installer/setup/skills.sh  from development (also --skills)
 packages/installer/lib/lib.sh       installer library entry point
@@ -88,7 +95,11 @@ Source `packages/installer/lib/lib.sh` through the local installer-relative path
 | `ask_choice` | Numbered menu → 0-based index |
 | `ask_binary` | Yes / no                      |
 
+Before setting up a group of links, such as Agent skills or Neovim, the installer checks the whole group. If it finds existing files or links pointing somewhere else, it asks once whether to **Skip** or **Replace with symlinks** for that group. Skip leaves each existing item alone while still creating missing links. It never replaces a real directory.
+
 **Skip / Disable / Enable** is a real triad when those are the labels: `0` skip, `1` disable, `2` enable (SSH, VNC). Everything else keeps domain labels — Dock hide/show, sizes, colors, power Skip/Normal/Server, Tailscale install modes, etc.
+
+On macOS, **Window management** uses the same triad. Skip touches nothing. Disable removes only the installer-managed Hammerspoon loader and `center-fill` state. Enable then asks for a named **Window configuration**; the first configuration is `center-fill`, backed by Hammerspoon. Its rule fills resizable windows inside the menu bar and Dock with a 16-pixel gap around them, centers fixed-size windows without resizing them, and never uses macOS Full Screen. After a first-time Hammerspoon install, the installer waits for both the app and its running process before continuing. The installer preserves other `~/.hammerspoon/init.lua` code and keeps Hammerspoon startup when other Hammerspoon code remains. Accessibility permission must still be granted by the user in System Settings.
 
 ### npm scripts
 
@@ -102,15 +113,29 @@ npm run install:test     # shape + lib checks (no VM)
 
 ### Platform quirks
 
-- **Packages:** Homebrew on Mac; APT on Ubuntu unless the vendor has no APT package.
+- **Linux:** Debian 13 (trixie) only, with Xfce + LightDM + X11 installed by the Debian installer.
+- **Packages:** Homebrew on Mac; APT on Debian unless the vendor has no APT package.
 - **Clean only:** no “move my old dotfiles” path.
-- **`$LINUX_ARCH`:** set once. amd64 → Chrome + OpenWhispr; arm64 → Brave + whisper.cpp.
-- **Firefox (Ubuntu):** Snap removed; Mozilla APT installed.
+- **`$LINUX_ARCH`:** set once. amd64 → Chrome; arm64 → Brave.
+- **Voice dictation:** VoiceInk on Mac; skipped on Linux.
+- **Firefox:** Debian’s `firefox-esr` package.
+- **Codex:** Mac installs the ChatGPT app, which now includes Codex; Linux installs the Codex CLI.
 - **CleanShot X:** Mac only.
-- **Defaults:** Chrome (Mac + Ubuntu amd64) or Brave (Ubuntu arm64); Ghostty as Ubuntu terminal. Mac shows a system browser prompt — pick **Use Chrome**.
-- **Wallpaper:** from tracked `images/white.png` + machine color; Ubuntu forced to 3840×2160 for UTM.
-- **Icons:** Ubuntu gets GreyStone (inherits Papirus-Dark); Mac keeps built-in.
+- **Defaults:** Chrome (Mac + Debian amd64) or Brave (Debian arm64). Debian keeps Xfce Terminal as installed by the OS. Mac shows a system browser prompt — pick **Use Chrome**.
+- **Dock:** The Mac Dock starts with Finder and Apps, followed by Mission Control, Settings, Ghostty, VSCodium, and Chrome.
+- **File sidebar:** Finder and Xfce Files pin `~/.dotfiles` after Home, followed by `~/code` and the standard folders.
+- **Terminal:** Mac installs and configures Ghostty through Homebrew. Debian keeps Xfce Terminal and gives it the rice font, colors, and minimal controls through Xfce's live settings, without installing another terminal or changing the launcher command.
+- **Desktop styling:** Linux offers separate prompts for the machine-color wallpaper, WhiteSur Dark styling, and WhiteSur icons. The desktop phase hides desktop icons, puts close/minimize/maximize on the left, removes the lower panel, and builds one compact dark top bar. Full-color Tux opens the application menu; Files, Terminal, VSCodium, and the installed Chrome-family browser open directly beside it. The right side has the user menu, tray, and a date/time without the weekday. Restart is in the user menu. There is no Plank or window list. Workspaces stay unchanged. App theme packs still use `--theme`.
+- **Login screen:** Debian keeps the LightDM GTK greeter and gives it the machine-color background, a centered dark login card, the real local user, a full-color Tux avatar, JetBrains Mono, and a small top status bar. The hostname and extra session controls stay out of the bar.
+- **Tux artwork:** The checked panel and login images come from the canonical [Tux file on Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Tux.svg), credited there to Larry Ewing, Simon Budig, and Garrett LeSage.
 - **Git:** optional; defaults `garrett` / noreply email / `main`; GitHub login is a separate browser step; no token in the shell env.
-- **Desktop environment:** Ubuntu hard-switches to XFCE + LightDM and purges the GNOME session stack (`gdm3`, `ubuntu-session`, `ubuntu-desktop*`) — not a side-by-side install (`system/desktop-environment.sh`).
-- **Display server:** Ubuntu locks LightDM to the XFCE X11 session and removes Wayland session entries (`system/display-server.sh`). Reboot to apply. GNOME on Ubuntu 26.04 is Wayland-only, so GDM tweaks are not used.
-- **VNC:** Screen Sharing on Mac; on Ubuntu, a boot-level `x11vnc` system service shares `:0` (password in `/etc/x11vnc.passwd`, port 5900), including the greeter before login. Expects XFCE/X11 from the strategies above.
+- **Node:** NVM is installed in `~/.nvm`, including when `XDG_CONFIG_HOME` is set.
+- **Desktop check:** `system/desktop-environment.sh` requires `startxfce4`, `/usr/sbin/lightdm`, LightDM as the default display manager, and an Xfce X11 session.
+- **Display server:** `system/display-server.sh` sets LightDM’s default session to Xfce and removes other display-session choices. Reboot or sign out to apply it.
+- **VNC:** Screen Sharing on Mac; on Debian, a boot-level root `x11vnc` service shares the live X11 display on `:0`, including the LightDM greeter before login. Its password is `/etc/x11vnc.passwd` and it listens only on localhost port 5900. If `:0` is down during an SSH install, the enabled service keeps retrying until the display starts.
+
+To keep VNC off the public network, tunnel it through SSH and connect the VNC client to `localhost:5900`:
+
+```bash
+ssh -L 5900:localhost:5900 user@debian-host
+```

@@ -23,10 +23,9 @@ mac() {
 }
 
 linux() {
-  gsettings set org.gnome.shell.extensions.ding show-home false
-  gsettings set org.gnome.shell.extensions.ding show-trash false
-  gsettings set org.gnome.shell.extensions.ding show-volumes false
-  gsettings set org.gnome.shell.extensions.ding show-network-volumes false
+  xfconf_set xfce4-desktop /desktop-icons/style int 0
+  [[ "$(xfconf-query -c xfce4-desktop -p /desktop-icons/style)" == 0 ]] ||
+    die 'Desktop icons were not hidden.'
 }
 
 configure_desktop_items "$1"

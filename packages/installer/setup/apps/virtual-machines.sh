@@ -18,7 +18,7 @@ mac() {
 }
 
 linux() {
-  apt_install gnome-boxes
+  apt_install virt-manager
 }
 
 install_virtual_machines "$1"

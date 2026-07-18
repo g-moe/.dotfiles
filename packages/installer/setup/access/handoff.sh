@@ -20,7 +20,8 @@ mac() {
 }
 
 linux() {
-  log 'GNOME has no built-in Handoff service to disable.'
+  log 'Debian Xfce has no built-in Handoff service to disable.'
+  return 0
 }
 
 configure_handoff "$1"

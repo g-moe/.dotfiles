@@ -22,8 +22,8 @@ mac() {
 }
 
 linux() {
-  gsettings set org.gnome.desktop.session idle-delay 'uint32 0'
-  gsettings set org.gnome.desktop.screensaver lock-enabled false
+  log 'Xfce screen saver changes are not part of this install.'
+  return 0
 }
 
 configure_screensaver "$1"

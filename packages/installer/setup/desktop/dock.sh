@@ -65,6 +65,7 @@ mac() {
 
   defaults write com.apple.dock persistent-apps -array
   _mac_app '/System/Library/CoreServices/Finder.app'
+  _mac_app '/System/Applications/Apps.app'
   _mac_app '/System/Applications/Mission Control.app'
   _mac_app '/System/Applications/System Settings.app'
   _mac_app '/Applications/Ghostty.app'
@@ -74,93 +75,32 @@ mac() {
   killall Dock
 }
 
-_require_linux_app() {
-  [[ -f "/usr/share/applications/$1" || -f "$HOME/.local/share/applications/$1" ]] ||
-    die "Missing Dock application: $1"
-}
-
-# Mission Control stand-in: wmctrl -k works for show-desktop on GNOME (incl. many Wayland sessions).
-_linux_show_desktop() {
-  local desktop_dir="$HOME/.local/share/applications"
-  apt_install wmctrl
-  mkdir -p "$desktop_dir"
-  cat >"$desktop_dir/show-desktop.desktop" <<'EOF'
-[Desktop Entry]
-Type=Application
-Name=Show Desktop
-Comment=Hide all windows and show the desktop
-Icon=desktop
-Exec=wmctrl -k on
-Terminal=false
-StartupNotify=false
-EOF
-}
-
 linux() {
-  local browser choice desktop_file
+  local id
+  local -a kept_panels=() panel_ids=() panel_plugins=()
 
-  choice="$(ask_choice 'Dock setup:' 'Leave unchanged' 'Hide automatically' 'Always show')"
-  [[ "$choice" != 0 ]] || return 0
-
-  gsettings set org.gnome.shell.extensions.dash-to-dock extend-height false
-  gsettings set org.gnome.shell.extensions.dash-to-dock show-mounts false
-  gsettings set org.gnome.shell.extensions.dash-to-dock show-trash false
-  gsettings set org.gnome.shell.extensions.dash-to-dock show-show-apps-button true
-  gsettings set org.gnome.shell.extensions.dash-to-dock show-running true
-  gsettings set org.gnome.shell.extensions.dash-to-dock click-action 'focus-or-previews'
-  gsettings set org.gnome.shell.extensions.dash-to-dock scroll-action 'cycle-windows'
-
-  case "$choice" in
-    1)
-      gsettings set org.gnome.shell.extensions.dash-to-dock dock-fixed false
-      gsettings set org.gnome.shell.extensions.dash-to-dock autohide true
-      gsettings set org.gnome.shell.extensions.dash-to-dock intellihide true
-      ;;
-    2)
-      gsettings set org.gnome.shell.extensions.dash-to-dock dock-fixed true
-      gsettings set org.gnome.shell.extensions.dash-to-dock autohide false
-      gsettings set org.gnome.shell.extensions.dash-to-dock intellihide false
-      ;;
-  esac
-
-  choice="$(ask_choice 'Dock icon size:' Small Medium Large)"
-  case "$choice" in
-    0) gsettings set org.gnome.shell.extensions.dash-to-dock dash-max-icon-size 32 ;;
-    1) gsettings set org.gnome.shell.extensions.dash-to-dock dash-max-icon-size 48 ;;
-    2) gsettings set org.gnome.shell.extensions.dash-to-dock dash-max-icon-size 64 ;;
-  esac
-
-  choice="$(ask_choice 'Dock position:' Bottom Left Right)"
-  case "$choice" in
-    0) gsettings set org.gnome.shell.extensions.dash-to-dock dock-position BOTTOM ;;
-    1) gsettings set org.gnome.shell.extensions.dash-to-dock dock-position LEFT ;;
-    2) gsettings set org.gnome.shell.extensions.dash-to-dock dock-position RIGHT ;;
-  esac
-
-  case "$LINUX_ARCH" in
-    amd64) browser='google-chrome.desktop' ;;
-    arm64) browser='brave-browser.desktop' ;;
-    *) die "No Dock browser is configured for $LINUX_ARCH" ;;
-  esac
-
-  _linux_show_desktop
-  for desktop_file in \
-    org.gnome.Nautilus.desktop \
-    show-desktop.desktop \
-    org.gnome.Settings.desktop \
-    com.mitchellh.ghostty.desktop \
-    codium.desktop \
-    "$browser"; do
-    _require_linux_app "$desktop_file"
+  mapfile -t panel_ids < <(
+    xfconf-query -c xfce4-panel -p /panels | awk '/^[0-9]+$/ { print }'
+  )
+  for id in "${panel_ids[@]}"; do
+    if [[ "$id" == 2 ]]; then
+      mapfile -t panel_plugins < <(
+        xfconf-query -c xfce4-panel -p /panels/panel-2/plugin-ids |
+          awk '/^[0-9]+$/ { print }'
+      )
+    else
+      kept_panels+=("$id")
+    fi
   done
-  gsettings set org.gnome.shell favorite-apps "[
-    'org.gnome.Nautilus.desktop',
-    'show-desktop.desktop',
-    'org.gnome.Settings.desktop',
-    'com.mitchellh.ghostty.desktop',
-    'codium.desktop',
-    '$browser'
-  ]"
+
+  if [[ " ${panel_ids[*]} " == *' 2 '* ]]; then
+    ((${#kept_panels[@]})) || die 'Removing the lower panel would remove every Xfce panel.'
+    xfconf_set_array xfce4-panel /panels int "${kept_panels[@]}"
+    silent xfconf-query -c xfce4-panel -p /panels/panel-2 -r -R || true
+    for id in "${panel_plugins[@]}"; do
+      silent xfconf-query -c xfce4-panel -p "/plugins/plugin-$id" -r -R || true
+    done
+  fi
 }
 
 configure_dock "$1"

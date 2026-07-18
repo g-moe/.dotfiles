@@ -28,9 +28,8 @@ mac() {
 }
 
 linux() {
-  gsettings set org.gnome.desktop.interface locate-pointer true
-  gsettings set org.gnome.desktop.interface cursor-size 24
-  gsettings set org.gnome.desktop.interface cursor-theme Yaru
+  log 'Xfce pointer changes are not part of this install.'
+  return 0
 }
 
 configure_pointer "$1"

@@ -35,8 +35,9 @@ _configure() {
   mkdir -p "$custom/themes" "$HOME/.local/bin"
   cp "$ROOT_DIR/packages/theming/output/oh-my-zsh/gtheme-dark.zsh-theme" "$custom/themes/"
   cp "$ROOT_DIR/packages/theming/output/oh-my-zsh/gtheme-light.zsh-theme" "$custom/themes/"
-  safe_symlink "$ROOT_DIR/zsh/.zshrc" "$HOME/.zshrc"
-  safe_symlink "$ROOT_DIR/packages/lib/bash/bin/shared-copy-to-clipboard.sh" \
+  safe_symlink_group Zsh \
+    "$ROOT_DIR/zsh/.zshrc" "$HOME/.zshrc" \
+    "$ROOT_DIR/packages/lib/bash/bin/shared-copy-to-clipboard.sh" \
     "$HOME/.local/bin/copy-to-clipboard"
   grep -qxF "$shell_path" /etc/shells ||
     printf '%s\n' "$shell_path" | sudo tee -a /etc/shells >/dev/null

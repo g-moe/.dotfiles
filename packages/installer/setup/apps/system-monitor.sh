@@ -18,7 +18,7 @@ mac() {
 }
 
 linux() {
-  apt_install gnome-system-monitor gnome-shell-extension-system-monitor
+  apt_install xfce4-taskmanager
 }
 
 install_system_monitor "$1"

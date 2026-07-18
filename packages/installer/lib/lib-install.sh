@@ -9,11 +9,11 @@ detect_os() {
     Darwin) OS=mac ;;
     Linux)
       OS=linux
-      has dpkg || die 'Ubuntu package tools are missing.'
+      has dpkg || die 'Debian package tools are missing.'
       LINUX_ARCH="$(dpkg --print-architecture)"
       case "$LINUX_ARCH" in
         amd64 | arm64) ;;
-        *) die "Ubuntu amd64 or arm64 is required; found $LINUX_ARCH." ;;
+        *) die "Debian amd64 or arm64 is required; found $LINUX_ARCH." ;;
       esac
       export LINUX_ARCH
       ;;
@@ -25,16 +25,18 @@ detect_os() {
 # Require a supported OS after detect_os.
 # Usage: validate_os
 validate_os() {
-  local ID='' VERSION_ID=''
+  local ID='' VERSION_CODENAME='' VERSION_ID=''
 
   case "$OS" in
     mac) ;;
     linux)
-      [[ -r /etc/os-release ]] || die 'Ubuntu identification file is missing.'
+      [[ -r /etc/os-release ]] || die 'Debian identification file is missing.'
       # shellcheck disable=SC1091
       . /etc/os-release
-      [[ "$ID" == ubuntu && "$VERSION_ID" == 26.04 ]] ||
-        die "Ubuntu 26.04 is required; found ${ID:-unknown} ${VERSION_ID:-unknown}."
+      [[ "$ID" == debian && "$VERSION_ID" == 13 && "$VERSION_CODENAME" == trixie ]] ||
+        die "Debian 13 (trixie) is required; found ${ID:-unknown} ${VERSION_ID:-unknown} (${VERSION_CODENAME:-unknown})."
+      LINUX_CODENAME="$VERSION_CODENAME"
+      export LINUX_CODENAME
       ;;
     *) die "Unsupported OS value: $OS" ;;
   esac
@@ -117,4 +119,71 @@ machine_color_tint() {
   local values
   values="$(machine_color_values "$1")"
   printf '%s\n' "${values#*|}"
+}
+
+# Render the shared machine-color artwork at one size.
+# Usage: render_machine_background "$source" "$color_hex" 6016x3388 "$output"
+render_machine_background() {
+  local source="$1"
+  local color_hex="$2"
+  local output_size="$3"
+  local output="$4"
+  local temporary_dir temporary_path
+
+  mkdir -p "$(dirname "$output")"
+  temporary_dir="$(mktemp -d "$(dirname "$output")/.machine-background.XXXXXX")"
+  temporary_path="$temporary_dir/background.png"
+  if ! magick "$source" \
+    -rotate 180 \
+    -colorspace gray \
+    +level-colors '#000000',"$color_hex" \
+    -resize "$output_size!" \
+    \( -size 1504x847 radial-gradient:white-black +level '25%,100%' -resize "$output_size!" \) \
+    -compose multiply \
+    -composite \
+    "$temporary_path"; then
+    rm -rf "$temporary_dir"
+    die 'Could not create the machine background.'
+  fi
+  if [[ ! -s "$temporary_path" ]]; then
+    rm -rf "$temporary_dir"
+    die 'Machine background image is empty.'
+  fi
+  mv "$temporary_path" "$output"
+  rm -rf "$temporary_dir"
+}
+
+# Set one Xfce value, creating it when the property does not exist yet.
+# Usage: xfconf_set xsettings /Net/ThemeName string WhiteSur-Dark
+xfconf_set() {
+  local channel="$1"
+  local property="$2"
+  local type="$3"
+  local value="$4"
+
+  if silent xfconf-query -c "$channel" -p "$property"; then
+    xfconf-query -c "$channel" -p "$property" -s "$value"
+  else
+    xfconf-query -c "$channel" -p "$property" -n -t "$type" -s "$value"
+  fi
+}
+
+# Replace one Xfce array. Remaining arguments are values of the same type.
+# Usage: xfconf_set_array xfce4-panel /panels int 1
+xfconf_set_array() {
+  local channel="$1"
+  local property="$2"
+  local type="$3"
+  local value
+  local -a arguments=(-a)
+  shift 3
+
+  (($#)) || die "No values were provided for $channel $property"
+  if ! silent xfconf-query -c "$channel" -p "$property"; then
+    arguments=(-n -a)
+  fi
+  for value in "$@"; do
+    arguments+=(-t "$type" -s "$value")
+  done
+  xfconf-query -c "$channel" -p "$property" "${arguments[@]}"
 }

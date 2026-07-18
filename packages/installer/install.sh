@@ -30,7 +30,7 @@ install_apps() {
   run_strategy 'File association tool' apps/file-associations.sh
   run_strategy 'ImageMagick' apps/imagemagick.sh
   run_strategy 'CleanShot X' apps/screenshot.sh
-  run_strategy 'Ghostty' apps/ghostty.sh
+  run_strategy 'Terminal' apps/terminal.sh
   run_strategy 'JetBrains Mono' apps/jetbrains-mono.sh
   run_strategy 'Keyboard remapper' apps/keyboard-remapper.sh
   run_strategy 'Display controls' apps/display-controls.sh
@@ -87,6 +87,7 @@ configure_appearance() {
   run_strategy 'Screen saver' appearance/screensaver.sh
   run_strategy 'Theme' appearance/theme.sh
   run_strategy 'Icons' appearance/icons.sh
+  run_strategy 'Login screen' appearance/login-screen.sh
 }
 
 configure_input() {
@@ -122,9 +123,13 @@ configure_access() {
   run_strategy 'VNC' access/vnc.sh
 }
 
+check_linux_desktop() {
+  [[ "$OS" == linux ]] || return 0
+  run_strategy 'Check desktop environment' system/desktop-environment.sh
+}
+
 configure_system() {
-  run_strategy 'Desktop environment' system/desktop-environment.sh
-  run_strategy 'Display server' system/display-server.sh
+  run_strategy 'Configure X11 session' system/display-server.sh
   run_strategy 'Software updates' system/updates.sh
   run_strategy 'Power' system/power.sh
   run_strategy 'Refresh the desktop' system/restart-ui.sh
@@ -173,6 +178,22 @@ parse_mode() {
   esac
 }
 
+finish_install() {
+  local os="$1"
+  local mode="$2"
+
+  log_section 'Done'
+  log "$os $mode setup is complete."
+
+  [[ "$mode" == all || "$mode" == system ]] || return 0
+  log 'A reboot is recommended.'
+
+  if ask_binary 'Reboot now?' n; then
+    log 'Rebooting now.'
+    sudo shutdown -r now
+  fi
+}
+
 main() {
   local mode
 
@@ -200,12 +221,12 @@ main() {
       ;;
     *)
       run_strategy 'Machine name and color' identity.sh
+      check_linux_desktop
       run_phase "$mode"
       ;;
   esac
 
-  log_section 'Done'
-  log "$OS $mode setup is complete."
+  finish_install "$OS" "$mode"
 }
 
 main "$@"
