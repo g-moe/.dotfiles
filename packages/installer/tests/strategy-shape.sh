@@ -64,6 +64,12 @@ grep -Fq 'activate_repo_node "$ROOT_DIR"' "$INSTALLER_DIR/install.sh" ||
   fail 'install.sh must activate the repo Node version before running --theme'
 grep -Fq 'load_homebrew ||' "$INSTALLER_DIR/install.sh" ||
   fail 'install.sh must load Homebrew commands before running --theme on macOS'
+grep -Fq "log 'A reboot is recommended.'" "$INSTALLER_DIR/install.sh" ||
+  fail 'install.sh must recommend a reboot when setup finishes'
+grep -Fq "ask_binary 'Reboot now?' n" "$INSTALLER_DIR/install.sh" ||
+  fail 'install.sh must ask before rebooting and default to no'
+grep -Fq 'sudo shutdown -r now' "$INSTALLER_DIR/install.sh" ||
+  fail 'install.sh must use the shared macOS and Linux reboot command'
 grep -Fq '"install:codium"' "$ROOT_DIR/packages/theming/create/controller.ts" ||
   fail '--theme must install its VSIX into VSCodium'
 grep -Fq 'mkdir -p "$HOME/.nvm"' \

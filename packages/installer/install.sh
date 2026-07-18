@@ -179,6 +179,20 @@ parse_mode() {
   esac
 }
 
+finish_install() {
+  local os="$1"
+  local mode="$2"
+
+  log_section 'Done'
+  log "$os $mode setup is complete."
+  log 'A reboot is recommended.'
+
+  if ask_binary 'Reboot now?' n; then
+    log 'Rebooting now.'
+    sudo shutdown -r now
+  fi
+}
+
 main() {
   local mode
 
@@ -211,8 +225,7 @@ main() {
       ;;
   esac
 
-  log_section 'Done'
-  log "$OS $mode setup is complete."
+  finish_install "$OS" "$mode"
 }
 
 main "$@"

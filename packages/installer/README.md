@@ -19,6 +19,9 @@ npm run verify:machine                  # verify installed links after a VM inst
 
 `--theme` uses Node from `--development` and VSCodium from `--apps`. It loads NVM and Homebrew commands itself, including when it runs from a fresh Bash session.
 
+Every successful installer run recommends a reboot and asks whether to reboot
+now. The default answer is no. Choosing yes reboots either macOS or Linux.
+
 Normal user only (not root). `sudo` is used where the OS needs it.
 
 The only supported Linux base is **Debian 13 (trixie), amd64 or arm64**. In the Debian installer, select **Xfce**, **SSH server**, and **standard system utilities**. The normal user must have `sudo`. The machine installer expects Xfce, LightDM, and the X11 session to already exist; it does not install or replace the desktop.
