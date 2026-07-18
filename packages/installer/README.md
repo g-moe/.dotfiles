@@ -37,16 +37,16 @@ The only supported Linux base is **Debian 13 (trixie), amd64 or arm64**. In the 
 
 Normal phase runs start with a read-only Linux desktop check, then use this order: `apps` → `development` → `appearance` → `input` → `desktop` → `files` → `access` → `system`. The check runs before every phase flag, so Linux work only starts after Xfce, LightDM, and X11 are ready. Changes to the LightDM X11 session stay in the system phase.
 
-| Phase         | Covers                                                                   |
-| ------------- | ------------------------------------------------------------------------ |
-| `apps`        | Apps (Homebrew / APT / vendor)                                           |
-| `development` | Git, Node, Zsh, tmux, VSCodium, Skills                                   |
-| `appearance`  | Wallpaper, screen saver, theme, icons, login screen                      |
-| `input`       | Pointer, touchpad, keyboard, remapping                                   |
-| `desktop`     | Workspaces, items/widgets, windows, lower panel, top bar, name display   |
-| `files`       | Defaults, associations, Finder/Files                                     |
-| `access`      | Handoff, assistants, headless notes, SSH, VNC                            |
-| `system`      | LightDM X11 session, updates, power, UI refresh                          |
+| Phase         | Covers                                                                 |
+| ------------- | ---------------------------------------------------------------------- |
+| `apps`        | Apps (Homebrew / APT / vendor)                                         |
+| `development` | Git, Node, Zsh, tmux, VSCodium, Skills                                 |
+| `appearance`  | Wallpaper, screen saver, theme, icons, login screen                    |
+| `input`       | Pointer, touchpad, keyboard, remapping                                 |
+| `desktop`     | Workspaces, items/widgets, windows, lower panel, top bar, name display |
+| `files`       | Defaults, associations, Finder/Files                                   |
+| `access`      | Handoff, assistants, headless notes, SSH, VNC                          |
+| `system`      | LightDM X11 session, updates, power, UI refresh                        |
 
 ### Where things live
 

@@ -5,160 +5,160 @@
 @define-color rice_muted #a9b5af;
 
 .lightdm-gtk-greeter {
-  color: @rice_text;
-  font-family: "JetBrains Mono";
-  font-size: 11pt;
+	color: @rice_text;
+	font-family: "JetBrains Mono";
+	font-size: 11pt;
 }
 
 #panel_window {
-  background-color: rgba(9, 15, 16, 0.78);
-  color: @rice_text;
-  border: none;
-  box-shadow: inset 0 -1px alpha(@rice_accent, 0.18);
+	background-color: rgba(9, 15, 16, 0.78);
+	color: @rice_text;
+	border: none;
+	box-shadow: inset 0 -1px alpha(@rice_accent, 0.18);
 }
 
 #panel_window menubar,
 #panel_window menubar > menuitem {
-  background-color: transparent;
-  color: @rice_text;
-  font-weight: 600;
+	background-color: transparent;
+	color: @rice_text;
+	font-weight: 600;
 }
 
 #panel_window menubar > menuitem:hover {
-  background-color: alpha(@rice_accent, 0.16);
-  border-radius: 8px;
+	background-color: alpha(@rice_accent, 0.16);
+	border-radius: 8px;
 }
 
 #panel_window menu {
-  background-color: @rice_bg;
-  color: @rice_text;
-  border: 1px solid @rice_border;
-  border-radius: 10px;
+	background-color: @rice_bg;
+	color: @rice_text;
+	border: 1px solid @rice_border;
+	border-radius: 10px;
 }
 
 #login_window,
 #power_window {
-  background-color: transparent;
-  color: @rice_text;
-  border: none;
-  border-radius: 22px;
-  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.58);
+	background-color: transparent;
+	color: @rice_text;
+	border: none;
+	border-radius: 22px;
+	box-shadow: 0 24px 80px rgba(0, 0, 0, 0.58);
 }
 
 #content_frame {
-  background-color: @rice_bg;
-  color: @rice_text;
-  border: 1px solid @rice_border;
-  border-bottom: none;
-  border-radius: 22px 22px 0 0;
-  padding: 10px 8px 18px 8px;
-  box-shadow: inset 0 1px rgba(255, 255, 255, 0.035);
+	background-color: @rice_bg;
+	color: @rice_text;
+	border: 1px solid @rice_border;
+	border-bottom: none;
+	border-radius: 22px 22px 0 0;
+	padding: 10px 8px 18px 8px;
+	box-shadow: inset 0 1px rgba(255, 255, 255, 0.035);
 }
 
 #buttonbox_frame {
-  background-color: @rice_bg;
-  color: @rice_text;
-  border: 1px solid @rice_border;
-  border-top: 1px solid alpha(@rice_accent, 0.18);
-  border-radius: 0 0 22px 22px;
-  padding-top: 16px;
-  box-shadow: none;
+	background-color: @rice_bg;
+	color: @rice_text;
+	border: 1px solid @rice_border;
+	border-top: 1px solid alpha(@rice_accent, 0.18);
+	border-radius: 0 0 22px 22px;
+	padding-top: 16px;
+	box-shadow: none;
 }
 
 #user_image_border {
-  background-color: alpha(@rice_accent, 0.10);
-  border: 1px solid alpha(@rice_accent, 0.28);
-  border-radius: 18px;
-  padding: 10px;
-  box-shadow: none;
+	background-color: alpha(@rice_accent, 0.1);
+	border: 1px solid alpha(@rice_accent, 0.28);
+	border-radius: 18px;
+	padding: 10px;
+	box-shadow: none;
 }
 
 #user_image {
-  background-color: transparent;
-  border: none;
-  border-radius: 12px;
-  padding: 0;
-  box-shadow: none;
+	background-color: transparent;
+	border: none;
+	border-radius: 12px;
+	padding: 0;
+	box-shadow: none;
 }
 
 #user_combobox,
 #user_combobox button {
-  background-color: transparent;
-  background-image: none;
-  color: @rice_text;
-  border: none;
-  box-shadow: none;
-  font-size: 15pt;
-  font-weight: 700;
-  padding: 4px 0;
+	background-color: transparent;
+	background-image: none;
+	color: @rice_text;
+	border: none;
+	box-shadow: none;
+	font-size: 15pt;
+	font-weight: 700;
+	padding: 4px 0;
 }
 
 #login_window entry,
 #power_window entry {
-  min-height: 38px;
-  background-color: rgba(255, 255, 255, 0.07);
-  background-image: none;
-  color: @rice_text;
-  caret-color: @rice_accent;
-  border: 1px solid rgba(255, 255, 255, 0.13);
-  border-radius: 10px;
-  box-shadow: none;
-  padding: 2px 12px;
+	min-height: 38px;
+	background-color: rgba(255, 255, 255, 0.07);
+	background-image: none;
+	color: @rice_text;
+	caret-color: @rice_accent;
+	border: 1px solid rgba(255, 255, 255, 0.13);
+	border-radius: 10px;
+	box-shadow: none;
+	padding: 2px 12px;
 }
 
 #login_window entry:focus,
 #login_window entry:hover {
-  background-color: rgba(255, 255, 255, 0.10);
-  border-color: @rice_accent;
-  box-shadow: 0 0 0 2px alpha(@rice_accent, 0.14);
+	background-color: rgba(255, 255, 255, 0.1);
+	border-color: @rice_accent;
+	box-shadow: 0 0 0 2px alpha(@rice_accent, 0.14);
 }
 
 #login_window entry placeholder {
-  color: @rice_muted;
+	color: @rice_muted;
 }
 
 #login_window button,
 #power_window button {
-  min-height: 34px;
-  background-color: rgba(255, 255, 255, 0.075);
-  background-image: none;
-  color: @rice_text;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 10px;
-  box-shadow: none;
-  padding: 2px 16px;
+	min-height: 34px;
+	background-color: rgba(255, 255, 255, 0.075);
+	background-image: none;
+	color: @rice_text;
+	border: 1px solid rgba(255, 255, 255, 0.12);
+	border-radius: 10px;
+	box-shadow: none;
+	padding: 2px 16px;
 }
 
 #login_window button:hover,
 #power_window button:hover {
-  background-color: alpha(@rice_accent, 0.16);
-  border-color: alpha(@rice_accent, 0.48);
+	background-color: alpha(@rice_accent, 0.16);
+	border-color: alpha(@rice_accent, 0.48);
 }
 
 #login_button,
 #power_ok_button {
-  background-color: @rice_accent;
-  color: #101817;
-  border-color: @rice_accent;
-  font-weight: 700;
+	background-color: @rice_accent;
+	color: #101817;
+	border-color: @rice_accent;
+	font-weight: 700;
 }
 
 #login_button:hover,
 #login_button:focus,
 #power_ok_button:hover,
 #power_ok_button:focus {
-  background-color: shade(@rice_accent, 1.12);
-  color: #0c1212;
-  border-color: shade(@rice_accent, 1.12);
+	background-color: shade(@rice_accent, 1.12);
+	color: #0c1212;
+	border-color: shade(@rice_accent, 1.12);
 }
 
 #greeter_infobar {
-  background-color: #b84b4b;
-  color: #ffffff;
-  border: none;
+	background-color: #b84b4b;
+	color: #ffffff;
+	border: none;
 }
 
 #message_label {
-  color: #ffffff;
-  font-weight: 600;
+	color: #ffffff;
+	font-weight: 600;
 }
