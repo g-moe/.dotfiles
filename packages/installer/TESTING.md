@@ -182,29 +182,29 @@ For **Disable**, confirm the managed lines and saved name are gone and Hammerspo
 | Check                          | macOS | Debian 13 |
 | ------------------------------ | ----- | --------- |
 | No-VM installer tests          | Pass  | Pass      |
-| Clean full install             | Kept  | Pending   |
-| Reboot and second full install | Kept  | Pending   |
+| Clean full install             | Pass  | Pass      |
+| Reboot and second full install | Pass  | Pass      |
 | Xfce + LightDM + X11 check     | n/a   | Pass      |
-| WhiteSur desktop + icons       | n/a   | Pass      |
-| Styled LightDM login screen    | n/a   | Pass      |
-| Machine-color wallpaper        | Kept  | Pending   |
-| Rounded Plank dock             | n/a   | Pass      |
-| Mac controls + clean top panel | n/a   | Pass      |
+| WhiteSur Dark + icons          | n/a   | Pass      |
+| Machine-color wallpaper        | Pass  | Pass      |
+| Dark top bar + app launchers   | n/a   | Pass      |
+| Tux login + centered dark card | n/a   | Pass      |
 | VNC Skip / Disable / Enable    | Kept  | Pass      |
 | Window management              | Code  | n/a       |
 | amd64 package paths            | n/a   | Code only |
 | arm64 full UTM proof           | n/a   | Pass      |
 
-WhiteSur supplies the GTK styling, icons, Xfce window frame, and Plank dock
-theme. Close, minimize, and maximize are placed on the left in Mac order. The
-top panel uses an icon menu and status items without window or workspace lists.
-Xfce input and workspace settings stay unchanged. The appearance phase can set
-the same generated machine-color wallpaper used on macOS. Application theme
-packs from `--theme` remain separate.
+WhiteSur Dark supplies the GTK styling, icons, and Xfce window frame. Close,
+minimize, and maximize are placed on the left in Mac order. Linux uses one dark
+top panel with a Tux menu, four direct app launchers, compact status items, and
+no window or workspace list. The lower panel and Plank are absent. Xfce input
+and workspace settings stay unchanged. The appearance phase can set the same
+generated machine-color wallpaper used on macOS. Application theme packs from
+`--theme` remain separate.
 
 ## Pass checklists
 
-**Debian desktop** — LightDM owns the styled login screen; the session is X11; Xfce opens; the optional machine-color wallpaper, WhiteSur desktop styling, and icons apply; Mac-order window buttons are on the left; the top panel has no open-window list; the rounded Plank dock opens the pinned apps and shows running apps; workspaces stay put; the browser default works and Xfce Terminal opens from the dock; apps open; VSCodium/`code`, files, SSH, VNC, updates, power, and Skills work; no extra desktop session is offered.
+**Debian desktop** — LightDM owns the styled login screen; the session is X11; Xfce opens; the optional machine-color wallpaper, WhiteSur Dark styling, and icons apply; Mac-order window buttons are on the left; desktop icons and the lower panel are gone; the single top bar has Tux, four working app launchers, the user menu with Restart, tray, and weekday-free clock; workspaces stay put; the browser default works and Xfce Terminal opens with its dark minimal settings; apps open; VSCodium/`code`, files, SSH, VNC, updates, power, and Skills work; no extra desktop session is offered.
 
 **Git** — `npm run install:git` / `install.sh --git` only; skip leaves Git alone; accept → LFS + filters; name/email/branch stick; settings match `git.sh`; GitHub skip vs browser login; no `GITHUB_TOKEN` in a new shell.
 
@@ -216,8 +216,35 @@ packs from `--theme` remain separate.
 
 ## Recent full proofs
 
-The Linux terminal step became a no-op on July 18, 2026, so its next clean
-Debian run and repeat are pending.
+On July 18, 2026, a fresh Hammerspoon install exposed a macOS app-name lookup
+delay, and the same run exposed a launchd stop/start race in the machine-name
+menu item. Window management now opens the installed app by its exact path, and
+the menu item waits for its old process to stop before starting again. Both
+direct checks and the no-VM installer tests passed; a full installer rerun is
+still pending.
+
+The finished Linux rice was added to the installer and passed a clean Debian 13
+arm64 full install, saved setting checks, reboot, login-screen check, desktop
+check, launcher checks, and full repeat on July 18, 2026. The final login screen
+showed the real user with the full-color Tux avatar on a centered dark card.
+The desktop used WhiteSur Dark, the machine-color wallpaper, one dark top bar,
+working Files, Terminal, VSCodium, and Brave launchers, Restart in the user
+menu, and no lower panel or Plank. Thunar and Xfce Terminal opened dark.
+
+The same installer changes then passed a clean macOS 26 arm64 full install,
+installed-link checks, reboot, full repeat, and repeat installed-link checks in
+UTM on July 18, 2026. The Linux-only rice steps did not change the macOS desktop
+path.
+
+macOS 26 arm64 passed a clean full install, reboot, full repeat, and installed-link
+checks in UTM on July 17, 2026. Before the repeat, two Neovim links and two
+Agent skill links were replaced with regular files. The repeat asked once for
+Neovim and once for Agent skills, replaced both files in each group, and left
+every installed link valid. The available Debian base was already installed,
+so its July 17 run was a full repeat rather than a clean proof. It passed the
+same grouped-link test, a reboot and second full run, installed-link checks,
+the Xfce X11 desktop, the earlier LightDM styling, Plank, SSH, and VNC. That
+Plank-based desktop was superseded by the single-panel rice above.
 
 Debian 13 arm64 passed in UTM on July 16, 2026. The first run found and fixed
 two live issues: terminal-default verification tried to launch Ghostty over
@@ -225,18 +252,8 @@ SSH, and disabling x11vnc left a stale failed service state. The full rerun,
 post-reboot rerun, Xfce X11 session, LightDM greeter-to-desktop VNC connection
 on `:0`, and the VNC Skip / Disable / Enable choices then passed. A later
 appearance-only run and repeat run installed WhiteSur icons and window frames.
-A desktop-phase repeat caught and fixed an empty-list bug. A researched styling
-pass then applied WhiteSur Light to GTK and Xfwm, made the application menu
-icon-only, removed the task and workspace lists, and replaced the lower Xfce
-panel with Plank using WhiteSur's rounded dock theme. The official theme text
-was copied from the pinned WhiteSur source without cloning another repository.
-The final repeat and reboot kept `CHM|` controls on the left, the top status bar
-clean, and the rounded dock running. Thunar, VSCodium, Brave, and Ghostty were
-checked from the dock. Ghostty's first launch exposed QEMU's OpenGL 3.3 report;
-the Debian launcher now selects Mesa's working 4.3 path inside virtual machines.
-The styled LightDM screen then passed after a full run, reboot, and repeat run:
-WhiteSur, JetBrains Mono, the centered avatar-free login, machine-color
-background, and minimal top bar all appeared as configured.
-
-The Xfce desktop wallpaper was restored after that proof and still needs an
-appearance-phase run and repeat run in a disposable Debian VM.
+A desktop-phase repeat caught and fixed an empty-list bug. A later styling pass
+proved the earlier WhiteSur Light and Plank setup before it was replaced by the
+current dark single-panel rice. The earlier LightDM screen also passed a full
+run, reboot, and repeat before the new Tux login replaced it. The current login
+screen and restored Xfce wallpaper are covered by the July 18 proof above.
