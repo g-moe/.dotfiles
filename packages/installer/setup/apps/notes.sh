@@ -18,7 +18,7 @@ mac() {
 }
 
 linux() {
-  apt_install xpad
+  return 0
 }
 
 install_notes "$1"

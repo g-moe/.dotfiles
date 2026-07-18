@@ -18,7 +18,7 @@ mac() {
 }
 
 linux() {
-  apt_install kdeconnect
+  return 0
 }
 
 install_phone_integration "$1"

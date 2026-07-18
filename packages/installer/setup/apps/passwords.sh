@@ -18,7 +18,7 @@ mac() {
 }
 
 linux() {
-  apt_install keepassxc
+  return 0
 }
 
 install_passwords "$1"
