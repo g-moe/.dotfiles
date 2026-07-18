@@ -23,3 +23,6 @@ flowchart TD
 
   R["bash packages/installer/install.sh --theme\n(npm run install:theme)"] --> B
 ```
+
+The Zsh prompt reads the saved color from `~/.dotfiles/machine.json` for its
+machine-name block. Missing or unknown colors fall back to `#101010`.
