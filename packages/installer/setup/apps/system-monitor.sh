@@ -18,7 +18,7 @@ mac() {
 }
 
 linux() {
-  apt_install xfce4-taskmanager xfce4-systemload-plugin
+  apt_install xfce4-taskmanager
 }
 
 install_system_monitor "$1"
