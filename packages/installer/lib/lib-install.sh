@@ -101,6 +101,7 @@ machine_color_values() {
     yellow) printf '#FABD2F|0.980392 0.741176 0.184314 0.250000\n' ;;
     aqua) printf '#8EC07C|0.556863 0.752941 0.486275 0.250000\n' ;;
     gray) printf '#A89984|0.658824 0.600000 0.517647 0.250000\n' ;;
+    black) printf '#101010|0.062745 0.062745 0.062745 0.250000\n' ;;
     *) die "Unknown machine color: $1" ;;
   esac
 }

@@ -25,6 +25,8 @@ expect_equal "$(machine_field "$temporary_dir/machine.json" color)" blue
 expect_equal "$(machine_field "$temporary_dir/machine.json" colorHex)" '#458588'
 expect_equal "$(machine_color_hex blue)" '#458588'
 expect_equal "$(machine_color_tint blue)" '0.270588 0.521569 0.533333 0.250000'
+expect_equal "$(machine_color_hex black)" '#101010'
+expect_equal "$(machine_color_tint black)" '0.062745 0.062745 0.062745 0.250000'
 
 magick_log="$temporary_dir/magick.log"
 magick() {

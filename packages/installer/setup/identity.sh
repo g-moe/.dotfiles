@@ -12,7 +12,7 @@ valid_machine_name() {
 
 ask_machine_identity() {
   local color_choice default_name
-  local -a colors=(blue green orange purple red yellow aqua gray)
+  local -a colors=(blue green orange purple red yellow aqua gray black)
 
   default_name="$(hostname -s | tr '[:upper:]' '[:lower:]' | tr -cs 'a-z0-9-' '-' |
     sed 's/^-//; s/-$//' | cut -c1-32)"
