@@ -29,6 +29,8 @@ mactop/com.dotfiles.mactop-menubar.plist
 nvim/init.lua
 opencode/opencode.jsonc
 packages/installer/install.sh
+packages/installer/packages/retire.json
+packages/installer/packages/retire.schema.json
 packages/lib/bash/lib.sh
 packages/lib/ts/.gitkeep
 packages/mac

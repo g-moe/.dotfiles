@@ -100,6 +100,9 @@ ssh-ls() {
 # Walk through creating a new SSH host config
 alias ssh-new="$HOME/.dotfiles/packages/lib/bash/bin/shared-ssh-new-host.sh"
 
+# Record and uninstall a package on this platform
+alias retire='RETIRE_FILE="$HOME/.dotfiles/packages/installer/packages/retire.json" "$HOME/.dotfiles/packages/lib/bash/bin/shared-retire-package.sh"'
+
 # Copy to clipboard and print to terminal
 if command -v copy-to-clipboard >/dev/null 2>&1; then
   alias -g yank='| tee /dev/tty | copy-to-clipboard'

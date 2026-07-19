@@ -23,5 +23,5 @@ How to edit this tree. What the installer _is_ → [README.md](README.md). How t
 - Use raw `>/dev/null 2>&1` when `silent` fits.
 - Put standalone tools or unrelated app code in `packages/installer`, or dump scripts at the installer root.
 - Reshape unrelated menus into Skip/Disable/Enable.
-- Add migrations / old-path cleanup / backwards-compat branches.
+- Add migrations / old-path cleanup / backwards-compat branches outside the centralized package retirement flow.
 - Touch a reusable base VM.

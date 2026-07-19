@@ -10,6 +10,10 @@ expect_file_contains "$installer" 'activate_repo_node "$ROOT_DIR"' \
   'install.sh must activate the repo Node version before --theme'
 expect_file_contains "$installer" 'load_homebrew ||' \
   'install.sh must load Homebrew before --theme on macOS'
+expect_file_contains "$installer" "--retire) printf 'retire" \
+  'install.sh must accept --retire'
+expect_file_contains "$installer" 'run_retire_packages' \
+  'normal app installs must retire recorded packages'
 expect_file_contains "$installer" "log 'A reboot is recommended.'" \
   'install.sh must recommend a reboot'
 expect_file_contains "$installer" "ask_binary 'Reboot now?' n" \
@@ -29,7 +33,7 @@ finish_install="$(sed -n '/^finish_install() {/,/^}/p' "$installer")"
 grep -Fq '[[ "$mode" == all || "$mode" == system ]] || return 0' <<<"$finish_install" ||
   fail 'only full and system runs may offer to reboot'
 
-bad_npm="$(grep -E '"install:(git|skills|machine|theme)"' "$ROOT_DIR/package.json" |
+bad_npm="$(grep -E '"install:(git|skills|machine|theme|retire)"' "$ROOT_DIR/package.json" |
   grep -v 'packages/installer/install\.sh' || true)"
 [[ -z "$bad_npm" ]] || fail 'root install commands must call packages/installer/install.sh'
 

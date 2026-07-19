@@ -10,10 +10,12 @@ bash packages/installer/install.sh --apps          # one phase
 bash packages/installer/install.sh --git           # Git only
 bash packages/installer/install.sh --skills        # Skills only
 bash packages/installer/install.sh --theme         # theme generation + install
+bash packages/installer/install.sh --retire        # remove recorded packages
 npm run install:machine                 # → install.sh
 npm run install:git                     # → install.sh --git
 npm run install:skills                  # → install.sh --skills
 npm run install:theme                   # → install.sh --theme
+npm run install:retire                  # → install.sh --retire
 npm run verify:machine                  # verify installed links after a VM install
 ```
 
@@ -34,7 +36,7 @@ The only supported Linux base is **Debian 13 (trixie), amd64 or arm64**. In the 
 
 `install.sh` detects the OS, checks the user, then either runs a single strategy or asks for a **machine name and color** (blue, green, orange, purple, red, yellow, aqua, gray, or black), writes the name, color, and resolved hex value to gitignored `machine.json`, and walks phases.
 
-`--git`, `--skills`, and `--theme` skip the identity prompt. Phase flags (`--apps`, …) still ask for machine name/color first. No argument = all phases.
+`--git`, `--skills`, `--theme`, and `--retire` skip the identity prompt. Phase flags (`--apps`, …) still ask for machine name/color first. No argument = all phases.
 
 Normal phase runs start with a read-only Linux desktop check, then use this order: `apps` → `development` → `appearance` → `input` → `desktop` → `files` → `access` → `system`. The check runs before every phase flag, so Linux work only starts after Xfce, LightDM, and X11 are ready. Changes to the LightDM X11 session stay in the system phase.
 
@@ -109,6 +111,7 @@ npm run install:machine  # → install.sh (full)
 npm run install:git      # → install.sh --git
 npm run install:skills   # → install.sh --skills
 npm run install:theme    # → install.sh --theme (theming package; not OS appearance)
+npm run install:retire   # → install.sh --retire
 npm run install:test     # shape + lib checks (no VM)
 ```
 
@@ -120,6 +123,7 @@ root, and repository/link checks under `tests/repository/`.
 
 - **Linux:** Debian 13 (trixie) only, with Xfce + LightDM + X11 installed by the Debian installer.
 - **Packages:** Homebrew on Mac; APT on Debian unless the vendor has no APT package. Development installs the AWS CLI plus Cloudflare's `cloudflared` and `wrangler` CLIs.
+- **Retire:** `retire name` records and uninstalls a package. Full installs and `--retire` remove recorded packages for the current platform.
 - **Clean only:** no “move my old dotfiles” path.
 - **`$LINUX_ARCH`:** set once. amd64 → Chrome; arm64 → Brave.
 - **Voice dictation:** VoiceInk on Mac; skipped on Linux.

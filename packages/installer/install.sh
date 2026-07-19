@@ -6,7 +6,7 @@ ROOT_DIR="$(cd "$SCRIPT_DIR/../.." && pwd)"
 
 . "$SCRIPT_DIR/lib/lib.sh"
 
-usage='Use: bash packages/installer/install.sh [--apps|--development|--appearance|--input|--desktop|--files|--access|--system|--all|--git|--skills|--theme]'
+usage='Use: bash packages/installer/install.sh [--apps|--development|--appearance|--input|--desktop|--files|--access|--system|--all|--git|--skills|--theme|--retire]'
 
 validate_root() {
   [[ "$ROOT_DIR" == "$HOME/.dotfiles" ]] ||
@@ -20,8 +20,17 @@ run_strategy() {
   run_step "$label" bash "$SCRIPT_DIR/setup/$path" "$OS"
 }
 
-install_apps() {
+prepare_application_installer() {
   run_strategy 'Prepare application installer' apps/prepare.sh
+}
+
+run_retire_packages() {
+  run_strategy 'Retire packages' apps/retire.sh
+}
+
+install_apps() {
+  prepare_application_installer
+  run_retire_packages
   run_strategy 'Fastfetch' apps/fastfetch.sh
   run_strategy 'GitHub CLI' apps/github-cli.sh
   run_strategy 'Neovim' apps/neovim.sh
@@ -52,6 +61,11 @@ install_apps() {
   run_strategy 'Clipboard tools' apps/clipboard.sh
   run_strategy 'Tailscale' apps/tailscale.sh
   run_strategy 'NordVPN' apps/nordvpn.sh
+}
+
+retire_packages() {
+  prepare_application_installer
+  run_retire_packages
 }
 
 install_git() {
@@ -166,6 +180,7 @@ parse_mode() {
     --git) printf 'git\n' ;;
     --skills) printf 'skills\n' ;;
     --theme) printf 'theme\n' ;;
+    --retire) printf 'retire\n' ;;
     --apps | apps) printf 'apps\n' ;;    
     --development | development) printf 'development\n' ;;
     --appearance | appearance) printf 'appearance\n' ;;
@@ -219,6 +234,9 @@ main() {
       ;;
     theme)
       install_theme
+      ;;
+    retire)
+      retire_packages
       ;;
     *)
       run_strategy 'Machine name and color' identity.sh

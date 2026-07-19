@@ -11,6 +11,7 @@
 		"install:git": "bash packages/installer/install.sh --git",
 		"install:skills": "bash packages/installer/install.sh --skills",
 		"install:theme": "bash packages/installer/install.sh --theme",
+		"install:retire": "bash packages/installer/install.sh --retire",
 		"install:machine": "bash packages/installer/install.sh",
 		"install:test": "bash packages/installer/tests/run.sh",
 		"verify:machine": "bash packages/installer/tests/repository/installed-links.sh"

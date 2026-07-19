@@ -12,6 +12,14 @@ expect_file_contains "$INSTALLER_DIR/setup/apps/docker.sh" \
   'https://download.docker.com/linux/debian' 'Docker must use its Debian repository'
 expect_file_contains "$INSTALLER_DIR/setup/apps/tailscale.sh" \
   'stable/debian/${LINUX_CODENAME}' 'Tailscale must use its Debian repository'
+expect_file_contains "$INSTALLER_DIR/setup/apps/prepare.sh" \
+  'brew_formula jq' 'Mac preparation must install jq before retiring packages'
+
+retire_file="$INSTALLER_DIR/packages/retire.json"
+retire_schema="$INSTALLER_DIR/packages/retire.schema.json"
+jq empty "$retire_file" "$retire_schema" || fail 'retire JSON files must parse'
+expect_file_contains "$INSTALLER_DIR/setup/apps/retire.sh" \
+  'validate_retire_file "$RETIRE_FILE"' 'retire setup must validate before uninstalling'
 
 monitor="$INSTALLER_DIR/setup/apps/system-monitor.sh"
 for text in \

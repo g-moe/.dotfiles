@@ -16,6 +16,7 @@ prepare_apps() {
 mac() {
   install_homebrew
   brew update
+  brew_formula jq
 }
 
 linux() {
