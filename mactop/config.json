@@ -15,6 +15,7 @@
     "show_percent": true,
     "font_size": 10,
     "power_font_size": 11,
+    "bar_order": "fan,cpu,gpu,ane,memory",
     "cpu_color": "#FFFFFF",
     "gpu_color": "#FFFFFF",
     "ane_color": "#FFFFFF",
