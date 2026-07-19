@@ -57,7 +57,7 @@ curl() {
   printf 'archive\n' >"$output"
 }
 sha256sum() {
-  return 0
+  printf 'checksum  %s\n' "$1"
 }
 tar() {
   local destination=''

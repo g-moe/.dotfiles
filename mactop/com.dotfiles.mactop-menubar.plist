@@ -9,8 +9,9 @@
     <string>/usr/bin/script</string>
     <string>-q</string>
     <string>/dev/null</string>
-    <string>/opt/homebrew/bin/mactop</string>
-    <string>--menubar</string>
+    <string>/bin/zsh</string>
+    <string>-lc</string>
+    <string>exec "$HOME/.local/bin/mactop" --menubar</string>
   </array>
   <key>RunAtLoad</key>
   <true/>

@@ -108,8 +108,15 @@ grep -Fq "ask_binary 'Install NordVPN?' n" "$INSTALLER_DIR/setup/apps/nordvpn.sh
   fail 'NordVPN prompt must default to no'
 grep -Fq 'brew_cask google-chrome arc' "$INSTALLER_DIR/setup/apps/chrome.sh" ||
   fail 'Mac must install both Chrome and Arc'
-grep -Fq 'brew_formula mactop' "$INSTALLER_DIR/setup/apps/system-monitor.sh" ||
-  fail 'Mac must install mactop as the system monitor'
+grep -Fq 'extract_github_source_archive g-moe/mactop "$commit" "$checksum"' \
+  "$INSTALLER_DIR/setup/apps/system-monitor.sh" ||
+  fail 'Mac must build the pinned g-moe mactop fork'
+grep -Fq "local commit='e688d5778035b6d3eb30f2a8c8083cb1d429723d'" \
+  "$INSTALLER_DIR/setup/apps/system-monitor.sh" ||
+  fail 'the mactop fork commit must stay pinned'
+grep -Fq 'install -m 0755 "$build_dir/mactop" "$binary_path"' \
+  "$INSTALLER_DIR/setup/apps/system-monitor.sh" ||
+  fail 'the custom mactop binary must be installed under the user account'
 if grep -R -Fq 'brew_cask macs-fan-control' "$INSTALLER_DIR/setup"; then
   fail 'Mac must use mactop instead of Macs Fan Control'
 fi
@@ -119,6 +126,8 @@ grep -Fq 'launchctl bootstrap "$domain" "$agent_path"' "$INSTALLER_DIR/setup/app
   fail 'mactop menu bar must start at login'
 grep -Fq '<string>/usr/bin/script</string>' "$ROOT_DIR/mactop/com.dotfiles.mactop-menubar.plist" ||
   fail 'mactop login startup must provide the tty required by menubar mode'
+grep -Fq '$HOME/.local/bin/mactop' "$ROOT_DIR/mactop/com.dotfiles.mactop-menubar.plist" ||
+  fail 'mactop login startup must use the custom binary'
 grep -Fq 'sudo shutdown -r now' "$INSTALLER_DIR/install.sh" ||
   fail 'install.sh must use the shared macOS and Linux reboot command'
 grep -Fq '"install:codium"' "$ROOT_DIR/packages/theming/create/controller.ts" ||

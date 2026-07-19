@@ -77,14 +77,15 @@ extract_github_source_archive() {
   local commit="$2"
   local checksum="$3"
   local destination="$4"
-  local archive source_dir
+  local actual archive source_dir
 
   archive="$(mktemp)"
   if ! curl -fsSL "https://codeload.github.com/$repository/tar.gz/$commit" -o "$archive"; then
     rm -f "$archive"
     die "Could not download the $repository source archive."
   fi
-  if ! printf '%s  %s\n' "$checksum" "$archive" | sha256sum --check --status; then
+  actual="$(sha256sum "$archive" | awk '{ print $1 }')"
+  if [[ "$actual" != "$checksum" ]]; then
     rm -f "$archive"
     die "$repository source archive checksum failed."
   fi

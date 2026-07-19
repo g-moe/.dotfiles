@@ -15,9 +15,22 @@ install_system_monitor() {
 }
 
 mac() {
-  local agent_path config_path domain service
+  local agent_path binary_path build_dir config_path domain service source_dir
+  local commit='e688d5778035b6d3eb30f2a8c8083cb1d429723d'
+  local checksum='8fbf82eaaa4396bbf906dc3b66eb68408cca3d943d8ab7f2a9f01e1d845c140e'
 
-  brew_formula mactop
+  brew_formula go
+
+  build_dir="$(mktemp -d)"
+  source_dir="$(extract_github_source_archive g-moe/mactop "$commit" "$checksum" "$build_dir")"
+  binary_path="$HOME/.local/bin/mactop"
+  mkdir -p "$(dirname "$binary_path")"
+  if ! (cd "$source_dir" && go build -o "$build_dir/mactop" main.go); then
+    rm -rf "$build_dir"
+    die 'Could not build the pinned mactop fork.'
+  fi
+  install -m 0755 "$build_dir/mactop" "$binary_path"
+  rm -rf "$build_dir"
 
   config_path="$HOME/.mactop/config.json"
   agent_path="$HOME/Library/LaunchAgents/com.dotfiles.mactop-menubar.plist"
