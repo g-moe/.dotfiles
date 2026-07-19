@@ -17,6 +17,12 @@
     "cpu_color": "#A0A0A0",
     "gpu_color": "#A0A0A0",
     "ane_color": "#A0A0A0",
-    "mem_color": "#A0A0A0"
+    "mem_color": "#A0A0A0",
+    "cpu_label": "CPU",
+    "gpu_label": "GPU",
+    "memory_label": "MEM",
+    "cpu_layout": "two_row",
+    "gpu_layout": "two_row",
+    "memory_layout": "two_row"
   }
 }

@@ -45,6 +45,10 @@
 !/ghostty/themes/
 !/ghostty/themes/**
 
+# mactop
+!/mactop/
+!/mactop/config.json
+
 # tmux
 !/tmux/
 !/tmux/tmux.conf
