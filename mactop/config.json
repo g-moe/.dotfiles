@@ -26,6 +26,6 @@
     "memory_layout": "two_row",
     "bar_border_width": 1,
     "bar_border_color": "#A0A0A0",
-    "bar_height": 6
+    "bar_height": 8
   }
 }
