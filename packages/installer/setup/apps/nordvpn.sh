@@ -6,7 +6,7 @@ INSTALLER_DIR="$(cd "$APP_DIR/../.." && pwd)"
 . "$INSTALLER_DIR/lib/lib.sh"
 
 install_nordvpn() {
-  if ! ask_binary 'Install NordVPN?'; then
+  if ! ask_binary 'Install NordVPN?' n; then
     return
   fi
   case "$1" in

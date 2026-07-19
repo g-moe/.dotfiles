@@ -22,7 +22,7 @@ _mac_trackpad_domain() {
   defaults write "$domain" TrackpadRightClick -bool true
   defaults write "$domain" TrackpadCornerSecondaryClick -int 0
   defaults write "$domain" Clicking -bool true
-  defaults write "$domain" TrackpadScroll -bool false
+  defaults write "$domain" TrackpadScroll -bool true
   defaults write "$domain" TrackpadPinch -bool false
   defaults write "$domain" TrackpadTwoFingerDoubleTapGesture -bool false
   defaults write "$domain" TrackpadRotate -bool false
