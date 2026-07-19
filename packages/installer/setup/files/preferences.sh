@@ -15,6 +15,7 @@ configure_file_preferences() {
 
 mac() {
   defaults write NSGlobalDomain AppleShowAllExtensions -bool true
+  defaults write com.apple.finder AppleShowAllFiles -bool true
   defaults write com.apple.finder FXRemoveOldTrashItems -bool true
   defaults write com.apple.finder FXDefaultSearchScope -string SCcf
   defaults write com.apple.finder ShowExternalHardDrivesOnDesktop -bool false
@@ -29,8 +30,7 @@ mac() {
 }
 
 linux() {
-  log 'Thunar preference changes are not part of this install.'
-  return 0
+  xfconf_set thunar /last-show-hidden bool true
 }
 
 configure_file_preferences "$1"

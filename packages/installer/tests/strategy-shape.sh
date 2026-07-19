@@ -262,6 +262,12 @@ fi
 
 sidebar_strategy="$INSTALLER_DIR/setup/files/sidebar.sh"
 sidebar_helper="$INSTALLER_DIR/setup/files/finder-sidebar.js"
+preferences_strategy="$INSTALLER_DIR/setup/files/preferences.sh"
+grep -Fq 'defaults write com.apple.finder AppleShowAllFiles -bool true' \
+  "$preferences_strategy" ||
+  fail 'macOS Finder must always show hidden files'
+grep -Fq 'xfconf_set thunar /last-show-hidden bool true' "$preferences_strategy" ||
+  fail 'Linux Thunar must always show hidden files'
 [[ -f "$sidebar_helper" ]] || fail 'the macOS Finder sidebar helper is missing'
 grep -Fq 'finder-sidebar.js' "$sidebar_strategy" ||
   fail 'macOS must use the Finder sidebar script'

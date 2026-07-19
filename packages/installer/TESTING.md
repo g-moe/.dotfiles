@@ -202,6 +202,7 @@ After the files phase, Finder on macOS and Thunar on Debian must show
 `.dotfiles` immediately after Home, followed by `code`. Neither sidebar may
 show `.config` in that position. The Debian bookmark commands above check both
 GTK bookmark files. Check Finder visually after the first run and the repeat.
+Hidden files must remain visible in both Finder and Thunar after each run.
 
 ## Current proof status
 
