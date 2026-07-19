@@ -110,6 +110,9 @@ grep -Fq 'brew_cask google-chrome arc' "$INSTALLER_DIR/setup/apps/chrome.sh" ||
   fail 'Mac must install both Chrome and Arc'
 grep -Fq 'brew_formula mactop' "$INSTALLER_DIR/setup/apps/system-monitor.sh" ||
   fail 'Mac must install mactop as the system monitor'
+if grep -R -Fq 'brew_cask macs-fan-control' "$INSTALLER_DIR/setup"; then
+  fail 'Mac must use mactop instead of Macs Fan Control'
+fi
 grep -Fq 'safe_symlink_group mactop' "$INSTALLER_DIR/setup/apps/system-monitor.sh" ||
   fail 'mactop configuration and login agent must be linked'
 grep -Fq 'launchctl bootstrap "$domain" "$agent_path"' "$INSTALLER_DIR/setup/apps/system-monitor.sh" ||

@@ -14,7 +14,8 @@ install_temperature_monitor() {
 }
 
 mac() {
-  brew_cask macs-fan-control
+  # mactop provides temperature monitoring and fan control on macOS.
+  return 0
 }
 
 linux() {
