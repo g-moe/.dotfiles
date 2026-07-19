@@ -8,6 +8,10 @@ expect_file_contains "$INSTALLER_DIR/setup/apps/nordvpn.sh" \
   "ask_binary 'Install NordVPN?' n" 'NordVPN prompt must default to no'
 expect_file_contains "$INSTALLER_DIR/setup/apps/chrome.sh" \
   'brew_cask google-chrome arc' 'Mac must install Chrome and Arc'
+expect_file_contains "$INSTALLER_DIR/setup/apps/codex.sh" \
+  'brew_cask chatgpt' 'Mac must install the ChatGPT app'
+expect_file_contains "$INSTALLER_DIR/setup/apps/codex.sh" \
+  'brew_formula codex' 'Mac must install the Codex CLI'
 expect_file_contains "$INSTALLER_DIR/setup/apps/docker.sh" \
   'https://download.docker.com/linux/debian' 'Docker must use its Debian repository'
 expect_file_contains "$INSTALLER_DIR/setup/apps/tailscale.sh" \

@@ -128,7 +128,7 @@ root, and repository/link checks under `tests/repository/`.
 - **`$LINUX_ARCH`:** set once. amd64 → Chrome; arm64 → Brave.
 - **Voice dictation:** VoiceInk on Mac; skipped on Linux.
 - **Firefox:** Debian’s `firefox-esr` package.
-- **Codex:** Mac installs the ChatGPT app, which now includes Codex; Linux installs the Codex CLI.
+- **Codex:** Mac installs both the ChatGPT app and Codex CLI; Linux installs the Codex CLI.
 - **System monitor:** Mac downloads a verified, pinned source archive from the `g-moe/mactop` fork, builds it with Go into `~/.local/bin/mactop`, links its monochrome menu-bar configuration into `~/.mactop`, and starts that custom build at login through a quiet pseudo-terminal because mactop still opens `/dev/tty`. Linux installs Xfce Task Manager.
 - **CleanShot X:** Mac only.
 - **Browsers:** Mac installs Chrome and Arc, with Chrome as the default. Debian amd64 installs Chrome; Debian arm64 installs Brave. Debian keeps Xfce Terminal as installed by the OS. Mac shows a system browser prompt — pick **Use Chrome**.
