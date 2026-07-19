@@ -150,10 +150,10 @@ phase_line="$(grep -n 'run_phase "$mode"' <<<"$main_body" | head -n 1 | cut -d: 
 [[ -n "$desktop_line" && -n "$phase_line" && "$desktop_line" -lt "$phase_line" ]] ||
   fail 'the read-only Linux desktop check must run before normal phases'
 system_phase="$(sed -n '/^configure_system() {/,/^}/p' "$INSTALLER_DIR/install.sh")"
-grep -Fq "system/display-server.sh" <<<"$system_phase" ||
+grep -Fq "system/display.sh" <<<"$system_phase" ||
   fail 'X11 configuration must stay in the system phase'
 check_phase="$(sed -n '/^check_linux_desktop() {/,/^}/p' "$INSTALLER_DIR/install.sh")"
-if grep -Fq 'display-server.sh' <<<"$check_phase"; then
+if grep -Fq 'display.sh' <<<"$check_phase"; then
   fail 'the common Linux desktop check must not configure the display server'
 fi
 finish_install="$(sed -n '/^finish_install() {/,/^}/p' "$INSTALLER_DIR/install.sh")"

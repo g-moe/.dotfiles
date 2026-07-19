@@ -39,7 +39,7 @@ mac() {
 }
 
 # Boot-level system service (root) so VNC can attach to :0 at the greeter,
-# before a user session exists. Display server (X11) is system/display-server.sh.
+# before a user session exists. Display server (X11) is system/display.sh.
 linux_install_vnc_service() {
   install_root_file /etc/systemd/system/x11vnc.service \
     '[Unit]
