@@ -1281,11 +1281,6 @@
 		"when": "editorTextFocus && inDebugMode"
 	},
 	{
-		"key": "cmd+r cmd+k",
-		"command": "-editor.action.defineKeybinding",
-		"when": "resource == 'vscode-userdata:/Users/garrett/Library/Application%20Support/Cursor/User/keybindings.json'"
-	},
-	{
 		"key": "cmd+r d",
 		"command": "-workbench.files.action.compareWithSaved"
 	},

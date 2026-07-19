@@ -6,7 +6,7 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-LIB_DIR="$(cd "$SCRIPT_DIR/../lib" && pwd)"
+LIB_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 
 . "$LIB_DIR/lib.sh"
 

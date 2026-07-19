@@ -91,7 +91,11 @@ cd() {
 }
 
 # List configured SSH host aliases
-alias ssh-ls='awk '\''tolower($1)=="host" {for (i=2; i<=NF; i++) if ($i !~ /[*?]/) print $i}'\'' ~/.ssh/config'
+unalias ssh-ls 2>/dev/null
+ssh-ls() {
+  [[ -r "$HOME/.ssh/config" ]] || return 0
+  awk 'tolower($1)=="host" {for (i=2; i<=NF; i++) if ($i !~ /[*?]/) print $i}' "$HOME/.ssh/config"
+}
 
 # Walk through creating a new SSH host config
 alias ssh-new="$HOME/.dotfiles/packages/lib/bash/bin/shared-ssh-new-host.sh"
