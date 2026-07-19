@@ -52,7 +52,7 @@ linux() {
   [[ -d "$HOME/.themes/$theme/xfwm4" ]] ||
     die "WhiteSur desktop theme is missing: $theme"
   xfconf_set xsettings /Net/ThemeName string "$theme"
-  xfconf_set xsettings /Gtk/FontName string 'DejaVu Sans 10'
+  xfconf_set xsettings /Gtk/FontName string 'JetBrains Mono 10'
   xfconf_set xsettings /Gtk/MonospaceFontName string 'JetBrains Mono 10'
   xfconf_set xsettings /Xft/Antialias int 1
   xfconf_set xsettings /Xft/Hinting int 1
