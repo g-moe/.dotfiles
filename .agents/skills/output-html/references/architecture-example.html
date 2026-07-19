@@ -14,44 +14,46 @@
 			})();
 		</script>
 		<style>
-				:root {
-					--bg: #fdfdfd;
-					--surface: #fdfdfd;
-					--surface2: #f4f4f9;
-					--text: #050607;
-					--body: #262838;
-					--muted: #7c7d8d;
-					--line: #d9daec;
-					--line-soft: #d9daec8e;
-					--accent: #656675;
-					--accent-soft: rgba(101, 102, 117, 0.1);
-					--success: #26b933;
-					--success-soft: rgba(54, 251, 72, 0.12);
-					--warning: #bc9720;
-					--warning-soft: rgba(255, 211, 98, 0.16);
-					--error: #aa2624;
-					--error-soft: rgba(170, 38, 36, 0.12);
-					--sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-					--mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
-				}
-				html.dark {
-					--bg: #050607;
-					--surface: #101316;
-					--surface2: #262838;
-					--text: #fdfdfd;
-					--body: #d9daec;
-					--muted: #7c7d8d;
-					--line: #262838;
-					--line-soft: #2628388e;
-					--accent: #7c7d8d;
-					--accent-soft: rgba(124, 125, 141, 0.14);
-					--success: #65fb6e;
-					--success-soft: rgba(101, 251, 110, 0.16);
-					--warning: #ffd362;
-					--warning-soft: rgba(255, 211, 98, 0.16);
-					--error: #aa2624;
-					--error-soft: rgba(170, 38, 36, 0.534);
-				}
+			:root {
+				--bg: #fdfdfd;
+				--surface: #fdfdfd;
+				--surface2: #f4f4f9;
+				--text: #050607;
+				--body: #262838;
+				--muted: #7c7d8d;
+				--line: #d9daec;
+				--line-soft: #d9daec8e;
+				--accent: #656675;
+				--accent-soft: rgba(101, 102, 117, 0.1);
+				--success: #26b933;
+				--success-soft: rgba(54, 251, 72, 0.12);
+				--warning: #bc9720;
+				--warning-soft: rgba(255, 211, 98, 0.16);
+				--error: #aa2624;
+				--error-soft: rgba(170, 38, 36, 0.12);
+				--sans:
+					system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+				--mono:
+					ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+			}
+			html.dark {
+				--bg: #050607;
+				--surface: #101316;
+				--surface2: #262838;
+				--text: #fdfdfd;
+				--body: #d9daec;
+				--muted: #7c7d8d;
+				--line: #262838;
+				--line-soft: #2628388e;
+				--accent: #7c7d8d;
+				--accent-soft: rgba(124, 125, 141, 0.14);
+				--success: #65fb6e;
+				--success-soft: rgba(101, 251, 110, 0.16);
+				--warning: #ffd362;
+				--warning-soft: rgba(255, 211, 98, 0.16);
+				--error: #aa2624;
+				--error-soft: rgba(170, 38, 36, 0.534);
+			}
 			* {
 				box-sizing: border-box;
 				margin: 0;
@@ -82,10 +84,10 @@
 				flex: none;
 			}
 			.bar h1 {
-					font-family: var(--sans);
+				font-family: var(--sans);
 				font-weight: 500;
 				font-size: 19px;
-					color: var(--text);
+				color: var(--text);
 				letter-spacing: -0.01em;
 			}
 			.bar .sub {

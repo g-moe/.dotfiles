@@ -166,7 +166,9 @@
 	"editor.stickyTabStops": true,
 	"editor.suggest.showReferences": false,
 	"editor.tokenColorCustomizations": {
-		"textMateRules": [{ "scope": "comment", "settings": { "fontStyle": "italic" } }]
+		"textMateRules": [
+			{ "scope": "comment", "settings": { "fontStyle": "italic" } }
+		]
 	},
 	"editor.unicodeHighlight.ambiguousCharacters": false,
 	"editor.unicodeHighlight.invisibleCharacters": false,
