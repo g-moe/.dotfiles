@@ -19,6 +19,8 @@ mac() {
   defaults -currentHost write com.apple.screensaver moduleDict -dict \
     moduleName Flurry path "$path" type -int 0
   defaults -currentHost write com.apple.screensaver idleTime -int 0
+  defaults -currentHost write com.apple.screensaver askForPassword -int 1
+  defaults -currentHost write com.apple.screensaver askForPasswordDelay -int 0
 }
 
 linux() {

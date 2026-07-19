@@ -29,6 +29,12 @@ expect_file_contains "$theme" "local theme='WhiteSur-Dark'" 'dark WhiteSur theme
 expect_file_contains "$theme" 'xfce4-notifyd /theme string Rice' 'notification theme is missing'
 expect_file_contains "$theme" 'extract_github_source_archive' 'theme archive must be checked'
 
+screensaver="$INSTALLER_DIR/setup/appearance/screensaver.sh"
+expect_file_contains "$screensaver" 'askForPassword -int 1' \
+  'screen lock must require authentication'
+expect_file_contains "$screensaver" 'askForPasswordDelay -int 0' \
+  'screen lock must require authentication immediately'
+
 wallpaper="$INSTALLER_DIR/setup/appearance/wallpaper.sh"
 for text in \
   'xfconf-query -c xfce4-desktop' \
