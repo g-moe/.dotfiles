@@ -2,7 +2,7 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-INSTALLER_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
+INSTALLER_DIR="$(cd "$SCRIPT_DIR/../.." && pwd)"
 ROOT_DIR="$(cd "$INSTALLER_DIR/../.." && pwd)"
 BASH_LIB_DIR="$ROOT_DIR/packages/lib/bash"
 . "$INSTALLER_DIR/lib/lib.sh"

@@ -58,7 +58,7 @@ packages/installer/config/          installer-owned configuration loaded by stra
 packages/installer/setup/identity.sh before phases (skipped for --git / --skills / --theme)
 packages/installer/setup/skills.sh  from development (also --skills)
 packages/installer/lib/lib.sh       installer library entry point
-packages/installer/tests/           shape + library + installed-link checks
+packages/installer/tests/           mirrors installer paths (`setup/`, `lib/`, and top-level flow)
 packages/lib/bash/                  standalone reusable Bash library
 packages/lib/bash/bin/              standalone cross-OS Bash tools
 packages/lib/ts/                    standalone shared TypeScript (empty for now)
@@ -111,6 +111,10 @@ npm run install:skills   # → install.sh --skills
 npm run install:theme    # → install.sh --theme (theming package; not OS appearance)
 npm run install:test     # shape + lib checks (no VM)
 ```
+
+Tests mirror the installer tree. Setup checks live under `tests/setup/<phase>/`,
+library checks under `tests/lib/`, top-level installer-flow checks at the tests
+root, and repository/link checks under `tests/repository/`.
 
 ### Platform quirks
 

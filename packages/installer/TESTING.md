@@ -1,5 +1,10 @@
 # Clean install checks
 
+The test tree mirrors the installer tree: setup tests use `tests/setup/<phase>/`,
+library tests use `tests/lib/`, and top-level installer-flow tests stay at the
+tests root. Repository layout and installed-link checks live in
+`tests/repository/`.
+
 Full installer proof runs in **UTM only** — never on the main Mac.
 
 No-VM sanity anytime:

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-ROOT_DIR="$HOME/.dotfiles"
+ROOT_DIR="${HOME}/.dotfiles"
 
 fail() {
   printf 'FAIL: %s\n' "$1" >&2

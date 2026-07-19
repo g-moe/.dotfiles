@@ -15,3 +15,4 @@
 - `packages/lib/ts` is standalone and has no package dependencies. Shared TypeScript belongs there; every package may use it. Keep its `.gitkeep` until shared TypeScript exists.
 - `packages/mac`, `packages/theming`, and `packages/vscode-ext` may depend on `packages/lib/bash` or `packages/lib/ts`, never on `packages/installer`.
 - Keep installer-only Bash helpers inside `packages/installer/lib`. Do not move package installation or OS validation into the shared Bash library.
+- Mirror `packages/installer` paths under `packages/installer/tests` so each test lives with the area it checks.

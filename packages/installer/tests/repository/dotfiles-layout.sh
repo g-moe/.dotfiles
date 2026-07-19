@@ -2,7 +2,7 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-ROOT_DIR="$(cd "$SCRIPT_DIR/../../.." && pwd)"
+ROOT_DIR="$(cd "$SCRIPT_DIR/../../../.." && pwd)"
 
 fail() {
   printf 'FAIL: %s\n' "$1" >&2
@@ -144,6 +144,11 @@ library_dependencies="$(grep -RInE 'packages/(installer|mac|theming|vscode-ext)'
 if [[ -n "$library_dependencies" ]]; then
   printf '%s\n' "$library_dependencies" >&2
   fail 'a standalone library depends on another package'
+fi
+
+if grep -IEqi 'ubuntu|gnome|gdm|gsettings' \
+  "$ROOT_DIR/packages/installer/README.md" "$ROOT_DIR/packages/installer/TESTING.md"; then
+  fail 'installer docs describe a removed Linux target'
 fi
 
 printf 'Dotfiles layout checks passed.\n'
