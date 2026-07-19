@@ -133,6 +133,7 @@ mac_write_hammerspoon_loader() {
   printf '%s\n' \
     "$LOADER_BEGIN" \
     "dofile(os.getenv(\"HOME\") .. \"/.dotfiles/packages/installer/config/window-management/$configuration.lua\")" \
+    'hs.closeConsole()' \
     "$LOADER_END" >>"$HAMMERSPOON_INIT"
   printf '%s\n' "$configuration" >"$HAMMERSPOON_STATE"
 }
