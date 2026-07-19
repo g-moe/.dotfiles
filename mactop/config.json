@@ -10,6 +10,7 @@
     "show_gpu": true,
     "show_ane": false,
     "show_memory": true,
+    "show_fan": true,
     "show_power": false,
     "show_percent": true,
     "font_size": 10,
@@ -24,6 +25,7 @@
     "cpu_layout": "two_row",
     "gpu_layout": "two_row",
     "memory_layout": "two_row",
+    "fan_layout": "two_row",
     "bar_border_width": 1,
     "bar_border_color": "#A0A0A0",
     "bar_height": 8
