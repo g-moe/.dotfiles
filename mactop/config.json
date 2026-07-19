@@ -23,6 +23,8 @@
     "memory_label": "MEM",
     "cpu_layout": "two_row",
     "gpu_layout": "two_row",
-    "memory_layout": "two_row"
+    "memory_layout": "two_row",
+    "bar_border_width": 1,
+    "bar_border_color": "#A0A0A0"
   }
 }
