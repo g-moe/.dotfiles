@@ -30,9 +30,8 @@ for text in \
   'launchctl bootstrap "$domain" "$agent_path"'; do
   expect_file_contains "$monitor" "$text" "system monitor setup is missing: $text"
 done
-if grep -R -Fq 'brew_cask macs-fan-control' "$INSTALLER_DIR/setup"; then
-  fail 'Mac must use mactop instead of Macs Fan Control'
-fi
+expect_file_contains "$INSTALLER_DIR/setup/apps/temperature-monitor.sh" \
+  'brew_cask macs-fan-control' 'Mac must install Macs Fan Control'
 expect_file_contains "$ROOT_DIR/mactop/com.dotfiles.mactop-menubar.plist" \
   '<string>/usr/bin/script</string>' 'mactop startup must provide a tty'
 
