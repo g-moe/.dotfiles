@@ -24,6 +24,8 @@ ghostty/config
 images/icon.png
 images/white.png
 karabiner/karabiner.json
+mactop/config.json
+mactop/com.dotfiles.mactop-menubar.plist
 nvim/init.lua
 opencode/opencode.jsonc
 packages/installer/install.sh
@@ -53,6 +55,7 @@ TODO.md
 ghostty
 images
 karabiner
+mactop
 nvim
 opencode
 package-lock.json

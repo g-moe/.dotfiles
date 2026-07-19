@@ -49,6 +49,11 @@
 !/tmux/
 !/tmux/tmux.conf
 
+# mactop
+!/mactop/
+!/mactop/config.json
+!/mactop/com.dotfiles.mactop-menubar.plist
+
 # Neovim
 !/nvim/
 !/nvim/init.lua

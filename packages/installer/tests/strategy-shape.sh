@@ -106,6 +106,16 @@ grep -Fq "ask_binary 'Reboot now?' n" "$INSTALLER_DIR/install.sh" ||
   fail 'install.sh must ask before rebooting and default to no'
 grep -Fq "ask_binary 'Install NordVPN?' n" "$INSTALLER_DIR/setup/apps/nordvpn.sh" ||
   fail 'NordVPN prompt must default to no'
+grep -Fq 'brew_cask google-chrome arc' "$INSTALLER_DIR/setup/apps/chrome.sh" ||
+  fail 'Mac must install both Chrome and Arc'
+grep -Fq 'brew_formula mactop' "$INSTALLER_DIR/setup/apps/system-monitor.sh" ||
+  fail 'Mac must install mactop as the system monitor'
+grep -Fq 'safe_symlink_group mactop' "$INSTALLER_DIR/setup/apps/system-monitor.sh" ||
+  fail 'mactop configuration and login agent must be linked'
+grep -Fq 'launchctl bootstrap "$domain" "$agent_path"' "$INSTALLER_DIR/setup/apps/system-monitor.sh" ||
+  fail 'mactop menu bar must start at login'
+grep -Fq '<string>/usr/bin/script</string>' "$ROOT_DIR/mactop/com.dotfiles.mactop-menubar.plist" ||
+  fail 'mactop login startup must provide the tty required by menubar mode'
 grep -Fq 'sudo shutdown -r now' "$INSTALLER_DIR/install.sh" ||
   fail 'install.sh must use the shared macOS and Linux reboot command'
 grep -Fq '"install:codium"' "$ROOT_DIR/packages/theming/create/controller.ts" ||

@@ -14,8 +14,9 @@ install_chrome() {
 }
 
 mac() {
-  brew_cask google-chrome
+  brew_cask google-chrome arc
   [[ -d '/Applications/Google Chrome.app' ]] || die 'Google Chrome is missing after installation.'
+  [[ -d '/Applications/Arc.app' ]] || die 'Arc is missing after installation.'
 }
 
 linux() {

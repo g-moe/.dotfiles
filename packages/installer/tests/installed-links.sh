@@ -42,6 +42,8 @@ case "$(uname -s)" in
     expect_link "$ROOT_DIR/ghostty/themes/gtheme-dark" "$HOME/.config/ghostty/themes/gtheme-dark"
     expect_link "$ROOT_DIR/ghostty/themes/gtheme-light" "$HOME/.config/ghostty/themes/gtheme-light"
     expect_link "$ROOT_DIR/karabiner/karabiner.json" "$HOME/.config/karabiner/karabiner.json"
+    expect_link "$ROOT_DIR/mactop/config.json" "$HOME/.mactop/config.json"
+    expect_link "$ROOT_DIR/mactop/com.dotfiles.mactop-menubar.plist" "$HOME/Library/LaunchAgents/com.dotfiles.mactop-menubar.plist"
     vscodium="$HOME/Library/Application Support/VSCodium/User"
     ;;
   Linux)

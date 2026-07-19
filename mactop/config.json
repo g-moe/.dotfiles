@@ -1,0 +1,22 @@
+{
+  "default_layout": "vertical",
+  "theme": "skyblue",
+  "background": "mocha-crust",
+  "sort_reverse": false,
+  "menubar": {
+    "status_bar_width": 16,
+    "status_bar_height": 12,
+    "show_cpu": true,
+    "show_gpu": true,
+    "show_ane": false,
+    "show_memory": true,
+    "show_power": false,
+    "show_percent": true,
+    "font_size": 10,
+    "power_font_size": 11,
+    "cpu_color": "#A0A0A0",
+    "gpu_color": "#A0A0A0",
+    "ane_color": "#A0A0A0",
+    "mem_color": "#A0A0A0"
+  }
+}
