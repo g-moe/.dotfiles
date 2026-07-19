@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-APP_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-INSTALLER_DIR="$(cd "$APP_DIR/../.." && pwd)"
+STRATEGY_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+INSTALLER_DIR="$(cd "$STRATEGY_DIR/../.." && pwd)"
+ROOT_DIR="$(cd "$INSTALLER_DIR/../.." && pwd)"
 . "$INSTALLER_DIR/lib/lib.sh"
 
-install_cloudflared() {
+install_cloudflare() {
   case "$1" in
     mac) mac ;;
     linux) linux ;;
@@ -13,8 +14,14 @@ install_cloudflared() {
   esac
 }
 
+install_wrangler() {
+  activate_repo_node "$ROOT_DIR" || die 'Node.js is not available.'
+  npm install --global wrangler@latest
+}
+
 mac() {
   brew_formula cloudflared
+  install_wrangler
 }
 
 linux() {
@@ -31,6 +38,7 @@ EOF
 )"
   sudo apt-get update
   apt_install cloudflared
+  install_wrangler
 }
 
-install_cloudflared "$1"
+install_cloudflare "$1"

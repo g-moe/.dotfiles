@@ -22,7 +22,6 @@ run_strategy() {
 
 install_apps() {
   run_strategy 'Prepare application installer' apps/prepare.sh
-  run_strategy 'Cloudflare Tunnel' apps/cloudflared.sh
   run_strategy 'Fastfetch' apps/fastfetch.sh
   run_strategy 'GitHub CLI' apps/github-cli.sh
   run_strategy 'Neovim' apps/neovim.sh
@@ -75,6 +74,8 @@ install_theme() {
 install_development() {
   install_git
   run_strategy 'Node.js 24' development/node.sh
+  run_strategy 'AWS CLI' development/aws-cli.sh
+  run_strategy 'Cloudflare CLIs' development/cloudflare.sh
   run_strategy 'Zsh' development/zsh.sh
   run_strategy 'tmux configuration' development/tmux.sh
   run_strategy 'VSCodium settings' development/vscodium-settings.sh

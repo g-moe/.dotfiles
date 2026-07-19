@@ -41,7 +41,7 @@ Normal phase runs start with a read-only Linux desktop check, then use this orde
 | Phase         | Covers                                                                 |
 | ------------- | ---------------------------------------------------------------------- |
 | `apps`        | Apps (Homebrew / APT / vendor)                                         |
-| `development` | Git, Node, Zsh, tmux, VSCodium, Skills                                 |
+| `development` | Git, Node, AWS CLI, Cloudflare CLIs, Zsh, tmux, VSCodium, Skills       |
 | `appearance`  | Wallpaper, screen saver, theme, icons, login screen                    |
 | `input`       | Pointer, touchpad, keyboard, remapping                                 |
 | `desktop`     | Workspaces, items/widgets, windows, lower panel, top bar, name display |
@@ -115,7 +115,7 @@ npm run install:test     # shape + lib checks (no VM)
 ### Platform quirks
 
 - **Linux:** Debian 13 (trixie) only, with Xfce + LightDM + X11 installed by the Debian installer.
-- **Packages:** Homebrew on Mac; APT on Debian unless the vendor has no APT package.
+- **Packages:** Homebrew on Mac; APT on Debian unless the vendor has no APT package. Development installs the AWS CLI plus Cloudflare's `cloudflared` and `wrangler` CLIs.
 - **Clean only:** no “move my old dotfiles” path.
 - **`$LINUX_ARCH`:** set once. amd64 → Chrome; arm64 → Brave.
 - **Voice dictation:** VoiceInk on Mac; skipped on Linux.
