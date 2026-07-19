@@ -317,8 +317,7 @@
 	"typescript.updateImportsOnFileMove.enabled": "always",
 	"vitest.maximumConfigs": 20,
 	"window.autoDetectHighContrast": false,
-	"window.commandCenter": false,
-	"window.confirmBeforeClose": "keyboardOnly",
+    "window.commandCenter": false,
 	"workbench.colorCustomizations": {
 		"tree.inactiveIndentGuidesStroke": "#7c7d8d00",
 		"tree.indentGuidesStroke": "#5a5a5a65"
@@ -422,5 +421,6 @@
         "**/.gitea/workflows/*.yaml",
         "**/.forgejo/workflows/*.yml",
         "**/.forgejo/workflows/*.yaml"
-    ]
+    ],
+    "workbench.panel.showLabels": false
 }
