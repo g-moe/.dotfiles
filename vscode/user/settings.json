@@ -166,9 +166,7 @@
 	"editor.stickyTabStops": true,
 	"editor.suggest.showReferences": false,
 	"editor.tokenColorCustomizations": {
-		"textMateRules": [
-			{ "scope": "comment", "settings": { "fontStyle": "italic" } }
-		]
+		"textMateRules": [{ "scope": "comment", "settings": { "fontStyle": "italic" } }]
 	},
 	"editor.unicodeHighlight.ambiguousCharacters": false,
 	"editor.unicodeHighlight.invisibleCharacters": false,
@@ -317,7 +315,7 @@
 	"typescript.updateImportsOnFileMove.enabled": "always",
 	"vitest.maximumConfigs": 20,
 	"window.autoDetectHighContrast": false,
-    "window.commandCenter": false,
+	"window.commandCenter": false,
 	"workbench.colorCustomizations": {
 		"tree.inactiveIndentGuidesStroke": "#7c7d8d00",
 		"tree.indentGuidesStroke": "#5a5a5a65"
@@ -402,7 +400,7 @@
 	"gitlens.codeLens.recentChange.enabled": false,
 	"editor.showFoldingControls": "always",
 	"workbench.activityBar.orientation": "vertical",
-    "workbench.startupEditor": "none",
+	"workbench.startupEditor": "none",
 	"workbench.layoutControl.enabled": false,
 	"supermaven.enable": {
 		"*": false
@@ -413,14 +411,7 @@
 	"redhat.telemetry.enabled": false,
 	"workbench.browser.showInTitleBar": false,
 	"window.customTitleBarVisibility": "never",
-    "workbench.editor.showTabs": "single",
-    "yaml.disableSchemaDetection": [
-        "**/.github/workflows/*.yml",
-        "**/.github/workflows/*.yaml",
-        "**/.gitea/workflows/*.yml",
-        "**/.gitea/workflows/*.yaml",
-        "**/.forgejo/workflows/*.yml",
-        "**/.forgejo/workflows/*.yaml"
-    ],
-    "workbench.panel.showLabels": false
+	"workbench.editor.showTabs": "single",
+	"yaml.disableSchemaDetection": [],
+	"workbench.panel.showLabels": false
 }
