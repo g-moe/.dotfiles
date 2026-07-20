@@ -4,7 +4,7 @@
 	"background": "mocha-crust",
 	"sort_reverse": false,
 	"menubar": {
-		"status_bar_width": 16,
+		"status_bar_width": 6,
 		"status_bar_height": 12,
 		"show_cpu": true,
 		"show_gpu": true,
@@ -13,7 +13,7 @@
 		"show_fan": true,
 		"show_power": false,
 		"show_percent": true,
-		"font_size": 10,
+		"font_size": 8,
 		"power_font_size": 11,
 		"bar_order": "fan,cpu,gpu,ane,memory",
 		"cpu_color": "#FFFFFF",
