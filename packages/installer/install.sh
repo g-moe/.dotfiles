@@ -93,6 +93,7 @@ install_development() {
   run_strategy 'Zsh' development/zsh.sh
   run_strategy 'tmux configuration' development/tmux.sh
   run_strategy 'VSCodium settings' development/vscodium-settings.sh
+  run_strategy 'Codex' development/codex.sh
   run_strategy 'VSCodium extensions' development/vscodium-extensions.sh
   install_skills
 }

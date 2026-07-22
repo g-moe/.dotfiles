@@ -35,6 +35,12 @@
 !/.agents/skills/
 !/.agents/skills/**
 
+# Codex
+!/codex/
+!/codex/.codex/
+!/codex/.codex/AGENTS.md
+!/codex/.codex/config.toml
+
 # Karabiner
 !/karabiner/
 !/karabiner/karabiner.json

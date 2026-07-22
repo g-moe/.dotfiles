@@ -14,6 +14,8 @@ fail() {
 
 required_paths='
 .agents
+codex/.codex/AGENTS.md
+codex/.codex/config.toml
 .gitignore
 .nvmrc
 .oxfmtrc.json
@@ -48,6 +50,7 @@ done <<<"$required_paths"
 
 allowed_roots='
 .agents
+codex
 .gitignore
 .nvmrc
 .oxfmtrc.json

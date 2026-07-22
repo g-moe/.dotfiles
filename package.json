@@ -9,6 +9,7 @@
 		"typecheck": "tsc -b --noEmit",
 		"typecheck:tsgo": "tsgo -b --noEmit",
 		"install:apps": "bash packages/installer/install.sh --apps",
+		"install:development": "bash packages/installer/install.sh --development",
 		"install:git": "bash packages/installer/install.sh --git",
 		"install:skills": "bash packages/installer/install.sh --skills",
 		"install:theme": "bash packages/installer/install.sh --theme",
