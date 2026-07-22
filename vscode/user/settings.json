@@ -415,5 +415,7 @@
 	"window.customTitleBarVisibility": "never",
 	"workbench.editor.showTabs": "single",
 	"yaml.disableSchemaDetection": [],
-	"workbench.panel.showLabels": false
+    "workbench.panel.showLabels": false,
+    "editor.selectionHighlight": false,
+    "editor.occurrencesHighlight": "multiFile"
 }

@@ -1,9 +1,9 @@
 ---
-name: manual-subagent-team
-description: Manual only. Use only for $manual-subagent-team.
+name: manual-team
+description: Manual only. Use only for $manual-team.
 ---
 
-# Manual Subagent Team
+# Manual Team
 
 ## Overview
 
