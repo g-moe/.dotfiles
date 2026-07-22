@@ -34,9 +34,9 @@ The only supported Linux base is **Debian 13 (trixie), amd64 or arm64**. In the 
 
 ---
 
-`install.sh` detects the OS, checks the user, then either runs a single strategy or asks for a **machine name and color** (blue, green, orange, purple, red, yellow, aqua, gray, or black), writes the name, color, and resolved hex value to gitignored `machine.json`, and walks phases.
+`install.sh` detects the OS and checks the user. A full install also asks for a **machine name and color** (blue, green, orange, purple, red, yellow, aqua, gray, or black), writes the name, color, and resolved hex value to gitignored `machine.json`, and walks all phases.
 
-`--git`, `--skills`, `--theme`, and `--retire` skip the identity prompt. Phase flags (`--apps`, …) still ask for machine name/color first. No argument = all phases.
+Single strategies and individual phase flags (`--apps`, `--development`, …) skip machine identity. `--all`, `all`, and no argument run the full install and configure it first.
 
 Normal phase runs start with a read-only Linux desktop check, then use this order: `apps` → `development` → `appearance` → `input` → `desktop` → `files` → `access` → `system`. The check runs before every phase flag, so Linux work only starts after Xfce, LightDM, and X11 are ready. Changes to the LightDM X11 session stay in the system phase.
 

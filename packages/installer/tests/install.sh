@@ -24,6 +24,13 @@ expect_file_contains "$ROOT_DIR/packages/theming/create/controller.ts" '"install
   '--theme must install its VSIX into VSCodium'
 
 main_body="$(sed -n '/^main() {/,/^}/p' "$installer")"
+all_branch="$(sed -n '/^    all)/,/^      ;;/p' <<<"$main_body")"
+phase_branch="$(sed -n '/^    \*)/,/^      ;;/p' <<<"$main_body")"
+grep -Fq "run_strategy 'Machine name and color' identity.sh" <<<"$all_branch" ||
+  fail 'the full install must configure machine identity'
+if grep -Fq 'identity.sh' <<<"$phase_branch"; then
+  fail 'individual phase flags must not configure machine identity'
+fi
 desktop_line="$(grep -n 'check_linux_desktop' <<<"$main_body" | head -n 1 | cut -d: -f1)"
 phase_line="$(grep -n 'run_phase "$mode"' <<<"$main_body" | head -n 1 | cut -d: -f1)"
 [[ -n "$desktop_line" && -n "$phase_line" && "$desktop_line" -lt "$phase_line" ]] ||

@@ -238,8 +238,12 @@ main() {
     retire)
       retire_packages
       ;;
-    *)
+    all)
       run_strategy 'Machine name and color' identity.sh
+      check_linux_desktop
+      run_phase all
+      ;;
+    *)
       check_linux_desktop
       run_phase "$mode"
       ;;
