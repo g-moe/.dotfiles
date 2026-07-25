@@ -1,0 +1,222 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"title": "Manual AGENTS.md Eval Config",
+	"type": "object",
+	"additionalProperties": false,
+	"required": [
+		"$schema",
+		"version",
+		"repo",
+		"runs",
+		"concurrency",
+		"outputRoot",
+		"timeoutSeconds",
+		"test",
+		"harnesses"
+	],
+	"properties": {
+		"$schema": {
+			"const": "./references/schema-config.json"
+		},
+		"version": {
+			"const": 1
+		},
+		"repo": {
+			"type": "string",
+			"minLength": 1
+		},
+		"runs": {
+			"type": "integer",
+			"minimum": 1
+		},
+		"concurrency": {
+			"type": "integer",
+			"minimum": 1
+		},
+		"outputRoot": {
+			"type": "string",
+			"minLength": 1
+		},
+		"timeoutSeconds": {
+			"type": "number",
+			"exclusiveMinimum": 0
+		},
+		"test": {
+			"$ref": "#/$defs/test"
+		},
+		"harnesses": {
+			"type": "array",
+			"minItems": 1,
+			"items": {
+				"$ref": "#/$defs/harness"
+			}
+		}
+	},
+	"$defs": {
+		"criteria": {
+			"type": "object",
+			"additionalProperties": false,
+			"required": ["pass", "almost", "fail"],
+			"properties": {
+				"pass": {
+					"type": "string",
+					"minLength": 1
+				},
+				"almost": {
+					"type": "string",
+					"minLength": 1
+				},
+				"fail": {
+					"type": "string",
+					"minLength": 1
+				}
+			}
+		},
+		"turn": {
+			"type": "object",
+			"additionalProperties": false,
+			"required": ["prompt", "criteria"],
+			"properties": {
+				"prompt": {
+					"type": "string",
+					"minLength": 1
+				},
+				"criteria": {
+					"$ref": "#/$defs/criteria"
+				}
+			}
+		},
+		"test": {
+			"type": "object",
+			"additionalProperties": false,
+			"required": ["name", "passThreshold", "turns"],
+			"properties": {
+				"name": {
+					"type": "string",
+					"minLength": 1
+				},
+				"passThreshold": {
+					"type": "number",
+					"exclusiveMinimum": 0,
+					"maximum": 1
+				},
+				"turns": {
+					"type": "array",
+					"minItems": 1,
+					"items": {
+						"$ref": "#/$defs/turn"
+					}
+				}
+			}
+		},
+		"model": {
+			"type": "object",
+			"additionalProperties": false,
+			"required": ["label", "model", "enabled"],
+			"properties": {
+				"label": {
+					"type": "string",
+					"minLength": 1
+				},
+				"model": {
+					"type": "string",
+					"minLength": 1
+				},
+				"effort": {
+					"type": "string",
+					"minLength": 1
+				},
+				"enabled": {
+					"type": "boolean"
+				}
+			}
+		},
+		"harness": {
+			"type": "object",
+			"additionalProperties": false,
+			"required": [
+				"id",
+				"label",
+				"command",
+				"startArgs",
+				"continueArgs",
+				"models"
+			],
+			"properties": {
+				"id": {
+					"type": "string",
+					"minLength": 1
+				},
+				"label": {
+					"type": "string",
+					"minLength": 1
+				},
+				"command": {
+					"type": "string",
+					"minLength": 1
+				},
+				"startArgs": {
+					"type": "array",
+					"minItems": 1,
+					"items": {
+						"type": "string"
+					},
+					"allOf": [
+						{
+							"contains": {
+								"type": "string",
+								"pattern": "\\{repo\\}"
+							}
+						},
+						{
+							"contains": {
+								"type": "string",
+								"pattern": "\\{model\\}"
+							}
+						},
+						{
+							"contains": {
+								"type": "string",
+								"pattern": "\\{prompt\\}"
+							}
+						}
+					]
+				},
+				"continueArgs": {
+					"type": "array",
+					"minItems": 1,
+					"items": {
+						"type": "string"
+					},
+					"allOf": [
+						{
+							"contains": {
+								"type": "string",
+								"pattern": "\\{sessionId\\}"
+							}
+						},
+						{
+							"contains": {
+								"type": "string",
+								"pattern": "\\{model\\}"
+							}
+						},
+						{
+							"contains": {
+								"type": "string",
+								"pattern": "\\{prompt\\}"
+							}
+						}
+					]
+				},
+				"models": {
+					"type": "array",
+					"minItems": 1,
+					"items": {
+						"$ref": "#/$defs/model"
+					}
+				}
+			}
+		}
+	}
+}

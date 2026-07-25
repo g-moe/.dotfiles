@@ -1,0 +1,611 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"title": "Manual AGENTS.md Eval Record",
+	"type": "object",
+	"additionalProperties": false,
+	"required": [
+		"version",
+		"runtime",
+		"commit",
+		"status",
+		"project",
+		"configPath",
+		"reportPath",
+		"test",
+		"summary",
+		"summaryFindings",
+		"results",
+		"failure"
+	],
+	"properties": {
+		"version": {
+			"const": 1
+		},
+		"runtime": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"commit": {
+			"type": "string",
+			"pattern": "^[0-9a-f]{40,64}$"
+		},
+		"status": {
+			"enum": ["running", "ready", "completed", "aborted"]
+		},
+		"project": {
+			"type": "string",
+			"minLength": 1
+		},
+		"configPath": {
+			"type": "string",
+			"minLength": 1
+		},
+		"reportPath": {
+			"type": ["string", "null"]
+		},
+		"test": {
+			"$ref": "#/$defs/test"
+		},
+		"summary": {
+			"oneOf": [
+				{
+					"type": "null"
+				},
+				{
+					"$ref": "#/$defs/summary"
+				}
+			]
+		},
+		"summaryFindings": {
+			"oneOf": [
+				{
+					"type": "null"
+				},
+				{
+					"$ref": "#/$defs/summaryFindings"
+				}
+			]
+		},
+		"results": {
+			"type": "array",
+			"items": {
+				"$ref": "#/$defs/result"
+			}
+		},
+		"failure": {
+			"oneOf": [
+				{
+					"type": "null"
+				},
+				{
+					"$ref": "#/$defs/failure"
+				}
+			]
+		}
+	},
+	"allOf": [
+		{
+			"if": {
+				"properties": {
+					"status": {
+						"enum": ["running", "ready"]
+					}
+				}
+			},
+			"then": {
+				"properties": {
+					"reportPath": {
+						"type": "null"
+					},
+					"summary": {
+						"type": "null"
+					},
+					"summaryFindings": {
+						"type": "null"
+					},
+					"failure": {
+						"type": "null"
+					},
+					"results": {
+						"type": "array",
+						"items": {
+							"$ref": "#/$defs/rawResult"
+						}
+					}
+				}
+			}
+		},
+		{
+			"if": {
+				"properties": {
+					"status": {
+						"const": "completed"
+					}
+				}
+			},
+			"then": {
+				"properties": {
+					"reportPath": {
+						"type": "string",
+						"minLength": 1
+					},
+					"failure": {
+						"type": "null"
+					},
+					"summary": {
+						"$ref": "#/$defs/summary"
+					},
+					"summaryFindings": {
+						"$ref": "#/$defs/summaryFindings"
+					},
+					"results": {
+						"type": "array",
+						"items": {
+							"$ref": "#/$defs/scoredResult"
+						}
+					}
+				}
+			}
+		},
+		{
+			"if": {
+				"properties": {
+					"status": {
+						"const": "aborted"
+					}
+				}
+			},
+			"then": {
+				"properties": {
+					"reportPath": {
+						"type": "null"
+					},
+					"failure": {
+						"$ref": "#/$defs/failure"
+					},
+					"summary": {
+						"type": "null"
+					},
+					"summaryFindings": {
+						"type": "null"
+					},
+					"results": {
+						"type": "array",
+						"items": {
+							"$ref": "#/$defs/rawResult"
+						}
+					}
+				}
+			}
+		}
+	],
+	"$defs": {
+		"criteria": {
+			"type": "object",
+			"additionalProperties": false,
+			"required": ["pass", "almost", "fail"],
+			"properties": {
+				"pass": {
+					"type": "string"
+				},
+				"almost": {
+					"type": "string"
+				},
+				"fail": {
+					"type": "string"
+				}
+			}
+		},
+		"testTurn": {
+			"type": "object",
+			"additionalProperties": false,
+			"required": ["prompt", "criteria"],
+			"properties": {
+				"prompt": {
+					"type": "string"
+				},
+				"criteria": {
+					"$ref": "#/$defs/criteria"
+				}
+			}
+		},
+		"test": {
+			"type": "object",
+			"additionalProperties": false,
+			"required": ["name", "turns"],
+			"properties": {
+				"name": {
+					"type": "string"
+				},
+				"passThreshold": {
+					"type": "number",
+					"exclusiveMinimum": 0,
+					"maximum": 1
+				},
+				"turns": {
+					"type": "array",
+					"minItems": 1,
+					"items": {
+						"$ref": "#/$defs/testTurn"
+					}
+				}
+			}
+		},
+		"count": {
+			"type": "object",
+			"additionalProperties": false,
+			"required": ["count", "percentage"],
+			"properties": {
+				"count": {
+					"type": "integer",
+					"minimum": 0
+				},
+				"percentage": {
+					"type": "number",
+					"minimum": 0,
+					"maximum": 100
+				}
+			}
+		},
+		"summary": {
+			"description": "Counts are per run: all turns pass is pass, all turns fail is fail, and every other scored mix is almost. Percentages use scoredRuns as the denominator. Runs with infrastructure failures or skipped turns are unscored.",
+			"type": "object",
+			"additionalProperties": false,
+			"required": [
+				"totalRuns",
+				"scoredRuns",
+				"unscoredRuns",
+				"pass",
+				"almost",
+				"fail"
+			],
+			"properties": {
+				"totalRuns": {
+					"type": "integer",
+					"minimum": 0
+				},
+				"scoredRuns": {
+					"type": "integer",
+					"minimum": 0
+				},
+				"unscoredRuns": {
+					"type": "integer",
+					"minimum": 0
+				},
+				"pass": {
+					"$ref": "#/$defs/count"
+				},
+				"almost": {
+					"$ref": "#/$defs/count"
+				},
+				"fail": {
+					"$ref": "#/$defs/count"
+				}
+			}
+		},
+		"summaryFindings": {
+			"type": "array",
+			"minItems": 5,
+			"maxItems": 10,
+			"items": {
+				"type": "string",
+				"minLength": 1,
+				"pattern": "^[^\\r\\n]+$"
+			}
+		},
+		"score": {
+			"type": "object",
+			"additionalProperties": false,
+			"required": ["status", "reason"],
+			"properties": {
+				"status": {
+					"enum": ["pass", "almost", "fail"]
+				},
+				"reason": {
+					"type": "string",
+					"minLength": 1
+				}
+			}
+		},
+		"toolCall": {
+			"type": "object",
+			"required": ["name"],
+			"properties": {
+				"name": {
+					"type": "string",
+					"minLength": 1
+				},
+				"input": true,
+				"output": true
+			},
+			"additionalProperties": true
+		},
+		"resultTurn": {
+			"type": "object",
+			"additionalProperties": false,
+			"required": [
+				"turn",
+				"prompt",
+				"status",
+				"reply",
+				"replyTimeMs",
+				"replyChars",
+				"toolCalls",
+				"attempts",
+				"infrastructureEvents",
+				"stdout",
+				"stderr",
+				"score"
+			],
+			"properties": {
+				"turn": {
+					"type": "integer",
+					"minimum": 1
+				},
+				"prompt": {
+					"type": "string"
+				},
+				"status": {
+					"enum": [
+						"running",
+						"completed",
+						"at-capacity",
+						"infrastructure-failure",
+						"skipped"
+					]
+				},
+				"reply": {
+					"type": ["string", "null"]
+				},
+				"replyTimeMs": {
+					"type": "number",
+					"minimum": 0
+				},
+				"replyChars": {
+					"type": "integer",
+					"minimum": 0
+				},
+				"toolCalls": {
+					"type": "array",
+					"items": {
+						"$ref": "#/$defs/toolCall"
+					}
+				},
+				"attempts": {
+					"type": "integer",
+					"minimum": 0,
+					"maximum": 4
+				},
+				"infrastructureEvents": {
+					"type": "array",
+					"items": {
+						"type": "string"
+					}
+				},
+				"stdout": {
+					"type": "string"
+				},
+				"stderr": {
+					"type": "string"
+				},
+				"score": {
+					"oneOf": [
+						{
+							"type": "null"
+						},
+						{
+							"$ref": "#/$defs/score"
+						}
+					]
+				}
+			},
+			"allOf": [
+				{
+					"if": {
+						"properties": {
+							"status": {
+								"const": "skipped"
+							}
+						}
+					},
+					"then": {
+						"properties": {
+							"reply": {
+								"type": "null"
+							},
+							"score": {
+								"type": "null"
+							},
+							"attempts": {
+								"const": 0
+							}
+						}
+					}
+				},
+				{
+					"if": {
+						"properties": {
+							"status": {
+								"enum": ["running", "at-capacity", "infrastructure-failure"]
+							}
+						}
+					},
+					"then": {
+						"properties": {
+							"score": {
+								"type": "null"
+							}
+						}
+					}
+				},
+				{
+					"if": {
+						"properties": {
+							"status": {
+								"enum": ["completed", "at-capacity", "infrastructure-failure"]
+							}
+						}
+					},
+					"then": {
+						"properties": {
+							"attempts": {
+								"type": "integer",
+								"minimum": 1
+							}
+						}
+					}
+				}
+			]
+		},
+		"result": {
+			"type": "object",
+			"additionalProperties": false,
+			"required": [
+				"harnessId",
+				"harnessLabel",
+				"model",
+				"modelLabel",
+				"run",
+				"sessionId",
+				"turns"
+			],
+			"properties": {
+				"harnessId": {
+					"type": "string",
+					"minLength": 1
+				},
+				"harnessLabel": {
+					"type": "string",
+					"minLength": 1
+				},
+				"model": {
+					"type": "string",
+					"minLength": 1
+				},
+				"modelLabel": {
+					"type": "string",
+					"minLength": 1
+				},
+				"effort": {
+					"type": ["string", "null"]
+				},
+				"run": {
+					"type": "integer",
+					"minimum": 1
+				},
+				"sessionId": {
+					"type": ["string", "null"]
+				},
+				"turns": {
+					"type": "array",
+					"items": {
+						"$ref": "#/$defs/resultTurn"
+					}
+				}
+			}
+		},
+		"rawResult": {
+			"allOf": [
+				{
+					"$ref": "#/$defs/result"
+				},
+				{
+					"type": "object",
+					"properties": {
+						"turns": {
+							"type": "array",
+							"items": {
+								"type": "object",
+								"properties": {
+									"score": {
+										"type": "null"
+									}
+								}
+							}
+						}
+					}
+				}
+			]
+		},
+		"scoredResult": {
+			"allOf": [
+				{
+					"$ref": "#/$defs/result"
+				},
+				{
+					"type": "object",
+					"properties": {
+						"turns": {
+							"type": "array",
+							"items": {
+								"allOf": [
+									{
+										"type": "object",
+										"properties": {
+											"status": {
+												"enum": [
+													"completed",
+													"at-capacity",
+													"infrastructure-failure",
+													"skipped"
+												]
+											}
+										}
+									},
+									{
+										"if": {
+											"type": "object",
+											"properties": {
+												"status": {
+													"const": "completed"
+												}
+											}
+										},
+										"then": {
+											"type": "object",
+											"properties": {
+												"score": {
+													"$ref": "#/$defs/score"
+												}
+											}
+										}
+									}
+								]
+							}
+						}
+					}
+				}
+			]
+		},
+		"failure": {
+			"type": "object",
+			"additionalProperties": false,
+			"required": ["kind", "message", "harnessId", "model", "run", "turn"],
+			"properties": {
+				"kind": {
+					"const": "authentication"
+				},
+				"message": {
+					"type": "string",
+					"minLength": 1
+				},
+				"harnessId": {
+					"type": "string",
+					"minLength": 1
+				},
+				"model": {
+					"type": "string",
+					"minLength": 1
+				},
+				"run": {
+					"type": "integer",
+					"minimum": 1
+				},
+				"turn": {
+					"type": "integer",
+					"minimum": 1
+				}
+			}
+		}
+	}
+}
