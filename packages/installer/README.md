@@ -122,9 +122,9 @@ root, and repository/link checks under `tests/repository/`.
 
 ### Codex settings
 
-Development setup links `codex/.codex/AGENTS.md` and
-`codex/.codex/config.toml` to `~/.codex/`. On another machine, clone or pull
-the repo at `~/.dotfiles`, then run
+Development setup links `codex/.codex/AGENTS.md`, `codex/.codex/config.toml`,
+and `codex/.codex/keybindings.json` to `~/.codex/`. On another machine, clone
+or pull the repo at `~/.dotfiles`, then run
 `bash packages/installer/install.sh --development`. Later pulls update the
 linked files without recreating the links.
 

@@ -18,7 +18,8 @@ _configure() {
   chmod 0600 "$ROOT_DIR/codex/.codex/config.toml"
   safe_symlink_group 'Codex' \
     "$ROOT_DIR/codex/.codex/AGENTS.md" "$HOME/.codex/AGENTS.md" \
-    "$ROOT_DIR/codex/.codex/config.toml" "$HOME/.codex/config.toml"
+    "$ROOT_DIR/codex/.codex/config.toml" "$HOME/.codex/config.toml" \
+    "$ROOT_DIR/codex/.codex/keybindings.json" "$HOME/.codex/keybindings.json"
 }
 
 mac() {

@@ -16,6 +16,7 @@ required_paths='
 .agents
 codex/.codex/AGENTS.md
 codex/.codex/config.toml
+codex/.codex/keybindings.json
 .gitignore
 .nvmrc
 .oxfmtrc.json

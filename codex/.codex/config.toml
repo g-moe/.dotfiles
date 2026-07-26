@@ -13,7 +13,7 @@ max_depth = 3
 
 [desktop]
 followUpQueueMode = "queue"
-appearanceTheme = "dark"
+appearanceTheme = "system"
 appearanceLightCodeThemeId = "github"
 appearanceDarkCodeThemeId = "github"
 sansFontSize = 14
@@ -25,6 +25,8 @@ enabled-reasoning-efforts = ["low", "medium", "high", "xhigh", "ultra", "max"]
 open-link-in-target-preference = "in-app-browser"
 ambient-suggestions-enabled = false
 avatar-overlay-mascot-width-px = 80
+conversationDetailMode = "STEPS_COMMANDS"
+defaultTerminalLocation = "right"
 
 [desktop.appearanceLightChromeTheme]
 accent = "#0969da"
@@ -188,8 +190,35 @@ trust_level = "trusted"
 [projects."/Users/garrett/.dotfiles"]
 trust_level = "trusted"
 
+[projects."/Users/garrett/Documents/Codex/2026-07-26/any"]
+trust_level = "trusted"
+
+[projects."/Users/garrett/Documents/Codex/2026-07-26/wha"]
+trust_level = "trusted"
+
+[projects."/Users/garrett/code/dev/me"]
+trust_level = "trusted"
+
+[projects."/Users/garrett/Documents/Codex/2026-07-26/default-to-a-clear-complete-and"]
+trust_level = "trusted"
+
+[projects."/Users/garrett/Documents/Codex/2026-07-26/can"]
+trust_level = "trusted"
+
+[projects."/Users/garrett/Documents/Codex/2026-07-26/ch"]
+trust_level = "trusted"
+
+[projects."/Users/garrett/Documents/Codex/2026-07-26/check-codexs-opensource"]
+trust_level = "trusted"
+
+[projects."/Users/garrett/Documents/Codex/2026-07-26/do-end-a-reply-with-links"]
+trust_level = "trusted"
+
+[projects."/Users/garrett/Documents/Codex/2026-07-26/wha-2"]
+trust_level = "trusted"
+
 [marketplaces.openai-bundled]
-last_updated = "2026-07-25T20:41:11Z"
+last_updated = "2026-07-26T19:42:32Z"
 source_type = "local"
 source = "/Users/garrett/.codex/.tmp/bundled-marketplaces/openai-bundled"
 
@@ -202,9 +231,6 @@ source = "/Users/garrett/.cache/codex-runtimes/codex-primary-runtime/plugins/ope
 enabled = true
 
 [plugins."visualize@openai-bundled"]
-enabled = true
-
-[plugins."browser@openai-bundled"]
 enabled = true
 
 [plugins."documents@openai-primary-runtime"]
@@ -220,6 +246,9 @@ enabled = true
 enabled = true
 
 [plugins."template-creator@openai-primary-runtime"]
+enabled = true
+
+[plugins."browser@openai-bundled"]
 enabled = true
 
 [mcp_servers.node_repl]

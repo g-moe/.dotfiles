@@ -12,6 +12,14 @@
 
 set -euo pipefail
 
+# OTHER OPTIONS
+#
+# Automatically open DevTools for each browser tab.
+# Limitation: DevTools opens in a separate window. This flag cannot dock it
+# inside Codex or force Electron's "bottom" mode.
+# DEVTOOLS_FLAG='--auto-open-devtools-for-tabs'
+DEVTOOLS_FLAG=''
+
 APP_PATH='/Applications/ChatGPT.app'
 APP_EXECUTABLE="$APP_PATH/Contents/MacOS/ChatGPT"
 APP_BUNDLE_ID='com.openai.codex'
@@ -32,13 +40,17 @@ if [[ "$(
   exit 0
 fi
 
-if ps axww -o command= | awk -v executable="$APP_EXECUTABLE" -v flag="$INSECURE_FLAG" '
+if ps axww -o command= | awk \
+  -v executable="$APP_EXECUTABLE" \
+  -v insecure_flag="$INSECURE_FLAG" \
+  -v devtools_flag="$DEVTOOLS_FLAG" '
   $1 == executable {
     for (field = 2; field <= NF; field++) {
-      if ($field == flag) found = 1
+      if ($field == insecure_flag) insecure_found = 1
+      if ($field == devtools_flag) devtools_found = 1
     }
   }
-  END { exit !found }
+  END { exit !(insecure_found && (devtools_flag == "" || devtools_found)) }
 '; then
   open -a ChatGPT
   exit 0
@@ -58,4 +70,7 @@ if pgrep -x ChatGPT >/dev/null; then
   fi
 fi
 
-open -na "$APP_PATH" --args "$INSECURE_FLAG"
+APP_FLAGS=("$INSECURE_FLAG")
+[[ -z "$DEVTOOLS_FLAG" ]] || APP_FLAGS+=("$DEVTOOLS_FLAG")
+
+open -na "$APP_PATH" --args "${APP_FLAGS[@]}"

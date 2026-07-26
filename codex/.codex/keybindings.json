@@ -1,0 +1,190 @@
+[
+  {
+    "command": "approval.decline",
+    "key": "Command+Backspace"
+  },
+  {
+    "command": "archiveThread",
+    "key": "Command+Shift+Backspace"
+  },
+  {
+    "command": "closeWindow",
+    "key": null
+  },
+  {
+    "command": "composer.openModelPicker",
+    "key": null
+  },
+  {
+    "command": "composer.openProjectPicker",
+    "key": null
+  },
+  {
+    "command": "composer.startDictation",
+    "key": null
+  },
+  {
+    "command": "composer.startVoiceMode",
+    "key": null
+  },
+  {
+    "command": "copyConversationPath",
+    "key": null
+  },
+  {
+    "command": "copyDeeplink",
+    "key": null
+  },
+  {
+    "command": "copySessionId",
+    "key": null
+  },
+  {
+    "command": "environmentAction1",
+    "key": null
+  },
+  {
+    "command": "focusBrowserAddressBar",
+    "key": "Ctrl+Alt+Shift+P"
+  },
+  {
+    "command": "hardReloadBrowserPage",
+    "key": null
+  },
+  {
+    "command": "navigateBrowserBack",
+    "key": "Ctrl+Alt+Shift+D"
+  },
+  {
+    "command": "navigateBrowserForward",
+    "key": "Ctrl+Alt+Shift+F"
+  },
+  {
+    "command": "newProjectlessTask",
+    "key": null
+  },
+  {
+    "command": "newTask",
+    "key": null
+  },
+  {
+    "command": "newWindow",
+    "key": null
+  },
+  {
+    "command": "nextRecentThread",
+    "key": null
+  },
+  {
+    "command": "nextTab",
+    "key": "Ctrl+Alt+Shift+R"
+  },
+  {
+    "command": "nextThread",
+    "key": null
+  },
+  {
+    "command": "openBrowserTab",
+    "key": null
+  },
+  {
+    "command": "openCommandMenu",
+    "key": "CmdOrCtrl+K"
+  },
+  {
+    "command": "openFolder",
+    "key": null
+  },
+  {
+    "command": "openSideChat",
+    "key": null
+  },
+  {
+    "command": "previousRecentThread",
+    "key": null
+  },
+  {
+    "command": "previousTab",
+    "key": "Ctrl+Alt+Shift+E"
+  },
+  {
+    "command": "previousThread",
+    "key": null
+  },
+  {
+    "command": "quickChat",
+    "key": null
+  },
+  {
+    "command": "renameThread",
+    "key": "Command+Shift+R"
+  },
+  {
+    "command": "showKeyboardShortcuts",
+    "key": null
+  },
+  {
+    "command": "thread1",
+    "key": null
+  },
+  {
+    "command": "thread2",
+    "key": null
+  },
+  {
+    "command": "thread3",
+    "key": null
+  },
+  {
+    "command": "thread4",
+    "key": null
+  },
+  {
+    "command": "thread5",
+    "key": null
+  },
+  {
+    "command": "thread6",
+    "key": null
+  },
+  {
+    "command": "thread7",
+    "key": null
+  },
+  {
+    "command": "thread8",
+    "key": null
+  },
+  {
+    "command": "thread9",
+    "key": null
+  },
+  {
+    "command": "toggleBottomPanel",
+    "key": null
+  },
+  {
+    "command": "toggleMaximizeSidePanel",
+    "key": null
+  },
+  {
+    "command": "toggleSidebar",
+    "key": null
+  },
+  {
+    "command": "toggleSidePanel",
+    "key": null
+  },
+  {
+    "command": "toggleTerminal",
+    "key": "Command+Shift+T"
+  },
+  {
+    "command": "toggleThreadPin",
+    "key": null
+  },
+  {
+    "command": "toggleTraceRecording",
+    "key": null
+  }
+]
