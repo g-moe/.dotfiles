@@ -1,7 +1,7 @@
 sandbox_mode = "danger-full-access"
 approval_policy = "never"
 model = "gpt-5.6-sol"
-model_reasoning_effort = "high"
+model_reasoning_effort = "low"
 model_verbosity = "low"
 service_tier = "priority"
 allow_login_shell = true
@@ -13,7 +13,7 @@ max_depth = 3
 
 [desktop]
 followUpQueueMode = "queue"
-appearanceTheme = "system"
+appearanceTheme = "dark"
 appearanceLightCodeThemeId = "github"
 appearanceDarkCodeThemeId = "github"
 sansFontSize = 14
@@ -29,11 +29,12 @@ avatar-overlay-mascot-width-px = 80
 [desktop.appearanceLightChromeTheme]
 accent = "#0969da"
 contrast = 45
-ink = "#1f2328"
+ink = "#1f2122"
 opaqueWindows = true
-surface = "#ffffff"
+surface = "#e6edf3"
 
 [desktop.appearanceLightChromeTheme.fonts]
+code = "JetBrains Mono"
 
 [desktop.appearanceLightChromeTheme.semanticColors]
 diffAdded = "#1a7f37"
@@ -42,12 +43,13 @@ skill = "#8250df"
 
 [desktop.appearanceDarkChromeTheme]
 accent = "#1f6feb"
-contrast = 60
+contrast = 48
 ink = "#e6edf3"
 opaqueWindows = true
 surface = "#1f2122"
 
 [desktop.appearanceDarkChromeTheme.fonts]
+code = "JetBrains Mono"
 
 [desktop.appearanceDarkChromeTheme.semanticColors]
 diffAdded = "#3fb950"
@@ -153,8 +155,41 @@ trust_level = "trusted"
 [projects."/Users/garrett/Documents/Codex/2026-07-25/pa"]
 trust_level = "trusted"
 
+[projects."/Users/garrett/Documents/Codex/2026-07-25/im"]
+trust_level = "trusted"
+
+[projects."/Users/garrett/Documents/Codex/2026-07-25/is-t"]
+trust_level = "trusted"
+
+[projects."/Users/garrett/Documents/Codex/2026-07-25/challenge-const-a-x-1-class"]
+trust_level = "trusted"
+
+[projects."/Users/garrett/Documents/Codex/2026-07-25/const-original-profile-city-class-token"]
+trust_level = "trusted"
+
+[projects."/Users/garrett/Documents/Codex/2026-07-25/any"]
+trust_level = "trusted"
+
+[projects."/Users/garrett/Documents/Codex/2026-07-25/doe"]
+trust_level = "trusted"
+
+[projects."/Users/garrett/Documents/Codex/2026-07-25/c"]
+trust_level = "trusted"
+
+[projects."/Users/garrett/Documents/Codex/2026-07-25/realtime-voice-chat"]
+trust_level = "trusted"
+
+[projects."/Users/garrett/Documents/Codex/2026-07-25/realtime-voice-chat-2"]
+trust_level = "trusted"
+
+[projects."/Users/garrett/code/dev/trader-memes"]
+trust_level = "trusted"
+
+[projects."/Users/garrett/.dotfiles"]
+trust_level = "trusted"
+
 [marketplaces.openai-bundled]
-last_updated = "2026-07-25T14:03:50Z"
+last_updated = "2026-07-25T20:41:11Z"
 source_type = "local"
 source = "/Users/garrett/.codex/.tmp/bundled-marketplaces/openai-bundled"
 

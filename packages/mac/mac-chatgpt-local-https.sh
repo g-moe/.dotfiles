@@ -14,7 +14,23 @@ set -euo pipefail
 
 APP_PATH='/Applications/ChatGPT.app'
 APP_EXECUTABLE="$APP_PATH/Contents/MacOS/ChatGPT"
+APP_BUNDLE_ID='com.openai.codex'
 INSECURE_FLAG='--ignore-certificate-errors'
+
+if [[ "$(
+  osascript -l JavaScript -e "
+    ObjC.import('AppKit');
+    const app = $.NSWorkspace.sharedWorkspace.frontmostApplication;
+    if (ObjC.unwrap(app.bundleIdentifier) === '$APP_BUNDLE_ID') {
+      app.hide;
+      'hidden';
+    } else {
+      'show';
+    }
+  "
+)" == 'hidden' ]]; then
+  exit 0
+fi
 
 if ps axww -o command= | awk -v executable="$APP_EXECUTABLE" -v flag="$INSECURE_FLAG" '
   $1 == executable {
