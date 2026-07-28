@@ -217,13 +217,46 @@ trust_level = "trusted"
 [projects."/Users/garrett/Documents/Codex/2026-07-26/wha-2"]
 trust_level = "trusted"
 
+[projects."/Users/garrett/Documents/Codex/2026-07-27/yo"]
+trust_level = "trusted"
+
+[projects."/Users/garrett/Documents/Codex/2026-07-27/do-end-a-reply-with-named"]
+trust_level = "trusted"
+
+[projects."/Users/garrett/Documents/Codex/2026-07-27/sup"]
+trust_level = "trusted"
+
+[projects."/Users/garrett/Documents/Codex/2026-07-27/sup-2"]
+trust_level = "trusted"
+
+[projects."/Users/garrett/Documents/Codex/2026-07-27/in"]
+trust_level = "trusted"
+
+[projects."/Users/garrett/Documents/Codex/2026-07-27/type-mdframetype-clear-delta-full-none"]
+trust_level = "trusted"
+
+[projects."/Users/garrett/Documents/Codex/2026-07-27/find"]
+trust_level = "trusted"
+
+[projects."/Users/garrett/Documents/Codex/2026-07-27/tradester-creative-qa-ideas"]
+trust_level = "trusted"
+
+[projects."/Users/garrett/Documents/Codex/2026-07-27/li"]
+trust_level = "trusted"
+
+[projects."/Users/garrett/Documents/Codex/2026-07-27/ci"]
+trust_level = "trusted"
+
+[projects."/Users/garrett/Documents/Codex/2026-07-27/wha"]
+trust_level = "trusted"
+
 [marketplaces.openai-bundled]
 last_updated = "2026-07-26T19:42:32Z"
 source_type = "local"
 source = "/Users/garrett/.codex/.tmp/bundled-marketplaces/openai-bundled"
 
 [marketplaces.openai-primary-runtime]
-last_updated = "2026-07-24T07:16:36Z"
+last_updated = "2026-07-27T22:16:33Z"
 source_type = "local"
 source = "/Users/garrett/.cache/codex-runtimes/codex-primary-runtime/plugins/openai-primary-runtime"
 

@@ -12,8 +12,12 @@
     "key": null
   },
   {
+    "command": "composer.cycleReasoningEffort",
+    "key": "Command+/"
+  },
+  {
     "command": "composer.openModelPicker",
-    "key": null
+    "key": "Command+."
   },
   {
     "command": "composer.openProjectPicker",

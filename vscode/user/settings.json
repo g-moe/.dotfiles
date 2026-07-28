@@ -417,5 +417,6 @@
 	"yaml.disableSchemaDetection": [],
     "workbench.panel.showLabels": false,
     "editor.selectionHighlight": false,
-    "editor.occurrencesHighlight": "multiFile"
+    "editor.occurrencesHighlight": "multiFile",
+    "workbench.browser.openLocalhostLinks": true
 }
