@@ -46,6 +46,10 @@
 !/karabiner/
 !/karabiner/karabiner.json
 
+# Arc
+!/arc/
+!/arc/StorableLinkRouting.json
+
 # Ghostty
 !/ghostty/
 !/ghostty/config

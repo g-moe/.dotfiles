@@ -51,6 +51,7 @@ install_apps() {
   run_strategy 'Docker' apps/docker.sh
   run_strategy 'Virtual machines' apps/virtual-machines.sh
   run_strategy 'Chrome' apps/chrome.sh
+  run_strategy 'Arc link routing' apps/arc-routing.sh
   run_strategy 'Firefox' apps/firefox.sh
   run_strategy 'Keyboard pointer control' apps/keyboard-pointer.sh
   run_strategy 'Voice dictation' apps/voice-dictation.sh

@@ -8,6 +8,8 @@ expect_file_contains "$INSTALLER_DIR/setup/apps/nordvpn.sh" \
   "ask_binary 'Install NordVPN?' n" 'NordVPN prompt must default to no'
 expect_file_contains "$INSTALLER_DIR/setup/apps/chrome.sh" \
   'brew_cask google-chrome arc' 'Mac must install Chrome and Arc'
+expect_file_contains "$INSTALLER_DIR/setup/apps/arc-routing.sh" \
+  '"$ROOT_DIR/arc/StorableLinkRouting.json"' 'Mac must link Arc routing from the repo'
 expect_file_contains "$INSTALLER_DIR/setup/apps/codex.sh" \
   'brew_cask chatgpt' 'Mac must install the ChatGPT app'
 expect_file_contains "$INSTALLER_DIR/setup/apps/codex.sh" \

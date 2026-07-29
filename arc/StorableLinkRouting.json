@@ -1,0 +1,122 @@
+{
+  "version" : 1,
+  "defaultDestination" : {
+    "space" : {
+      "_0" : {
+        "space" : {
+          "_0" : "thebrowser.company.defaultPersonalSpaceID"
+        }
+      }
+    }
+  },
+  "rules" : [
+    {
+      "sourceComponents" : [
+        {
+          "id" : "0FB35543-5B27-464A-9F56-C4BBEF5489C9",
+          "componentType" : {
+            "urlMatch" : {
+              "_1" : "oidc.us-east-1.amazonaws.com",
+              "_0" : {
+                "contains" : {
+
+                }
+              }
+            }
+          }
+        }
+      ],
+      "id" : "7DFADDC8-B671-440C-8462-E6C884488960",
+      "destination" : {
+        "space" : {
+          "_0" : {
+            "space" : {
+              "_0" : "5740FC7B-174C-445C-B33D-4BB082E25D5D"
+            }
+          }
+        }
+      }
+    },
+    {
+      "sourceComponents" : [
+        {
+          "componentType" : {
+            "urlMatch" : {
+              "_1" : "discord.com",
+              "_0" : {
+                "contains" : {
+
+                }
+              }
+            }
+          },
+          "id" : "56D0719E-5B17-45E1-9036-3D7D08A9F5A1"
+        }
+      ],
+      "id" : "E8578A25-7DA5-4A9D-8F98-DFE0B158E92F",
+      "destination" : {
+        "space" : {
+          "_0" : {
+            "space" : {
+              "_0" : "thebrowser.company.defaultPersonalSpaceID"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id" : "6283387B-2276-4432-A605-5B0DDC82B4C7",
+      "sourceComponents" : [
+        {
+          "id" : "5D7D464A-A190-4BFC-BFC1-76A530901A29",
+          "componentType" : {
+            "urlMatch" : {
+              "_0" : {
+                "contains" : {
+
+                }
+              },
+              "_1" : "tradestertest.com"
+            }
+          }
+        }
+      ],
+      "destination" : {
+        "space" : {
+          "_0" : {
+            "space" : {
+              "_0" : "5740FC7B-174C-445C-B33D-4BB082E25D5D"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id" : "B35903AB-A8D9-420A-B8F3-49708752EFC6",
+      "sourceComponents" : [
+        {
+          "componentType" : {
+            "urlMatch" : {
+              "_1" : "app.tradester.com",
+              "_0" : {
+                "contains" : {
+
+                }
+              }
+            }
+          },
+          "id" : "276336D6-CF4C-41F1-BB56-DBB28AF59FFF"
+        }
+      ],
+      "destination" : {
+        "space" : {
+          "_0" : {
+            "space" : {
+              "_0" : "thebrowser.company.defaultPersonalSpaceID"
+            }
+          }
+        }
+      }
+    }
+  ]
+}

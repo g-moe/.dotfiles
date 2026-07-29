@@ -6,7 +6,7 @@
 
 - DO end a reply with links to local artifacts (eg. source-code, documentation), or external documentation when relevant. Links can also include sources which led to answers or used during a task.
 
-- DO before sending every final reply, check whether you used or identified a named pattern, principle, method, or concept. If yes, the last line must be exactly Patterns: <name>. Do not omit this line for brevity, omit only when no patterns apply.
+- DO before sending every final reply, check whether you explicitly used a recognized software design pattern or engineering principle as part of the answer—for example, Factory, Observer, DRY, or YAGNI. Do not count ordinary words, general concepts, tools, workflows, or methods described without a formal name. Only when such a name materially helps the answer, add a final line exactly as: Patterns: <name>.
 
 - WHEN relevant links exist, end the reply with links to the local artifacts created or used, supporting sources, or useful external documentation. Do not add links when none are relevant, and do not search for or create links solely to satisfy this rule.
 

@@ -23,6 +23,7 @@ codex/.codex/keybindings.json
 .vscode
 AGENTS.md
 TODO.md
+arc/StorableLinkRouting.json
 ghostty/config
 images/icon.png
 images/white.png
@@ -59,6 +60,7 @@ codex
 .vscode
 AGENTS.md
 TODO.md
+arc
 ghostty
 images
 karabiner

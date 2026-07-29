@@ -47,6 +47,7 @@ case "$(uname -s)" in
     expect_link "$ROOT_DIR/karabiner/karabiner.json" "$HOME/.config/karabiner/karabiner.json"
     expect_link "$ROOT_DIR/mactop/config.json" "$HOME/.mactop/config.json"
     expect_link "$ROOT_DIR/mactop/com.dotfiles.mactop-menubar.plist" "$HOME/Library/LaunchAgents/com.dotfiles.mactop-menubar.plist"
+    expect_link "$ROOT_DIR/arc/StorableLinkRouting.json" "$HOME/Library/Application Support/Arc/StorableLinkRouting.json"
     vscodium="$HOME/Library/Application Support/VSCodium/User"
     ;;
   Linux)

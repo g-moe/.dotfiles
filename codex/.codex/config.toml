@@ -270,8 +270,17 @@ trust_level = "trusted"
 [projects."/Users/garrett/Documents/Codex/2026-07-29/how"]
 trust_level = "trusted"
 
+[projects."/Users/garrett/Documents/Codex/2026-07-29/wjhy"]
+trust_level = "trusted"
+
+[projects."/Users/garrett/Documents/Codex/2026-07-29/do-before-sending-every-final-reply"]
+trust_level = "trusted"
+
+[projects."/Users/garrett/Documents/Codex/2026-07-29/home-codex-text-link-https-resources"]
+trust_level = "trusted"
+
 [marketplaces.openai-bundled]
-last_updated = "2026-07-29T14:51:42Z"
+last_updated = "2026-07-29T21:25:06Z"
 source_type = "local"
 source = "/Users/garrett/.codex/.tmp/bundled-marketplaces/openai-bundled"
 
