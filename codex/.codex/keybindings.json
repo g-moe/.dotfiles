@@ -13,7 +13,15 @@
   },
   {
     "command": "composer.cycleReasoningEffort",
-    "key": "Command+/"
+    "key": null
+  },
+  {
+    "command": "composer.decreaseReasoningEffort",
+    "key": "Alt+-"
+  },
+  {
+    "command": "composer.increaseReasoningEffort",
+    "key": "Alt+="
   },
   {
     "command": "composer.openModelPicker",
@@ -101,7 +109,7 @@
   },
   {
     "command": "openSideChat",
-    "key": null
+    "key": "Command+Shift+S"
   },
   {
     "command": "previousRecentThread",

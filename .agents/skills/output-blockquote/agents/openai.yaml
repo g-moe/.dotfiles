@@ -1,0 +1,4 @@
+interface:
+  display_name: "Output Blockquote"
+  short_description: "Format every question and answer as a blockquote"
+  default_prompt: "Use $output-blockquote to format every question and answer."

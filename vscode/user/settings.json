@@ -202,7 +202,7 @@
 	"git.replaceTagsWhenPull": true,
 	"git.suggestSmartCommit": false,
 	"githubPullRequests.createOnPublishBranch": "never",
-	"githubPullRequests.fileListLayout": "flat",
+	"githubPullRequests.fileListLayout": "tree",
 	"githubPullRequests.pullBranch": "never",
 	"gitlens.codeLens.enabled": false,
 	"gitlens.mode.statusBar.enabled": false,
@@ -418,5 +418,7 @@
     "workbench.panel.showLabels": false,
     "editor.selectionHighlight": false,
     "editor.occurrencesHighlight": "multiFile",
-    "workbench.browser.openLocalhostLinks": true
+    "workbench.browser.openLocalhostLinks": true,
+    "markdown.preview.typographer": true,
+    "githubPullRequests.hideViewedFiles": false
 }
