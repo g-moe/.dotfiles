@@ -65,7 +65,8 @@ packages/installer/tests/           mirrors installer paths (`setup/`, `lib/`, a
 packages/lib/bash/                  standalone reusable Bash library
 packages/lib/bash/bin/              standalone cross-OS Bash tools
 packages/lib/ts/                    standalone shared TypeScript (empty for now)
-packages/mac/                       standalone Mac, Raycast, and Swift tools
+packages/mac/                       standalone Mac and Swift tools
+packages/raycast/                   standalone Raycast extensions and shared runner
 mactop/                             menu-bar configuration and login LaunchAgent
 packages/theming/                   theme generator, outputs, and VS Code theme package
 packages/vscode-ext/                VSCodium extension source and tests
