@@ -8,6 +8,7 @@
 		"format:check": "oxfmt --check .",
 		"typecheck": "tsc -b --noEmit",
 		"typecheck:tsgo": "tsgo -b --noEmit",
+		"raycast": "bash packages/raycast/run.sh",
 		"install:apps": "bash packages/installer/install.sh --apps",
 		"install:development": "bash packages/installer/install.sh --development",
 		"install:git": "bash packages/installer/install.sh --git",

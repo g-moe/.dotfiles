@@ -1,0 +1,123 @@
+{
+	"$schema": "https://www.raycast.com/schemas/extension.json",
+	"name": "better-screen-sharing",
+	"version": "1.0.0",
+	"private": true,
+	"description": "Open Apple Screen Sharing",
+	"categories": [
+		"Applications"
+	],
+	"license": "MIT",
+	"author": "m1",
+	"scripts": {
+		"build": "ray build -e dist",
+		"dev": "ray develop",
+		"test": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --test tests/*.test.ts",
+		"typecheck": "tsc -p tsconfig.json"
+	},
+	"dependencies": {
+		"@raycast/api": "1.104.23"
+	},
+	"devDependencies": {
+		"typescript": "6.0.3"
+	},
+	"icon": "icon.png",
+	"commands": [
+		{
+			"name": "connections",
+			"title": "Connections",
+			"description": "Open Apple Screen Sharing",
+			"keywords": [
+				"vnc",
+				"screen sharing"
+			],
+			"mode": "view"
+		}
+	],
+	"platforms": [
+		"macOS"
+	],
+	"preferences": [
+		{
+			"name": "machine1Name",
+			"title": "Machine 1 Name",
+			"description": "Name shown in Raycast and in an open Screen Sharing window",
+			"type": "textfield",
+			"required": false,
+			"placeholder": "Office Mac"
+		},
+		{
+			"name": "machine1Address",
+			"title": "Machine 1 Address",
+			"description": "Hostname or IP address",
+			"type": "textfield",
+			"required": false,
+			"placeholder": "office-mac.local"
+		},
+		{
+			"name": "machine2Name",
+			"title": "Machine 2 Name",
+			"description": "Name shown in Raycast and in an open Screen Sharing window",
+			"type": "textfield",
+			"required": false,
+			"placeholder": "Home PC"
+		},
+		{
+			"name": "machine2Address",
+			"title": "Machine 2 Address",
+			"description": "Hostname or IP address",
+			"type": "textfield",
+			"required": false,
+			"placeholder": "192.168.1.100"
+		},
+		{
+			"name": "machine3Name",
+			"title": "Machine 3 Name",
+			"description": "Name shown in Raycast and in an open Screen Sharing window",
+			"type": "textfield",
+			"required": false,
+			"placeholder": "Machine 3"
+		},
+		{
+			"name": "machine3Address",
+			"title": "Machine 3 Address",
+			"description": "Hostname or IP address",
+			"type": "textfield",
+			"required": false,
+			"placeholder": "machine-3.local"
+		},
+		{
+			"name": "machine4Name",
+			"title": "Machine 4 Name",
+			"description": "Name shown in Raycast and in an open Screen Sharing window",
+			"type": "textfield",
+			"required": false,
+			"placeholder": "Machine 4"
+		},
+		{
+			"name": "machine4Address",
+			"title": "Machine 4 Address",
+			"description": "Hostname or IP address",
+			"type": "textfield",
+			"required": false,
+			"placeholder": "machine-4.local"
+		},
+		{
+			"name": "machine5Name",
+			"title": "Machine 5 Name",
+			"description": "Name shown in Raycast and in an open Screen Sharing window",
+			"type": "textfield",
+			"required": false,
+			"placeholder": "Machine 5"
+		},
+		{
+			"name": "machine5Address",
+			"title": "Machine 5 Address",
+			"description": "Hostname or IP address",
+			"type": "textfield",
+			"required": false,
+			"placeholder": "machine-5.local"
+		}
+	],
+	"title": "Better Screen Sharing"
+}

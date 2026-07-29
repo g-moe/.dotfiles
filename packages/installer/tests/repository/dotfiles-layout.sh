@@ -37,6 +37,7 @@ packages/installer/packages/retire.schema.json
 packages/lib/bash/lib.sh
 packages/lib/ts/.gitkeep
 packages/mac
+packages/raycast
 packages/theming/create/controller.ts
 packages/vscode-ext/package.json
 tmux/tmux.conf
@@ -130,6 +131,7 @@ fi
 installer_dependencies="$(grep -RIn 'packages/installer' \
   "$ROOT_DIR/packages/lib" \
   "$ROOT_DIR/packages/mac" \
+  "$ROOT_DIR/packages/raycast" \
   "$ROOT_DIR/packages/theming" \
   "$ROOT_DIR/packages/vscode-ext" \
   --include='*.sh' \
@@ -142,7 +144,7 @@ if [[ -n "$installer_dependencies" ]]; then
   fail 'a lower package depends on packages/installer'
 fi
 
-library_dependencies="$(grep -RInE 'packages/(installer|mac|theming|vscode-ext)' \
+library_dependencies="$(grep -RInE 'packages/(installer|mac|raycast|theming|vscode-ext)' \
   "$ROOT_DIR/packages/lib" \
   --include='*.sh' \
   --include='*.ts' \

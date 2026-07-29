@@ -1,0 +1,2 @@
+# Raycast generates this file with a final blank line.
+raycast-env.d.ts whitespace=-blank-at-eof
