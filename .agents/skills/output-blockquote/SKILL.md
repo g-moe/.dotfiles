@@ -1,6 +1,6 @@
 ---
 name: output-blockquote
-description: "Format every user question as a repeated heading followed by one or more visibly spaced Markdown blockquotes."
+description: "Format responses to every user question as repeated headings followed by visibly spaced Markdown blockquotes. Use whenever the user asks one or more questions, or when replying to an annotation that is a statement or question. Ignore request-like messages or annotations that ask for an edit or change, such as 'change this button to blue', 'edit this', or 'change this to x'."
 ---
 
 # Output Blockquote
