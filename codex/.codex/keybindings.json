@@ -173,6 +173,10 @@
   },
   {
     "command": "toggleBottomPanel",
+    "key": "Command+Alt+I"
+  },
+  {
+    "command": "toggleFileTreePanel",
     "key": null
   },
   {

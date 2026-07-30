@@ -279,6 +279,9 @@ trust_level = "trusted"
 [projects."/Users/garrett/Documents/Codex/2026-07-29/home-codex-text-link-https-resources"]
 trust_level = "trusted"
 
+[projects."/Users/garrett/Documents/Codex/2026-07-29/wha"]
+trust_level = "trusted"
+
 [marketplaces.openai-bundled]
 last_updated = "2026-07-29T21:25:06Z"
 source_type = "local"
