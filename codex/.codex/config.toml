@@ -69,127 +69,10 @@ skill = "#bc8cff"
 js_repl = false
 default_mode_request_user_input = true
 
-[projects."/Users/garrett/Documents/Codex/2026-07-21/g"]
-trust_level = "trusted"
-
 [projects."/Users/garrett/code/tradester/tradester-monorepo/tradester"]
 trust_level = "trusted"
 
-[projects."/Users/garrett/Documents/Codex/2026-07-22/what"]
-trust_level = "trusted"
-
-[projects."/Users/garrett/Documents/Codex/2026-07-22/move"]
-trust_level = "trusted"
-
 [projects."/Users/garrett/code/dev/learning"]
-trust_level = "trusted"
-
-[projects."/Users/garrett/Documents/Codex/2026-07-22/what-2"]
-trust_level = "trusted"
-
-[projects."/Users/garrett/Documents/Codex/2026-07-23/export-const-zdt-timeadapter-zdt-topdt"]
-trust_level = "trusted"
-
-[projects."/Users/garrett/Documents/Codex/2026-07-23/are"]
-trust_level = "trusted"
-
-[projects."/Users/garrett/Documents/Codex/2026-07-23/is-t"]
-trust_level = "trusted"
-
-[projects."/Users/garrett/Documents/Codex/2026-07-23/https-kb-dxfeed-com-en-data"]
-trust_level = "trusted"
-
-[projects."/Users/garrett/Documents/Codex/2026-07-23/find"]
-trust_level = "trusted"
-
-[projects."/Users/garrett/Documents/Codex/2026-07-23/im"]
-trust_level = "trusted"
-
-[projects."/Users/garrett/Documents/Codex/2026-07-23/in"]
-trust_level = "trusted"
-
-[projects."/Users/garrett/Documents/Codex/2026-07-23/think-before-acting"]
-trust_level = "trusted"
-
-[projects."/Users/garrett/Documents/Codex/2026-07-23/wha"]
-trust_level = "trusted"
-
-[projects."/Users/garrett/Documents/Codex/2026-07-23/what"]
-trust_level = "trusted"
-
-[projects."/Users/garrett/Documents/Codex/2026-07-23/go"]
-trust_level = "trusted"
-
-[projects."/Users/garrett/Documents/Codex/2026-07-23/realtime-voice-chat"]
-trust_level = "trusted"
-
-[projects."/Users/garrett/Documents/Codex/2026-07-24/is"]
-trust_level = "trusted"
-
-[projects."/Users/garrett/Documents/Codex/2026-07-24/whe"]
-trust_level = "trusted"
-
-[projects."/Users/garrett/Documents/Codex/2026-07-24/this"]
-trust_level = "trusted"
-
-[projects."/Users/garrett/Documents/Codex/2026-07-24/let-s-set-up-a-scheduled"]
-trust_level = "trusted"
-
-[projects."/Users/garrett/Documents/Codex/2026-07-24/let-s-set-up-a-scheduled-2"]
-trust_level = "trusted"
-
-[projects."/Users/garrett/Documents/Codex/2026-07-24/do"]
-trust_level = "trusted"
-
-[projects."/Users/garrett/Documents/Codex/2026-07-24/can"]
-trust_level = "trusted"
-
-[projects."/Users/garrett/Documents/Codex/2026-07-24/what-is-the-opinion-do-coding"]
-trust_level = "trusted"
-
-[projects."/Users/garrett/Documents/Codex/2026-07-24/go"]
-trust_level = "trusted"
-
-[projects."/Users/garrett/Documents/Codex/2026-07-24/ar"]
-trust_level = "trusted"
-
-[projects."/Users/garrett/Documents/Codex/2026-07-24/a"]
-trust_level = "trusted"
-
-[projects."/Users/garrett/Documents/Codex/2026-07-25/in"]
-trust_level = "trusted"
-
-[projects."/Users/garrett/Documents/Codex/2026-07-25/what"]
-trust_level = "trusted"
-
-[projects."/Users/garrett/Documents/Codex/2026-07-25/pa"]
-trust_level = "trusted"
-
-[projects."/Users/garrett/Documents/Codex/2026-07-25/im"]
-trust_level = "trusted"
-
-[projects."/Users/garrett/Documents/Codex/2026-07-25/is-t"]
-trust_level = "trusted"
-
-[projects."/Users/garrett/Documents/Codex/2026-07-25/challenge-const-a-x-1-class"]
-trust_level = "trusted"
-
-[projects."/Users/garrett/Documents/Codex/2026-07-25/const-original-profile-city-class-token"]
-trust_level = "trusted"
-
-[projects."/Users/garrett/Documents/Codex/2026-07-25/any"]
-trust_level = "trusted"
-
-[projects."/Users/garrett/Documents/Codex/2026-07-25/doe"]
-trust_level = "trusted"
-
-[projects."/Users/garrett/Documents/Codex/2026-07-25/c"]
-trust_level = "trusted"
-
-[projects."/Users/garrett/Documents/Codex/2026-07-25/realtime-voice-chat"]
-trust_level = "trusted"
-
-[projects."/Users/garrett/Documents/Codex/2026-07-25/realtime-voice-chat-2"]
 trust_level = "trusted"
 
 [projects."/Users/garrett/code/dev/trader-memes"]
@@ -198,148 +81,28 @@ trust_level = "trusted"
 [projects."/Users/garrett/.dotfiles"]
 trust_level = "trusted"
 
-[projects."/Users/garrett/Documents/Codex/2026-07-26/any"]
-trust_level = "trusted"
-
-[projects."/Users/garrett/Documents/Codex/2026-07-26/wha"]
-trust_level = "trusted"
-
 [projects."/Users/garrett/code/dev/me"]
 trust_level = "trusted"
 
-[projects."/Users/garrett/Documents/Codex/2026-07-26/default-to-a-clear-complete-and"]
-trust_level = "trusted"
-
-[projects."/Users/garrett/Documents/Codex/2026-07-26/can"]
-trust_level = "trusted"
-
-[projects."/Users/garrett/Documents/Codex/2026-07-26/ch"]
-trust_level = "trusted"
-
-[projects."/Users/garrett/Documents/Codex/2026-07-26/check-codexs-opensource"]
-trust_level = "trusted"
-
-[projects."/Users/garrett/Documents/Codex/2026-07-26/do-end-a-reply-with-links"]
-trust_level = "trusted"
-
-[projects."/Users/garrett/Documents/Codex/2026-07-26/wha-2"]
-trust_level = "trusted"
-
-[projects."/Users/garrett/Documents/Codex/2026-07-27/yo"]
-trust_level = "trusted"
-
-[projects."/Users/garrett/Documents/Codex/2026-07-27/do-end-a-reply-with-named"]
-trust_level = "trusted"
-
-[projects."/Users/garrett/Documents/Codex/2026-07-27/sup"]
-trust_level = "trusted"
-
-[projects."/Users/garrett/Documents/Codex/2026-07-27/sup-2"]
-trust_level = "trusted"
-
-[projects."/Users/garrett/Documents/Codex/2026-07-27/in"]
-trust_level = "trusted"
-
-[projects."/Users/garrett/Documents/Codex/2026-07-27/type-mdframetype-clear-delta-full-none"]
-trust_level = "trusted"
-
-[projects."/Users/garrett/Documents/Codex/2026-07-27/find"]
-trust_level = "trusted"
-
-[projects."/Users/garrett/Documents/Codex/2026-07-27/tradester-creative-qa-ideas"]
-trust_level = "trusted"
-
-[projects."/Users/garrett/Documents/Codex/2026-07-27/li"]
-trust_level = "trusted"
-
-[projects."/Users/garrett/Documents/Codex/2026-07-27/ci"]
-trust_level = "trusted"
-
-[projects."/Users/garrett/Documents/Codex/2026-07-27/wha"]
-trust_level = "trusted"
-
-[projects."/Users/garrett/Documents/Codex/2026-07-28/fix"]
-trust_level = "trusted"
-
-[projects."/Users/garrett/Documents/Codex/2026-07-28/tradester-on-garrett-time-and-sales"]
-trust_level = "trusted"
-
-[projects."/Users/garrett/Documents/Codex/2026-07-28/https-docs-dxfeed-com-dxfeed-api"]
-trust_level = "trusted"
-
-[projects."/Users/garrett/Documents/Codex/2026-07-28/go"]
-trust_level = "trusted"
-
-[projects."/Users/garrett/Documents/Codex/2026-07-29/did-you-mean-to-reference-it"]
-trust_level = "trusted"
-
-[projects."/Users/garrett/Documents/Codex/2026-07-29/how"]
-trust_level = "trusted"
-
-[projects."/Users/garrett/Documents/Codex/2026-07-29/wjhy"]
-trust_level = "trusted"
-
-[projects."/Users/garrett/Documents/Codex/2026-07-29/do-before-sending-every-final-reply"]
-trust_level = "trusted"
-
-[projects."/Users/garrett/Documents/Codex/2026-07-29/home-codex-text-link-https-resources"]
-trust_level = "trusted"
-
-[projects."/Users/garrett/Documents/Codex/2026-07-29/wha"]
-trust_level = "trusted"
-
-[projects."/Users/garrett/Documents/Codex/2026-07-30/ho"]
-trust_level = "trusted"
-
-[projects."/Users/garrett/Documents/Codex/2026-07-30/what"]
-trust_level = "trusted"
-
-[projects."/Users/garrett/Documents/Codex/2026-07-30/any"]
-trust_level = "trusted"
-
-[projects."/Users/garrett/Documents/Codex/2026-07-30/w"]
-trust_level = "trusted"
-
-[projects."/Users/garrett/Documents/Codex/2026-07-30/build"]
-trust_level = "trusted"
-
-[projects."/Users/garrett/Documents/Codex/2026-07-30/when-referencing-sources-do-not-restate"]
-trust_level = "trusted"
-
-[projects."/Users/garrett/Documents/Codex/2026-07-30/what-2"]
-trust_level = "trusted"
-
-[projects."/Users/garrett/Documents/Codex/2026-07-31/goit"]
-trust_level = "trusted"
-
-[projects."/Users/garrett/Documents/Codex/2026-07-31/if"]
-trust_level = "trusted"
-
-[projects."/Users/garrett/Documents/Codex/2026-07-31/doe"]
-trust_level = "trusted"
-
-[projects."/Users/garrett/Documents/Codex/2026-07-31/what"]
-trust_level = "trusted"
-
-[projects."/Users/garrett/Documents/Codex/2026-07-31/ther"]
-trust_level = "trusted"
-
-[projects."/Users/garrett/Documents/Codex/2026-07-31/doe-2"]
-trust_level = "trusted"
-
-[projects."/Users/garrett/Documents/Codex/2026-08-01/chat"]
-trust_level = "trusted"
-
-[projects."/Users/garrett/Documents/Codex/2026-08-01/charrisse-sturdy-rolling-tv-stand-with"]
-trust_level = "trusted"
-
-[projects."/Users/garrett/Documents/Codex/2026-08-01/sonorous-st-160-premium-tv-stand"]
-trust_level = "trusted"
-
-[projects."/Users/garrett/Documents/Codex/2026-08-01/sonorous-studio-st160-modern-tv-stand"]
-trust_level = "trusted"
-
 [projects."/Users/garrett/Documents/Codex/2026-08-02/why"]
+trust_level = "trusted"
+
+[projects."/Users/garrett/Documents/Codex/2026-08-02/conv"]
+trust_level = "trusted"
+
+[projects."/Users/garrett/Documents/Codex/2026-08-02/what"]
+trust_level = "trusted"
+
+[projects."/Users/garrett/Documents/Codex/2026-08-02/similar-tv-stands-entertainment-centers-below"]
+trust_level = "trusted"
+
+[projects."/Users/garrett/Documents/Codex/2026-08-02/rev"]
+trust_level = "trusted"
+
+[projects."/Users/garrett/Documents/Codex/2026-08-02/i-g"]
+trust_level = "trusted"
+
+[projects."/Users/garrett/Documents/Codex/2026-08-02/has"]
 trust_level = "trusted"
 
 [marketplaces.openai-bundled]
@@ -348,7 +111,7 @@ source_type = "local"
 source = "/Users/garrett/.codex/.tmp/bundled-marketplaces/openai-bundled"
 
 [marketplaces.openai-primary-runtime]
-last_updated = "2026-08-01T23:54:30Z"
+last_updated = "2026-08-02T20:16:15Z"
 source_type = "local"
 source = "/Users/garrett/.cache/codex-runtimes/codex-primary-runtime/plugins/openai-primary-runtime"
 
