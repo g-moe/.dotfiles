@@ -1,92 +1,42 @@
 ---
 name: output-html
-description: Create a self-contained, polished HTML artifact in the output HTML style. Use when the user wants one HTML file for a report, explainer, comparison, deck, prototype, implementation plan, visual plan, architecture diagram, stack diagram, system walkthrough, or other artifact that benefits from strong visual structure, dense but readable layout, and optional SVG-first diagrams.
+description: Create a polished, self-contained HTML artifact. Use when the user wants a single `.html` file for a report, explainer, comparison, plan, visual, diagram, system walkthrough, interactive prototype, or browser-based slide deck. Use for both new artifacts and substantial rewrites. Do not use for a multi-file web app or a native presentation unless the user explicitly requests an HTML version.
 ---
 
 # Output HTML
 
-Create a single self-contained HTML file that is visually organized, pragmatic, and easy to inspect. Use the bundled examples for style, density, alignment, interaction patterns, and tone.
+Create the artifact with standard HTML, CSS, and JavaScript. Follow the behavior in this skill directly; do not assume a particular model, application, tool name, or hidden design system.
 
-## Reference Selection
+## Read first
 
-Review only the references needed for the requested artifact:
+- Read [references/html.md](references/html.md) for every artifact.
+- Also read [references/presentations.md](references/presentations.md) when creating a slide deck.
+- Also read [references/visuals-and-interaction.md](references/visuals-and-interaction.md) when creating a chart, diagram, timeline, technical visual, simulator, or interactive prototype.
+- Do not inspect the demo unless the user requests it or a concrete implementation detail remains unclear after reading the guidance.
 
-- For general reports, explainers, comparisons, decks, prototypes, PR writeups, status reports, and implementation plans, review representative files in `references/html-effectiveness/`.
-- For architecture, stack, system, or flow diagrams, review SVG-heavy examples in `references/html-effectiveness/` and also review `references/architecture-example.html`.
-- For plan pages, keep the writing close to the user's wording, clean up grammar, and use the plan-oriented examples in `references/html-effectiveness/`.
+## Build
 
-Use `rg` or file names to pick examples by artifact type instead of loading every reference.
+1. Identify the artifact's job, audience, source material, and requested output location.
+2. Choose the form that matches how the artifact will be used:
+   - Use a scrolling document for material meant to be read or scanned.
+   - Use a slide deck for a presentation, talk, pitch, or slide-like experience.
+   - Use an interactive view when controls materially improve understanding or let the user test a scenario.
+   - Make a diagram the main view when relationships or flow are the subject.
+3. Write a one-sentence purpose, outline the content, and choose the visual structure before styling. Decide what should be prose, a comparison, a table, a chart, a diagram, a sequence, or an interaction.
+4. Verify recent, uncertain, or high-stakes claims with authoritative sources when research access is available. If it is unavailable, avoid unsupported current claims and clearly label any remaining uncertainty.
+5. Create one self-contained `.html` file with embedded CSS and JavaScript. Make it work when opened directly from disk unless the requested behavior requires a network connection.
+6. Use the available rendering and inspection capabilities to open the file, check realistic viewport sizes, exercise controls and keyboard behavior, inspect runtime errors, and fix problems. If rendering is unavailable, perform the strongest source and syntax checks available and do not claim visual verification.
+7. Deliver the finished file through the available attachment or file-link mechanism. Always include its exact path or filename.
 
-## Output Guidance
+## Keep the output honest
 
-- Build the actual artifact as the first screen, not a landing page explaining the artifact.
-- Prefer one self-contained HTML file with embedded CSS and JavaScript.
-- Keep prose useful and compact. Use the visual structure to make the subject click quickly.
-- Match the artifact type: plans should be pragmatic and simple; diagrams should be light on prose and diagram-first; general artifacts should balance polish with clarity.
-- For diagrams, build a high-quality SVG. Style SVG elements through CSS classes and variables, not hard-coded colors inside the SVG.
-- Treat proof, validation, check, runtime-check, and evidence panels as informational components: use `--accent` for borders/key lines and `--accent-soft` for subtle fills. Do not use `--success`, `--warning`, or `--error` on the container unless the whole component is explicitly a pass, warning, or failure state; use semantic status colors only for specific rows, badges, or markers inside it.
-- Add interaction or animation when it helps explain state, flow, sequence, comparison, or system behavior.
+- Build the requested artifact on the first screen. Do not add a cover page, app shell, sidebar, dashboard, theme toggle, or instructions unless the content needs one.
+- Preserve the user's facts and intent. Tighten wording and structure without inventing substance.
+- Let the subject drive the visual language. Do not force dark mode, cards, gradients, metric tiles, monospaced labels, or SVG diagrams.
+- Prefer native browser features and direct code. Add libraries only when requested or when they provide a clear, substantial benefit.
+- Treat interaction as part of the explanation, not decoration. Keep the artifact useful without gratuitous motion.
+- Do not expose implementation notes, validation checklists, placeholder copy, or tool limitations inside the finished artifact unless the user needs that information there.
 
-## Theme Requirements
+## Demo
 
-Always include dark mode:
-
-- Use hand-rolled CSS variables on `:root` and `html.dark`.
-- Use the canonical color tokens below. Use `:root` for the light variant and `html.dark` for the dark variant. Keep color variables limited to this canonical design-system set.
-- Reserve `--success` and `--success-soft` for confirmed success, pass, completion, or positive-delta states only. Reserve `--warning` and `--warning-soft` for explicit caution states only. For neutral emphasis, proof paths, validation/check containers, category tags, avatars, chart series, and "next" columns, use `--accent`, `--accent-soft`, `--line`, `--line-soft`, or `--surface2`.
-- Add an apply-before-paint script in `<head>` that defaults to `prefers-color-scheme`.
-- Add a small theme toggle button.
-- Persist the selected theme in `localStorage`.
-
-```css
-:root {
-	--bg: #fdfdfd;
-	--surface: #fdfdfd;
-	--surface2: #f4f4f9;
-	--text: #050607;
-	--body: #262838;
-	--muted: #7c7d8d;
-	--line: #d9daec;
-	--line-soft: #d9daec8e;
-	--accent: #656675;
-	--accent-soft: rgba(101, 102, 117, 0.1);
-	--success: #26b933;
-	--success-soft: rgba(54, 251, 72, 0.12);
-	--warning: #bc9720;
-	--warning-soft: rgba(255, 211, 98, 0.16);
-	--error: #aa2624;
-	--error-soft: rgba(170, 38, 36, 0.12);
-}
-
-html.dark {
-	--bg: #050607;
-	--surface: #101316;
-	--surface2: #262838;
-	--text: #fdfdfd;
-	--body: #d9daec;
-	--muted: #7c7d8d;
-	--line: #262838;
-	--line-soft: #2628388e;
-	--accent: #7c7d8d;
-	--accent-soft: rgba(124, 125, 141, 0.14);
-	--success: #65fb6e;
-	--success-soft: rgba(101, 251, 110, 0.16);
-	--warning: #ffd362;
-	--warning-soft: rgba(255, 211, 98, 0.16);
-	--error: #aa2624;
-	--error-soft: rgba(170, 38, 36, 0.534);
-}
-```
-
-## Typography Requirements
-
-Use system-default font stacks. Avoid serif or decorative display fonts unless the user explicitly asks for that style.
-
-```css
-:root {
-	--sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-	--mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
-}
-```
-
-Use `var(--sans)` for headings, body, controls, captions, and labels. Use `var(--mono)` only for code, IDs, metrics, and compact technical labels.
+[references/demo-cme-mes-risk-deck.html](references/demo-cme-mes-risk-deck.html) is a tested example of the quality bar. It demonstrates responsive slide staging, keyboard navigation, print output, an interactive calculator, reduced-motion support, and sourced financial facts. Do not treat its theme, layout, or subject as a template.

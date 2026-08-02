@@ -1,7 +1,7 @@
 interface:
   display_name: "Output HTML"
-  short_description: "Create polished standalone HTML artifacts"
-  default_prompt: "Use $output-html to create a polished standalone HTML artifact."
+  short_description: "Build polished single-file HTML artifacts"
+  default_prompt: "Use $output-html to turn this material into a polished, self-contained HTML artifact."
 
 policy:
   allow_implicit_invocation: false
