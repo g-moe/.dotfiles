@@ -2,11 +2,11 @@
 
 # Required parameters:
 # @raycast.schemaVersion 1
-# @raycast.title Finder
+# @raycast.title Better Finder
 # @raycast.mode silent
 
 # Optional parameters:
-# @raycast.icon /System/Library/CoreServices/Finder.app/Contents/Resources/Finder.icns
+# @raycast.icon images/finder.png
 # @raycast.packageName Window Tools
 
 set -euo pipefail
@@ -17,7 +17,7 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 # Bring Finder forward with a focused window, then run Raycast's built-in Window Management "Almost Maximize" command.
 # Default deeplink: raycast://extensions/raycast/window-management/almost-maximize
 if ! silent osascript -e 'tell application "System Events" to tell process "Finder" to count windows'; then
-  silent osascript -e 'display notification "Grant Raycast access in Privacy & Security > Accessibility, then run again." with title "Finder Almost Maximize"'
+  silent osascript -e 'display notification "Grant Raycast access in Privacy & Security > Accessibility, then run again." with title "Better Finder"'
   exit 0
 fi
 
@@ -47,7 +47,7 @@ end tell
 
 APPLESCRIPT
 then
-  silent osascript -e 'display notification "Could not focus a Finder window." with title "Finder Almost Maximize"'
+  silent osascript -e 'display notification "Could not focus a Finder window." with title "Better Finder"'
   exit 0
 fi
 

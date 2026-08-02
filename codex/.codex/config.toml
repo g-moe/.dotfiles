@@ -1,7 +1,7 @@
 sandbox_mode = "danger-full-access"
 approval_policy = "never"
 model = "gpt-5.6-luna"
-model_reasoning_effort = "high"
+model_reasoning_effort = "max"
 model_verbosity = "low"
 service_tier = "priority"
 allow_login_shell = true
@@ -320,13 +320,22 @@ trust_level = "trusted"
 [projects."/Users/garrett/Documents/Codex/2026-07-31/ther"]
 trust_level = "trusted"
 
+[projects."/Users/garrett/Documents/Codex/2026-07-31/doe-2"]
+trust_level = "trusted"
+
+[projects."/Users/garrett/Documents/Codex/2026-08-01/chat"]
+trust_level = "trusted"
+
+[projects."/Users/garrett/Documents/Codex/2026-08-01/charrisse-sturdy-rolling-tv-stand-with"]
+trust_level = "trusted"
+
 [marketplaces.openai-bundled]
-last_updated = "2026-07-30T22:10:47Z"
+last_updated = "2026-08-01T14:30:16Z"
 source_type = "local"
 source = "/Users/garrett/.codex/.tmp/bundled-marketplaces/openai-bundled"
 
 [marketplaces.openai-primary-runtime]
-last_updated = "2026-07-31T11:33:58Z"
+last_updated = "2026-08-01T23:54:30Z"
 source_type = "local"
 source = "/Users/garrett/.cache/codex-runtimes/codex-primary-runtime/plugins/openai-primary-runtime"
 
@@ -365,13 +374,13 @@ NODE_REPL_NODE_MODULE_DIRS = "/Applications/ChatGPT.app/Contents/Resources/cua_n
 NODE_REPL_NODE_PATH = "/Applications/ChatGPT.app/Contents/Resources/cua_node/bin/node"
 NODE_REPL_TRUSTED_CODE_PATHS = "/Users/garrett/.codex"
 CODEX_HOME = "/Users/garrett/.codex"
-NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S = "028a14b6eaa6d98dac2aae00764345ab9f244801ed8493d42b9af3be5575006e,8785b5437d98636c3002d3d7e64b98db79c3b66870b1bd3d18dea953a99b1562"
+NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S = "028a14b6eaa6d98dac2aae00764345ab9f244801ed8493d42b9af3be5575006e,f204d340535055781952b10ed396de20b842f00a19e430852f7e121ad1ce91f6"
 BROWSER_USE_AVAILABLE_BACKENDS = "chrome,iab"
 NODE_REPL_INSTRUCTIONS_USE_CASE_BROWSER = "Control the in-app browser in conjunction with the Browser Plugin."
 NODE_REPL_INSTRUCTIONS_USE_CASE_CHROME = "Control the Chrome browser in conjunction with the Chrome Plugin. Prefer this method of controlling Chrome over alternatives (such as Computer Use) unless the user explicitly mentions an alternative."
 NODE_REPL_INSTRUCTIONS_USE_CASE_COMPUTER_USE = "Control desktop apps on macOS through Computer Use."
 BROWSER_USE_CODEX_APP_BUILD_FLAVOR = "prod"
-BROWSER_USE_CODEX_APP_VERSION = "26.727.40816"
+BROWSER_USE_CODEX_APP_VERSION = "26.727.51351"
 CODEX_CLI_PATH = "/Applications/ChatGPT.app/Contents/Resources/codex"
 
 [mcp_servers.computer-use]
@@ -382,5 +391,5 @@ enabled = false
 
 [shell_environment_policy.set]
 BROWSER_USE_AVAILABLE_BACKENDS = "chrome,iab"
-NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S = "028a14b6eaa6d98dac2aae00764345ab9f244801ed8493d42b9af3be5575006e,8785b5437d98636c3002d3d7e64b98db79c3b66870b1bd3d18dea953a99b1562"
+NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S = "028a14b6eaa6d98dac2aae00764345ab9f244801ed8493d42b9af3be5575006e,f204d340535055781952b10ed396de20b842f00a19e430852f7e121ad1ce91f6"
 NODE_REPL_TRUSTED_CODE_PATHS = "/Users/garrett/.codex"
