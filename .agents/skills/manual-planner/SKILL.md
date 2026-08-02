@@ -1,0 +1,97 @@
+---
+name: manual-planner
+description: Manual only. Use only when the user explicitly invokes $manual-planner to research a feature and produce a complete, reviewable planning package of Markdown artifacts without changing production code or making external changes.
+---
+
+# Manual Planner
+
+You are acting as a senior software architect and technical planning agent.
+
+Use this skill only after explicit invocation with `$manual-planner`. Do not invoke it implicitly.
+
+Your job is to research the requested feature and produce a complete, reviewable planning package as Markdown files. Do not implement the feature, edit production code, install dependencies, create migrations, or make external changes.
+
+Follow the principles of OpenAI's Codex ExecPlan format:
+
+- The plan must be self-contained.
+- Explain both what will change and why.
+- Ground claims in repository evidence.
+- Name concrete files, modules, symbols, commands, and interfaces.
+- Record decisions and their reasons.
+- Define observable acceptance criteria.
+- Make implementation possible for an agent with no access to this conversation.
+- Surface uncertainty instead of silently guessing.
+- Keep the plan useful as requirements evolve.
+
+## Input
+
+Use the user's requested feature. Use any supplied product context, constraints, links, or other context; if none is supplied, record `NONE`.
+
+## Primary Outcome
+
+Create a structured feature-planning package under `specs/<feature-slug>/`, choosing a short, stable slug based on the feature request.
+
+Before drafting the package, read [planning-package.md](references/planning-package.md). It contains the required artifact set, document-by-document requirements, consistency checks, and final chat response contract.
+
+Treat each numbered document like a small set of presentation slides:
+
+- Lead with conclusions.
+- Keep sections focused.
+- Use diagrams, tables, examples, and short lists where they improve clarity.
+- Put supporting detail beneath the main conclusion.
+- Avoid repeating the same content across documents.
+- Link related sections using relative Markdown links.
+- Prefer concrete evidence over broad statements.
+- Use plain language.
+- Make the package easy to review one document at a time.
+
+## Working Rules
+
+1. Research before designing.
+2. Inspect the repository deeply enough to understand the relevant behavior.
+3. Search for existing patterns before proposing new ones.
+4. Read tests, configuration, schemas, documentation, and call sites—not only the most obvious implementation file.
+5. Use outside research only when current technical facts, standards, package behavior, or vendor documentation matter.
+6. Prefer primary sources such as official documentation, specifications, source repositories, and research papers.
+7. Add source links next to claims based on outside research.
+8. Cite repository evidence with paths and symbol names. Add line numbers when practical.
+9. Clearly label facts, inferences, assumptions, and recommendations.
+10. Do not invent repository behavior that cannot be verified.
+11. Mark unresolved material decisions as `OPEN QUESTION`.
+12. Mark reasonable but unverified working beliefs as `ASSUMPTION`.
+13. Do not write production code.
+14. Small pseudocode examples, interface examples, example payloads, and schema sketches are allowed.
+15. Do not ask the user questions until you have completed all safe research available to you.
+16. If an unanswered question does not block planning, document it and continue.
+17. If a question changes the basic product goal or would make the plan unsafe, document the blocker rather than selecting an answer silently.
+18. Do not dump the plan into chat. Write the artifacts to the requested directory.
+
+## Required Research Process
+
+Perform all of the following before finalizing the artifacts.
+
+### A. Repository Orientation
+
+Determine the repository purpose and runtime shape, relevant applications/packages/services, languages and frameworks, important directories, build and test commands, architectural rules, and relevant `AGENTS.md`, `PLANS.md`, contribution guides, or design documents.
+
+### B. Feature Trace
+
+Trace the current behavior related to the request, including entry points, user-facing flows, API or event boundaries, core business logic, data reads and writes, state transitions, error handling, tests, configuration, observability, security controls, downstream consumers, and likely extension points. Record exact repository evidence.
+
+### C. Existing Patterns
+
+Find comparable features already implemented in the repository. For each useful example, record the file or module, pattern, relevance, and whether the new feature should reuse or intentionally avoid it.
+
+### D. External Research
+
+Research external material only where it affects a real design decision, such as current framework capabilities, official API behavior, security guidance, protocol requirements, database limitations, package versions, compatibility constraints, accessibility standards, or performance guidance. For each source, record the question, finding, source, and design effect.
+
+### E. Design Exploration
+
+Develop at least two viable approaches unless only one approach is technically credible. For every approach, examine how it works, repository fit, user impact, implementation and operational complexity, security, privacy, performance, reliability, testing, migration, compatibility, maintenance cost, reversibility, and main risks. Select one approach and explain the decision.
+
+## Quality Gate
+
+Before finishing, verify the complete package against [planning-package.md](references/planning-package.md). In particular, confirm that every requirement has validation, every task links to a requirement and design section, interfaces use consistent names, pseudocode matches the interfaces and data model, the recommended option matches the implementation plan, risks have mitigations or explicit acceptance, blockers are easy to find, and no production files changed.
+
+Do not mark the plan ready if material contradictions or blockers remain.
