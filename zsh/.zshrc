@@ -34,6 +34,10 @@ if [[ "$is_macos" == true && -x /opt/homebrew/bin/brew ]]; then
 elif [[ "$is_macos" == true && -x /usr/local/bin/brew ]]; then
   eval "$(/usr/local/bin/brew shellenv)"
 fi
+if [[ -n "${NVM_BIN:-}" ]]; then
+  typeset -U path
+  path=("$NVM_BIN" $path)
+fi
 
 # User-installed commands
 export PATH="$HOME/.local/bin:$PATH"
@@ -137,18 +141,7 @@ export AWS_PROFILE=tradester-test
 export AWS_REGION=us-east-1
 
 # NVM
-export NVM_DIR="$HOME/.nvm"
-[[ -s "$NVM_DIR/nvm.sh" ]] && source "$NVM_DIR/nvm.sh"
 [[ -s "$NVM_DIR/bash_completion" ]] && source "$NVM_DIR/bash_completion"
-if (( ${+functions[nvm]} )); then
-  nvm use --silent default >/dev/null 2>&1 || true
-  nvm_node="$(nvm which default 2>/dev/null || true)"
-  if [[ -x "$nvm_node" ]]; then
-    export PATH="$(dirname "$nvm_node"):$PATH"
-    rehash
-  fi
-  unset nvm_node
-fi
 
 # opencode
 if [[ -d "$HOME/.opencode/bin" ]]; then

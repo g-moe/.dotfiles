@@ -45,6 +45,8 @@ tmux/tmux.conf
 package-lock.json
 package.json
 tsconfig.json
+zsh/.zshenv
+zsh/.zprofile
 zsh/.zshrc
 '
 while IFS= read -r path; do

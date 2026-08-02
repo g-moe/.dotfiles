@@ -18,6 +18,8 @@
 
 # Zsh
 !/zsh/
+!/zsh/.zshenv
+!/zsh/.zprofile
 !/zsh/.zshrc
 
 # VS Code

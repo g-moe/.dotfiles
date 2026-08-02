@@ -36,6 +36,8 @@ _configure() {
   cp "$ROOT_DIR/packages/theming/output/oh-my-zsh/gtheme-dark.zsh-theme" "$custom/themes/"
   cp "$ROOT_DIR/packages/theming/output/oh-my-zsh/gtheme-light.zsh-theme" "$custom/themes/"
   safe_symlink_group Zsh \
+    "$ROOT_DIR/zsh/.zshenv" "$HOME/.zshenv" \
+    "$ROOT_DIR/zsh/.zprofile" "$HOME/.zprofile" \
     "$ROOT_DIR/zsh/.zshrc" "$HOME/.zshrc" \
     "$ROOT_DIR/packages/lib/bash/bin/shared-copy-to-clipboard.sh" \
     "$HOME/.local/bin/copy-to-clipboard"

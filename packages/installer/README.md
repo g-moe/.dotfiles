@@ -152,6 +152,7 @@ The separate Skills installer remains unchanged.
 - **Tux artwork:** The checked panel and login images come from the canonical [Tux file on Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Tux.svg), credited there to Larry Ewing, Simon Budig, and Garrett LeSage.
 - **Git:** optional; defaults `garrett` / noreply email / `main`; GitHub login is a separate browser step; no token in the shell env.
 - **Node:** NVM is installed in `~/.nvm`, including when `XDG_CONFIG_HOME` is set.
+- **Zsh:** Development setup links `.zshenv`, `.zprofile`, and `.zshrc` from `zsh/`. Every Zsh invocation silently selects the nearest `.nvmrc`, or the NVM default when none exists. Login and interactive setup preserve that selection while completion stays in `.zshrc`.
 - **Desktop check:** `system/desktop-environment.sh` requires `startxfce4`, `/usr/sbin/lightdm`, LightDM as the default display manager, and an Xfce X11 session.
 - **Display server:** `system/display.sh` sets LightDM’s default session to Xfce and removes other display-session choices. Reboot or sign out to apply it.
 - **VNC:** Screen Sharing on Mac; on Debian, a boot-level root `x11vnc` service shares the live X11 display on `:0`, including the LightDM greeter before login. Its password is `/etc/x11vnc.passwd` and it listens only on localhost port 5900. If `:0` is down during an SSH install, the enabled service keeps retrying until the display starts.
