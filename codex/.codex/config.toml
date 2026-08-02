@@ -5,6 +5,7 @@ model_reasoning_effort = "low"
 model_verbosity = "low"
 service_tier = "default"
 allow_login_shell = true
+include_environment_context = true
 notify = [
 	"/Users/garrett/.codex/computer-use/Codex Computer Use.app/Contents/SharedSupport/SkyComputerUseClient.app/Contents/MacOS/SkyComputerUseClient",
 	"turn-ended",
@@ -68,6 +69,7 @@ skill = "#bc8cff"
 [features]
 js_repl = false
 default_mode_request_user_input = true
+terminal_visualization_instructions = true
 
 [projects."/Users/garrett/code/tradester/tradester-monorepo/tradester"]
 trust_level = "trusted"
