@@ -1,15 +1,18 @@
 sandbox_mode = "danger-full-access"
 approval_policy = "never"
-model = "gpt-5.6-luna"
-model_reasoning_effort = "max"
+model = "gpt-5.6-sol"
+model_reasoning_effort = "low"
 model_verbosity = "low"
-service_tier = "priority"
+service_tier = "default"
 allow_login_shell = true
-notify = ["/Users/garrett/.codex/computer-use/Codex Computer Use.app/Contents/SharedSupport/SkyComputerUseClient.app/Contents/MacOS/SkyComputerUseClient", "turn-ended"]
+notify = [
+	"/Users/garrett/.codex/computer-use/Codex Computer Use.app/Contents/SharedSupport/SkyComputerUseClient.app/Contents/MacOS/SkyComputerUseClient",
+	"turn-ended",
+]
 personality = "pragmatic"
 
 [agents]
-max_threads = 10
+max_threads = 4
 max_depth = 3
 
 [desktop]
@@ -64,6 +67,7 @@ skill = "#bc8cff"
 
 [features]
 js_repl = false
+default_mode_request_user_input = true
 
 [projects."/Users/garrett/Documents/Codex/2026-07-21/g"]
 trust_level = "trusted"
@@ -329,6 +333,15 @@ trust_level = "trusted"
 [projects."/Users/garrett/Documents/Codex/2026-08-01/charrisse-sturdy-rolling-tv-stand-with"]
 trust_level = "trusted"
 
+[projects."/Users/garrett/Documents/Codex/2026-08-01/sonorous-st-160-premium-tv-stand"]
+trust_level = "trusted"
+
+[projects."/Users/garrett/Documents/Codex/2026-08-01/sonorous-studio-st160-modern-tv-stand"]
+trust_level = "trusted"
+
+[projects."/Users/garrett/Documents/Codex/2026-08-02/why"]
+trust_level = "trusted"
+
 [marketplaces.openai-bundled]
 last_updated = "2026-08-01T14:30:16Z"
 source_type = "local"
@@ -340,22 +353,22 @@ source_type = "local"
 source = "/Users/garrett/.cache/codex-runtimes/codex-primary-runtime/plugins/openai-primary-runtime"
 
 [plugins."sites@openai-bundled"]
-enabled = true
+enabled = false
 
 [plugins."visualize@openai-bundled"]
 enabled = true
 
 [plugins."documents@openai-primary-runtime"]
-enabled = true
+enabled = false
 
 [plugins."pdf@openai-primary-runtime"]
-enabled = true
+enabled = false
 
 [plugins."spreadsheets@openai-primary-runtime"]
-enabled = true
+enabled = false
 
 [plugins."presentations@openai-primary-runtime"]
-enabled = true
+enabled = false
 
 [plugins."template-creator@openai-primary-runtime"]
 enabled = true
@@ -393,3 +406,12 @@ enabled = false
 BROWSER_USE_AVAILABLE_BACKENDS = "chrome,iab"
 NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S = "028a14b6eaa6d98dac2aae00764345ab9f244801ed8493d42b9af3be5575006e,f204d340535055781952b10ed396de20b842f00a19e430852f7e121ad1ce91f6"
 NODE_REPL_TRUSTED_CODE_PATHS = "/Users/garrett/.codex"
+
+[apps.connector_20205bf7d4e99a89d7154bb849718324]
+enabled = false
+
+[apps.connector_openai_codex_document_control]
+enabled = false
+
+[apps.asdk_app_69a089a326dc8191b32a3f2553f5be2c]
+enabled = false
