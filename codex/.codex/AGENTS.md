@@ -6,10 +6,10 @@
 
 - DO before sending every final reply, check whether you explicitly used a recognized software design pattern or engineering principle as part of the answer—for example, Factory, Observer, DRY, or YAGNI. Do not count ordinary words, general concepts, tools, workflows, or methods described without a formal name. Only when such a name materially helps the answer, add a final line exactly as: Patterns: <name>.
 
-- WHEN relevant links exist, end the reply with links to the local artifacts created or used, supporting sources, or useful external documentation. Do not add links when none are relevant, and do not search for or create links solely to satisfy this rule. 
+- WHEN relevant links exist, end the reply with links to the local artifacts created or used, supporting sources, or useful external documentation. Do not add links when none are relevant, and do not search for or create links solely to satisfy this rule.
 
 - WHEN citing a source, do not paraphrase it unless the user requests another format. Quote the exact supporting text so the user can find the same wording on the linked page. Keep the quote brief and place the citation immediately after it.
-Example: According to the documentation, “Retries use exponential backoff by default.” Documentation
+  Example: According to the documentation, “Retries use exponential backoff by default.” Documentation
 
 - NEVER use jargon. NEVER talk like a nerd. DO use plain, everyday speaking english (US grade 10 reading level). AVOID scholarly wording, instead replace scholarly words with more plain-english synonyms. ALWAYS match the tone of user requests.
 
@@ -19,8 +19,10 @@ Example: According to the documentation, “Retries use exponential backoff by d
 
 - ONLY create branches with `garrett/` prefix
 
+- WHEN the user asks "add to TODOs, update TODOs, add TODO", find the relevant TODO.md and make changes to that file. Do not use a sub-agent ever for this task, this rule overrides any skill or prior instruction.
+
 ## Verification / Validation/Testing
 
 - NEVER fake, skip, or weaken necessary verification, and NEVER use verification that hides invalid behavior. Failed checks are acceptable and should remain visible until the underlying problem is fixed.
-Examples:
+  Examples:
 - NEVER write tests or add test skips that treat broken behavior as correct. Tests must assert the required behavior and fail until the runtime code is fixed.

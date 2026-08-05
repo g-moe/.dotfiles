@@ -3,7 +3,7 @@ approval_policy = "never"
 model = "gpt-5.6-sol"
 model_reasoning_effort = "low"
 model_verbosity = "low"
-service_tier = "default"
+service_tier = "priority"
 allow_login_shell = true
 include_environment_context = true
 notify = [
@@ -108,7 +108,7 @@ trust_level = "trusted"
 trust_level = "trusted"
 
 [marketplaces.openai-bundled]
-last_updated = "2026-08-01T14:30:16Z"
+last_updated = "2026-08-03T16:43:04Z"
 source_type = "local"
 source = "/Users/garrett/.codex/.tmp/bundled-marketplaces/openai-bundled"
 
