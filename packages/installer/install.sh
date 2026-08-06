@@ -147,6 +147,7 @@ check_linux_desktop() {
 
 configure_system() {
   run_strategy 'Configure display' system/display.sh
+  run_strategy 'Disable Spotlight indexing' system/spotlight.sh
   run_strategy 'Software updates' system/updates.sh
   run_strategy 'Power' system/power.sh
   run_strategy 'Refresh the desktop' system/restart-ui.sh
