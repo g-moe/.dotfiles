@@ -415,10 +415,20 @@
 	"window.customTitleBarVisibility": "never",
 	"workbench.editor.showTabs": "single",
 	"yaml.disableSchemaDetection": [],
-    "workbench.panel.showLabels": false,
-    "editor.selectionHighlight": false,
-    "editor.occurrencesHighlight": "multiFile",
-    "workbench.browser.openLocalhostLinks": true,
-    "markdown.preview.typographer": true,
-    "githubPullRequests.hideViewedFiles": false
+	"workbench.panel.showLabels": false,
+	"editor.selectionHighlight": false,
+	"editor.occurrencesHighlight": "multiFile",
+	"workbench.browser.openLocalhostLinks": true,
+	"markdown.preview.typographer": true,
+	"githubPullRequests.hideViewedFiles": false,
+	"json.schemaDownload.trustedDomains": {
+		"https://developer.microsoft.com/json-schemas/": true,
+		"https://json-schema.org/": true,
+		"https://json.schemastore.org/": true,
+		"https://raw.githubusercontent.com/devcontainers/spec/": true,
+		"https://raw.githubusercontent.com/microsoft/vscode/": true,
+		"https://schemastore.azurewebsites.net/": true,
+		"https://www.raycast.com/schemas/extension.json": true,
+		"https://www.schemastore.org/": true
+	}
 }
