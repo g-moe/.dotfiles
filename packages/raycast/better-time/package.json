@@ -1,0 +1,58 @@
+{
+	"$schema": "https://www.raycast.com/schemas/extension.json",
+	"name": "better-time",
+	"version": "1.0.0",
+	"private": true,
+	"description": "Get the current time, convert timestamp, and more.",
+	"categories": [
+		"Applications"
+	],
+	"license": "MIT",
+	"author": "g-moe",
+	"scripts": {
+		"build": "ray build -e dist",
+		"dev": "ray develop",
+		"test": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --test tests/*.test.ts",
+		"typecheck": "tsc -p tsconfig.json"
+	},
+	"dependencies": {
+		"@raycast/api": "1.104.23"
+	},
+	"devDependencies": {
+		"typescript": "6.0.3"
+	},
+	"icon": "icon.png",
+	"commands": [
+		{
+			"name": "now",
+			"title": "Now",
+			"description": "Current UnixMs Time",
+			"keywords": [
+				"now"
+			],
+			"mode": "no-view"
+		},
+		{
+			"name": "iso",
+			"title": "To ISO",
+			"description": "Convert Unix ms to ISO 8601 (default: now)",
+			"keywords": [
+				"iso",
+				"timestamp"
+			],
+			"mode": "view",
+			"arguments": [
+				{
+					"name": "timestamp",
+					"type": "text",
+					"required": false,
+					"placeholder": "Unix ms (default: now)"
+				}
+			]
+		}
+	],
+	"platforms": [
+		"macOS"
+	],
+	"title": "Better Time"
+}

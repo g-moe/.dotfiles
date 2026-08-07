@@ -8,7 +8,7 @@
 		"Applications"
 	],
 	"license": "MIT",
-	"author": "m1",
+	"author": "g-moe",
 	"scripts": {
 		"build": "ray build -e dist",
 		"dev": "ray develop",
