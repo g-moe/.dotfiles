@@ -112,6 +112,7 @@
 !/packages/theming/**
 !/packages/vscode-ext/
 !/packages/vscode-ext/**
+!/packages/theming/g-theme-t3.json
 /packages/**/node_modules/
 /packages/**/dist/
 /packages/**/dist-test/
