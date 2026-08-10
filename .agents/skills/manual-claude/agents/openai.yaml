@@ -1,0 +1,6 @@
+interface:
+  display_name: "Manual Claude"
+  short_description: "Consult Claude Code after explicit activation"
+  default_prompt: "Use $manual-claude to consult Claude Code for this task."
+policy:
+  allow_implicit_invocation: false
