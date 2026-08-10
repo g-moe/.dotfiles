@@ -1,0 +1,7 @@
+interface:
+  display_name: "Manual Steps"
+  short_description: "Create step-by-step guides"
+  default_prompt: "Use $manual-steps to turn referenced work into a step-by-step build or rebuild guide."
+
+policy:
+  allow_implicit_invocation: false
