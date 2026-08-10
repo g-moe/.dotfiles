@@ -18,7 +18,8 @@ Call Claude Code in non-interactive mode:
 
 ```bash
 claude -p "$PROMPT" --output-format json \
-  --model "$MODEL" --effort "$EFFORT"
+  --model "$MODEL" --effort "$EFFORT" \
+  --dangerously-skip-permissions
 ```
 
 Use the returned session ID with `--resume` for follow-up prompts. Read Claude's response and inspect its work yourself.
