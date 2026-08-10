@@ -1,12 +1,19 @@
 # Better Time
 
-A local Raycast extension for Unix timestamps.
+A local Raycast extension for viewing and copying Unix millisecond timestamps.
 
 ## Commands
 
-- **Now** (`no-view`) — copies `Date.now()` (Unix ms) to the clipboard.
-- **To ISO** — shows ISO 8601 for a Unix ms argument, or for now when empty.
-  Copy actions for ISO and Unix ms are available in the action panel.
+- **Now** (`no-view`) — copies `Date.now()` to the clipboard.
+- **Time** — compares UTC with a selected time zone. Enter Unix milliseconds in
+  the search field, choose a time zone from the dropdown, and press Enter on any
+  format row to copy its UTC value. Each row displays UTC on the left and the
+  selected time zone on the right, with separate copy actions for both. The
+  selected time zone defaults to the Mac's local zone. Use `Command-N` to replace
+  the input with the current time.
+
+The Time command shows Datetime, Date, Clock, ISO 8601, Timezone, and UTC-Offset
+values. Unix millisecond input is validated with Zod.
 
 ## Run locally
 

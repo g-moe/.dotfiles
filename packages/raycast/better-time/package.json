@@ -3,7 +3,7 @@
 	"name": "better-time",
 	"version": "1.0.0",
 	"private": true,
-	"description": "Get the current time, convert timestamp, and more.",
+	"description": "Copy and compare Unix millisecond timestamps across time zones.",
 	"categories": [
 		"Applications"
 	],
@@ -16,7 +16,8 @@
 		"typecheck": "tsc -p tsconfig.json"
 	},
 	"dependencies": {
-		"@raycast/api": "1.104.23"
+		"@raycast/api": "1.104.23",
+		"zod": "4.4.3"
 	},
 	"devDependencies": {
 		"typescript": "6.0.3"
@@ -26,29 +27,23 @@
 		{
 			"name": "now",
 			"title": "Now",
-			"description": "Current UnixMs Time",
+			"description": "Copy the current Unix timestamp in milliseconds",
 			"keywords": [
 				"now"
 			],
 			"mode": "no-view"
 		},
 		{
-			"name": "iso",
-			"title": "To ISO",
-			"description": "Convert Unix ms to ISO 8601 (default: now)",
+			"name": "time",
+			"title": "Time",
+			"description": "View a Unix millisecond timestamp across time zones",
 			"keywords": [
 				"iso",
-				"timestamp"
+				"timestamp",
+				"timezone",
+				"utc"
 			],
-			"mode": "view",
-			"arguments": [
-				{
-					"name": "timestamp",
-					"type": "text",
-					"required": false,
-					"placeholder": "Unix ms (default: now)"
-				}
-			]
+			"mode": "view"
 		}
 	],
 	"platforms": [
