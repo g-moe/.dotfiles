@@ -10,7 +10,7 @@ notify = [
 	"/Users/garrett/.codex/computer-use/Codex Computer Use.app/Contents/SharedSupport/SkyComputerUseClient.app/Contents/MacOS/SkyComputerUseClient",
 	"turn-ended",
 ]
-personality = "pragmatic"
+personality = "friendly"
 
 [agents]
 max_threads = 4
@@ -37,9 +37,9 @@ appearanceDiffMarkerStyle = "symbols"
 [desktop.appearanceLightChromeTheme]
 accent = "#0969da"
 contrast = 45
-ink = "#1f2328"
+ink = "#1e1e1e"
 opaqueWindows = true
-surface = "#ffffff"
+surface = "#eff1f5"
 
 [desktop.appearanceLightChromeTheme.fonts]
 code = "JetBrains Mono"
@@ -52,7 +52,7 @@ skill = "#8250df"
 
 [desktop.appearanceDarkChromeTheme]
 accent = "#1f6feb"
-contrast = 48
+contrast = 45
 ink = "#e6edf3"
 opaqueWindows = true
 surface = "#1e1e1e"

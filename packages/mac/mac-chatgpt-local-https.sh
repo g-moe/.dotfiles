@@ -24,6 +24,7 @@ APP_PATH='/Applications/ChatGPT.app'
 APP_EXECUTABLE="$APP_PATH/Contents/MacOS/ChatGPT"
 APP_BUNDLE_ID='com.openai.codex'
 INSECURE_FLAG='--ignore-certificate-errors'
+LOCAL_NETWORK_ACCESS_FLAG='--disable-features=LocalNetworkAccessChecks'
 
 if [[ "$(
   osascript -l JavaScript -e "
@@ -43,14 +44,18 @@ fi
 if ps axww -o command= | awk \
   -v executable="$APP_EXECUTABLE" \
   -v insecure_flag="$INSECURE_FLAG" \
+  -v local_network_access_flag="$LOCAL_NETWORK_ACCESS_FLAG" \
   -v devtools_flag="$DEVTOOLS_FLAG" '
   $1 == executable {
     for (field = 2; field <= NF; field++) {
       if ($field == insecure_flag) insecure_found = 1
+      if ($field == local_network_access_flag) local_network_access_found = 1
       if ($field == devtools_flag) devtools_found = 1
     }
   }
-  END { exit !(insecure_found && (devtools_flag == "" || devtools_found)) }
+  END {
+    exit !(insecure_found && local_network_access_found && (devtools_flag == "" || devtools_found))
+  }
 '; then
   open -a ChatGPT
   exit 0
@@ -70,7 +75,7 @@ if pgrep -x ChatGPT >/dev/null; then
   fi
 fi
 
-APP_FLAGS=("$INSECURE_FLAG")
+APP_FLAGS=("$INSECURE_FLAG" "$LOCAL_NETWORK_ACCESS_FLAG")
 [[ -z "$DEVTOOLS_FLAG" ]] || APP_FLAGS+=("$DEVTOOLS_FLAG")
 
 open -na "$APP_PATH" --args "${APP_FLAGS[@]}"

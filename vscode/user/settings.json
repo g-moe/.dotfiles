@@ -375,7 +375,6 @@
 	"workbench.editor.limit.enabled": true,
 	"workbench.navigationControl.enabled": false,
 	"betterErrors.enabled": false,
-	"window.zoomLevel": 0.2,
 	"gitlens.mode.active": "review",
 	"breadcrumbs.showFields": false,
 	"breadcrumbs.showEvents": false,
