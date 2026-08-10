@@ -48,6 +48,7 @@ install_apps() {
   run_strategy 'Notes' apps/notes.sh
   run_strategy 'VSCodium' apps/vscodium.sh
   run_strategy 'Codex' apps/codex.sh
+  run_strategy 'Claude Code' apps/claude-code.sh
   run_strategy 'Docker' apps/docker.sh
   run_strategy 'Virtual machines' apps/virtual-machines.sh
   run_strategy 'Chrome' apps/chrome.sh
