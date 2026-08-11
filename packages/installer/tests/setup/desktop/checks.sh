@@ -49,10 +49,16 @@ for text in '/proc/stat' 'MemAvailable:' 'timeout 1 nvidia-smi' 'gpu_busy_percen
   expect_file_contains "$stats" "$text" "system stats are missing: $text"
 done
 expect_file_contains "$ROOT_DIR/packages/theming/create/apps/oh-my-zsh.ts" \
-  '/usr/local/bin/xfce-system-stats --prompt' \
+  '$(/usr/local/bin/xfce-system-stats --prompt)' \
   'the Linux prompt must reuse the Xfce system stats collector'
+expect_file_contains "$stats" "printf 'CPU-%d%%%% | GPU-%d%%%% | MEM %d%%%%" \
+  'the Linux prompt stats must escape percentages and use separators'
 expect_file_contains "$stats" 'size="medium">%s  %s  %s</span>' \
   'system stat values must be larger than their labels'
+expect_file_contains "$stats" "printf 'CPU-%d%%%% | MEM %d%%%%" \
+  'unavailable GPU data must be omitted from the Linux prompt'
+expect_file_contains "$stats" '<b> CPU   MEM</b>' \
+  'unavailable GPU data must be omitted from the Xfce panel'
 expect_file_contains "$INSTALLER_DIR/config/xfce/panel.css" \
   '@define-color rice_panel #111817' 'Xfce panel must use the rice near-black'
 

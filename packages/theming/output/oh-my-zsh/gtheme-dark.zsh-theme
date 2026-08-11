@@ -64,7 +64,7 @@ function prompt_input_line() {
 
 function prompt_system_stats() {
   [[ "$OSTYPE" == linux* && -x /usr/local/bin/xfce-system-stats ]] || return
-  /usr/local/bin/xfce-system-stats --prompt
+  print -n -- "%F{${muted_color}}%{\e[73m%}$(/usr/local/bin/xfce-system-stats --prompt)%{\e[75m%}%f"
 }
 
 PROMPT='$(prompt_context_line)

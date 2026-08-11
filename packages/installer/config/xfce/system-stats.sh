@@ -58,15 +58,24 @@ printf -v memory_display '%3d%%' "$memory"
 
 # The terminal prompt uses the same collected values without Genmon XML.
 if [[ "${1:-}" == '--prompt' ]]; then
-  printf 'CPU %d%%  GPU %s  MEM %d%%\n' "$cpu" "$gpu_tooltip" "$memory"
+  if [[ "$gpu" == 'N/A' ]]; then
+    printf 'CPU-%d%%%% | MEM %d%%%%\n' "$cpu" "$memory"
+  else
+    printf 'CPU-%d%%%% | GPU-%d%%%% | MEM %d%%%%\n' "$cpu" "$gpu" "$memory"
+  fi
   exit 0
 fi
 
 # Generic Monitor reads these XML elements from standard output. The first
 # element sets the panel text, the second sets its click action, and the last
 # element sets the tooltip.
-printf '<txt><span font_family="Inter" size="small"><b> CPU   GPU   MEM</b></span>\n<span font_family="Inter" size="medium">%s  %s  %s</span></txt>\n' \
-  "$cpu_display" "$gpu_display" "$memory_display"
+if [[ "$gpu" == 'N/A' ]]; then
+  printf '<txt><span font_family="Inter" size="small"><b> CPU   MEM</b></span>\n<span font_family="Inter" size="medium">%s  %s</span></txt>\n' \
+    "$cpu_display" "$memory_display"
+else
+  printf '<txt><span font_family="Inter" size="small"><b> CPU   GPU   MEM</b></span>\n<span font_family="Inter" size="medium">%s  %s  %s</span></txt>\n' \
+    "$cpu_display" "$gpu_display" "$memory_display"
+fi
 printf '<txtclick>xfce4-taskmanager</txtclick>\n'
 printf '<tool>CPU: %s%%\nGPU: %s\nMemory: %s%%</tool>\n' \
   "$cpu" "$gpu_tooltip" "$memory"
