@@ -24,7 +24,7 @@ local user_bg="$(gtheme_machine_color)"
 local user_fg='#000000'
 [[ "$machine_color" == black || -z "$machine_color" ]] && user_fg='#FFFFFF'
 local path_bg="${variant.foregroundMuted}"
-local path_fg="${variant.foreground}"
+local path_fg="$user_fg"
 local muted_color="${variant.foregroundMuted}"
 local prompt_color="${variant.foregroundMuted}"
 
