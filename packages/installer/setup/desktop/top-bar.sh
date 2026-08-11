@@ -68,8 +68,19 @@ mac() {
 
 linux() {
   local browser_command browser_file color color_hex
-  local attempt command css_file docklike_file genmon_file id plugin
-  local -a plugin_roots=()
+  local attempt command css_file docklike_file genmon_file genmon_pattern id plugin
+  local menu_id=1 expand_id=3 actions_gap_id=5 tray_id=6
+  local stats_gap_id=7 clock_id=8 clock_gap_id=9 actions_id=10
+  local dock_id=11 stats_id=15
+  local -a panel_plugins panel_without_stats plugin_roots=()
+
+  panel_plugins=(
+    "$menu_id" "$dock_id" "$expand_id" "$actions_id" "$actions_gap_id"
+    "$stats_id" "$stats_gap_id" "$tray_id" "$clock_gap_id" "$clock_id"
+  )
+  for id in "${panel_plugins[@]}"; do
+    [[ "$id" == "$stats_id" ]] || panel_without_stats+=("$id")
+  done
 
   apt_install xfconf xfce4-docklike-plugin xfce4-genmon-plugin
   [[ -s /usr/local/share/icons/tux.svg ]] ||
@@ -92,13 +103,13 @@ linux() {
   for id in 11 12 13 14; do
     rm -rf "$HOME/.config/xfce4/panel/launcher-$id"
   done
-  docklike_file="$HOME/.config/xfce4/panel/docklike-11.rc"
+  docklike_file="$HOME/.config/xfce4/panel/docklike-$dock_id.rc"
   mkdir -p "$(dirname "$docklike_file")"
   printf '%s\n' \
     '[user]' \
     "pinned=thunar;xfce4-terminal;codium;${browser_file%.desktop};" \
     'noWindowsListIfSingle=true' >"$docklike_file"
-  xfconf_set xfce4-panel /plugins/plugin-11 string docklike
+  xfconf_set xfce4-panel "/plugins/plugin-$dock_id" string docklike
 
   mapfile -t plugin_roots < <(
     xfconf-query -c xfce4-panel -l |
@@ -107,7 +118,9 @@ linux() {
   for plugin in "${plugin_roots[@]}"; do
     id="${plugin#plugin-}"
     case "$id" in
-      1 | 3 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 15) ;;
+      "$menu_id" | "$expand_id" | "$actions_gap_id" | "$tray_id" | \
+        "$stats_gap_id" | "$clock_id" | "$clock_gap_id" | "$actions_id" | \
+        "$dock_id" | "$stats_id") ;;
       *) silent xfconf-query -c xfce4-panel -p "/plugins/$plugin" -r -R || true ;;
     esac
   done
@@ -121,42 +134,43 @@ linux() {
   xfconf_set xfce4-panel /panels/panel-1/background-style int 1
   xfconf_set_array xfce4-panel /panels/panel-1/background-rgba double \
     0.067 0.094 0.090 1
-  xfconf_set xfce4-panel /plugins/plugin-1 string applicationsmenu
-  xfconf_set xfce4-panel /plugins/plugin-1/show-button-title bool false
-  xfconf_set xfce4-panel /plugins/plugin-1/button-icon string \
+  xfconf_set xfce4-panel "/plugins/plugin-$menu_id" string applicationsmenu
+  xfconf_set xfce4-panel "/plugins/plugin-$menu_id/show-button-title" bool false
+  xfconf_set xfce4-panel "/plugins/plugin-$menu_id/button-icon" string \
     /usr/local/share/icons/tux.svg
 
-  for id in 3 5 7 9; do
+  for id in "$expand_id" "$actions_gap_id" "$stats_gap_id" "$clock_gap_id"; do
     xfconf_set xfce4-panel "/plugins/plugin-$id" string separator
     xfconf_set xfce4-panel "/plugins/plugin-$id/style" uint 0
   done
-  xfconf_set xfce4-panel /plugins/plugin-3/expand bool true
+  xfconf_set xfce4-panel "/plugins/plugin-$expand_id/expand" bool true
 
-  xfconf_set xfce4-panel /plugins/plugin-6 string systray
-  xfconf_set xfce4-panel /plugins/plugin-6/square-icons bool false
+  xfconf_set xfce4-panel "/plugins/plugin-$tray_id" string systray
+  xfconf_set xfce4-panel "/plugins/plugin-$tray_id/square-icons" bool false
 
   # Stop an existing Generic Monitor instance before replacing its RC file.
   # Version 4.1 writes its in-memory settings to this file during shutdown.
   xfconf_set_array xfce4-panel /panels/panel-1/plugin-ids int \
-    1 11 3 5 10 7 6 9 8
-  silent pkill -TERM -f '/plugins/libgenmon[.]so 15 ' || true
+    "${panel_without_stats[@]}"
+  genmon_pattern="/plugins/libgenmon[.]so $stats_id "
+  silent pkill -TERM -f "$genmon_pattern" || true
   for attempt in {1..20}; do
-    pgrep -f '/plugins/libgenmon[.]so 15 ' >/dev/null || break
+    pgrep -f "$genmon_pattern" >/dev/null || break
     sleep 0.1
   done
-  silent pkill -KILL -f '/plugins/libgenmon[.]so 15 ' || true
+  silent pkill -KILL -f "$genmon_pattern" || true
   for attempt in {1..10}; do
-    pgrep -f '/plugins/libgenmon[.]so 15 ' >/dev/null || break
+    pgrep -f "$genmon_pattern" >/dev/null || break
     sleep 0.1
   done
-  ! pgrep -f '/plugins/libgenmon[.]so 15 ' >/dev/null ||
+  ! pgrep -f "$genmon_pattern" >/dev/null ||
     die 'The old Generic Monitor instance did not stop.'
 
   sudo install -m 0755 "$INSTALLER_DIR/config/xfce/system-stats.sh" \
     /usr/local/bin/xfce-system-stats
   # Debian 13 has Generic Monitor 4.1, which reads an RC file. Version 4.2 and
   # later moved these settings to xfconf.
-  genmon_file="$HOME/.config/xfce4/panel/genmon-15.rc"
+  genmon_file="$HOME/.config/xfce4/panel/genmon-$stats_id.rc"
   mkdir -p "$(dirname "$genmon_file")"
   printf '%s\n' \
     'Command=/usr/local/bin/xfce-system-stats' \
@@ -164,25 +178,25 @@ linux() {
     'Text=' \
     'UpdatePeriod=2000' \
     'Font=Inter 8' >"$genmon_file"
-  xfconf_set xfce4-panel /plugins/plugin-15 string genmon
+  xfconf_set xfce4-panel "/plugins/plugin-$stats_id" string genmon
 
-  xfconf_set xfce4-panel /plugins/plugin-8 string clock
-  xfconf_set xfce4-panel /plugins/plugin-8/digital-time-font string \
+  xfconf_set xfce4-panel "/plugins/plugin-$clock_id" string clock
+  xfconf_set xfce4-panel "/plugins/plugin-$clock_id/digital-time-font" string \
     'Inter SemiBold 10'
-  xfconf_set xfce4-panel /plugins/plugin-8/show-frame bool false
-  xfconf_set xfce4-panel /plugins/plugin-8/tooltip-format string '%A, %B %d, %Y'
-  xfconf_set xfce4-panel /plugins/plugin-8/mode uint 2
-  xfconf_set xfce4-panel /plugins/plugin-8/digital-layout uint 3
-  xfconf_set xfce4-panel /plugins/plugin-8/digital-time-format string '%b %d  %H:%M:%S'
-  xfconf_set xfce4-panel /plugins/plugin-8/digital-date-format string ''
+  xfconf_set xfce4-panel "/plugins/plugin-$clock_id/show-frame" bool false
+  xfconf_set xfce4-panel "/plugins/plugin-$clock_id/tooltip-format" string '%A, %B %d, %Y'
+  xfconf_set xfce4-panel "/plugins/plugin-$clock_id/mode" uint 2
+  xfconf_set xfce4-panel "/plugins/plugin-$clock_id/digital-layout" uint 3
+  xfconf_set xfce4-panel "/plugins/plugin-$clock_id/digital-time-format" string '%b %d  %H:%M:%S'
+  xfconf_set xfce4-panel "/plugins/plugin-$clock_id/digital-date-format" string ''
 
-  xfconf_set xfce4-panel /plugins/plugin-10 string actions
-  xfconf_set_array xfce4-panel /plugins/plugin-10/items string \
+  xfconf_set xfce4-panel "/plugins/plugin-$actions_id" string actions
+  xfconf_set_array xfce4-panel "/plugins/plugin-$actions_id/items" string \
     +lock-screen +switch-user +separator +suspend -hibernate -hybrid-sleep \
     -separator +restart +shutdown +logout
 
   xfconf_set_array xfce4-panel /panels/panel-1/plugin-ids int \
-    1 11 3 10 5 15 7 6 9 8
+    "${panel_plugins[@]}"
 
   color="$(machine_field "$ROOT_DIR/machine.json" color)"
   color_hex="$(machine_color_hex "$color")"
@@ -191,13 +205,13 @@ linux() {
   sed "s/@RICE_ACCENT@/$color_hex/g" \
     "$INSTALLER_DIR/config/xfce/panel.css" >"$css_file"
 
-  [[ "$(xfconf-query -c xfce4-panel -p /plugins/plugin-1/button-icon)" == \
+  [[ "$(xfconf-query -c xfce4-panel -p "/plugins/plugin-$menu_id/button-icon")" == \
     /usr/local/share/icons/tux.svg ]] || die 'The Tux application menu was not saved.'
-  [[ "$(xfconf-query -c xfce4-panel -p /plugins/plugin-8/digital-time-format)" == \
+  [[ "$(xfconf-query -c xfce4-panel -p "/plugins/plugin-$clock_id/digital-time-format")" == \
     '%b %d  %H:%M:%S' ]] || die 'The compact clock was not saved.'
   grep -Fxq 'Command=/usr/local/bin/xfce-system-stats' "$genmon_file" ||
     die 'The system stats command was not saved.'
-  xfconf-query -c xfce4-panel -p /plugins/plugin-10/items |
+  xfconf-query -c xfce4-panel -p "/plugins/plugin-$actions_id/items" |
     grep -Fxq '+restart' || die 'Restart is missing from the user menu.'
   silent xfce4-panel -r || true
 }

@@ -23,7 +23,7 @@ for text in \
   'xfce4-docklike-plugin' \
   'xfce4-genmon-plugin' \
   '/usr/local/bin/xfce-system-stats' \
-  'docklike-11.rc' \
+  'docklike-$dock_id.rc' \
   'noWindowsListIfSingle=true'; do
   expect_file_contains "$top_bar" "$text" "top-bar setup is missing: $text"
 done
@@ -33,15 +33,17 @@ plugin_list_line="$(grep -n '/panels/panel-1/plugin-ids' "$top_bar" | tail -n 1 
 [[ -n "$genmon_command_line" && -n "$plugin_list_line" && \
   "$genmon_command_line" -lt "$plugin_list_line" ]] ||
   fail 'Generic Monitor settings must exist before the panel starts the plugin'
-for text in 'genmon-15.rc' 'UseLabel=0' 'UpdatePeriod=2000'; do
+for text in 'genmon-$stats_id.rc' 'UseLabel=0' 'UpdatePeriod=2000'; do
   expect_file_contains "$top_bar" "$text" "Generic Monitor 4.1 configuration is missing: $text"
 done
 for signal in TERM KILL; do
-  expect_file_contains "$top_bar" "pkill -$signal -f '/plugins/libgenmon[.]so 15 '" \
+  expect_file_contains "$top_bar" "pkill -$signal -f \"\$genmon_pattern\"" \
     "Generic Monitor must receive $signal before its RC file is replaced"
 done
-expect_file_contains "$top_bar" '1 11 3 10 5 15 7 6 9 8' \
+expect_file_contains "$top_bar" '"$menu_id" "$dock_id" "$expand_id" "$actions_id" "$actions_gap_id"' \
   'machine name must appear before system stats'
+expect_file_contains "$top_bar" '"${panel_plugins[@]}"' \
+  'the final panel configuration must use the authoritative plugin order'
 expect_file_contains "$top_bar" 'pinned=thunar;xfce4-terminal;codium;' \
   'Docklike Taskbar must pin the standard Linux apps'
 expect_file_contains "$top_bar" "'Inter SemiBold 10'" \
