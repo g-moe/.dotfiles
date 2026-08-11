@@ -2,7 +2,6 @@ sandbox_mode = "danger-full-access"
 approval_policy = "never"
 model = "gpt-5.6-sol"
 model_reasoning_effort = "low"
-model_verbosity = "low"
 service_tier = "priority"
 allow_login_shell = true
 include_environment_context = true
