@@ -1,5 +1,5 @@
 @define-color rice_accent @RICE_ACCENT@;
-@define-color rice_panel rgba(14, 22, 24, 0.94);
+@define-color rice_panel #111817;
 
 .xfce4-panel.background {
 	background-color: @rice_panel;

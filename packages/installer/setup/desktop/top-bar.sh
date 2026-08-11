@@ -90,10 +90,10 @@ mac() {
 
 linux() {
   local browser_command browser_file browser_icon browser_name color color_hex
-  local command css_file id plugin
+  local attempt command css_file genmon_file id plugin
   local -a plugin_roots=()
 
-  apt_install xfconf
+  apt_install xfconf xfce4-genmon-plugin
   [[ -s /usr/local/share/icons/tux.svg ]] ||
     die 'The Tux panel icon is missing. Run the appearance phase first.'
   for command in thunar xfce4-terminal codium; do
@@ -127,7 +127,7 @@ linux() {
   for plugin in "${plugin_roots[@]}"; do
     id="${plugin#plugin-}"
     case "$id" in
-      1 | 3 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14) ;;
+      1 | 3 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15) ;;
       *) silent xfconf-query -c xfce4-panel -p "/plugins/$plugin" -r -R || true ;;
     esac
   done
@@ -140,10 +140,7 @@ linux() {
   xfconf_set xfce4-panel /panels/panel-1/size uint 34
   xfconf_set xfce4-panel /panels/panel-1/background-style int 1
   xfconf_set_array xfce4-panel /panels/panel-1/background-rgba double \
-    0.055 0.086 0.094 0.94
-  xfconf_set_array xfce4-panel /panels/panel-1/plugin-ids int \
-    1 11 12 13 14 3 10 5 6 7 8 9
-
+    0.067 0.094 0.090 1
   xfconf_set xfce4-panel /plugins/plugin-1 string applicationsmenu
   xfconf_set xfce4-panel /plugins/plugin-1/show-button-title bool false
   xfconf_set xfce4-panel /plugins/plugin-1/button-icon string \
@@ -158,6 +155,31 @@ linux() {
   xfconf_set xfce4-panel /plugins/plugin-6 string systray
   xfconf_set xfce4-panel /plugins/plugin-6/square-icons bool false
 
+  # Stop an existing Generic Monitor instance before replacing its RC file.
+  # Version 4.1 writes its in-memory settings to this file during shutdown.
+  xfconf_set_array xfce4-panel /panels/panel-1/plugin-ids int \
+    1 11 12 13 14 3 5 10 7 6 9 8
+  for attempt in {1..20}; do
+    pgrep -f '/plugins/libgenmon[.]so 15 ' >/dev/null || break
+    sleep 0.1
+  done
+  ! pgrep -f '/plugins/libgenmon[.]so 15 ' >/dev/null ||
+    die 'The old Generic Monitor instance did not stop.'
+
+  sudo install -m 0755 "$INSTALLER_DIR/config/xfce/system-stats.sh" \
+    /usr/local/bin/xfce-system-stats
+  # Debian 13 has Generic Monitor 4.1, which reads an RC file. Version 4.2 and
+  # later moved these settings to xfconf.
+  genmon_file="$HOME/.config/xfce4/panel/genmon-15.rc"
+  mkdir -p "$(dirname "$genmon_file")"
+  printf '%s\n' \
+    'Command=/usr/local/bin/xfce-system-stats' \
+    'UseLabel=0' \
+    'Text=' \
+    'UpdatePeriod=2000' \
+    'Font=JetBrains Mono 8' >"$genmon_file"
+  xfconf_set xfce4-panel /plugins/plugin-15 string genmon
+
   xfconf_set xfce4-panel /plugins/plugin-8 string clock
   xfconf_set xfce4-panel /plugins/plugin-8/digital-time-font string \
     'JetBrains Mono SemiBold 10'
@@ -165,7 +187,7 @@ linux() {
   xfconf_set xfce4-panel /plugins/plugin-8/tooltip-format string '%A, %B %d, %Y'
   xfconf_set xfce4-panel /plugins/plugin-8/mode uint 2
   xfconf_set xfce4-panel /plugins/plugin-8/digital-layout uint 3
-  xfconf_set xfce4-panel /plugins/plugin-8/digital-time-format string '%b %d  %H:%M'
+  xfconf_set xfce4-panel /plugins/plugin-8/digital-time-format string '%b %d  %H:%M:%S'
   xfconf_set xfce4-panel /plugins/plugin-8/digital-date-format string ''
 
   xfconf_set xfce4-panel /plugins/plugin-10 string actions
@@ -180,6 +202,8 @@ linux() {
   xfconf_set_array xfce4-panel /plugins/plugin-12/items string xfce4-terminal.desktop
   xfconf_set_array xfce4-panel /plugins/plugin-13/items string codium.desktop
   xfconf_set_array xfce4-panel /plugins/plugin-14/items string "$browser_file"
+  xfconf_set_array xfce4-panel /panels/panel-1/plugin-ids int \
+    1 11 12 13 14 3 10 5 15 7 6 9 8
 
   color="$(machine_field "$ROOT_DIR/machine.json" color)"
   color_hex="$(machine_color_hex "$color")"
@@ -191,7 +215,9 @@ linux() {
   [[ "$(xfconf-query -c xfce4-panel -p /plugins/plugin-1/button-icon)" == \
     /usr/local/share/icons/tux.svg ]] || die 'The Tux application menu was not saved.'
   [[ "$(xfconf-query -c xfce4-panel -p /plugins/plugin-8/digital-time-format)" == \
-    '%b %d  %H:%M' ]] || die 'The compact clock was not saved.'
+    '%b %d  %H:%M:%S' ]] || die 'The compact clock was not saved.'
+  grep -Fxq 'Command=/usr/local/bin/xfce-system-stats' "$genmon_file" ||
+    die 'The system stats command was not saved.'
   xfconf-query -c xfce4-panel -p /plugins/plugin-10/items |
     grep -Fxq '+restart' || die 'Restart is missing from the user menu.'
   silent xfce4-panel -r || true

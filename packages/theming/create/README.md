@@ -24,6 +24,6 @@ flowchart TD
   R["bash packages/installer/install.sh --theme\n(npm run install:theme)"] --> B
 ```
 
-The Zsh prompt reads the saved `colorHex` value from
-`~/.dotfiles/machine.json` for its machine-name block. Missing or invalid
-values fall back to `#101010`.
+The Zsh prompt reads the saved machine color from `~/.dotfiles/machine.json`.
+The machine-name block uses white text on black and black text on every other
+supported color.

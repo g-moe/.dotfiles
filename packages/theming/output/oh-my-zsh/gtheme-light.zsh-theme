@@ -14,8 +14,10 @@ function gtheme_machine_color() {
   print -nr -- "$color"
 }
 
+local machine_color=$(command awk -F'"' '$2 == "color" { print $4; exit }' "$HOME/.dotfiles/machine.json" 2>/dev/null)
 local user_bg="$(gtheme_machine_color)"
-local user_fg="#101316"
+local user_fg='#000000'
+[[ "$machine_color" == black || -z "$machine_color" ]] && user_fg='#FFFFFF'
 local path_bg="#7c7d8d"
 local path_fg="#101316"
 local muted_color="#7c7d8d"

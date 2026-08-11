@@ -18,14 +18,36 @@ expect_file_contains "$dock" 'xfconf_set_array xfce4-panel /panels int' \
 top_bar="$INSTALLER_DIR/setup/desktop/top-bar.sh"
 for text in \
   '/usr/local/share/icons/tux.svg' \
-  "'%b %d  %H:%M'" \
+  "'%b %d  %H:%M:%S'" \
   '+restart' \
+  'xfce4-genmon-plugin' \
+  '/usr/local/bin/xfce-system-stats' \
   'thunar.desktop' \
   'xfce4-terminal.desktop' \
   'codium.desktop'; do
   expect_file_contains "$top_bar" "$text" "top-bar setup is missing: $text"
 done
 [[ -f "$INSTALLER_DIR/config/xfce/panel.css" ]] || fail 'Xfce panel CSS is missing'
+genmon_command_line="$(grep -n 'Command=/usr/local/bin/xfce-system-stats' "$top_bar" | head -n 1 | cut -d: -f1)"
+plugin_list_line="$(grep -n '/panels/panel-1/plugin-ids' "$top_bar" | tail -n 1 | cut -d: -f1)"
+[[ -n "$genmon_command_line" && -n "$plugin_list_line" && \
+  "$genmon_command_line" -lt "$plugin_list_line" ]] ||
+  fail 'Generic Monitor settings must exist before the panel starts the plugin'
+for text in 'genmon-15.rc' 'UseLabel=0' 'UpdatePeriod=2000'; do
+  expect_file_contains "$top_bar" "$text" "Generic Monitor 4.1 configuration is missing: $text"
+done
+expect_file_contains "$top_bar" "pgrep -f '/plugins/libgenmon[.]so 15 '" \
+  'Generic Monitor must stop before its RC file is replaced'
+expect_file_contains "$top_bar" '1 11 12 13 14 3 10 5 15 7 6 9 8' \
+  'machine name must appear before system stats'
+stats="$INSTALLER_DIR/config/xfce/system-stats.sh"
+for text in '/proc/stat' 'MemAvailable:' 'nvidia-smi' 'gpu_busy_percent' '<txtclick>xfce4-taskmanager</txtclick>'; do
+  expect_file_contains "$stats" "$text" "system stats are missing: $text"
+done
+expect_file_contains "$stats" 'size="medium">%s  %s  %s</span>' \
+  'system stat values must be larger than their labels'
+expect_file_contains "$INSTALLER_DIR/config/xfce/panel.css" \
+  '@define-color rice_panel #111817' 'Xfce panel must use the rice near-black'
 
 windows="$INSTALLER_DIR/setup/desktop/windows.sh"
 for text in \
