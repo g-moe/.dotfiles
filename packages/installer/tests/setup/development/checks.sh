@@ -22,4 +22,19 @@ expect_file_contains "$INSTALLER_DIR/setup/development/cloudflare.sh" \
 expect_file_contains "$INSTALLER_DIR/setup/development/cloudflare.sh" \
   'npm install --global wrangler@latest' 'Cloudflare must install Wrangler'
 
+mcp_strategy="$INSTALLER_DIR/setup/development/mcp-servers.sh"
+expect_file_contains "$mcp_strategy" \
+  'codex mcp add "$name" -- "$@"' \
+  'MCP setup must use the Codex CLI'
+expect_file_contains "$mcp_strategy" \
+  'claude mcp add --scope user "$name" -- "$@"' \
+  'MCP setup must use the Claude Code user scope'
+expect_file_contains "$mcp_strategy" \
+  '_register chrome-devtools npx --yes chrome-devtools-mcp@latest' \
+  'MCP setup must declare chrome-devtools through the shared registration helper'
+codex_line="$(grep -n "development/codex.sh" "$INSTALLER_DIR/install.sh" | cut -d: -f1)"
+mcp_line="$(grep -n "development/mcp-servers.sh" "$INSTALLER_DIR/install.sh" | cut -d: -f1)"
+[[ "$mcp_line" -gt "$codex_line" ]] ||
+  fail 'MCP setup must run after Codex links its configuration'
+
 printf 'Development setup checks passed.\n'

@@ -40,16 +40,16 @@ Single strategies and individual phase flags (`--apps`, `--development`, …) sk
 
 Normal phase runs start with a read-only Linux desktop check, then use this order: `apps` → `development` → `appearance` → `input` → `desktop` → `files` → `access` → `system`. The check runs before every phase flag, so Linux work only starts after Xfce, LightDM, and X11 are ready. Changes to the LightDM X11 session stay in the system phase.
 
-| Phase         | Covers                                                                  |
-| ------------- | ----------------------------------------------------------------------- |
-| `apps`        | Apps (Homebrew / APT / vendor)                                          |
-| `development` | Git, Node, AWS CLI, Cloudflare CLIs, Zsh, tmux, VSCodium, Codex, Skills |
-| `appearance`  | Wallpaper, screen saver, theme, icons, login screen                     |
-| `input`       | Pointer, touchpad, keyboard, remapping                                  |
-| `desktop`     | Workspaces, items/widgets, windows, lower panel, top bar, name display  |
-| `files`       | Defaults, associations, Finder/Files                                    |
-| `access`      | Handoff, assistants, headless notes, SSH, VNC                           |
-| `system`      | LightDM X11 session, updates, power, UI refresh                         |
+| Phase         | Covers                                                                               |
+| ------------- | ------------------------------------------------------------------------------------ |
+| `apps`        | Apps (Homebrew / APT / vendor)                                                       |
+| `development` | Git, Node, AWS CLI, Cloudflare CLIs, Zsh, tmux, VSCodium, Codex, MCP servers, Skills |
+| `appearance`  | Wallpaper, screen saver, theme, icons, login screen                                  |
+| `input`       | Pointer, touchpad, keyboard, remapping                                               |
+| `desktop`     | Workspaces, items/widgets, windows, lower panel, top bar, name display               |
+| `files`       | Defaults, associations, Finder/Files                                                 |
+| `access`      | Handoff, assistants, headless notes, SSH, VNC                                        |
+| `system`      | LightDM X11 session, updates, power, UI refresh                                      |
 
 ### Where things live
 
@@ -131,6 +131,14 @@ linked files without recreating the links.
 
 The separate Skills installer remains unchanged.
 
+### Global MCP servers
+
+Development setup registers global MCP servers with Codex and Claude Code.
+Server definitions and add instructions live in
+[`setup/development/mcp-servers.sh`](setup/development/mcp-servers.sh), with
+focused checks in
+[`tests/setup/development/mcp-servers.sh`](tests/setup/development/mcp-servers.sh).
+
 ### Platform quirks
 
 - **Linux:** Debian 13 (trixie) only, with Xfce + LightDM + X11 installed by the Debian installer.
@@ -147,7 +155,7 @@ The separate Skills installer remains unchanged.
 - **Dock:** The Mac Dock starts with Finder and Apps, followed by Mission Control, Settings, Ghostty, VSCodium, and Chrome.
 - **File browser:** Finder and Thunar always show hidden files. Their sidebars pin `~/.dotfiles` after Home, followed by `~/code` and the standard folders.
 - **Terminal:** Mac installs and configures Ghostty through Homebrew. Debian keeps Xfce Terminal and gives it the rice font, colors, and minimal controls through Xfce's live settings, without installing another terminal or changing the launcher command.
-- **Desktop styling:** Linux offers separate prompts for the machine-color wallpaper, WhiteSur Dark styling, and WhiteSur icons. The desktop uses Inter for its UI and JetBrains Mono only for monospace text, hides desktop icons, puts close/minimize/maximize on the left, removes the lower panel, and builds one compact dark top bar. Full-color Tux opens the application menu; Files, Terminal, VSCodium, and the installed Chrome-family browser open directly beside it. The right side shows the machine name, compact two-line CPU/GPU/memory readouts, the tray, and a date/time with seconds but no weekday. GPU use appears only when an NVIDIA or AMD GPU and its driver are available inside the guest. Restart is in the machine-name menu. There is no Plank or window list. Workspaces stay unchanged. App theme packs still use `--theme`.
+- **Desktop styling:** Linux offers separate prompts for the machine-color wallpaper, WhiteSur Dark styling, and WhiteSur icons. The desktop uses Inter for its UI and JetBrains Mono only for monospace text, hides desktop icons, puts close/minimize/maximize on the left, removes the lower panel, and builds one compact dark top bar. Full-color Tux opens the application menu. A Docklike Taskbar pins Files, Terminal, VSCodium, and the installed Chrome-family browser, and it groups and focuses their open windows. The right side shows the machine name, compact two-line CPU/GPU/memory readouts, the tray, and a date/time with seconds but no weekday. GPU use appears only when an NVIDIA or AMD GPU and its driver are available inside the guest. Restart is in the machine-name menu. There is no Plank. Workspaces stay unchanged. App theme packs still use `--theme`.
 - **Login screen:** Debian keeps the LightDM GTK greeter and gives it the machine-color background, a centered dark login card, the real local user, a full-color Tux avatar, Inter, and a small top status bar. The hostname and extra session controls stay out of the bar.
 - **Tux artwork:** The checked panel and login images come from the canonical [Tux file on Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Tux.svg), credited there to Larry Ewing, Simon Budig, and Garrett LeSage.
 - **Git:** optional; defaults `garrett` / noreply email / `main`; GitHub login is a separate browser step; no token in the shell env.

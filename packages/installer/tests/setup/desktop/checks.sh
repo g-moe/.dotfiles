@@ -20,11 +20,11 @@ for text in \
   '/usr/local/share/icons/tux.svg' \
   "'%b %d  %H:%M:%S'" \
   '+restart' \
+  'xfce4-docklike-plugin' \
   'xfce4-genmon-plugin' \
   '/usr/local/bin/xfce-system-stats' \
-  'thunar.desktop' \
-  'xfce4-terminal.desktop' \
-  'codium.desktop'; do
+  'docklike-11.rc' \
+  'noWindowsListIfSingle=true'; do
   expect_file_contains "$top_bar" "$text" "top-bar setup is missing: $text"
 done
 [[ -f "$INSTALLER_DIR/config/xfce/panel.css" ]] || fail 'Xfce panel CSS is missing'
@@ -40,8 +40,10 @@ for signal in TERM KILL; do
   expect_file_contains "$top_bar" "pkill -$signal -f '/plugins/libgenmon[.]so 15 '" \
     "Generic Monitor must receive $signal before its RC file is replaced"
 done
-expect_file_contains "$top_bar" '1 11 12 13 14 3 10 5 15 7 6 9 8' \
+expect_file_contains "$top_bar" '1 11 3 10 5 15 7 6 9 8' \
   'machine name must appear before system stats'
+expect_file_contains "$top_bar" 'pinned=thunar;xfce4-terminal;codium;' \
+  'Docklike Taskbar must pin the standard Linux apps'
 expect_file_contains "$top_bar" "'Inter SemiBold 10'" \
   'the panel clock must use the UI font'
 stats="$INSTALLER_DIR/config/xfce/system-stats.sh"

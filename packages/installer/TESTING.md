@@ -98,9 +98,7 @@ xfconf-query -c xfce4-panel -p /plugins/plugin-8/digital-time-format
 grep -Fx 'Command=/usr/local/bin/xfce-system-stats' ~/.config/xfce4/panel/genmon-15.rc
 xfconf-query -c xfce4-panel -p /plugins/plugin-10/items | grep -Fx '+restart'
 xfconf-query -c xfce4-panel -lv | grep -E 'pager|tasklist'
-test -f ~/.config/xfce4/panel/launcher-11/thunar.desktop
-test -f ~/.config/xfce4/panel/launcher-12/xfce4-terminal.desktop
-test -f ~/.config/xfce4/panel/launcher-13/codium.desktop
+grep -F 'pinned=thunar;xfce4-terminal;codium;' ~/.config/xfce4/panel/docklike-11.rc
 test -f ~/.config/gtk-3.0/gtk.css
 test -x /usr/local/bin/xfce-system-stats
 /usr/local/bin/xfce-system-stats
@@ -111,11 +109,11 @@ grep -Fq "file://$HOME/.dotfiles .dotfiles" ~/.config/gtk-4.0/bookmarks
 ```
 
 The panel list must contain only `1`. The plugin order must be application menu,
-Files, Terminal, VSCodium, browser, expanding space, machine-name menu,
+Docklike Taskbar with Files, Terminal, VSCodium, and browser, expanding space, machine-name menu,
 CPU/GPU/memory readouts, tray, and clock with compact spacing. The icon path must be
 `/usr/local/share/icons/tux.svg`.
 The clock format must be `%b %d  %H:%M:%S`, the Restart line must print, and the
-pager/tasklist check must print nothing. Click all four launchers and confirm
+pager check must print nothing. Click all four pinned apps and confirm
 the right app opens. The stats command must print the three readouts without an
 error; GPU can show `N/A` in a virtual machine. The lower panel and Plank must
 be absent.
@@ -235,7 +233,7 @@ Hidden files must remain visible in both Finder and Thunar after each run.
 
 WhiteSur Dark supplies the GTK styling, icons, and Xfce window frame. Close,
 minimize, and maximize are placed on the left in Mac order. Linux uses one near-black
-top panel with a Tux menu, four direct app launchers, CPU/GPU/memory readouts, and
+top panel with a Tux menu, four pinned Docklike apps, CPU/GPU/memory readouts, and
 no window or workspace list. The lower panel and Plank are absent. Xfce input
 and workspace settings stay unchanged. The appearance phase can set the same
 generated machine-color wallpaper used on macOS. Application theme packs from
@@ -243,7 +241,7 @@ generated machine-color wallpaper used on macOS. Application theme packs from
 
 ## Pass checklists
 
-**Debian desktop** — LightDM owns the styled login screen; the session is X11; Xfce opens; the optional machine-color wallpaper, WhiteSur Dark styling, and icons apply; Mac-order window buttons are on the left; desktop icons and the lower panel are gone; the single near-black top bar has Tux, four working app launchers, the machine-name menu with Restart, CPU/GPU/memory readouts, tray, and weekday-free clock with seconds; workspaces stay put; the browser default works and Xfce Terminal opens with its dark minimal settings; apps open; VSCodium/`code`, files, SSH, VNC, updates, power, and Skills work; no extra desktop session is offered.
+**Debian desktop** — LightDM owns the styled login screen; the session is X11; Xfce opens; the optional machine-color wallpaper, WhiteSur Dark styling, and icons apply; Mac-order window buttons are on the left; desktop icons and the lower panel are gone; the single near-black top bar has Tux, a Docklike Taskbar with four pinned apps and open-window handling, the machine-name menu with Restart, CPU/GPU/memory readouts, tray, and weekday-free clock with seconds; workspaces stay put; the browser default works and Xfce Terminal opens with its dark minimal settings; apps open; VSCodium/`code`, files, SSH, VNC, updates, power, and Skills work; no extra desktop session is offered.
 
 **Git** — `npm run install:git` / `install.sh --git` only; skip leaves Git alone; accept → LFS + filters; name/email/branch stick; settings match `git.sh`; GitHub skip vs browser login; no `GITHUB_TOKEN` in a new shell.
 

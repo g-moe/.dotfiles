@@ -33,6 +33,8 @@ mactop/com.dotfiles.mactop-menubar.plist
 nvim/init.lua
 opencode/opencode.jsonc
 packages/installer/install.sh
+packages/installer/setup/development/mcp-servers.sh
+packages/installer/tests/setup/development/mcp-servers.sh
 packages/installer/packages/retire.json
 packages/installer/packages/retire.schema.json
 packages/lib/bash/lib.sh

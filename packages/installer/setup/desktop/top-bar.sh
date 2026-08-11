@@ -14,28 +14,6 @@ configure_top_bar() {
   esac
 }
 
-_linux_launcher() {
-  local id="$1"
-  local file="$2"
-  local name="$3"
-  local command="$4"
-  local icon="$5"
-  local directory="$HOME/.config/xfce4/panel/launcher-$id"
-
-  rm -rf "$directory"
-  mkdir -p "$directory"
-  printf '%s\n' \
-    '[Desktop Entry]' \
-    'Version=1.0' \
-    'Type=Application' \
-    "Name=$name" \
-    "Exec=$command" \
-    "TryExec=${command%% *}" \
-    "Icon=$icon" \
-    'Terminal=false' \
-    'StartupNotify=true' >"$directory/$file"
-}
-
 mac() {
   defaults -currentHost write com.apple.controlcenter Battery -int 8
   defaults -currentHost write com.apple.controlcenter BatteryShowPercentage -int 0
@@ -89,11 +67,11 @@ mac() {
 }
 
 linux() {
-  local browser_command browser_file browser_icon browser_name color color_hex
-  local attempt command css_file genmon_file id plugin
+  local browser_command browser_file color color_hex
+  local attempt command css_file docklike_file genmon_file id plugin
   local -a plugin_roots=()
 
-  apt_install xfconf xfce4-genmon-plugin
+  apt_install xfconf xfce4-docklike-plugin xfce4-genmon-plugin
   [[ -s /usr/local/share/icons/tux.svg ]] ||
     die 'The Tux panel icon is missing. Run the appearance phase first.'
   for command in thunar xfce4-terminal codium; do
@@ -103,22 +81,24 @@ linux() {
     amd64)
       browser_command="$(command -v google-chrome || true)"
       browser_file='google-chrome.desktop'
-      browser_icon='google-chrome'
-      browser_name='Google Chrome'
       ;;
     arm64)
       browser_command="$(command -v brave-browser || true)"
       browser_file='brave-browser.desktop'
-      browser_icon='brave-browser'
-      browser_name='Brave'
       ;;
   esac
   [[ -n "$browser_command" ]] || die 'The top-bar browser launcher is missing.'
 
-  _linux_launcher 11 thunar.desktop Files "$(command -v thunar) \"$HOME\"" org.xfce.thunar
-  _linux_launcher 12 xfce4-terminal.desktop Terminal "$(command -v xfce4-terminal)" org.xfce.terminal
-  _linux_launcher 13 codium.desktop VSCodium "$(command -v codium) %F" vscodium
-  _linux_launcher 14 "$browser_file" "$browser_name" "$browser_command %U" "$browser_icon"
+  for id in 11 12 13 14; do
+    rm -rf "$HOME/.config/xfce4/panel/launcher-$id"
+  done
+  docklike_file="$HOME/.config/xfce4/panel/docklike-11.rc"
+  mkdir -p "$(dirname "$docklike_file")"
+  printf '%s\n' \
+    '[user]' \
+    "pinned=thunar;xfce4-terminal;codium;${browser_file%.desktop};" \
+    'noWindowsListIfSingle=true' >"$docklike_file"
+  xfconf_set xfce4-panel /plugins/plugin-11 string docklike
 
   mapfile -t plugin_roots < <(
     xfconf-query -c xfce4-panel -l |
@@ -127,7 +107,7 @@ linux() {
   for plugin in "${plugin_roots[@]}"; do
     id="${plugin#plugin-}"
     case "$id" in
-      1 | 3 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15) ;;
+      1 | 3 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 15) ;;
       *) silent xfconf-query -c xfce4-panel -p "/plugins/$plugin" -r -R || true ;;
     esac
   done
@@ -158,7 +138,7 @@ linux() {
   # Stop an existing Generic Monitor instance before replacing its RC file.
   # Version 4.1 writes its in-memory settings to this file during shutdown.
   xfconf_set_array xfce4-panel /panels/panel-1/plugin-ids int \
-    1 11 12 13 14 3 5 10 7 6 9 8
+    1 11 3 5 10 7 6 9 8
   silent pkill -TERM -f '/plugins/libgenmon[.]so 15 ' || true
   for attempt in {1..20}; do
     pgrep -f '/plugins/libgenmon[.]so 15 ' >/dev/null || break
@@ -201,15 +181,8 @@ linux() {
     +lock-screen +switch-user +separator +suspend -hibernate -hybrid-sleep \
     -separator +restart +shutdown +logout
 
-  for id in 11 12 13 14; do
-    xfconf_set xfce4-panel "/plugins/plugin-$id" string launcher
-  done
-  xfconf_set_array xfce4-panel /plugins/plugin-11/items string thunar.desktop
-  xfconf_set_array xfce4-panel /plugins/plugin-12/items string xfce4-terminal.desktop
-  xfconf_set_array xfce4-panel /plugins/plugin-13/items string codium.desktop
-  xfconf_set_array xfce4-panel /plugins/plugin-14/items string "$browser_file"
   xfconf_set_array xfce4-panel /panels/panel-1/plugin-ids int \
-    1 11 12 13 14 3 10 5 15 7 6 9 8
+    1 11 3 10 5 15 7 6 9 8
 
   color="$(machine_field "$ROOT_DIR/machine.json" color)"
   color_hex="$(machine_color_hex "$color")"
