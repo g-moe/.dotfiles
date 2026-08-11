@@ -39,7 +39,7 @@ install_apps() {
   run_strategy 'ImageMagick' apps/imagemagick.sh
   run_strategy 'CleanShot X' apps/screenshot.sh
   run_strategy 'Terminal' apps/terminal.sh
-  run_strategy 'JetBrains Mono' apps/jetbrains-mono.sh
+  run_strategy 'Fonts' apps/jetbrains-mono.sh
   run_strategy 'Keyboard remapper' apps/keyboard-remapper.sh
   run_strategy 'Display controls' apps/display-controls.sh
   run_strategy 'Application launcher' apps/launcher.sh

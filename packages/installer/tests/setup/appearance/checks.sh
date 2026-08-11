@@ -28,6 +28,12 @@ theme="$INSTALLER_DIR/setup/appearance/theme.sh"
 expect_file_contains "$theme" "local theme='WhiteSur-Dark'" 'dark WhiteSur theme is missing'
 expect_file_contains "$theme" 'xfce4-notifyd /theme string Rice' 'notification theme is missing'
 expect_file_contains "$theme" 'extract_github_source_archive' 'theme archive must be checked'
+expect_file_contains "$theme" "xfconf_set xsettings /Gtk/FontName string 'Inter 10'" \
+  'Linux GTK controls must use Inter'
+expect_file_contains "$theme" \
+  "xfconf_set xsettings /Gtk/MonospaceFontName string 'JetBrains Mono 10'" \
+  'Linux monospace controls must use JetBrains Mono'
+expect_file_contains "$login" 'font-name=Inter 11' 'LightDM must use Inter'
 
 screensaver="$INSTALLER_DIR/setup/appearance/screensaver.sh"
 expect_file_contains "$screensaver" 'askForPassword -int 1' \

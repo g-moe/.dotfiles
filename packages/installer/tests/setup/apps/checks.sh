@@ -51,6 +51,9 @@ expect_file_contains "$terminal" 'xfconf_set xfce4-terminal /font-name' \
   'Linux terminal must use Xfce live settings'
 expect_file_contains "$terminal" 'xfconf_set xfce4-terminal /misc-borders-default bool true' \
   'Xfce Terminal must keep window borders'
+expect_file_contains "$INSTALLER_DIR/setup/apps/jetbrains-mono.sh" \
+  'apt_install fonts-inter fonts-jetbrains-mono' \
+  'Linux must install separate UI and monospace fonts'
 if grep -Eqi 'ghostty|kitty|alacritty' <(sed -n '/^linux()/,/^}/p' "$terminal"); then
   fail 'Linux terminal setup must not install another terminal'
 fi

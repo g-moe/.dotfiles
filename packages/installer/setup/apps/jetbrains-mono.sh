@@ -20,7 +20,8 @@ mac() {
 }
 
 linux() {
-  apt_install fonts-jetbrains-mono
+  apt_install fonts-inter fonts-jetbrains-mono
+  fc-match Inter | grep -qi Inter || die 'Inter is missing after installation.'
   fc-match 'JetBrains Mono' | grep -qi JetBrains ||
     die 'JetBrains Mono is missing after installation.'
 }

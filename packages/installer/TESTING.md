@@ -167,7 +167,7 @@ test -s /var/lib/lightdm/.config/gtk-3.0/gtk.css
 ```
 
 After reboot or sign out, confirm the machine-color background, centered dark
-card, selected real local user, full-color Tux avatar, JetBrains Mono, and small
+card, selected real local user, full-color Tux avatar, Inter, and small
 top bar appear. The card must be centered on both axes. The top bar must not
 show the hostname, manual `Other...` login, or extra session choices.
 

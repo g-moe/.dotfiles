@@ -177,12 +177,12 @@ linux() {
     'UseLabel=0' \
     'Text=' \
     'UpdatePeriod=2000' \
-    'Font=JetBrains Mono 8' >"$genmon_file"
+    'Font=Inter 8' >"$genmon_file"
   xfconf_set xfce4-panel /plugins/plugin-15 string genmon
 
   xfconf_set xfce4-panel /plugins/plugin-8 string clock
   xfconf_set xfce4-panel /plugins/plugin-8/digital-time-font string \
-    'JetBrains Mono SemiBold 10'
+    'Inter SemiBold 10'
   xfconf_set xfce4-panel /plugins/plugin-8/show-frame bool false
   xfconf_set xfce4-panel /plugins/plugin-8/tooltip-format string '%A, %B %d, %Y'
   xfconf_set xfce4-panel /plugins/plugin-8/mode uint 2

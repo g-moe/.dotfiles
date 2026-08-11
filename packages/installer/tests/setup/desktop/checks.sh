@@ -40,6 +40,8 @@ expect_file_contains "$top_bar" "pgrep -f '/plugins/libgenmon[.]so 15 '" \
   'Generic Monitor must stop before its RC file is replaced'
 expect_file_contains "$top_bar" '1 11 12 13 14 3 10 5 15 7 6 9 8' \
   'machine name must appear before system stats'
+expect_file_contains "$top_bar" "'Inter SemiBold 10'" \
+  'the panel clock must use the UI font'
 stats="$INSTALLER_DIR/config/xfce/system-stats.sh"
 for text in '/proc/stat' 'MemAvailable:' 'nvidia-smi' 'gpu_busy_percent' '<txtclick>xfce4-taskmanager</txtclick>'; do
   expect_file_contains "$stats" "$text" "system stats are missing: $text"

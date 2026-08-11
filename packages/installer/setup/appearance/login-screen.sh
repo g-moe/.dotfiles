@@ -23,7 +23,7 @@ linux() {
   local icon_name icon_source icon_theme='Adwaita' output_size='3840x2160'
   local temporary_dir user user_path
 
-  apt_install accountsservice fonts-jetbrains-mono imagemagick lightdm-gtk-greeter
+  apt_install accountsservice fonts-inter imagemagick lightdm-gtk-greeter
   has busctl || die 'AccountsService control is missing.'
   [[ "$(cat /etc/X11/default-display-manager 2>/dev/null || true)" == /usr/sbin/lightdm ]] ||
     die 'LightDM must be the default display manager.'
@@ -69,7 +69,7 @@ theme-name=Adwaita-dark
 icon-theme-name=$icon_theme
 cursor-theme-name=Adwaita
 cursor-theme-size=24
-font-name=JetBrains Mono 11
+font-name=Inter 11
 xft-antialias=true
 xft-dpi=96
 xft-hintstyle=slight

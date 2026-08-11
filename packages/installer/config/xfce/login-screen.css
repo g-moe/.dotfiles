@@ -6,7 +6,7 @@
 
 .lightdm-gtk-greeter {
 	color: @rice_text;
-	font-family: "JetBrains Mono";
+	font-family: "Inter";
 	font-size: 11pt;
 }
 
