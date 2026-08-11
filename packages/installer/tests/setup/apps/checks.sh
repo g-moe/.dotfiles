@@ -19,6 +19,9 @@ expect_file_contains "$INSTALLER_DIR/setup/apps/claude-code.sh" \
 expect_file_contains "$INSTALLER_DIR/setup/apps/claude-code.sh" \
   'curl -fsSL https://claude.ai/install.sh | bash' \
   'Linux must use the native Claude Code installer'
+expect_file_contains "$INSTALLER_DIR/setup/apps/claude-code.sh" \
+  'has claude && return 0' \
+  'Linux must not reinstall Claude Code when it is already installed'
 expect_file_contains "$INSTALLER_DIR/setup/apps/docker.sh" \
   'https://download.docker.com/linux/debian' 'Docker must use its Debian repository'
 expect_file_contains "$INSTALLER_DIR/setup/apps/tailscale.sh" \

@@ -18,6 +18,7 @@ mac() {
 }
 
 linux() {
+  has claude && return 0
   curl -fsSL https://claude.ai/install.sh | bash
 }
 
