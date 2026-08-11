@@ -36,8 +36,10 @@ plugin_list_line="$(grep -n '/panels/panel-1/plugin-ids' "$top_bar" | tail -n 1 
 for text in 'genmon-15.rc' 'UseLabel=0' 'UpdatePeriod=2000'; do
   expect_file_contains "$top_bar" "$text" "Generic Monitor 4.1 configuration is missing: $text"
 done
-expect_file_contains "$top_bar" "pgrep -f '/plugins/libgenmon[.]so 15 '" \
-  'Generic Monitor must stop before its RC file is replaced'
+for signal in TERM KILL; do
+  expect_file_contains "$top_bar" "pkill -$signal -f '/plugins/libgenmon[.]so 15 '" \
+    "Generic Monitor must receive $signal before its RC file is replaced"
+done
 expect_file_contains "$top_bar" '1 11 12 13 14 3 10 5 15 7 6 9 8' \
   'machine name must appear before system stats'
 expect_file_contains "$top_bar" "'Inter SemiBold 10'" \

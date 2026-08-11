@@ -159,7 +159,13 @@ linux() {
   # Version 4.1 writes its in-memory settings to this file during shutdown.
   xfconf_set_array xfce4-panel /panels/panel-1/plugin-ids int \
     1 11 12 13 14 3 5 10 7 6 9 8
-  for attempt in {1..100}; do
+  silent pkill -TERM -f '/plugins/libgenmon[.]so 15 ' || true
+  for attempt in {1..20}; do
+    pgrep -f '/plugins/libgenmon[.]so 15 ' >/dev/null || break
+    sleep 0.1
+  done
+  silent pkill -KILL -f '/plugins/libgenmon[.]so 15 ' || true
+  for attempt in {1..10}; do
     pgrep -f '/plugins/libgenmon[.]so 15 ' >/dev/null || break
     sleep 0.1
   done
