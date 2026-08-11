@@ -149,6 +149,7 @@ focused checks in
 - **Voice dictation:** VoiceInk on Mac; skipped on Linux.
 - **Firefox:** Debian’s `firefox-esr` package.
 - **Codex:** Mac installs both the ChatGPT app and Codex CLI; Linux installs the Codex CLI. The Mac ChatGPT launcher switches away immediately when ChatGPT is already frontmost.
+- **T3 Code:** Mac and Linux install the npm server CLI after Node.js. Run `t3-serve`, for the headless local web app; the desktop application is not installed.
 - **System monitor:** Mac downloads a verified, pinned source archive from the `g-moe/mactop` fork, builds it with Go into `~/.local/bin/mactop`, links its monochrome menu-bar configuration into `~/.mactop`, and starts that custom build at login through a quiet pseudo-terminal because mactop still opens `/dev/tty`. Linux installs Xfce Task Manager.
 - **CleanShot X:** Mac only.
 - **Browsers:** Mac installs Chrome and Arc, with Chrome as the default, and links Arc's Air Traffic Control routing file from `arc/StorableLinkRouting.json`. The routing file contains Arc Space IDs and is Mac-only. Arc may replace the link when it saves routing changes, so rerun the apps phase if that happens. Debian amd64 installs Chrome; Debian arm64 installs Brave. Debian keeps Xfce Terminal as installed by the OS. Mac shows a system browser prompt — pick **Use Chrome**.

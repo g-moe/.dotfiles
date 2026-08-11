@@ -108,6 +108,9 @@ alias reload='source ~/.zshrc'
 # Open files in VSCodium with the VS Code command
 alias code='codium'
 
+# Start the local T3 Code web server without a desktop app
+alias t3-serve='t3 serve --host 127.0.0.1 --port 3333'
+
 # List out directories with `cd` change directory
 unalias cd 2>/dev/null
 cd() {

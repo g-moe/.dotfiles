@@ -22,6 +22,14 @@ expect_file_contains "$INSTALLER_DIR/setup/apps/claude-code.sh" \
 expect_file_contains "$INSTALLER_DIR/setup/apps/claude-code.sh" \
   'has claude && return 0' \
   'Linux must not reinstall Claude Code when it is already installed'
+expect_file_contains "$INSTALLER_DIR/setup/apps/t3-code.sh" \
+  'brew_cask t3-code' 'Mac must install the T3 Code cask'
+expect_file_contains "$INSTALLER_DIR/setup/apps/t3-code.sh" \
+  "'^T3-Code-[^-]+-x86_64\\.AppImage$'" \
+  'Linux must install the T3 Code x86_64 AppImage'
+expect_file_contains "$INSTALLER_DIR/setup/apps/t3-code.sh" \
+  '/usr/local/share/applications/t3-code.desktop' \
+  'Linux must add T3 Code to the application menu'
 expect_file_contains "$INSTALLER_DIR/setup/apps/docker.sh" \
   'https://download.docker.com/linux/debian' 'Docker must use its Debian repository'
 expect_file_contains "$INSTALLER_DIR/setup/apps/tailscale.sh" \
