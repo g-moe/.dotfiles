@@ -14,8 +14,11 @@ expect_file_contains "$INSTALLER_DIR/setup/apps/codex.sh" \
   'brew_cask chatgpt' 'Mac must install the ChatGPT app'
 expect_file_contains "$INSTALLER_DIR/setup/apps/codex.sh" \
   'brew_formula codex' 'Mac must install the Codex CLI'
-[[ "$(grep -Fc 'brew_cask claude-code' "$INSTALLER_DIR/setup/apps/claude-code.sh")" -eq 2 ]] || \
-  fail 'Mac and Linux must install the Claude Code cask'
+expect_file_contains "$INSTALLER_DIR/setup/apps/claude-code.sh" \
+  'brew_cask claude-code' 'Mac must install the Claude Code cask'
+expect_file_contains "$INSTALLER_DIR/setup/apps/claude-code.sh" \
+  'curl -fsSL https://claude.ai/install.sh | bash' \
+  'Linux must use the native Claude Code installer'
 expect_file_contains "$INSTALLER_DIR/setup/apps/docker.sh" \
   'https://download.docker.com/linux/debian' 'Docker must use its Debian repository'
 expect_file_contains "$INSTALLER_DIR/setup/apps/tailscale.sh" \

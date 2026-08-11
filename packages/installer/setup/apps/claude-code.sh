@@ -18,7 +18,7 @@ mac() {
 }
 
 linux() {
-  brew_cask claude-code
+  curl -fsSL https://claude.ai/install.sh | bash
 }
 
 install_claude_code "$1"
