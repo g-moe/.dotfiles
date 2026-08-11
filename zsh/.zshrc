@@ -111,6 +111,23 @@ alias code='codium'
 # Start the local T3 Code web server without a desktop app
 alias t3-serve='npx t3 serve --host 0.0.0.0 --port 3333'
 
+# Stop the process listening on a port
+kill-port() {
+  [[ "$1" == <-> ]] || {
+    echo 'Usage: kill-port <port>' >&2
+    return 2
+  }
+
+  local -a pids
+  pids=(${(f)"$(lsof -tiTCP:"$1" -sTCP:LISTEN)"})
+  (( ${#pids} )) || {
+    echo "Nothing is listening on port $1."
+    return 0
+  }
+
+  kill "${pids[@]}"
+}
+
 # List out directories with `cd` change directory
 unalias cd 2>/dev/null
 cd() {
