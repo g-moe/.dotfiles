@@ -43,9 +43,12 @@ expect_file_contains "$top_bar" '1 11 12 13 14 3 10 5 15 7 6 9 8' \
 expect_file_contains "$top_bar" "'Inter SemiBold 10'" \
   'the panel clock must use the UI font'
 stats="$INSTALLER_DIR/config/xfce/system-stats.sh"
-for text in '/proc/stat' 'MemAvailable:' 'nvidia-smi' 'gpu_busy_percent' '<txtclick>xfce4-taskmanager</txtclick>'; do
+for text in '/proc/stat' 'MemAvailable:' 'timeout 1 nvidia-smi' 'gpu_busy_percent' "'--prompt'" '<txtclick>xfce4-taskmanager</txtclick>'; do
   expect_file_contains "$stats" "$text" "system stats are missing: $text"
 done
+expect_file_contains "$ROOT_DIR/packages/theming/create/apps/oh-my-zsh.ts" \
+  '/usr/local/bin/xfce-system-stats --prompt' \
+  'the Linux prompt must reuse the Xfce system stats collector'
 expect_file_contains "$stats" 'size="medium">%s  %s  %s</span>' \
   'system stat values must be larger than their labels'
 expect_file_contains "$INSTALLER_DIR/config/xfce/panel.css" \

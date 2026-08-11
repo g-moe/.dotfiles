@@ -62,6 +62,12 @@ function prompt_input_line() {
   print -nr -- "%F{${path_fg}}❯%f"
 }
 
+function prompt_system_stats() {
+  [[ "$OSTYPE" == linux* && -x /usr/local/bin/xfce-system-stats ]] || return
+  /usr/local/bin/xfce-system-stats --prompt
+}
+
 PROMPT='$(prompt_context_line)
 $(prompt_git_line)
 $(prompt_input_line) '
+RPROMPT='$(prompt_system_stats)'

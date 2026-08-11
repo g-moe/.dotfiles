@@ -33,7 +33,7 @@ memory=$(((memory_total - memory_available) * 100 / memory_total))
 # kernel interface. A Proxmox guest without GPU passthrough usually has neither.
 gpu=''
 if command -v nvidia-smi >/dev/null 2>&1; then
-  gpu="$(nvidia-smi --query-gpu=utilization.gpu --format=csv,noheader,nounits 2>/dev/null |
+  gpu="$(timeout 1 nvidia-smi --query-gpu=utilization.gpu --format=csv,noheader,nounits 2>/dev/null |
     awk 'NR == 1 { gsub(/ /, ""); print; exit }')"
 fi
 if [[ ! "$gpu" =~ ^[0-9]+$ ]]; then
@@ -55,6 +55,12 @@ else
 fi
 printf -v cpu_display '%3d%%' "$cpu"
 printf -v memory_display '%3d%%' "$memory"
+
+# The terminal prompt uses the same collected values without Genmon XML.
+if [[ "${1:-}" == '--prompt' ]]; then
+  printf 'CPU %d%%  GPU %s  MEM %d%%\n' "$cpu" "$gpu_tooltip" "$memory"
+  exit 0
+fi
 
 # Generic Monitor reads these XML elements from standard output. The first
 # element sets the panel text, the second sets its click action, and the last
