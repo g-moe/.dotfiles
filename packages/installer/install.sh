@@ -187,7 +187,7 @@ parse_mode() {
     --skills) printf 'skills\n' ;;
     --theme) printf 'theme\n' ;;
     --retire) printf 'retire\n' ;;
-    --apps | apps) printf 'apps\n' ;;    
+    --apps | apps) printf 'apps\n' ;;
     --development | development) printf 'development\n' ;;
     --appearance | appearance) printf 'appearance\n' ;;
     --input | input) printf 'input\n' ;;

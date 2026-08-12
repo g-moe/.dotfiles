@@ -12,6 +12,15 @@ expect_file_contains "$installer" 'load_homebrew ||' \
   'install.sh must load Homebrew before --theme on macOS'
 expect_file_contains "$installer" "--retire) printf 'retire" \
   'install.sh must accept --retire'
+if grep -Fq -- '--mactop' "$installer"; then
+  fail 'install.sh must not expose a dedicated --mactop mode'
+fi
+if grep -Fq -- '--mactop' "$INSTALLER_DIR/README.md"; then
+  fail 'installer docs must not advertise a dedicated --mactop mode'
+fi
+expect_file_contains "$installer" \
+  "run_strategy 'System monitor' apps/system-monitor.sh" \
+  'the normal apps phase must install the repository-owned mactop build'
 expect_file_contains "$installer" 'run_retire_packages' \
   'normal app installs must retire recorded packages'
 expect_file_contains "$installer" "log 'A reboot is recommended.'" \
@@ -43,5 +52,11 @@ grep -Fq '[[ "$mode" == all || "$mode" == system ]] || return 0' <<<"$finish_ins
 bad_npm="$(grep -E '"install:(git|skills|machine|theme|retire)"' "$ROOT_DIR/package.json" |
   grep -v 'packages/installer/install\.sh' || true)"
 [[ -z "$bad_npm" ]] || fail 'root install commands must call packages/installer/install.sh'
+if grep -Fq '"install:mactop"' "$ROOT_DIR/package.json"; then
+  fail 'package.json must not expose a dedicated mactop install command'
+fi
+expect_file_contains "$ROOT_DIR/package.json" \
+  '"test:mactop": "cd packages/mac/mactop && make verify"' \
+  'package.json must expose the mactop verification matrix'
 
 printf 'Installer flow checks passed.\n'

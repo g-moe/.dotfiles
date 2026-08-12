@@ -28,8 +28,6 @@ ghostty/config
 images/icon.png
 images/white.png
 karabiner/karabiner.json
-mactop/config.json
-mactop/com.dotfiles.mactop-menubar.plist
 nvim/init.lua
 opencode/opencode.jsonc
 packages/installer/install.sh
@@ -40,6 +38,9 @@ packages/installer/packages/retire.schema.json
 packages/lib/bash/lib.sh
 packages/lib/ts/.gitkeep
 packages/mac
+packages/mac/mactop/config.json
+packages/mac/mactop/com.dotfiles.mactop-menubar.plist
+packages/mac/mactop/go.mod
 packages/raycast
 packages/theming/create/controller.ts
 packages/vscode-ext/package.json
@@ -55,6 +56,9 @@ while IFS= read -r path; do
   [[ -z "$path" || -e "$ROOT_DIR/$path" ]] || fail "missing $path"
 done <<<"$required_paths"
 
+[[ ! -e "$ROOT_DIR/packages/mac/mactop/.git" ]] ||
+  fail 'packages/mac/mactop must not be a nested Git repository'
+
 allowed_roots='
 .agents
 codex
@@ -68,7 +72,6 @@ arc
 ghostty
 images
 karabiner
-mactop
 nvim
 opencode
 package-lock.json

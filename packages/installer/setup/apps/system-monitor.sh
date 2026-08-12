@@ -16,18 +16,16 @@ install_system_monitor() {
 
 mac() {
   local agent_path binary_path build_dir config_path domain service source_dir
-  local commit='e688d5778035b6d3eb30f2a8c8083cb1d429723d'
-  local checksum='8fbf82eaaa4396bbf906dc3b66eb68408cca3d943d8ab7f2a9f01e1d845c140e'
 
   brew_formula go
 
   build_dir="$(mktemp -d)"
-  source_dir="$(extract_github_source_archive g-moe/mactop "$commit" "$checksum" "$build_dir")"
+  source_dir="$ROOT_DIR/packages/mac/mactop"
   binary_path="$HOME/.local/bin/mactop"
   mkdir -p "$(dirname "$binary_path")"
-  if ! (cd "$source_dir" && go build -o "$build_dir/mactop" main.go); then
+  if ! (cd "$source_dir" && go build -trimpath -o "$build_dir/mactop" .); then
     rm -rf "$build_dir"
-    die 'Could not build the pinned mactop fork.'
+    die 'Could not build the dotfiles mactop source.'
   fi
   install -m 0755 "$build_dir/mactop" "$binary_path"
   rm -rf "$build_dir"
@@ -35,10 +33,10 @@ mac() {
   config_path="$HOME/.mactop/config.json"
   agent_path="$HOME/Library/LaunchAgents/com.dotfiles.mactop-menubar.plist"
   safe_symlink_group mactop \
-    "$ROOT_DIR/mactop/config.json" "$config_path" \
-    "$ROOT_DIR/mactop/com.dotfiles.mactop-menubar.plist" "$agent_path"
+    "$source_dir/config.json" "$config_path" \
+    "$source_dir/com.dotfiles.mactop-menubar.plist" "$agent_path"
 
-  if [[ ! -L "$agent_path" || "$(readlink "$agent_path")" != "$ROOT_DIR/mactop/com.dotfiles.mactop-menubar.plist" ]]; then
+  if [[ ! -L "$agent_path" || "$(readlink "$agent_path")" != "$source_dir/com.dotfiles.mactop-menubar.plist" ]]; then
     log 'Skipped mactop login startup because its LaunchAgent was not linked.'
     return 0
   fi

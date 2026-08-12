@@ -13,6 +13,6 @@
 - `packages/installer` may depend on every lower package because it installs and configures them. Nothing may depend on `packages/installer`.
 - `packages/lib/bash` is standalone and has no package dependencies. Reusable Bash libraries and cross-platform Bash tools belong there; every package may use it.
 - `packages/lib/ts` is standalone and has no package dependencies. Shared TypeScript belongs there; every package may use it. Keep its `.gitkeep` until shared TypeScript exists.
-- `packages/mac`, `packages/raycast`, `packages/theming`, and `packages/vscode-ext` may depend on `packages/lib/bash` or `packages/lib/ts`, never on `packages/installer`.
+- `packages/mac`, including the canonical mactop source, may depend on `packages/lib/bash` or `packages/lib/ts`, never on `packages/installer`. The same rule applies to `packages/raycast`, `packages/theming`, and `packages/vscode-ext`.
 - Keep installer-only Bash helpers inside `packages/installer/lib`. Do not move package installation or OS validation into the shared Bash library.
 - Mirror `packages/installer` paths under `packages/installer/tests` so each test lives with the area it checks.

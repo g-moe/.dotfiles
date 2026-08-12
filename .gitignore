@@ -58,18 +58,9 @@
 !/ghostty/themes/
 !/ghostty/themes/**
 
-# mactop
-!/mactop/
-!/mactop/config.json
-
 # tmux
 !/tmux/
 !/tmux/tmux.conf
-
-# mactop
-!/mactop/
-!/mactop/config.json
-!/mactop/com.dotfiles.mactop-menubar.plist
 
 # Neovim
 !/nvim/
@@ -106,6 +97,8 @@
 !/packages/lib/ts/.gitkeep
 !/packages/mac/
 !/packages/mac/**
+!/packages/mac/mactop/
+!/packages/mac/mactop/**
 !/packages/raycast/
 !/packages/raycast/**
 !/packages/theming/

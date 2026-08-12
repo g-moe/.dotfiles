@@ -22,14 +22,6 @@ expect_file_contains "$INSTALLER_DIR/setup/apps/claude-code.sh" \
 expect_file_contains "$INSTALLER_DIR/setup/apps/claude-code.sh" \
   'has claude && return 0' \
   'Linux must not reinstall Claude Code when it is already installed'
-expect_file_contains "$INSTALLER_DIR/setup/apps/t3-code.sh" \
-  'brew_cask t3-code' 'Mac must install the T3 Code cask'
-expect_file_contains "$INSTALLER_DIR/setup/apps/t3-code.sh" \
-  "'^T3-Code-[^-]+-x86_64\\.AppImage$'" \
-  'Linux must install the T3 Code x86_64 AppImage'
-expect_file_contains "$INSTALLER_DIR/setup/apps/t3-code.sh" \
-  '/usr/local/share/applications/t3-code.desktop' \
-  'Linux must add T3 Code to the application menu'
 expect_file_contains "$INSTALLER_DIR/setup/apps/docker.sh" \
   'https://download.docker.com/linux/debian' 'Docker must use its Debian repository'
 expect_file_contains "$INSTALLER_DIR/setup/apps/tailscale.sh" \
@@ -45,16 +37,24 @@ expect_file_contains "$INSTALLER_DIR/setup/apps/retire.sh" \
 
 monitor="$INSTALLER_DIR/setup/apps/system-monitor.sh"
 for text in \
-  'extract_github_source_archive g-moe/mactop "$commit" "$checksum"' \
-  "local commit='e688d5778035b6d3eb30f2a8c8083cb1d429723d'" \
+  'source_dir="$ROOT_DIR/packages/mac/mactop"' \
+  'go build -trimpath -o "$build_dir/mactop" .' \
   'install -m 0755 "$build_dir/mactop" "$binary_path"' \
   'safe_symlink_group mactop' \
   'launchctl bootstrap "$domain" "$agent_path"'; do
   expect_file_contains "$monitor" "$text" "system monitor setup is missing: $text"
 done
+if grep -Fq 'extract_github_source_archive' "$monitor"; then
+  fail 'system monitor must build the repository-owned mactop source'
+fi
+[[ -f "$ROOT_DIR/packages/mac/mactop/go.mod" ]] ||
+  fail 'repository-owned mactop source is missing go.mod'
+expect_file_contains "$ROOT_DIR/packages/mac/mactop/go.mod" \
+  'module github.com/g-moe/.dotfiles/packages/mac/mactop' \
+  'mactop module must identify its dotfiles ownership'
 expect_file_contains "$INSTALLER_DIR/setup/apps/temperature-monitor.sh" \
   'brew_cask macs-fan-control' 'Mac must install Macs Fan Control'
-expect_file_contains "$ROOT_DIR/mactop/com.dotfiles.mactop-menubar.plist" \
+expect_file_contains "$ROOT_DIR/packages/mac/mactop/com.dotfiles.mactop-menubar.plist" \
   '<string>/usr/bin/script</string>' 'mactop startup must provide a tty'
 
 terminal="$INSTALLER_DIR/setup/apps/terminal.sh"

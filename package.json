@@ -17,6 +17,7 @@
 		"install:retire": "bash packages/installer/install.sh --retire",
 		"install:machine": "bash packages/installer/install.sh",
 		"install:test": "bash packages/installer/tests/run.sh",
+		"test:mactop": "cd packages/mac/mactop && make verify",
 		"verify:machine": "bash packages/installer/tests/repository/installed-links.sh"
 	},
 	"devDependencies": {

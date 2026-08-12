@@ -57,7 +57,7 @@ Normal phase runs start with a read-only Linux desktop check, then use this orde
 packages/installer/install.sh       **only** machine-install entry point
 packages/installer/setup/<phase>/…  strategies (launched by install.sh with OS as $1)
 packages/installer/config/          installer-owned configuration loaded by strategies
-packages/installer/setup/identity.sh before phases (skipped for --git / --skills / --theme)
+packages/installer/setup/identity.sh before full or phase installs (skipped for single strategies)
 packages/installer/setup/skills.sh  from development (also --skills)
 codex/.codex/                       personal Codex settings linked during development
 packages/installer/lib/lib.sh       installer library entry point
@@ -65,9 +65,9 @@ packages/installer/tests/           mirrors installer paths (`setup/`, `lib/`, a
 packages/lib/bash/                  standalone reusable Bash library
 packages/lib/bash/bin/              standalone cross-OS Bash tools
 packages/lib/ts/                    standalone shared TypeScript (empty for now)
-packages/mac/                       standalone Mac and Swift tools
+packages/mac/                       standalone Mac tools and the mactop source
+packages/mac/mactop/                canonical mactop source, config, and LaunchAgent
 packages/raycast/                   standalone Raycast extensions and shared runner
-mactop/                             menu-bar configuration and login LaunchAgent
 packages/theming/                   theme generator, outputs, and VS Code theme package
 packages/vscode-ext/                VSCodium extension source and tests
 ```
@@ -114,6 +114,7 @@ npm run install:git      # → install.sh --git
 npm run install:skills   # → install.sh --skills
 npm run install:theme    # → install.sh --theme (theming package; not OS appearance)
 npm run install:retire   # → install.sh --retire
+npm run test:mactop      # full mactop test, race, vet, build, and shuffle checks
 npm run install:test     # shape + lib checks (no VM)
 ```
 
@@ -150,7 +151,7 @@ focused checks in
 - **Firefox:** Debian’s `firefox-esr` package.
 - **Codex:** Mac installs both the ChatGPT app and Codex CLI; Linux installs the Codex CLI. The Mac ChatGPT launcher switches away immediately when ChatGPT is already frontmost.
 - **T3 Code:** Mac and Linux install the npm server CLI after Node.js. Run `t3-serve`, for the headless local web app; the desktop application is not installed.
-- **System monitor:** Mac downloads a verified, pinned source archive from the `g-moe/mactop` fork, builds it with Go into `~/.local/bin/mactop`, links its monochrome menu-bar configuration into `~/.mactop`, and starts that custom build at login through a quiet pseudo-terminal because mactop still opens `/dev/tty`. Linux installs Xfce Task Manager.
+- **System monitor:** Mac builds the repository-owned source in `packages/mac/mactop` with Go into `~/.local/bin/mactop`, links its monochrome menu-bar configuration into `~/.mactop`, and starts that build at login through a quiet pseudo-terminal because mactop still opens `/dev/tty`. Linux installs Xfce Task Manager.
 - **CleanShot X:** Mac only.
 - **Browsers:** Mac installs Chrome and Arc, with Chrome as the default, and links Arc's Air Traffic Control routing file from `arc/StorableLinkRouting.json`. The routing file contains Arc Space IDs and is Mac-only. Arc may replace the link when it saves routing changes, so rerun the apps phase if that happens. Debian amd64 installs Chrome; Debian arm64 installs Brave. Debian keeps Xfce Terminal as installed by the OS. Mac shows a system browser prompt — pick **Use Chrome**.
 - **Dock:** The Mac Dock starts with Finder and Apps, followed by Mission Control, Settings, Ghostty, VSCodium, and Chrome.
