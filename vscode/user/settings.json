@@ -429,5 +429,6 @@
 		"https://schemastore.azurewebsites.net/": true,
 		"https://www.raycast.com/schemas/extension.json": true,
 		"https://www.schemastore.org/": true
-	}
+    },
+    "git.detectWorktrees": true
 }
