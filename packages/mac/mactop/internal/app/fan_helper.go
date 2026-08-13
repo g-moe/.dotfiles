@@ -555,7 +555,7 @@ func (s *fanHelperService) runPolicy(ctx context.Context, settings fanPolicySett
 	}
 	defer cleanupSocMetrics()
 
-	controller := newFanPolicyControllerWithSettings(smcFanPolicyHardware{}, settings)
+	controller := newFanPolicyControllerWithSettings(smcFanPolicyHardware{context: ctx}, settings)
 	firstSample := true
 	defer func() {
 		if recovered := recover(); recovered != nil {

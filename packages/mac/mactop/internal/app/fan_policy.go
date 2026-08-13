@@ -151,11 +151,18 @@ type fanPolicyHardware interface {
 	ResetToAuto() error
 }
 
-type smcFanPolicyHardware struct{}
+type smcFanPolicyHardware struct {
+	context context.Context
+}
 
 func (smcFanPolicyHardware) SetTarget(fanID, rpm int) error { return SetFanTarget(fanID, rpm) }
-func (smcFanPolicyHardware) SetMode(fanID, mode int) error  { return SetFanMode(fanID, mode) }
-func (smcFanPolicyHardware) ResetToAuto() error             { return ResetFansToAuto() }
+func (h smcFanPolicyHardware) SetMode(fanID, mode int) error {
+	if h.context == nil {
+		return SetFanMode(fanID, mode)
+	}
+	return setFanModeWithHardware(nativeFanModeHardware{}, fanID, mode, waitForFanControlContext(h.context))
+}
+func (smcFanPolicyHardware) ResetToAuto() error { return ResetFansToAuto() }
 
 // fanPolicyController is the single owner of policy SMC writes. Close is safe
 // to call after an earlier failure, so all exit paths can request cleanup.
@@ -423,7 +430,9 @@ func runFanPolicy(dryRun bool) (runErr error) {
 		return nil
 	}
 
-	controller := newFanPolicyController(smcFanPolicyHardware{})
+	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM, syscall.SIGHUP)
+	defer stop()
+	controller := newFanPolicyController(smcFanPolicyHardware{context: ctx})
 	defer func() {
 		if recovered := recover(); recovered != nil {
 			runErr = errors.Join(fmt.Errorf("fan policy panic: %v", recovered), controller.Close())
@@ -432,8 +441,6 @@ func runFanPolicy(dryRun bool) (runErr error) {
 		runErr = errors.Join(runErr, controller.Close())
 	}()
 
-	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM, syscall.SIGHUP)
-	defer stop()
 	for {
 		sample := normalizeSocMetricsPower(sampleSocMetrics(int(fanPolicySampleTime / time.Millisecond)))
 		if ctx.Err() != nil {

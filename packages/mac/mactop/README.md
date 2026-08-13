@@ -12,7 +12,7 @@ The same package owns `config.json` and `com.dotfiles.mactop-menubar.plist`, whi
 - macOS 12.3 or later
 - Go 1.25.4 or later for local builds
 
-Fan control has been tested on M1 and M4 Mac mini hardware. Validate manual fan control before relying on it on another model.
+Fan control has been tested on M1 and M4 Mac mini hardware and an M4 Max MacBook Pro. Validate manual fan control before relying on it on another model.
 
 ## Build
 
@@ -59,6 +59,8 @@ sudo mactop --fan-reset          # Restore automatic control
 ```
 
 Only one mactop fan-control process can own the SMC at a time.
+
+mactop probes each fan's mode-key casing at runtime. It first tries the direct manual-mode write used by M1 and M4 Mac mini hardware. If Apple Silicon system mode rejects that write and the `Ftst` key is available, mactop enables force-test mode and retries for up to 10 seconds. This unlock is required on the tested M4 Max MacBook Pro and typically takes several seconds. A cancellation, timeout, policy error, reset, or normal shutdown clears force-test mode and verifies that no fan remains in manual mode. Apple Silicon system mode `3` is a valid automatic state; older hardware usually reports automatic mode `0`.
 
 ## Menu bar
 

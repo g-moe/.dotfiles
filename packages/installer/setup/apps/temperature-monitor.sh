@@ -14,8 +14,8 @@ install_temperature_monitor() {
 }
 
 mac() {
-  # mactop remains the sensor monitor; Macs Fan Control provides better fan controls.
-  brew_cask macs-fan-control
+  # Deprecate macs-fan-control, use 
+  # brew_cask macs-fan-control
 }
 
 linux() {

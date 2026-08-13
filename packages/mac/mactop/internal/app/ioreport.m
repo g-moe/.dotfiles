@@ -2084,6 +2084,9 @@ void dumpAllSMCTemps(void) {
   }
 }
 
+static int readFanModeFromConnection(io_connect_t connection, int fanIndex,
+                                     int *mode);
+
 // Read fan data from SMC
 static int readFanInfoFromConnection(io_connect_t connection,
                                      fan_info_t *fans, int maxFans) {
@@ -2120,9 +2123,10 @@ static int readFanInfoFromConnection(io_connect_t connection,
     snprintf(key, sizeof(key), "F%dTg", i);
     fans[i].targetRPM = (int)SMCGetFloatValue(connection, key);
 
-    // Read mode: F%dMd (0=auto, 1=forced; data type varies by Mac model)
-    snprintf(key, sizeof(key), "F%dMd", i);
-    fans[i].mode = (int)SMCGetFloatValue(connection, key);
+    // Fan mode key casing varies by hardware generation. Mode 3 is the
+    // Apple Silicon system-control state and is also automatic control.
+    if (readFanModeFromConnection(connection, i, &fans[i].mode) != 0)
+      fans[i].mode = -1;
 
     // Fan name — use index-based naming
     snprintf(fans[i].name, sizeof(fans[i].name), "Fan %d", i);
@@ -2150,12 +2154,31 @@ PowerMetrics readFanMetrics(void) {
 }
 
 // Fan control functions
-//
-// setFanForceTest writes the Intel-era "Ftst" (force test) key. This key does
-// NOT exist on Apple Silicon (verified on M1/M3: the SMC exposes F<n>Md / F<n>Tg
-// but no Ftst), so this call fails there and callers must treat it as
-// best-effort — the actual manual control on Apple Silicon is F<n>Md=1 plus
-// F<n>Tg=<rpm>. It is still attempted for Intel Macs where it helps.
+static int fanModeKey(io_connect_t connection, int fanIndex, char key[5]) {
+  const char *formats[] = {"F%dMd", "F%dmd"};
+  for (size_t i = 0; i < sizeof(formats) / sizeof(formats[0]); i++) {
+    snprintf(key, 5, formats[i], fanIndex);
+    SMCKeyData_keyInfo_t keyInfo;
+    if (SMCGetKeyInfo(connection, key, &keyInfo) == kIOReturnSuccess)
+      return 0;
+  }
+  return -1;
+}
+
+static int readFanModeFromConnection(io_connect_t connection, int fanIndex,
+                                     int *mode) {
+  if (!connection || !mode || fanIndex < 0 || fanIndex > 7)
+    return -1;
+  char key[5];
+  if (fanModeKey(connection, fanIndex, key) != 0)
+    return -1;
+  double value = 0.0;
+  if (SMCGetFloatValueChecked(connection, key, &value) != kIOReturnSuccess)
+    return -1;
+  *mode = (int)value;
+  return 0;
+}
+
 int setFanForceTest(int enabled) {
   if (!g_smcConn)
     return -1;
@@ -2163,11 +2186,26 @@ int setFanForceTest(int enabled) {
   return (SMCSetFloat(g_smcConn, "Ftst", val) == kIOReturnSuccess) ? 0 : -1;
 }
 
+int readFanForceTest(int *enabled) {
+  if (!g_smcConn || !enabled)
+    return -1;
+  double value = 0.0;
+  if (SMCGetFloatValueChecked(g_smcConn, "Ftst", &value) != kIOReturnSuccess)
+    return -1;
+  *enabled = (int)value;
+  return 0;
+}
+
+int readFanMode(int fanIndex, int *mode) {
+  return readFanModeFromConnection(g_smcConn, fanIndex, mode);
+}
+
 int setFanMode(int fanIndex, int mode) {
   if (!g_smcConn || fanIndex < 0 || fanIndex > 7 || (mode != 0 && mode != 1))
     return -1;
   char key[5];
-  snprintf(key, sizeof(key), "F%dMd", fanIndex);
+  if (fanModeKey(g_smcConn, fanIndex, key) != 0)
+    return -1;
   float val = (float)mode;
   return (SMCSetFloat(g_smcConn, key, val) == kIOReturnSuccess) ? 0 : -1;
 }
@@ -2195,55 +2233,6 @@ int setFanTarget(int fanIndex, int rpm) {
   snprintf(key, sizeof(key), "F%dTg", fanIndex);
   float val = (float)rpm;
   return (SMCSetFloat(g_smcConn, key, val) == kIOReturnSuccess) ? 0 : -1;
-}
-
-// waitForFanMode gives the SMC time to publish a mode write. Apple Silicon can
-// accept F<n>Md and still return the old value for the first few reads. A
-// bounded retry keeps cleanup strict without treating normal propagation as a
-// failure.
-static int waitForFanMode(int fanIndex, int expectedMode) {
-  const int attempts = 10;
-  const useconds_t retryDelay = 50000;
-  char key[5];
-  snprintf(key, sizeof(key), "F%dMd", fanIndex);
-
-  for (int attempt = 0; attempt < attempts; attempt++) {
-    double modeValue = 0.0;
-    if (SMCGetFloatValueChecked(g_smcConn, key, &modeValue) ==
-            kIOReturnSuccess &&
-        (int)modeValue == expectedMode)
-      return 0;
-    if (attempt + 1 < attempts)
-      usleep(retryDelay);
-  }
-  return -1;
-}
-
-int resetFansToAuto() {
-  if (!g_smcConn)
-    return -1;
-
-  // Clear force test mode
-  setFanForceTest(0);
-
-  // Read fan count
-  SMCKeyData_t val;
-  if (SMCReadKey(g_smcConn, "FNum", &val) != kIOReturnSuccess)
-    return -1;
-
-  int fanCount = (unsigned char)val.bytes[0];
-  int failed = 0;
-  for (int i = 0; i < fanCount && i < 8; i++) {
-    if (setFanMode(i, 0) != 0)
-      failed = 1;
-  }
-  // A successful write call does not prove that the SMC accepted the mode.
-  // Read every mode back before cleanup reports success.
-  for (int i = 0; i < fanCount && i < 8; i++) {
-    if (waitForFanMode(i, 0) != 0)
-      failed = 1;
-  }
-  return failed ? -1 : 0;
 }
 
 // Cached NVMe SMART temps — refreshed periodically, seeded by HID NAND fallback

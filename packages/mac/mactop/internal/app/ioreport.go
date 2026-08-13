@@ -104,8 +104,9 @@ extern void dumpIOReportDebug(void);
 extern void setExpectedCoreCounts(int eCores, int pCores, int sCores);
 int setFanForceTest(int enabled);
 int setFanMode(int fanIndex, int mode);
+int readFanMode(int fanIndex, int *mode);
+int readFanForceTest(int *enabled);
 int setFanTarget(int fanIndex, int rpm);
-int resetFansToAuto();
 
 // Wi-Fi link info structure (defined in ioreport.m)
 typedef struct {
@@ -320,7 +321,7 @@ func getSocThermalState() int {
 	return int(C.getThermalState())
 }
 
-// SetFanForceTest enables or disables the legacy SMC force-test mode.
+// SetFanForceTest changes the diagnostic force-test key when hardware exposes it.
 func SetFanForceTest(enabled bool) error {
 	val := C.int(0)
 	if enabled {
@@ -328,6 +329,32 @@ func SetFanForceTest(enabled bool) error {
 	}
 	if C.setFanForceTest(val) != 0 {
 		return fmt.Errorf("failed to set fan force test mode")
+	}
+	return nil
+}
+
+func readNativeFanMode(fanIndex int) (int, error) {
+	if fanIndex < 0 || fanIndex > 7 {
+		return 0, fmt.Errorf("invalid fan index %d", fanIndex)
+	}
+	var mode C.int
+	if C.readFanMode(C.int(fanIndex), &mode) != 0 {
+		return 0, fmt.Errorf("failed to read fan %d mode", fanIndex)
+	}
+	return int(mode), nil
+}
+
+func readNativeFanForceTest() (int, error) {
+	var enabled C.int
+	if C.readFanForceTest(&enabled) != 0 {
+		return 0, errFanForceTestUnavailable
+	}
+	return int(enabled), nil
+}
+
+func writeNativeFanMode(fanIndex, mode int) error {
+	if C.setFanMode(C.int(fanIndex), C.int(mode)) != 0 {
+		return fmt.Errorf("failed to set fan %d mode to %d", fanIndex, mode)
 	}
 	return nil
 }
@@ -340,10 +367,7 @@ func SetFanMode(fanIndex, mode int) error {
 	if mode != 0 && mode != 1 {
 		return fmt.Errorf("invalid fan mode %d", mode)
 	}
-	if C.setFanMode(C.int(fanIndex), C.int(mode)) != 0 {
-		return fmt.Errorf("failed to set fan %d mode to %d", fanIndex, mode)
-	}
-	return nil
+	return setFanModeWithHardware(nativeFanModeHardware{}, fanIndex, mode, sleepForFanControl)
 }
 
 // SetFanTarget sets the target RPM for a fan (clamped to min/max by C layer)
@@ -362,10 +386,11 @@ func SetFanTarget(fanIndex, rpm int) error {
 
 // ResetFansToAuto restores all fans to automatic control
 func ResetFansToAuto() error {
-	if C.resetFansToAuto() != 0 {
-		return fmt.Errorf("failed to reset fans to auto")
+	fans, err := readFanMetrics()
+	if err != nil {
+		return err
 	}
-	return nil
+	return resetFansToAutoWithHardware(nativeFanModeHardware{}, fans, sleepForFanControl)
 }
 
 // DebugIOReport prints all available IOReport channels and groups to stdout
