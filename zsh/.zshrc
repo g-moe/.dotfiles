@@ -111,8 +111,8 @@ alias reload='source ~/.zshrc'
 # Open files in VSCodium with the VS Code command
 alias code='codium'
 
-# Start the local T3 Code web server without a desktop app
-alias t3-serve='npx t3 serve --host 0.0.0.0 --port 3333'
+# Start the local T3 Code web server detached from the terminal and job table
+alias t3-serve='nohup npx t3 serve --host 0.0.0.0 --port 3333 >>/tmp/t3-serve.log 2>&1 &!'
 
 # Stop the process listening on a port
 kill-port() {
