@@ -102,6 +102,9 @@ mcp-ls() {
     '{codex: $codex, claude: $claude}'
 }
 
+# Search command history; for example, `hist git`.
+alias hist='fc -rl 1 | grep -i'
+
 # Reload zshrc
 alias reload='source ~/.zshrc'
 
