@@ -430,5 +430,7 @@
 		"https://www.raycast.com/schemas/extension.json": true,
 		"https://www.schemastore.org/": true
     },
-    "git.detectWorktrees": true
+    "git.detectWorktrees": true,
+    "security.workspace.trust.enabled": false,
+    "scm.repositories.selectionMode": "single"
 }
