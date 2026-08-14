@@ -97,6 +97,23 @@ type fanHelperStatus struct {
 	RPMRangeState  string      `json:"rpm_range_state"`
 }
 
+type fanPolicyRunSource uint8
+
+const (
+	fanPolicyRunSourceManual fanPolicyRunSource = iota
+	fanPolicyRunSourceWakeRecovery
+)
+
+type fanPolicyRunSourceContextKey struct{}
+
+func fanPolicySourceFromContext(ctx context.Context) fanPolicyRunSource {
+	source, ok := ctx.Value(fanPolicyRunSourceContextKey{}).(fanPolicyRunSource)
+	if !ok {
+		return fanPolicyRunSourceManual
+	}
+	return source
+}
+
 type persistedFanPolicySettings struct {
 	Version        int     `json:"version"`
 	Mode           string  `json:"mode"`
@@ -239,6 +256,7 @@ type fanHelperService struct {
 	runPolicyFunc  func(context.Context, fanPolicySettings) error
 	resetFunc      func() error
 	readRangeFunc  func() (int, int, error)
+	readForceTest  func() (int, error)
 	stopTimeout    time.Duration
 	store          fanPolicyStore
 	settings       fanPolicySettings
@@ -246,10 +264,19 @@ type fanHelperService struct {
 	maximumRPM     int
 	rpmRangeState  string
 	requestMessage string
+	diagnostics    fanHelperDiagnostics
+	policyUpdates  chan struct{}
+	wakeGeneration uint64
+	wakeCancel     context.CancelFunc
+	wakePending    bool
+	manualLost     bool
+	verifiedWake   uint64
 }
 
 func (s *fanHelperService) reset() fanHelperStatus {
 	s.mu.Lock()
+	s.invalidateWakeRecoveryLocked()
+	s.manualLost = false
 	s.requestMessage = ""
 	active := s.cancel != nil
 	s.mu.Unlock()
@@ -279,10 +306,10 @@ func (s *fanHelperService) reset() fanHelperStatus {
 }
 
 func (s *fanHelperService) shutdown() error {
+	s.beginShutdown()
 	s.commandMu.Lock()
 	defer s.commandMu.Unlock()
 	s.mu.Lock()
-	s.shuttingDown = true
 	active := s.cancel != nil
 	done := s.done
 	s.mu.Unlock()
@@ -307,6 +334,13 @@ func (s *fanHelperService) shutdown() error {
 	}
 	s.setStatus("off", 0, nil, "")
 	return nil
+}
+
+func (s *fanHelperService) beginShutdown() {
+	s.mu.Lock()
+	s.shuttingDown = true
+	s.invalidateWakeRecoveryLocked()
+	s.mu.Unlock()
 }
 
 func (s *fanHelperService) isShuttingDown() bool {
@@ -362,8 +396,11 @@ func newFanHelperService(store fanPolicyStore) *fanHelperService {
 	service.runPolicyFunc = service.runPolicy
 	service.resetFunc = resetFansForHelper
 	service.readRangeFunc = readCommonFanRPMRange
+	service.readForceTest = readNativeFanForceTest
 	service.stopTimeout = fanHelperStopTimeout
 	service.store = store
+	service.diagnostics = discardFanHelperDiagnostics{}
+	service.policyUpdates = make(chan struct{}, 1)
 	service.settings = defaultFanPolicySettings()
 	service.state = service.statusForSettings(service.state)
 	return service
@@ -471,6 +508,42 @@ func (s *fanHelperService) setStatus(state string, temperature float64, targets 
 	s.mu.Unlock()
 }
 
+func (s *fanHelperService) invalidateWakeRecoveryLocked() {
+	s.wakeGeneration++
+	s.wakePending = false
+	s.verifiedWake = 0
+	if s.wakeCancel != nil {
+		s.wakeCancel()
+		s.wakeCancel = nil
+	}
+}
+
+func (s *fanHelperService) notifyPolicyUpdate() {
+	select {
+	case s.policyUpdates <- struct{}{}:
+	default:
+	}
+}
+
+func (s *fanHelperService) recordPolicyVerification() {
+	s.mu.Lock()
+	if s.wakeCancel != nil {
+		s.verifiedWake = s.wakeGeneration
+	}
+	s.mu.Unlock()
+	s.notifyPolicyUpdate()
+}
+
+func (s *fanHelperService) recordPolicyFailure(err error) {
+	if !errors.Is(err, errFanManualOwnershipLost) {
+		return
+	}
+	s.mu.Lock()
+	s.manualLost = true
+	s.mu.Unlock()
+	s.notifyPolicyUpdate()
+}
+
 // statusWithMessage keeps the active helper configuration in error responses.
 // It also keeps the message through status polls until a command succeeds.
 func (s *fanHelperService) statusWithMessage(message string) fanHelperStatus {
@@ -484,6 +557,10 @@ func (s *fanHelperService) statusWithMessage(message string) fanHelperStatus {
 }
 
 func (s *fanHelperService) enable() fanHelperStatus {
+	return s.enableWithSource(fanPolicyRunSourceManual)
+}
+
+func (s *fanHelperService) enableWithSource(source fanPolicyRunSource) fanHelperStatus {
 	s.mu.Lock()
 	if s.shuttingDown {
 		status := newFanHelperStatus("error", 0, nil, "fan helper is shutting down")
@@ -503,20 +580,26 @@ func (s *fanHelperService) enable() fanHelperStatus {
 	settings := s.settings
 	s.mu.Unlock()
 
-	go s.executePolicy(ctx, done, settings)
+	go s.executePolicy(ctx, done, settings, source)
 	return s.status()
 }
 
-func (s *fanHelperService) executePolicy(ctx context.Context, done chan struct{}, settings fanPolicySettings) {
+func (s *fanHelperService) executePolicy(ctx context.Context, done chan struct{}, settings fanPolicySettings, source fanPolicyRunSource) {
 	defer close(done)
 	defer func() {
 		s.mu.Lock()
 		s.cancel = nil
 		s.done = nil
 		s.mu.Unlock()
+		s.notifyPolicyUpdate()
 	}()
-	if err := s.runPolicyFunc(ctx, settings); err != nil {
+	policyContext := context.WithValue(ctx, fanPolicyRunSourceContextKey{}, source)
+	if err := s.runPolicyFunc(policyContext, settings); err != nil {
 		s.setStatus("error", 0, nil, err.Error())
+		s.recordPolicyFailure(err)
+		if source == fanPolicyRunSourceWakeRecovery {
+			s.logPolicyDiagnostic("wake_reapply_failed", settings, 0, nil, nil, err)
+		}
 	}
 }
 
@@ -556,13 +639,29 @@ func (s *fanHelperService) runPolicy(ctx context.Context, settings fanPolicySett
 	defer cleanupSocMetrics()
 
 	controller := newFanPolicyControllerWithSettings(smcFanPolicyHardware{context: ctx}, settings)
+	var lastFans []FanInfo
+	var lastTemperature float64
 	firstSample := true
+	verified := false
+	s.logPolicyDiagnostic("manual_policy_started", settings, 0, nil, nil, nil)
 	defer func() {
 		if recovered := recover(); recovered != nil {
 			err = fmt.Errorf("fan policy panic: %v", recovered)
 		}
-		if closeErr := controller.Close(); closeErr != nil {
+		if err != nil {
+			s.logPolicyDiagnostic("manual_policy_failed", settings, lastTemperature, lastFans, controller.lastRPM, err)
+		} else if ctx.Err() != nil {
+			s.logPolicyDiagnostic("manual_policy_stopped", settings, lastTemperature, lastFans, controller.lastRPM, nil)
+		}
+		closeErr := controller.Close()
+		if closeErr != nil {
 			err = errors.Join(err, fmt.Errorf("could not restore automatic fan control: %w", closeErr))
+		}
+		postResetFans, snapshotErr := readFanMetrics()
+		if closeErr != nil || snapshotErr != nil {
+			s.logPolicyDiagnostic("apple_default_restore_failed", settings, lastTemperature, postResetFans, controller.lastRPM, errors.Join(closeErr, snapshotErr))
+		} else {
+			s.logPolicyDiagnostic("apple_default_restored", settings, lastTemperature, postResetFans, controller.lastRPM, nil)
 		}
 		if err == nil {
 			s.setStatus("off", 0, nil, "")
@@ -572,16 +671,19 @@ func (s *fanHelperService) runPolicy(ctx context.Context, settings fanPolicySett
 	sysInfo := getSOCInfo()
 	for {
 		sample := normalizeSocMetricsPower(sampleSocMetrics(int(fanPolicySampleTime / time.Millisecond)))
+		lastFans = sample.Fans
 		s.updateCommonRPMRange(sample.Fans)
 		if ctx.Err() != nil {
 			return
 		}
 		temperature, targets, applyErr := controller.apply(sample, sysInfo)
+		lastTemperature = temperature
 		if applyErr != nil {
 			return applyErr
 		}
 		if firstSample {
 			s.setStatus("starting", temperature, targets, "")
+			s.logPolicyDiagnostic("manual_policy_write_requested", settings, temperature, sample.Fans, targets, nil)
 			firstSample = false
 			// The next sample verifies the target and mode writes. Start it now;
 			// the normal one-second cadence is only needed after verification.
@@ -593,6 +695,14 @@ func (s *fanHelperService) runPolicy(ctx context.Context, settings fanPolicySett
 			}
 		} else {
 			s.setStatus("active", temperature, targets, "")
+			if !verified {
+				s.logPolicyDiagnostic("manual_policy_verified", settings, temperature, sample.Fans, targets, nil)
+				if fanPolicySourceFromContext(ctx) == fanPolicyRunSourceWakeRecovery {
+					s.logPolicyDiagnostic("wake_reapply_verified", settings, temperature, sample.Fans, targets, nil)
+				}
+				verified = true
+			}
+			s.recordPolicyVerification()
 		}
 
 		select {
@@ -603,11 +713,156 @@ func (s *fanHelperService) runPolicy(ctx context.Context, settings fanPolicySett
 	}
 }
 
+func (s *fanHelperService) handlePowerEvent(event fanPowerEvent) {
+	switch event {
+	case fanPowerEventSleep:
+		s.recordSleepForWakeRecovery()
+	case fanPowerEventWake:
+		s.scheduleWakeRecovery()
+	}
+}
+
+func (s *fanHelperService) recordSleepForWakeRecovery() {
+	s.mu.Lock()
+	settings := s.settings
+	if s.shuttingDown || settings.Mode == fanModeDefault {
+		s.mu.Unlock()
+		return
+	}
+	s.invalidateWakeRecoveryLocked()
+	s.wakePending = s.cancel != nil || s.manualLost
+	pending := s.wakePending
+	s.mu.Unlock()
+	if pending {
+		s.logPowerDiagnostic("sleep_detected", settings, "", nil)
+	}
+}
+
+func (s *fanHelperService) scheduleWakeRecovery() <-chan struct{} {
+	s.mu.Lock()
+	settings := s.settings
+	if s.shuttingDown || !s.wakePending || settings.Mode == fanModeDefault {
+		s.mu.Unlock()
+		return nil
+	}
+	s.wakePending = false
+	generation := s.wakeGeneration
+	ctx, cancel := context.WithCancel(context.Background())
+	s.wakeCancel = cancel
+	s.mu.Unlock()
+
+	s.logPowerDiagnostic("wake_recovery_scheduled", settings, "", nil)
+	done := make(chan struct{})
+	go func() {
+		defer close(done)
+		s.coordinateWakeRecovery(ctx, generation, settings)
+	}()
+	return done
+}
+
+func (s *fanHelperService) coordinateWakeRecovery(ctx context.Context, generation uint64, sleptSettings fanPolicySettings) {
+	for {
+		s.mu.Lock()
+		valid := !s.shuttingDown && s.wakeGeneration == generation && s.wakeCancel != nil &&
+			s.settings == sleptSettings && sleptSettings.Mode != fanModeDefault
+		active := s.cancel != nil
+		verified := s.verifiedWake == generation
+		manualLost := s.manualLost
+		s.mu.Unlock()
+		if !valid {
+			return
+		}
+		if active && verified {
+			s.finishWakeRecovery(generation)
+			s.logPowerDiagnostic("wake_reapply_skipped", sleptSettings, "manual_policy_still_verified", nil)
+			return
+		}
+		if !active {
+			if !manualLost {
+				s.finishWakeRecovery(generation)
+				s.logPowerDiagnostic("wake_reapply_skipped", sleptSettings, "manual_ownership_loss_not_observed", nil)
+				return
+			}
+			s.reapplyAfterWake(generation, sleptSettings)
+			return
+		}
+
+		select {
+		case <-ctx.Done():
+			return
+		case <-s.policyUpdates:
+		}
+	}
+}
+
+func (s *fanHelperService) finishWakeRecovery(generation uint64) {
+	s.mu.Lock()
+	if s.wakeGeneration == generation && s.wakeCancel != nil {
+		s.wakeCancel = nil
+	}
+	s.mu.Unlock()
+}
+
+func (s *fanHelperService) reapplyAfterWake(generation uint64, sleptSettings fanPolicySettings) {
+	s.commandMu.Lock()
+	defer s.commandMu.Unlock()
+
+	s.mu.Lock()
+	settings := s.settings
+	valid := !s.shuttingDown && s.wakeGeneration == generation && s.wakeCancel != nil &&
+		settings == sleptSettings && settings.Mode != fanModeDefault && s.cancel == nil && s.manualLost
+	if valid {
+		s.manualLost = false
+		s.wakeCancel = nil
+	}
+	s.mu.Unlock()
+	if !valid {
+		return
+	}
+
+	s.logPolicyDiagnostic("wake_reapply_started", settings, 0, nil, nil, nil)
+	s.enableWithSource(fanPolicyRunSourceWakeRecovery)
+}
+
+func (s *fanHelperService) logPowerDiagnostic(event string, settings fanPolicySettings, reason string, cause error) {
+	diagnostic := fanHelperDiagnosticEvent{
+		Event: event, Mode: settings.Mode, ConstantRPM: settings.ConstantRPM,
+		StartCelsius: settings.StartCelsius, MaximumCelsius: settings.MaximumCelsius, Reason: reason,
+	}
+	if cause != nil {
+		diagnostic.Error = cause.Error()
+	}
+	if err := s.diagnostics.Log(diagnostic); err != nil {
+		fmt.Fprintf(os.Stderr, "Fan helper diagnostic logging failed: %v\n", err)
+	}
+}
+
+func (s *fanHelperService) logPolicyDiagnostic(event string, settings fanPolicySettings, temperature float64, fans []FanInfo, targets map[int]int, cause error) {
+	diagnostic := fanHelperDiagnosticEvent{
+		Event: event, Mode: settings.Mode, ConstantRPM: settings.ConstantRPM,
+		StartCelsius: settings.StartCelsius, MaximumCelsius: settings.MaximumCelsius,
+		Temperature: temperature, Fans: diagnosticFans(fans), ExpectedTargets: cloneFanTargets(targets),
+	}
+	if forceTest, err := s.readForceTest(); err != nil {
+		diagnostic.ForceTestError = err.Error()
+	} else {
+		diagnostic.ForceTest = &forceTest
+	}
+	if cause != nil {
+		diagnostic.Error = cause.Error()
+	}
+	if err := s.diagnostics.Log(diagnostic); err != nil {
+		fmt.Fprintf(os.Stderr, "Fan helper diagnostic logging failed: %v\n", err)
+	}
+}
+
 func (s *fanHelperService) configure(settings fanPolicySettings) fanHelperStatus {
 	if err := s.validateForCurrentHardware(settings); err != nil {
 		return s.statusWithMessage(err.Error())
 	}
 	s.mu.Lock()
+	s.invalidateWakeRecoveryLocked()
+	s.manualLost = false
 	active := s.cancel != nil
 	unchanged := active && s.settings == settings
 	s.mu.Unlock()
@@ -796,6 +1051,16 @@ func runFanHelper() error {
 	service := newFanHelperService(fileFanPolicyStore{
 		path: fanHelperStatePath, ownerUID: 0, ownerGID: 0,
 	})
+	diagnostics, diagnosticsErr := newFileFanHelperDiagnostics(fanHelperLogPath, 0, adminGID)
+	if diagnosticsErr != nil {
+		fmt.Fprintf(os.Stderr, "Fan helper diagnostic logging is unavailable: %v\n", diagnosticsErr)
+	} else {
+		service.diagnostics = diagnostics
+	}
+	powerEvents, powerEventsErr := startFanPowerNotifications()
+	if powerEventsErr != nil {
+		fmt.Fprintf(os.Stderr, "Fan helper wake recovery is unavailable: %v\n", powerEventsErr)
+	}
 	if err := prepareFanHelperService(service); err != nil {
 		return err
 	}
@@ -804,12 +1069,19 @@ func runFanHelper() error {
 			fmt.Fprintf(os.Stderr, "Fan helper shutdown reset failed: %v\n", err)
 		}
 	}()
+	if powerEventsErr == nil {
+		defer stopFanPowerNotifications()
+	}
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM, syscall.SIGHUP)
 	defer stop()
 	go func() {
 		<-ctx.Done()
+		service.beginShutdown()
 		listener.Close()
 	}()
+	if powerEventsErr == nil {
+		go serveFanHelperPowerEvents(ctx, service, powerEvents)
+	}
 	for {
 		connection, acceptErr := listener.AcceptUnix()
 		if acceptErr != nil {
@@ -819,6 +1091,17 @@ func runFanHelper() error {
 			return acceptErr
 		}
 		go serveFanHelperConnection(connection, service, uint32(adminGID))
+	}
+}
+
+func serveFanHelperPowerEvents(ctx context.Context, service *fanHelperService, events <-chan fanPowerEvent) {
+	for {
+		select {
+		case <-ctx.Done():
+			return
+		case event := <-events:
+			service.handlePowerEvent(event)
+		}
 	}
 }
 

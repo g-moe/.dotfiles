@@ -29,6 +29,15 @@ type fakeFanPolicyStore struct {
 	saves    []fanPolicySettings
 }
 
+type recordedFanHelperDiagnostics struct {
+	events chan fanHelperDiagnosticEvent
+}
+
+func (d *recordedFanHelperDiagnostics) Log(event fanHelperDiagnosticEvent) error {
+	d.events <- event
+	return nil
+}
+
 func (s *fakeFanPolicyStore) Load() (fanPolicySettings, error) {
 	if s.loadErr != nil {
 		return fanPolicySettings{}, s.loadErr
@@ -57,6 +66,13 @@ func (s *fakeFanPolicyStore) Save(settings fanPolicySettings) error {
 func newTestFanHelperService() (*fanHelperService, *fakeFanPolicyStore) {
 	store := &fakeFanPolicyStore{}
 	return newFanHelperService(store), store
+}
+
+func configureFanHelperDiagnosticRecording(service *fanHelperService) *recordedFanHelperDiagnostics {
+	diagnostics := &recordedFanHelperDiagnostics{events: make(chan fanHelperDiagnosticEvent, 32)}
+	service.diagnostics = diagnostics
+	service.readForceTest = func() (int, error) { return 1, nil }
+	return diagnostics
 }
 
 func (f *fakeFanHelperInstaller) Executable() (string, error) { return "/tmp/mactop-staged", nil }

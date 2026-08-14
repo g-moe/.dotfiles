@@ -49,6 +49,21 @@ The helper stores Constant and Curve settings in `/Library/Application Support/m
 
 Closing Settings or restarting the menu process does not stop the helper. The helper restores automatic mode on a normal shutdown, policy error, invalid sensor value, or failed SMC check. `SIGKILL` and power loss cannot run cleanup.
 
+### Wake policy
+
+Recovery requires a matched sleep event and wake event while Constant or Curve control is selected. A wake event alone never starts manual control.
+
+- If the active policy verifies its next SMC sample, the helper keeps it running. It does not reset to Apple Default or write new fan targets.
+- If the manual policy loses fan ownership to macOS during sleep or in its first post-wake sample, it first restores Apple Default. After it ends, the helper makes one new attempt to restore the saved policy.
+- A sensor error, target mismatch, or other SMC error does not retry manual control after wake. The helper remains in Apple Default.
+- A new sleep, a settings change, Apple Default, or shutdown cancels an older pending recovery.
+
+Power notifications are advisory. If macOS does not deliver a matched sleep and wake pair, the helper does not make an unprompted manual retry. The regular safety checks still restore Apple Default when manual control fails.
+
+The privileged helper records fan-control transitions in `/Library/Logs/mactop/fan-control.log`. The log is root-owned, readable by local administrators, and keeps the current 512 KiB file plus one `.1` backup. A failure entry includes the selected policy, every fan's raw mode and RPM readback, expected RPM targets, the `Ftst` state, and the automatic-control restoration result. Wake recovery adds `sleep_detected`, `wake_recovery_scheduled`, `wake_reapply_started`, `wake_reapply_verified`, `wake_reapply_failed`, or `wake_reapply_skipped`. `wake_recovery_scheduled` means the helper is waiting for verification, not that it will write fan targets. A skipped recovery has a reason: `manual_policy_still_verified` means the old policy stayed active without an SMC reset or restart; `manual_ownership_loss_not_observed` means the helper did not retry. Use `tail -n 200 /Library/Logs/mactop/fan-control.log` after a fallback.
+
+For a manual hardware check, apply Constant or Curve control, let the Mac sleep and wake normally, then inspect the log. Expect `sleep_detected` and either `wake_reapply_skipped` with `manual_policy_still_verified`, or one `wake_reapply_started` followed by `wake_reapply_verified`. Do not force system sleep as part of automated tests.
+
 Recovery and diagnostic commands:
 
 ```sh
@@ -60,7 +75,7 @@ sudo mactop --fan-reset          # Restore automatic control
 
 Only one mactop fan-control process can own the SMC at a time.
 
-mactop probes each fan's mode-key casing at runtime. It first tries the direct manual-mode write used by M1 and M4 Mac mini hardware. If Apple Silicon system mode rejects that write and the `Ftst` key is available, mactop enables force-test mode and retries for up to 10 seconds. This unlock is required on the tested M4 Max MacBook Pro and typically takes several seconds. A cancellation, timeout, policy error, reset, or normal shutdown clears force-test mode and verifies that no fan remains in manual mode. Apple Silicon system mode `3` is a valid automatic state; older hardware usually reports automatic mode `0`.
+mactop probes each fan's mode-key casing at runtime. It first tries the direct manual-mode write used by M1 and M4 Mac mini hardware. It verifies the mode and RPM target in the next policy sample, not by an immediate SMC read that can be stale. If Apple Silicon rejects the direct write and the `Ftst` key is available, mactop enables force-test mode and retries for up to 10 seconds. This unlock is required on the tested M4 Max MacBook Pro and typically takes several seconds. A cancellation, timeout, policy error, reset, or normal shutdown clears force-test mode and verifies that no fan remains in manual mode. Apple Silicon system mode `3` is a valid automatic state; older hardware usually reports automatic mode `0`.
 
 ## Menu bar
 

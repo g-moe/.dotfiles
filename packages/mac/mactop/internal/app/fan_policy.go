@@ -22,6 +22,20 @@ const (
 	fanControlLockPath   = "/var/run/mactop-fan-control.lock"
 )
 
+var errFanManualOwnershipLost = errors.New("manual fan ownership was lost")
+
+type fanManualOwnershipLostError struct {
+	fanID int
+}
+
+func (e fanManualOwnershipLostError) Error() string {
+	return fmt.Sprintf("fan %d did not enter manual mode", e.fanID)
+}
+
+func (fanManualOwnershipLostError) Is(target error) bool {
+	return target == errFanManualOwnershipLost
+}
+
 const (
 	fanModeDefault  = "default"
 	fanModeConstant = "constant"
@@ -292,7 +306,7 @@ func (c *fanPolicyController) verifyLastWrite(fans []FanInfo) error {
 			continue
 		}
 		if fan.Mode != 1 {
-			return fmt.Errorf("fan %d did not enter manual mode", fan.ID)
+			return fanManualOwnershipLostError{fanID: fan.ID}
 		}
 		if absInt(fan.TargetRPM-expected) > fanTargetTolerance(c.settings.Mode) {
 			return fmt.Errorf("fan %d target readback is %d RPM, expected %d RPM", fan.ID, fan.TargetRPM, expected)

@@ -272,6 +272,38 @@ func TestConstantFanPolicyRequiresExactTargetReadback(t *testing.T) {
 	}
 }
 
+func TestFanPolicyClassifiesLostManualOwnership(t *testing.T) {
+	controller := newFanPolicyControllerWithSettings(&fakeFanHardware{}, fanPolicySettings{
+		Mode: fanModeConstant, ConstantRPM: 2200,
+	})
+	controller.lastRPM[0] = 2200
+	err := controller.verifyLastWrite([]FanInfo{{ID: 0, Mode: 3, TargetRPM: 0}})
+	if !errors.Is(err, errFanManualOwnershipLost) {
+		t.Fatalf("manual ownership error = %v", err)
+	}
+	if err.Error() != "fan 0 did not enter manual mode" {
+		t.Fatalf("manual ownership text = %q", err)
+	}
+}
+
+func TestFanPolicyApplyClassifiesModeThreeOwnershipLossAndRestoresAuto(t *testing.T) {
+	hardware := &fakeFanHardware{}
+	controller := newFanPolicyControllerWithSettings(hardware, fanPolicySettings{
+		Mode: fanModeConstant, ConstantRPM: 2200,
+	})
+	controller.lastRPM[0] = 2200
+
+	_, _, err := controller.apply(SocMetrics{Fans: []FanInfo{{
+		ID: 0, MinRPM: 1000, MaxRPM: 3000, Mode: 3, TargetRPM: 0,
+	}}}, SystemInfo{})
+	if !errors.Is(err, errFanManualOwnershipLost) {
+		t.Fatalf("mode-3 apply error = %v", err)
+	}
+	if !reflect.DeepEqual(hardware.calls, []string{"reset"}) {
+		t.Fatalf("mode-3 calls = %v, want automatic reset", hardware.calls)
+	}
+}
+
 type fakeFanHardware struct {
 	calls      []string
 	failTarget bool
