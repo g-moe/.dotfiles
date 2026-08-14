@@ -14,8 +14,8 @@ install_temperature_monitor() {
 }
 
 mac() {
-  # Deprecate macs-fan-control, use 
-  # brew_cask macs-fan-control
+  # Macs Fan Control is deprecated in favor of the repository-owned mactop.
+  log 'Temperature monitoring is provided by mactop.'
 }
 
 linux() {

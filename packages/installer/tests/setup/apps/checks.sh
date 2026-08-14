@@ -53,7 +53,8 @@ expect_file_contains "$ROOT_DIR/packages/mac/mactop/go.mod" \
   'module github.com/g-moe/.dotfiles/packages/mac/mactop' \
   'mactop module must identify its dotfiles ownership'
 expect_file_contains "$INSTALLER_DIR/setup/apps/temperature-monitor.sh" \
-  'brew_cask macs-fan-control' 'Mac must install Macs Fan Control'
+  "log 'Temperature monitoring is provided by mactop.'" \
+  'Mac must report that mactop provides temperature monitoring'
 expect_file_contains "$ROOT_DIR/packages/mac/mactop/com.dotfiles.mactop-menubar.plist" \
   '<string>/usr/bin/script</string>' 'mactop startup must provide a tty'
 
