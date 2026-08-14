@@ -1,0 +1,7 @@
+interface:
+  display_name: "Output Codeblock (Deprecated)"
+  short_description: "Deprecated code explanation formatter"
+  default_prompt: "Do not use $output-codeblock; it is deprecated."
+
+policy:
+  allow_implicit_invocation: false
