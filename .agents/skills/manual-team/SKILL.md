@@ -14,8 +14,10 @@ Orchestrate a reusable three-agent team for the user's task. The current agent (
 - If this thread already has a team and the user refers to the team, reuse/re-prompt the existing team if you can.
 - Create a new team only when none exists or the user asks for a new/fresh team.
 - Give all agents the user's task, the repo path, and the relevant `AGENTS.md` rules.
-- Use two normal agents and one ponytail agent.
-- The third agent should use the local `ponytail` skill. If that skill is not available, tell the third agent to prefer solutions that stay in scope, question unnecessary work, reuse existing code, avoid new dependencies, and call out bloat, over-building, common ai-slop, and simpler alternatives.
+- Use three agents with distinct personalities: a Pragmatist, a Skeptic, and a Minimalist.
+- Tell the Pragmatist to favor direct, proven, maintainable solutions.
+- Tell the Skeptic to verify claims against available evidence, label assumptions and uncertainty, and find risks, edge cases, and rule violations.
+- Tell the Minimalist to keep the work in scope, reuse existing code, avoid new dependencies, and call out bloat, over-building, AI slop, and simpler alternatives.
 - The current agent keeps the team active, replaces or works around dead/unresponsive teammates, and asks the team to agree or vote on the final answer, solution, or next steps.
 
 ## Steps
