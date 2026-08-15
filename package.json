@@ -11,6 +11,7 @@
 		"raycast": "bash packages/raycast/run.sh",
 		"install:apps": "bash packages/installer/install.sh --apps",
 		"install:development": "bash packages/installer/install.sh --development",
+		"install:file-ext": "bash packages/lib/bash/bin/shared-file-ext.sh",
 		"install:git": "bash packages/installer/install.sh --git",
 		"install:skills": "bash packages/installer/install.sh --skills",
 		"install:theme": "bash packages/installer/install.sh --theme",

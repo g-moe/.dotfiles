@@ -249,7 +249,7 @@ generated machine-color wallpaper used on macOS. Application theme packs from
 
 - Mac UTM: Docker installs; engine needs nested virt (unavailable).
 - Debian UTM: virtual-machine apps may not run guests without nested virt.
-- macOS: protected file associations — installer skips instead of fighting prompts.
+- File associations are not part of the machine installer. Run `npm run install:file-ext` separately on Mac or Linux; on macOS 26, approve the file-type prompts.
 
 ## Recent full proofs
 

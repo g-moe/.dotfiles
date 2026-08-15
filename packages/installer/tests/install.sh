@@ -58,5 +58,26 @@ fi
 expect_file_contains "$ROOT_DIR/package.json" \
   '"test:mactop": "cd packages/mac/mactop && make verify"' \
   'package.json must expose the mactop verification matrix'
+expect_file_contains "$ROOT_DIR/package.json" \
+  '"install:file-ext": "bash packages/lib/bash/bin/shared-file-ext.sh"' \
+  'package.json must expose standalone file associations'
+if grep -Fq 'files/associations.sh' "$installer"; then
+  fail 'the machine installer must not set VSCodium file associations'
+fi
+
+file_ext="$ROOT_DIR/packages/lib/bash/bin/shared-file-ext.sh"
+bash -n "$file_ext"
+expect_file_contains "$file_ext" 'json yaml yml' \
+  'standalone file associations must include JSON'
+expect_file_contains "$file_ext" 'Darwin)' \
+  'standalone file associations must support macOS'
+expect_file_contains "$file_ext" 'Linux)' \
+  'standalone file associations must support Linux'
+expect_file_contains "$file_ext" 'UTType(filenameExtension: extensionName)' \
+  'macOS file associations must use modern UTIs'
+expect_file_contains "$file_ext" 'setDefaultApplication(at: application, toOpen: type)' \
+  'macOS file associations must use the supported default-application API'
+expect_file_contains "$file_ext" 'urlForApplication(toOpen: type) == application' \
+  'macOS file associations must verify the Finder handler'
 
 printf 'Installer flow checks passed.\n'
