@@ -7,6 +7,24 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 expect_file_contains "$INSTALLER_DIR/setup/development/node.sh" \
   'mkdir -p "$HOME/.nvm"' 'Node setup must create the fixed NVM directory'
 
+pi="$INSTALLER_DIR/setup/development/pi.sh"
+expect_file_contains "$pi" \
+  'npm install -g --ignore-scripts --min-release-age=0 --prefix "$HOME/.local"' \
+  'Pi must use its non-interactive npm install command'
+expect_file_contains "$pi" '@earendil-works/pi-coding-agent' \
+  'Pi must install the official package'
+expect_file_contains "$pi" '[[ -x "$HOME/.local/bin/pi" ]] && return 0' \
+  'Pi must check its stable executable before installation'
+for platform in mac linux; do
+  platform_body="$(sed -n "/^${platform}() {/,/^}/p" "$pi")"
+  grep -Fq '_install' <<<"$platform_body" ||
+    fail "$platform must use the shared Pi installation path"
+done
+node_line="$(grep -n "development/node.sh" "$INSTALLER_DIR/install.sh" | cut -d: -f1)"
+pi_line="$(grep -n "development/pi.sh" "$INSTALLER_DIR/install.sh" | cut -d: -f1)"
+[[ "$pi_line" -gt "$node_line" ]] ||
+  fail 'Pi setup must run after Node.js setup'
+
 for cli in aws-cli cloudflare; do
   [[ -f "$INSTALLER_DIR/setup/development/$cli.sh" ]] ||
     fail "development CLI setup is missing: $cli.sh"

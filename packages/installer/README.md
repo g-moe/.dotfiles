@@ -43,7 +43,7 @@ Normal phase runs start with a read-only Linux desktop check, then use this orde
 | Phase         | Covers                                                                               |
 | ------------- | ------------------------------------------------------------------------------------ |
 | `apps`        | Apps (Homebrew / APT / vendor)                                                       |
-| `development` | Git, Node, AWS CLI, Cloudflare CLIs, Zsh, tmux, VSCodium, Codex, MCP servers, Skills |
+| `development` | Git, Node, Pi, AWS CLI, Cloudflare CLIs, Zsh, tmux, VSCodium, Codex, MCP servers, Skills |
 | `appearance`  | Wallpaper, screen saver, theme, icons, login screen                                  |
 | `input`       | Pointer, touchpad, keyboard, remapping                                               |
 | `desktop`     | Workspaces, items/widgets, windows, lower panel, top bar, name display               |
@@ -150,6 +150,7 @@ focused checks in
 - **Voice dictation:** VoiceInk on Mac; skipped on Linux.
 - **Firefox:** Debian’s `firefox-esr` package.
 - **Codex:** Mac installs both the ChatGPT app and Codex CLI; Linux installs the Codex CLI. The Mac ChatGPT launcher switches away immediately when ChatGPT is already frontmost.
+- **Pi:** Mac and Linux install the Pi coding agent after Node.js into `~/.local/bin`, which stays on `PATH` when NVM changes Node versions.
 - **T3 Code:** Mac and Linux install the npm server CLI after Node.js. Run `t3-serve`, for the headless local web app; the desktop application is not installed.
 - **System monitor:** Mac builds the repository-owned source in `packages/mac/mactop` with Go into `~/.local/bin/mactop`, links its monochrome menu-bar configuration into `~/.mactop`, and starts that build at login through a quiet pseudo-terminal because mactop still opens `/dev/tty`. Linux installs Xfce Task Manager.
 - **CleanShot X:** Mac only.
