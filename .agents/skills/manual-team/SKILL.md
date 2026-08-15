@@ -1,6 +1,6 @@
 ---
 name: manual-team
-description: Manual only. Use only for $manual-team.
+description: Manual only. Use only when the user explicitly invokes $manual-team to run a reusable three-agent team for a task.
 ---
 
 # Manual Team

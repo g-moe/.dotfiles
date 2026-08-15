@@ -1,8 +1,6 @@
 ---
 name: teach
-description: Teach the user a new skill or concept, within this workspace.
-disable-model-invocation: true
-argument-hint: "What would you like to learn about?"
+description: Teach the user a new skill or concept in a stateful workspace. Use only when the user explicitly invokes $teach.
 ---
 
 The user has asked you to teach them something. This is a stateful request - they intend to learn the topic over multiple sessions.
@@ -58,7 +56,7 @@ Each lesson should link via HTML anchors to other lessons and reference document
 
 Each lesson should recommend a primary source for the user to read or watch. This should be the most high-quality, high-trust resource you found on the topic.
 
-Each lesson should contain a reminder to ask followup questions to the agent. The agent is their teacher, and can assist with anything that's unclear.
+Each lesson should contain a reminder to ask follow-up questions. The agent is the user's teacher and can explain unclear material.
 
 ## Assets
 
@@ -78,21 +76,21 @@ Failing to understand the mission will mean knowledge acquisition is not grounde
 
 Missions may change as the user develops more skills and knowledge. This is normal - make sure to update the `MISSION.md` and add a learning record to capture the change. Confirm with the user before changing the mission.
 
-## Zone Of Proximal Development
+## Zone of Proximal Development
 
-Each lesson, the user should always feel as if they are being challenged 'just enough'.
+For each lesson, the user should feel as if they are being challenged "just enough."
 
 The user may specify an exact thing they want to learn. If they don't, figure out their zone of proximal development by:
 
 - Reading their `learning-records`
 - Figuring out the right thing to teach them based on their mission
-- Teach the most relevant thing that fits in their zone of proximal development
+- Teaching the most relevant thing that fits in their zone of proximal development
 
 ## Knowledge
 
 Lessons should be designed around a skill the user is going to learn. The knowledge in the lesson should be only what's required to acquire that skill. You teach the knowledge first, then get the user to practice the skills via an interactive feedback loop.
 
-Knowledge should first be gathered from trusted resources. Use `RESOURCES.md` to keep track of them. Lessons should be littered with citations - links to external resources to back up any claim made. This increases the trustworthiness of the lesson.
+Gather knowledge from trusted resources first. Use `RESOURCES.md` to keep track of them. Lessons should include citations that link to external resources and support each claim. This increases the trustworthiness of the lesson.
 
 For acquiring knowledge, difficulty is the enemy. It eats working memory you need for understanding.
 

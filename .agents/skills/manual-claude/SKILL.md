@@ -24,9 +24,9 @@ claude -p "$PROMPT" --output-format json \
 
 ## Guidelines
 
-The following below are guidelines for you, **DO NOT** include them as instructions to claude.
+The following guidelines are for you. **DO NOT** include them as instructions to Claude.
 
 - Claude is an adviser, not the implementation agent. Use Claude for design, planning, research, reviews, and second opinions.
-- Do not ask Claude to write or modify project code. You must implement all code changes yourself, then you can ask claude for a review/approval when you are finished.
+- Do not ask Claude to write or modify project code. You must implement all code changes yourself. You can ask Claude to review the changes when you finish.
 - Claude can write temporary scripts only when they are necessary for its own analysis.
 - Use the returned session ID with `--resume` for follow-up prompts. Review Claude's response and independently inspect its work.

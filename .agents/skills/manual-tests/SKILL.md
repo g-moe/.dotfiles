@@ -1,6 +1,6 @@
 ---
 name: manual-tests
-description: Manual only. The user invokes this skill.
+description: Manual only. Use only when the user explicitly invokes $manual-tests to inspect changed code and update or add tests without hiding runtime defects.
 ---
 
 # Manual Tests

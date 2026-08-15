@@ -1,10 +1,9 @@
 ---
 name: review-nuclear
-description: Run an extremely strict maintainability review for abstraction quality, giant files, and spaghetti-condition growth. Use for a thermo-nuclear code quality review, thermonuclear review, deep code quality audit, or especially harsh maintainability review.
-disable-model-invocation: true
+description: Run an extremely strict maintainability review for abstraction quality, giant files, and spaghetti-condition growth. Use for a thermonuclear code quality review, deep code quality audit, or especially harsh maintainability review.
 ---
 
-# Thermo-Nuclear Code Quality Review
+# Thermonuclear Code Quality Review
 
 Use this skill for an unusually strict review focused on implementation quality, maintainability, abstraction quality, and codebase health.
 
@@ -16,7 +15,7 @@ Start from this baseline:
 
 > Perform a deep code quality audit of the current branch's changes.
 > Rethink how to structure / implement the changes to meaningfully improve code quality without impacting behavior.
-> Work to improve abstractions, modularity, reduce Spaghetti code, improve succinctness and legibility.
+> Work to improve abstractions and modularity, reduce spaghetti code, and improve succinctness and legibility.
 > Be ambitious, if there is a clear path to improving the implementation that involves restructuring some of the codebase, go for it.
 > Be extremely thorough and rigorous. Measure twice, cut once.
 
@@ -28,7 +27,7 @@ Apply the baseline prompt above, plus these explicit review rules:
    - Do not stop at "this could be a bit cleaner."
    - Look for opportunities to reframe the change so that whole branches, helpers, modes, conditionals, or layers disappear entirely.
    - Prefer the solution that makes the code feel inevitable in hindsight.
-   - Assume there is often a "code judo" move available: a re-organization that uses the existing architecture more effectively and makes the change dramatically simpler and more elegant.
+   - Assume there is often a "code judo" move available: a reorganization that uses the existing architecture more effectively and makes the change dramatically simpler and more elegant.
    - If you see a path to delete complexity rather than rearrange it, push hard for that path.
 
 1. **Do not let a PR push a file from under 1k lines to over 1k lines without a very strong reason.**
