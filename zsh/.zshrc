@@ -186,6 +186,17 @@ export AWS_REGION=us-east-1
 # NVM
 [[ -s "$NVM_DIR/bash_completion" ]] && source "$NVM_DIR/bash_completion"
 
+# Use the Node version declared by the current directory.
+autoload -U add-zsh-hook
+_use_node_version() {
+  [[ -f "$PWD/.nvmrc" ]] || return
+
+  local version="$(<"$PWD/.nvmrc")"
+  [[ "$(nvm current)" == "$(nvm version "$version")" ]] ||
+    nvm use "$version"
+}
+add-zsh-hook chpwd _use_node_version
+
 # opencode
 if [[ -d "$HOME/.opencode/bin" ]]; then
   export PATH="$HOME/.opencode/bin:$PATH"
