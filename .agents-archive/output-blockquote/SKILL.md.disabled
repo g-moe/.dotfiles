@@ -1,4 +1,4 @@
----
+<!-- ---
 name: output-blockquote
 description: "Format responses to every user question as repeated headings followed by visibly spaced Markdown blockquotes. Use whenever the user asks one or more questions, or when replying to an annotation that is a statement or question. Ignore request-like messages or annotations that ask for an edit or change, such as 'change this button to blue', 'edit this', or 'change this to x'."
 ---
@@ -40,4 +40,4 @@ Example:
 
 > **Additional context**
 >
-> Add longer supporting material in a separate visual section.
+> Add longer supporting material in a separate visual section. -->

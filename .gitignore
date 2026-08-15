@@ -36,6 +36,8 @@
 !/.agents/
 !/.agents/skills/
 !/.agents/skills/**
+!/.agents-archive/
+!/.agents-archive/**
 
 # Codex
 !/codex/

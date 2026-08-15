@@ -1,6 +1,0 @@
-interface:
-  display_name: "Manual Planner"
-  short_description: "Research and plan features."
-  default_prompt: "Use $manual-planner to research and plan a feature."
-policy:
-  allow_implicit_invocation: false

@@ -1,0 +1,6 @@
+interface:
+  display_name: "Exec Planner (Deprecated)"
+  short_description: "Deprecated feature planning workflow"
+  default_prompt: "Do not use $exec-planner; it is deprecated."
+policy:
+  allow_implicit_invocation: false
