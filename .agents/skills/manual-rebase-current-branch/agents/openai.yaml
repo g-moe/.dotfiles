@@ -1,6 +1,0 @@
-interface:
-  display_name: "Manual Rebase Current Branch"
-  short_description: "Rebase safely with an explicit target and backup"
-  default_prompt: "Use $manual-rebase-current-branch to rebase my current branch onto <explicit-branch>."
-policy:
-  allow_implicit_invocation: false
