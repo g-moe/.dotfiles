@@ -3,6 +3,7 @@ set -euo pipefail
 
 STRATEGY_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 INSTALLER_DIR="$(cd "$STRATEGY_DIR/../.." && pwd)"
+ROOT_DIR="$(cd "$INSTALLER_DIR/../.." && pwd)"
 . "$INSTALLER_DIR/lib/lib.sh"
 
 install_pi() {
@@ -20,12 +21,19 @@ _install() {
     @earendil-works/pi-coding-agent
 }
 
+_configure() {
+  safe_symlink_group 'Pi' \
+    "$ROOT_DIR/agents/AGENTS.md" "$HOME/.pi/agent/AGENTS.md"
+}
+
 mac() {
   _install
+  _configure
 }
 
 linux() {
   _install
+  _configure
 }
 
 install_pi "$1"

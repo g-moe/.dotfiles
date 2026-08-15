@@ -39,10 +39,13 @@
 !/.agents-archive/
 !/.agents-archive/**
 
+# Agent instructions
+!/agents/
+!/agents/AGENTS.md
+
 # Codex
 !/codex/
 !/codex/.codex/
-!/codex/.codex/AGENTS.md
 !/codex/.codex/config.toml
 !/codex/.codex/keybindings.json
 

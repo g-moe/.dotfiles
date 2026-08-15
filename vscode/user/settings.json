@@ -432,5 +432,6 @@
     },
     "git.detectWorktrees": true,
     "security.workspace.trust.enabled": false,
-    "scm.repositories.selectionMode": "single"
+    "scm.repositories.selectionMode": "single",
+    "terminal.integrated.fontSize": 11
 }

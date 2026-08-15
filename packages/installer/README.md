@@ -40,16 +40,16 @@ Single strategies and individual phase flags (`--apps`, `--development`, …) sk
 
 Normal phase runs start with a read-only Linux desktop check, then use this order: `apps` → `development` → `appearance` → `input` → `desktop` → `files` → `access` → `system`. The check runs before every phase flag, so Linux work only starts after Xfce, LightDM, and X11 are ready. Changes to the LightDM X11 session stay in the system phase.
 
-| Phase         | Covers                                                                               |
-| ------------- | ------------------------------------------------------------------------------------ |
-| `apps`        | Apps (Homebrew / APT / vendor)                                                       |
+| Phase         | Covers                                                                                   |
+| ------------- | ---------------------------------------------------------------------------------------- |
+| `apps`        | Apps (Homebrew / APT / vendor)                                                           |
 | `development` | Git, Node, Pi, AWS CLI, Cloudflare CLIs, Zsh, tmux, VSCodium, Codex, MCP servers, Skills |
-| `appearance`  | Wallpaper, screen saver, theme, icons, login screen                                  |
-| `input`       | Pointer, touchpad, keyboard, remapping                                               |
-| `desktop`     | Workspaces, items/widgets, windows, lower panel, top bar, name display               |
-| `files`       | Defaults, associations, Finder/Files                                                 |
-| `access`      | Handoff, assistants, headless notes, SSH, VNC                                        |
-| `system`      | LightDM X11 session, updates, power, UI refresh                                      |
+| `appearance`  | Wallpaper, screen saver, theme, icons, login screen                                      |
+| `input`       | Pointer, touchpad, keyboard, remapping                                                   |
+| `desktop`     | Workspaces, items/widgets, windows, lower panel, top bar, name display                   |
+| `files`       | Defaults, associations, Finder/Files                                                     |
+| `access`      | Handoff, assistants, headless notes, SSH, VNC                                            |
+| `system`      | LightDM X11 session, updates, power, UI refresh                                          |
 
 ### Where things live
 
@@ -59,6 +59,7 @@ packages/installer/setup/<phase>/…  strategies (launched by install.sh with OS
 packages/installer/config/          installer-owned configuration loaded by strategies
 packages/installer/setup/identity.sh before full or phase installs (skipped for single strategies)
 packages/installer/setup/skills.sh  from development (also --skills)
+agents/AGENTS.md                    global instructions shared by Codex and Pi
 codex/.codex/                       personal Codex settings linked during development
 packages/installer/lib/lib.sh       installer library entry point
 packages/installer/tests/           mirrors installer paths (`setup/`, `lib/`, and top-level flow)
@@ -124,9 +125,10 @@ root, and repository/link checks under `tests/repository/`.
 
 ### Codex settings
 
-Development setup links `codex/.codex/AGENTS.md`, `codex/.codex/config.toml`,
-and `codex/.codex/keybindings.json` to `~/.codex/`. On another machine, clone
-or pull the repo at `~/.dotfiles`, then run
+Development setup links the shared `agents/AGENTS.md` to both
+`~/.codex/AGENTS.md` and `~/.pi/agent/AGENTS.md`. It also links
+`codex/.codex/config.toml` and `codex/.codex/keybindings.json` to `~/.codex/`.
+On another machine, clone or pull the repo at `~/.dotfiles`, then run
 `bash packages/installer/install.sh --development`. Later pulls update the
 linked files without recreating the links.
 
