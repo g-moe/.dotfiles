@@ -117,6 +117,33 @@
           }
         }
       }
+    },
+    {
+      "id" : "B01A8052-EFA4-4E53-8439-C94722485D7E",
+      "sourceComponents" : [
+        {
+          "componentType" : {
+            "urlMatch" : {
+              "_1" : "https://d-9067d8b1e0.awsapps.com/start/#/",
+              "_0" : {
+                "contains" : {
+
+                }
+              }
+            }
+          },
+          "id" : "25F2693A-E039-4BE2-B660-F97DDB58B40B"
+        }
+      ],
+      "destination" : {
+        "space" : {
+          "_0" : {
+            "space" : {
+              "_0" : "5740FC7B-174C-445C-B33D-4BB082E25D5D"
+            }
+          }
+        }
+      }
     }
   ]
 }

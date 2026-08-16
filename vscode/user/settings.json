@@ -331,10 +331,8 @@
 	"workbench.editor.limit.excludeDirty": true,
 	"workbench.editor.limit.perEditorGroup": true,
 	"workbench.editor.openPositioning": "last",
-	"workbench.editor.pinnedTabsOnSeparateRow": true,
-	"workbench.editor.tabActionLocation": "left",
-	"workbench.editor.tabSizing": "shrink",
-	"workbench.editor.tabSizingFixedMaxWidth": 175,
+    "workbench.editor.pinnedTabsOnSeparateRow": true,
+	"workbench.editor.tabSizingFixedMaxWidth": 200,
 	"workbench.editor.tabSizingFixedMinWidth": 38,
 	"workbench.editor.wrapTabs": true,
 	"workbench.fontAliasing": "antialiased",
@@ -411,8 +409,7 @@
 	"workbench.preferredDarkColorTheme": "gtheme-dark",
 	"redhat.telemetry.enabled": false,
 	"workbench.browser.showInTitleBar": false,
-	"window.customTitleBarVisibility": "never",
-	"workbench.editor.showTabs": "single",
+    "window.customTitleBarVisibility": "never",
 	"yaml.disableSchemaDetection": [],
 	"workbench.panel.showLabels": false,
 	"editor.selectionHighlight": false,
@@ -433,5 +430,8 @@
     "git.detectWorktrees": true,
     "security.workspace.trust.enabled": false,
     "scm.repositories.selectionMode": "single",
-    "terminal.integrated.fontSize": 11
+    "terminal.integrated.fontSize": 11,
+    "workbench.editor.highlightModifiedTabs": true,
+    "workbench.editor.showTabIndex": true,
+    "workbench.editor.tabActionLocation": "left"
 }

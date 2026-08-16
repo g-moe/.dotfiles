@@ -1793,11 +1793,7 @@
 		"key": "cmd+e cmd+r",
 		"command": "opencode.toggleChatView",
 	},
-	{
-		"key": "cmd+1",
-		"command": "workbench.action.firstEditorInGroup",
-	},
-	{
+    {
 		"key": "alt+cmd+k",
 		"command": "-opencode.addFilepathToTerminal",
 	},
@@ -1904,5 +1900,17 @@
 	{
 		"key": "cmd+j",
 		"command": "-workbench.action.togglePanel",
-	},
+    },
+    {
+        "key": "cmd+1",
+        "command": "workbench.action.openEditorAtIndex1"
+    },
+    {
+        "key": "cmd+2",
+        "command": "workbench.action.openEditorAtIndex2"
+    },
+    {
+        "key": "cmd+3",
+        "command": "workbench.action.openEditorAtIndex3"
+    }
 ]
