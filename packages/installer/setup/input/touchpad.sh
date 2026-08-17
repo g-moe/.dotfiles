@@ -27,8 +27,8 @@ _mac_trackpad_domain() {
   defaults write "$domain" TrackpadTwoFingerDoubleTapGesture -bool false
   defaults write "$domain" TrackpadRotate -bool false
   defaults write "$domain" TrackpadTwoFingerFromRightEdgeSwipeGesture -int 0
-  defaults write "$domain" TrackpadThreeFingerHorizSwipeGesture -int 2
-  defaults write "$domain" TrackpadFourFingerHorizSwipeGesture -int 0
+  defaults write "$domain" TrackpadThreeFingerHorizSwipeGesture -int 0
+  defaults write "$domain" TrackpadFourFingerHorizSwipeGesture -int 2
   defaults write "$domain" TrackpadThreeFingerVertSwipeGesture -int 0
   defaults write "$domain" TrackpadFourFingerVertSwipeGesture -int 2
   defaults write "$domain" TrackpadFourFingerPinchGesture -int 0
