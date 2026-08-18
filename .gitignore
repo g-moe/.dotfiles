@@ -43,6 +43,11 @@
 !/agents/
 !/agents/AGENTS.md
 
+# GitHub
+!/.github/
+!/.github/**
+
+
 # Codex
 !/codex/
 !/codex/.codex/
