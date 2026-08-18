@@ -186,16 +186,11 @@ export AWS_REGION=us-east-1
 # NVM
 [[ -s "$NVM_DIR/bash_completion" ]] && source "$NVM_DIR/bash_completion"
 
-# Use the Node version declared by the current directory.
+# Keep Node matched to the current project, on directory change and at startup.
+# _use_node_version is defined in .zshenv, which also runs it before this file.
 autoload -U add-zsh-hook
-_use_node_version() {
-  [[ -f "$PWD/.nvmrc" ]] || return
-
-  local version="$(<"$PWD/.nvmrc")"
-  [[ "$(nvm current)" == "$(nvm version "$version")" ]] ||
-    nvm use "$version"
-}
 add-zsh-hook chpwd _use_node_version
+_use_node_version --silent
 
 # opencode
 if [[ -d "$HOME/.opencode/bin" ]]; then
