@@ -5,6 +5,7 @@ import {
 	BETTER_ERRORS_CONFIG,
 } from "../../shared/consts/betterErrors";
 import { copyActiveError } from "./copyActiveError";
+import { isBetterErrorsEnabled } from "../settings";
 
 export function registerCopyErrorCommands(): vscode.Disposable[] {
 	return [registerCopyErrorCommand(), registerToggleEnabledCommand()];
@@ -62,10 +63,4 @@ function registerToggleEnabledCommand(): vscode.Disposable {
 			);
 		},
 	);
-}
-
-function isBetterErrorsEnabled(): boolean {
-	return vscode.workspace
-		.getConfiguration(BETTER_ERRORS_CONFIG.root)
-		.get(BETTER_ERRORS_CONFIG.enabled, true);
 }

@@ -1,1128 +1,572 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta
-      name="description"
-      content="An educational HTML presentation showing how to translate a Micro E-mini S&amp;P 500 stop distance into planned dollar risk."
-    />
-    <title>MES Risk Lab — Size risk before the trade</title>
-    <style>
-      :root {
-        color-scheme: dark;
-        --ink: #f4f3ee;
-        --muted: #9ca4a0;
-        --night: #09100f;
-        --panel: #111a18;
-        --panel-strong: #182522;
-        --line: #2a3935;
-        --lime: #c7ff4a;
-        --lime-soft: rgba(199, 255, 74, 0.12);
-        --orange: #ff8a4c;
-        --cyan: #67e4d0;
-        --max-width: 1440px;
-        --ui: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
-          "Segoe UI", sans-serif;
-        --mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
-      }
-
-      * {
-        box-sizing: border-box;
-      }
-
-      html,
-      body {
-        min-width: 320px;
-        height: 100%;
-        margin: 0;
-      }
-
-      body {
-        overflow: hidden;
-        background:
-          radial-gradient(circle at 85% 10%, rgba(103, 228, 208, 0.08), transparent 28rem),
-          var(--night);
-        color: var(--ink);
-        font-family: var(--ui);
-        -webkit-font-smoothing: antialiased;
-      }
-
-      button,
-      input {
-        font: inherit;
-      }
-
-      button,
-      a,
-      input {
-        outline-offset: 4px;
-      }
-
-      button:focus-visible,
-      a:focus-visible,
-      input:focus-visible {
-        outline: 2px solid var(--lime);
-      }
-
-      h1[tabindex]:focus,
-      h2[tabindex]:focus {
-        outline: none;
-      }
-
-      a {
-        color: var(--cyan);
-      }
-
-      .deck-bar {
-        position: fixed;
-        z-index: 10;
-        top: 0;
-        left: 0;
-        display: grid;
-        grid-template-columns: auto minmax(8rem, 1fr) auto;
-        gap: clamp(1rem, 3vw, 3rem);
-        align-items: center;
-        width: 100%;
-        padding: 1.1rem clamp(1.25rem, 4vw, 4rem);
-        border-bottom: 1px solid rgba(244, 243, 238, 0.1);
-        background: rgba(9, 16, 15, 0.9);
-        backdrop-filter: blur(12px);
-      }
-
-      .brand {
-        display: flex;
-        gap: 0.65rem;
-        align-items: baseline;
-        color: var(--ink);
-        font-family: var(--mono);
-        font-size: 0.72rem;
-        font-weight: 700;
-        letter-spacing: 0.16em;
-        text-transform: uppercase;
-      }
-
-      .brand-mark {
-        color: var(--lime);
-      }
-
-      .progress {
-        display: grid;
-        grid-template-columns: repeat(6, 1fr);
-        gap: 0.35rem;
-        width: min(38rem, 100%);
-        margin: 0 auto;
-      }
-
-      .progress button {
-        height: 0.25rem;
-        padding: 0;
-        border: 0;
-        border-radius: 999px;
-        background: var(--line);
-        cursor: pointer;
-      }
-
-      .progress button[aria-current="step"] {
-        background: var(--lime);
-      }
-
-      .slide-count {
-        min-width: 3.5rem;
-        color: var(--muted);
-        font-family: var(--mono);
-        font-size: 0.78rem;
-        text-align: right;
-      }
-
-      main {
-        position: relative;
-        width: 100%;
-        height: 100%;
-      }
-
-      .slide {
-        position: absolute;
-        inset: 0;
-        display: grid;
-        place-items: center;
-        overflow: hidden;
-        padding: clamp(6.4rem, 10vh, 8rem) clamp(1.5rem, 6vw, 6rem)
-          clamp(5.5rem, 9vh, 7rem);
-        animation: enter 280ms ease both;
-      }
-
-      .slide[hidden] {
-        display: none;
-      }
-
-      .slide-inner {
-        width: min(var(--max-width), 100%);
-        margin: auto;
-      }
-
-      @keyframes enter {
-        from {
-          opacity: 0;
-          transform: translateY(10px);
-        }
-        to {
-          opacity: 1;
-          transform: none;
-        }
-      }
-
-      .eyebrow {
-        margin: 0 0 1rem;
-        color: var(--lime);
-        font-family: var(--mono);
-        font-size: clamp(0.68rem, 1vw, 0.82rem);
-        font-weight: 700;
-        letter-spacing: 0.16em;
-        text-transform: uppercase;
-      }
-
-      h1,
-      h2,
-      p {
-        margin-top: 0;
-      }
-
-      h1 {
-        max-width: 13ch;
-        margin-bottom: 1.5rem;
-        font-size: clamp(3.4rem, 8vw, 8.8rem);
-        font-weight: 760;
-        letter-spacing: -0.075em;
-        line-height: 0.88;
-      }
-
-      h2 {
-        max-width: 15ch;
-        margin-bottom: clamp(2rem, 5vh, 4.5rem);
-        font-size: clamp(2.3rem, 5vw, 5.4rem);
-        font-weight: 730;
-        letter-spacing: -0.055em;
-        line-height: 0.98;
-      }
-
-      .lede {
-        max-width: 47rem;
-        color: #c5cbc8;
-        font-size: clamp(1.05rem, 2vw, 1.45rem);
-        line-height: 1.55;
-      }
-
-      .hero-grid,
-      .split,
-      .calc-grid,
-      .close-grid {
-        display: grid;
-        grid-template-columns: minmax(0, 1.15fr) minmax(20rem, 0.85fr);
-        gap: clamp(2.5rem, 7vw, 8rem);
-        align-items: center;
-      }
-
-      .hero-note {
-        max-width: 34rem;
-        margin-top: 3rem;
-        padding-top: 1.1rem;
-        border-top: 1px solid var(--line);
-        color: var(--muted);
-        font-size: 0.9rem;
-        line-height: 1.55;
-      }
-
-      .ladder {
-        position: relative;
-        overflow: hidden;
-        padding: clamp(1.5rem, 3vw, 2.6rem);
-        border: 1px solid var(--line);
-        border-radius: 1.25rem;
-        background: linear-gradient(150deg, rgba(255, 255, 255, 0.04), transparent),
-          var(--panel);
-        box-shadow: 0 30px 90px rgba(0, 0, 0, 0.35);
-      }
-
-      .ladder::after {
-        position: absolute;
-        inset: 0;
-        background-image: linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px);
-        background-size: 100% 2.35rem;
-        content: "";
-        pointer-events: none;
-      }
-
-      .ladder-row {
-        position: relative;
-        z-index: 1;
-        display: grid;
-        grid-template-columns: 1fr auto;
-        gap: 1rem;
-        align-items: center;
-        min-height: 2.35rem;
-        color: var(--muted);
-        font-family: var(--mono);
-        font-size: clamp(0.76rem, 1vw, 0.9rem);
-      }
-
-      .ladder-row strong {
-        color: var(--ink);
-        font-size: 1.2em;
-      }
-
-      .ladder-row.entry,
-      .ladder-row.stop {
-        margin-inline: -0.75rem;
-        padding-inline: 0.75rem;
-        border-radius: 0.45rem;
-      }
-
-      .ladder-row.entry {
-        background: var(--lime-soft);
-        color: var(--lime);
-      }
-
-      .ladder-row.stop {
-        background: rgba(255, 138, 76, 0.1);
-        color: var(--orange);
-      }
-
-      .big-stat {
-        margin-bottom: 1.25rem;
-        color: var(--lime);
-        font-family: var(--mono);
-        font-size: clamp(3.5rem, 9vw, 9rem);
-        font-weight: 700;
-        letter-spacing: -0.08em;
-        line-height: 0.88;
-      }
-
-      .big-stat span {
-        display: block;
-        margin-top: 1rem;
-        color: var(--muted);
-        font-family: var(--ui);
-        font-size: clamp(0.9rem, 1.5vw, 1.25rem);
-        font-weight: 500;
-        letter-spacing: 0;
-        line-height: 1.4;
-      }
-
-      .tick-stack {
-        display: grid;
-        gap: 0.8rem;
-      }
-
-      .tick {
-        display: grid;
-        grid-template-columns: 1fr auto;
-        gap: 2rem;
-        align-items: center;
-        padding: 1rem 1.2rem;
-        border-bottom: 1px solid var(--line);
-        color: var(--muted);
-        font-family: var(--mono);
-      }
-
-      .tick.active {
-        border-color: var(--lime);
-        color: var(--lime);
-      }
-
-      .tick b {
-        color: var(--ink);
-        font-size: 1.15rem;
-      }
-
-      .source-note {
-        margin-top: 2.2rem;
-        color: var(--muted);
-        font-size: 0.82rem;
-        line-height: 1.55;
-      }
-
-      .formula-flow {
-        display: grid;
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-        gap: 1rem;
-      }
-
-      .formula-step {
-        position: relative;
-        min-height: 13rem;
-        padding: clamp(1.25rem, 2vw, 2rem);
-        border-top: 2px solid var(--line);
-        background: linear-gradient(180deg, rgba(255, 255, 255, 0.035), transparent 70%);
-      }
-
-      .formula-step:not(:last-child)::after {
-        position: absolute;
-        top: 50%;
-        right: -0.8rem;
-        z-index: 2;
-        width: 0.55rem;
-        height: 0.55rem;
-        border-top: 1px solid var(--muted);
-        border-right: 1px solid var(--muted);
-        content: "";
-        transform: rotate(45deg);
-      }
-
-      .formula-step.accent {
-        border-color: var(--lime);
-      }
-
-      .formula-step .label {
-        display: block;
-        margin-bottom: 2.8rem;
-        color: var(--muted);
-        font-family: var(--mono);
-        font-size: 0.72rem;
-        letter-spacing: 0.12em;
-        text-transform: uppercase;
-      }
-
-      .formula-step strong {
-        display: block;
-        color: var(--ink);
-        font-size: clamp(1.6rem, 3vw, 3.1rem);
-        letter-spacing: -0.045em;
-      }
-
-      .formula-step small {
-        display: block;
-        margin-top: 0.55rem;
-        color: var(--muted);
-        line-height: 1.45;
-      }
-
-      .rule {
-        margin: 2.5rem 0 0;
-        padding: 1.25rem 1.5rem;
-        border-left: 3px solid var(--lime);
-        background: var(--lime-soft);
-        color: #dfe8cd;
-        font-family: var(--mono);
-        font-size: clamp(0.86rem, 1.2vw, 1rem);
-        line-height: 1.6;
-      }
-
-      .calculator {
-        padding: clamp(1.25rem, 3vw, 2.5rem);
-        border: 1px solid var(--line);
-        border-radius: 1.35rem;
-        background: var(--panel);
-      }
-
-      .field-grid {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 1rem;
-      }
-
-      label {
-        display: grid;
-        gap: 0.45rem;
-        color: var(--muted);
-        font-family: var(--mono);
-        font-size: 0.73rem;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-      }
-
-      input {
-        min-width: 0;
-        width: 100%;
-        padding: 0.82rem 0.9rem;
-        border: 1px solid var(--line);
-        border-radius: 0.55rem;
-        background: #0c1412;
-        color: var(--ink);
-        font-family: var(--mono);
-        font-size: 1rem;
-      }
-
-      input:hover {
-        border-color: #43534f;
-      }
-
-      .result-card {
-        display: grid;
-        align-content: center;
-        min-height: 24rem;
-        padding: clamp(1.5rem, 4vw, 3.5rem);
-        border: 1px solid rgba(199, 255, 74, 0.25);
-        border-radius: 1.35rem;
-        background:
-          radial-gradient(circle at 90% 10%, rgba(199, 255, 74, 0.13), transparent 15rem),
-          var(--panel-strong);
-      }
-
-      .result-label {
-        color: var(--muted);
-        font-family: var(--mono);
-        font-size: 0.74rem;
-        letter-spacing: 0.12em;
-        text-transform: uppercase;
-      }
-
-      .result-number {
-        margin: 0.5rem 0 1.4rem;
-        color: var(--lime);
-        font-family: var(--mono);
-        font-size: clamp(4.5rem, 9vw, 9rem);
-        font-weight: 750;
-        letter-spacing: -0.09em;
-        line-height: 0.9;
-      }
-
-      .result-detail {
-        color: #c5cbc8;
-        font-size: clamp(0.95rem, 1.3vw, 1.1rem);
-        line-height: 1.6;
-      }
-
-      .result-detail strong {
-        color: var(--ink);
-      }
-
-      .risk-strip {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 1rem;
-        margin-top: 1.75rem;
-      }
-
-      .risk-cell {
-        padding: 1rem;
-        border-top: 1px solid var(--line);
-      }
-
-      .risk-cell span {
-        display: block;
-        color: var(--muted);
-        font-family: var(--mono);
-        font-size: 0.7rem;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-      }
-
-      .risk-cell b {
-        display: block;
-        margin-top: 0.45rem;
-        font-size: 1.15rem;
-      }
-
-      .session-line {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: clamp(1rem, 2vw, 2rem);
-      }
-
-      .loss-slot {
-        position: relative;
-        min-height: 17rem;
-        padding: 1.5rem;
-        border: 1px solid var(--line);
-        border-radius: 1rem;
-        background: var(--panel);
-      }
-
-      .loss-slot::before {
-        display: block;
-        width: 2.5rem;
-        height: 0.25rem;
-        margin-bottom: 5rem;
-        border-radius: 999px;
-        background: var(--orange);
-        content: "";
-      }
-
-      .loss-slot:last-child::before {
-        background: var(--lime);
-      }
-
-      .loss-slot span {
-        color: var(--muted);
-        font-family: var(--mono);
-        font-size: 0.72rem;
-        letter-spacing: 0.1em;
-        text-transform: uppercase;
-      }
-
-      .loss-slot strong {
-        display: block;
-        margin-top: 0.8rem;
-        font-size: clamp(1.4rem, 2.2vw, 2.2rem);
-        line-height: 1.1;
-      }
-
-      .loss-slot p {
-        margin: 0.8rem 0 0;
-        color: var(--muted);
-        line-height: 1.5;
-      }
-
-      .checklist {
-        display: grid;
-        gap: 0;
-        margin: 0;
-        padding: 0;
-        list-style: none;
-      }
-
-      .checklist li {
-        display: grid;
-        grid-template-columns: auto 1fr;
-        gap: 1rem;
-        align-items: baseline;
-        padding: 0.95rem 0;
-        border-bottom: 1px solid var(--line);
-        color: #d2d6d4;
-        font-size: clamp(0.95rem, 1.5vw, 1.15rem);
-      }
-
-      .checklist li::before {
-        width: 0.6rem;
-        height: 0.6rem;
-        border: 1px solid var(--lime);
-        content: "";
-      }
-
-      .sources {
-        padding: clamp(1.25rem, 3vw, 2.5rem);
-        border: 1px solid var(--line);
-        border-radius: 1.1rem;
-        background: var(--panel);
-      }
-
-      .sources h3 {
-        margin: 0 0 1.4rem;
-        color: var(--muted);
-        font-family: var(--mono);
-        font-size: 0.72rem;
-        letter-spacing: 0.12em;
-        text-transform: uppercase;
-      }
-
-      .sources p {
-        color: var(--muted);
-        font-size: 0.86rem;
-        line-height: 1.6;
-      }
-
-      .sources p:last-child {
-        margin-bottom: 0;
-      }
-
-      .deck-nav {
-        position: fixed;
-        z-index: 10;
-        right: clamp(1.25rem, 4vw, 4rem);
-        bottom: 1.25rem;
-        display: flex;
-        gap: 0.6rem;
-      }
-
-      .nav-button {
-        display: grid;
-        place-items: center;
-        width: 2.9rem;
-        height: 2.9rem;
-        padding: 0;
-        border: 1px solid var(--line);
-        border-radius: 999px;
-        background: rgba(17, 26, 24, 0.92);
-        color: var(--ink);
-        cursor: pointer;
-      }
-
-      .nav-button:hover:not(:disabled) {
-        border-color: var(--lime);
-        color: var(--lime);
-      }
-
-      .nav-button:disabled {
-        opacity: 0.3;
-        cursor: not-allowed;
-      }
-
-      .legal {
-        position: fixed;
-        z-index: 10;
-        bottom: 1.65rem;
-        left: clamp(1.25rem, 4vw, 4rem);
-        max-width: calc(100% - 12rem);
-        color: #737c78;
-        font-size: 0.68rem;
-        line-height: 1.4;
-      }
-
-      @media (max-width: 900px) {
-        .slide {
-          overflow: auto;
-        }
-
-        .legal {
-          display: none;
-        }
-
-        .hero-grid,
-        .split,
-        .calc-grid,
-        .close-grid {
-          grid-template-columns: 1fr;
-          gap: 2rem;
-        }
-
-        .hero-grid .ladder {
-          display: none;
-        }
-
-        .formula-flow {
-          grid-template-columns: repeat(2, 1fr);
-        }
-
-        .formula-step:not(:last-child)::after {
-          display: none;
-        }
-
-        .result-card {
-          min-height: 15rem;
-        }
-      }
-
-      @media (max-width: 640px) {
-        .deck-bar {
-          grid-template-columns: 1fr auto;
-          padding-inline: 1rem;
-        }
-
-        .progress {
-          position: fixed;
-          top: 3.55rem;
-          left: 1rem;
-          width: calc(100% - 2rem);
-        }
-
-        .slide {
-          display: block;
-          overflow: auto;
-          padding: 6rem 1rem 6rem;
-        }
-
-        h1 {
-          font-size: clamp(3rem, 17vw, 5rem);
-        }
-
-        h2 {
-          margin-bottom: 2rem;
-          font-size: clamp(2.1rem, 12vw, 3.6rem);
-        }
-
-        .formula-flow,
-        .field-grid,
-        .session-line,
-        .risk-strip {
-          grid-template-columns: 1fr;
-        }
-
-        .formula-step {
-          min-height: auto;
-        }
-
-        .formula-step .label,
-        .loss-slot::before {
-          margin-bottom: 1.5rem;
-        }
-
-        .loss-slot {
-          min-height: auto;
-        }
-
-        .legal {
-          max-width: calc(100% - 8.5rem);
-        }
-      }
-
-      @media (prefers-reduced-motion: reduce) {
-        *,
-        *::before,
-        *::after {
-          scroll-behavior: auto !important;
-          animation-duration: 0.01ms !important;
-          animation-iteration-count: 1 !important;
-          transition-duration: 0.01ms !important;
-        }
-      }
-
-      @media print {
-        @page {
-          size: 16in 9in;
-          margin: 0;
-        }
-
-        html,
-        body {
-          height: auto;
-          background: var(--night);
-        }
-
-        body {
-          overflow: visible;
-          print-color-adjust: exact;
-          -webkit-print-color-adjust: exact;
-        }
-
-        .deck-bar,
-        .deck-nav,
-        .legal {
-          display: none;
-        }
-
-        main {
-          height: auto;
-        }
-
-        .slide,
-        .slide[hidden] {
-          position: relative;
-          display: grid;
-          width: 16in;
-          height: 9in;
-          break-after: page;
-          overflow: hidden;
-          padding: 0.75in;
-          animation: none;
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <header class="deck-bar">
-      <div class="brand"><span class="brand-mark">◆</span> MES / Risk Lab</div>
-      <nav class="progress" aria-label="Slides">
-        <button type="button" data-slide="0" aria-label="Go to slide 1"></button>
-        <button type="button" data-slide="1" aria-label="Go to slide 2"></button>
-        <button type="button" data-slide="2" aria-label="Go to slide 3"></button>
-        <button type="button" data-slide="3" aria-label="Go to slide 4"></button>
-        <button type="button" data-slide="4" aria-label="Go to slide 5"></button>
-        <button type="button" data-slide="5" aria-label="Go to slide 6"></button>
-      </nav>
-      <output class="slide-count" id="slideCount" aria-live="polite">01 / 06</output>
-    </header>
-
-    <main id="deck">
-      <section class="slide" id="slide-1" aria-labelledby="title-1">
-        <div class="slide-inner hero-grid">
-          <div>
-            <p class="eyebrow">Micro E-mini S&amp;P 500 futures</p>
-            <h1 id="title-1" tabindex="-1">Size the risk. Then size the trade.</h1>
-            <p class="lede">
-              A risk-first walkthrough for turning an MES chart stop into a planned dollar ceiling
-              before the order reaches the market.
-            </p>
-            <p class="hero-note">
-              Educational example only. Prices are illustrative, not live. This deck does not account
-              for margin, commissions, taxes, liquidity, gaps, or every form of slippage.
-            </p>
-          </div>
-
-          <div class="ladder" aria-label="Illustrative MES price ladder from entry to stop">
-            <div class="ladder-row"><span>6451.00</span><span>+$5.00</span></div>
-            <div class="ladder-row entry"><strong>6450.00</strong><span>entry</span></div>
-            <div class="ladder-row"><span>6449.00</span><span>−$5.00</span></div>
-            <div class="ladder-row"><span>6448.00</span><span>−$10.00</span></div>
-            <div class="ladder-row"><span>6447.00</span><span>−$15.00</span></div>
-            <div class="ladder-row"><span>6446.00</span><span>−$20.00</span></div>
-            <div class="ladder-row"><span>6445.00</span><span>−$25.00</span></div>
-            <div class="ladder-row stop"><strong>6444.50</strong><span>stop · −$27.50</span></div>
-          </div>
-        </div>
-      </section>
-
-      <section class="slide" id="slide-2" aria-labelledby="title-2" hidden>
-        <div class="slide-inner">
-          <p class="eyebrow">01 / Know the instrument</p>
-          <h2 id="title-2" tabindex="-1">One index point is $5 per MES contract.</h2>
-          <div class="split">
-            <div class="big-stat">
-              $1.25
-              <span>minimum tick value · 0.25 index point</span>
-            </div>
-            <div class="tick-stack" aria-label="MES point and tick value examples">
-              <div class="tick"><span>0.25 point</span><b>$1.25</b></div>
-              <div class="tick"><span>0.50 point</span><b>$2.50</b></div>
-              <div class="tick active"><span>1.00 point</span><b>$5.00</b></div>
-              <div class="tick"><span>5.00 points</span><b>$25.00</b></div>
-            </div>
-          </div>
-          <p class="source-note">
-            CME lists a “$5 multiplier for Micro E-mini S&amp;P 500 futures contract” and an outright
-            tick of “0.25 Index points= $1.25.”
-            <a
-              href="https://www.cmegroup.com/articles/faqs/frequently-asked-questions-micro-e-mini-equity-index-futures.html"
-              target="_blank"
-              rel="noreferrer"
-              >CME Group FAQ ↗</a
-            >
-          </p>
-        </div>
-      </section>
-
-      <section class="slide" id="slide-3" aria-labelledby="title-3" hidden>
-        <div class="slide-inner">
-          <p class="eyebrow">02 / Translate the stop</p>
-          <h2 id="title-3" tabindex="-1">The chart chooses the stop. The contract converts it.</h2>
-          <div class="formula-flow" aria-label="Illustrative risk calculation">
-            <div class="formula-step">
-              <span class="label">Entry</span>
-              <strong>6450.00</strong>
-              <small>Illustrative price</small>
-            </div>
-            <div class="formula-step">
-              <span class="label">Stop</span>
-              <strong>6444.50</strong>
-              <small>5.5 points away</small>
-            </div>
-            <div class="formula-step">
-              <span class="label">Contract risk</span>
-              <strong>$27.50</strong>
-              <small>5.5 × $5 per point</small>
-            </div>
-            <div class="formula-step accent">
-              <span class="label">Planning risk</span>
-              <strong>$30.00</strong>
-              <small>Includes a $2.50 example buffer</small>
-            </div>
-          </div>
-          <p class="rule">planned risk / contract = |entry − stop| × $5 + chosen cost buffer</p>
-        </div>
-      </section>
-
-      <section class="slide" id="slide-4" aria-labelledby="title-4" hidden>
-        <div class="slide-inner">
-          <p class="eyebrow">03 / Set the ceiling</p>
-          <h2 id="title-4" tabindex="-1">Calculate the maximum before deciding the actual size.</h2>
-          <div class="calc-grid">
-            <form class="calculator" id="calculator">
-              <div class="field-grid">
-                <label>
-                  Risk budget ($)
-                  <input id="budget" type="number" min="0" step="5" value="150" inputmode="decimal" />
-                </label>
-                <label>
-                  Cost buffer / contract ($)
-                  <input id="buffer" type="number" min="0" step="0.25" value="2.50" inputmode="decimal" />
-                </label>
-                <label>
-                  Entry price
-                  <input id="entry" type="number" min="0" step="0.25" value="6450" inputmode="decimal" />
-                </label>
-                <label>
-                  Stop price
-                  <input id="stop" type="number" min="0" step="0.25" value="6444.50" inputmode="decimal" />
-                </label>
-              </div>
-              <div class="risk-strip" aria-label="Calculated risk details">
-                <div class="risk-cell"><span>Distance</span><b id="distance">5.50 pts</b></div>
-                <div class="risk-cell"><span>Ticks</span><b id="ticks">22</b></div>
-                <div class="risk-cell"><span>Per contract</span><b id="perContract">$30.00</b></div>
-              </div>
-            </form>
-
-            <output class="result-card" id="result" aria-live="polite">
-              <span class="result-label">Mechanical maximum</span>
-              <strong class="result-number" id="maxContracts">5</strong>
-              <span class="result-detail" id="resultDetail">
-                contracts × <strong>$30.00</strong> planned risk = <strong>$150.00</strong>.
-                A ceiling is not a recommendation.
-              </span>
-            </output>
-          </div>
-        </div>
-      </section>
-
-      <section class="slide" id="slide-5" aria-labelledby="title-5" hidden>
-        <div class="slide-inner">
-          <p class="eyebrow">04 / Govern the session</p>
-          <h2 id="title-5" tabindex="-1">One trade is math. A session is policy.</h2>
-          <div class="session-line" aria-label="Illustrative session loss sequence">
-            <div class="loss-slot">
-              <span>Loss 01</span>
-              <strong>Pause</strong>
-              <p>Check whether execution and market conditions still match the plan.</p>
-            </div>
-            <div class="loss-slot">
-              <span>Loss 02</span>
-              <strong>Reduce</strong>
-              <p>Recalculate remaining session risk before another order.</p>
-            </div>
-            <div class="loss-slot">
-              <span>Limit reached</span>
-              <strong>Stop</strong>
-              <p>A precommitted boundary removes the next decision from the heat of the moment.</p>
-            </div>
-          </div>
-          <p class="source-note">
-            These are example controls, not universal thresholds. Actual loss can exceed planned loss,
-            especially during gaps, thin liquidity, or fast markets.
-          </p>
-        </div>
-      </section>
-
-      <section class="slide" id="slide-6" aria-labelledby="title-6" hidden>
-        <div class="slide-inner close-grid">
-          <div>
-            <p class="eyebrow">05 / Before order entry</p>
-            <h2 id="title-6" tabindex="-1">Risk math is a gate, not a forecast.</h2>
-            <ul class="checklist">
-              <li>Confirm the exact contract and expiration month.</li>
-              <li>Place the stop at the trade's invalidation point, not at a convenient dollar amount.</li>
-              <li>Convert the stop distance to dollars and add an explicit cost buffer.</li>
-              <li>Floor the size calculation; never round up.</li>
-              <li>Check total exposure, session limits, scheduled events, and liquidity.</li>
-              <li>Know how the position and protective order will be exited.</li>
-            </ul>
-          </div>
-
-          <aside class="sources">
-            <h3>Sources and scope</h3>
-            <p>
-              Contract multiplier and minimum tick:
-              <a
-                href="https://www.cmegroup.com/articles/faqs/frequently-asked-questions-micro-e-mini-equity-index-futures.html"
-                target="_blank"
-                rel="noreferrer"
-                >CME Group — Micro E-mini Equity Index Futures FAQ</a
-              >.
-            </p>
-            <p>
-              Current product fact card:
-              <a
-                href="https://www.cmegroup.com/trading/equity-index/files/cme-micro-e-mini-futures-fact-card.pdf"
-                target="_blank"
-                rel="noreferrer"
-                >CME Group — Micro E-mini Futures</a
-              >.
-            </p>
-            <p>
-              Educational demonstration only; not investment, tax, or legal advice. Futures are
-              leveraged and involve substantial risk. Verify current exchange and broker
-              specifications before trading.
-            </p>
-          </aside>
-        </div>
-      </section>
-    </main>
-
-    <p class="legal">Illustrative MES risk math · not a live quote or trading recommendation</p>
-    <nav class="deck-nav" aria-label="Presentation controls">
-      <button class="nav-button" id="previous" type="button" aria-label="Previous slide">←</button>
-      <button class="nav-button" id="next" type="button" aria-label="Next slide">→</button>
-    </nav>
-
-    <script>
-      (() => {
-        const slides = [...document.querySelectorAll(".slide")];
-        const progressButtons = [...document.querySelectorAll("[data-slide]")];
-        const previousButton = document.querySelector("#previous");
-        const nextButton = document.querySelector("#next");
-        const slideCount = document.querySelector("#slideCount");
-        const money = new Intl.NumberFormat("en-US", {
-          style: "currency",
-          currency: "USD",
-          minimumFractionDigits: 2,
-        });
-        let current = 0;
-
-        const indexFromHash = () => {
-          const match = location.hash.match(/^#slide-(\d+)$/);
-          if (!match) return 0;
-          return Math.min(slides.length - 1, Math.max(0, Number(match[1]) - 1));
-        };
-
-        const show = (index, updateHash = true) => {
-          current = Math.min(slides.length - 1, Math.max(0, index));
-          slides.forEach((slide, slideIndex) => {
-            const active = slideIndex === current;
-            slide.hidden = !active;
-            slide.inert = !active;
-            slide.setAttribute("aria-hidden", String(!active));
-          });
-          progressButtons.forEach((button, buttonIndex) => {
-            if (buttonIndex === current) button.setAttribute("aria-current", "step");
-            else button.removeAttribute("aria-current");
-          });
-          previousButton.disabled = current === 0;
-          nextButton.disabled = current === slides.length - 1;
-          slideCount.value = `${String(current + 1).padStart(2, "0")} / ${String(slides.length).padStart(2, "0")}`;
-          if (updateHash) history.replaceState(null, "", `#slide-${current + 1}`);
-          slides[current].querySelector("h1, h2")?.focus({ preventScroll: true });
-        };
-
-        previousButton.addEventListener("click", () => show(current - 1));
-        nextButton.addEventListener("click", () => show(current + 1));
-        progressButtons.forEach((button) => {
-          button.addEventListener("click", () => show(Number(button.dataset.slide)));
-        });
-
-        addEventListener("hashchange", () => show(indexFromHash(), false));
-        addEventListener("keydown", (event) => {
-          const editing = event.target.matches("input, textarea, select, [contenteditable]");
-          if (editing && ["ArrowLeft", "ArrowRight", "Home", "End", " "].includes(event.key)) return;
-
-          if (["ArrowRight", "PageDown", " "].includes(event.key)) {
-            event.preventDefault();
-            show(current + 1);
-          } else if (["ArrowLeft", "PageUp"].includes(event.key)) {
-            event.preventDefault();
-            show(current - 1);
-          } else if (event.key === "Home") {
-            event.preventDefault();
-            show(0);
-          } else if (event.key === "End") {
-            event.preventDefault();
-            show(slides.length - 1);
-          }
-        });
-
-        const calculator = document.querySelector("#calculator");
-        const budgetInput = document.querySelector("#budget");
-        const bufferInput = document.querySelector("#buffer");
-        const entryInput = document.querySelector("#entry");
-        const stopInput = document.querySelector("#stop");
-        const distanceOutput = document.querySelector("#distance");
-        const ticksOutput = document.querySelector("#ticks");
-        const perContractOutput = document.querySelector("#perContract");
-        const maxContractsOutput = document.querySelector("#maxContracts");
-        const resultDetail = document.querySelector("#resultDetail");
-
-        const calculate = () => {
-          const budget = Math.max(0, Number(budgetInput.value) || 0);
-          const buffer = Math.max(0, Number(bufferInput.value) || 0);
-          const entry = Number(entryInput.value) || 0;
-          const stop = Number(stopInput.value) || 0;
-          const distance = Math.abs(entry - stop);
-          const ticks = distance / 0.25;
-          const perContract = distance * 5 + buffer;
-          const maxContracts = perContract > 0 ? Math.floor(budget / perContract) : 0;
-          const plannedTotal = maxContracts * perContract;
-
-          distanceOutput.textContent = `${distance.toFixed(2)} pts`;
-          ticksOutput.textContent = Number.isInteger(ticks) ? String(ticks) : ticks.toFixed(2);
-          perContractOutput.textContent = money.format(perContract);
-          maxContractsOutput.textContent = String(maxContracts);
-          resultDetail.innerHTML = maxContracts
-            ? `contracts × <strong>${money.format(perContract)}</strong> planned risk = <strong>${money.format(plannedTotal)}</strong>. A ceiling is not a recommendation.`
-            : `The current budget does not cover one contract at <strong>${money.format(perContract)}</strong> planned risk.`;
-        };
-
-        calculator.addEventListener("input", calculate);
-        show(indexFromHash(), false);
-        calculate();
-      })();
-    </script>
-  </body>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="description" content="An educational MES risk-sizing deck." />
+		<title>MES Risk Lab</title>
+		<style>
+			:root {
+				color-scheme: dark;
+				--bg: #09100f;
+				--panel: #111a18;
+				--ink: #f4f3ee;
+				--muted: #9ca4a0;
+				--line: #2a3935;
+				--lime: #c7ff4a;
+				--sans: Inter, ui-sans-serif, system-ui, sans-serif;
+				--mono: "SFMono-Regular", Consolas, monospace;
+			}
+
+			* {
+				box-sizing: border-box;
+			}
+			html,
+			body {
+				min-width: 320px;
+				height: 100%;
+				margin: 0;
+			}
+			body {
+				overflow: hidden;
+				background: var(--bg);
+				color: var(--ink);
+				font-family: var(--sans);
+			}
+			button,
+			input {
+				font: inherit;
+			}
+			button,
+			a,
+			input {
+				outline-offset: 4px;
+			}
+			button:focus-visible,
+			a:focus-visible,
+			input:focus-visible {
+				outline: 2px solid var(--lime);
+			}
+			a {
+				color: var(--lime);
+			}
+
+			.deck-bar,
+			.deck-nav {
+				position: fixed;
+				z-index: 2;
+			}
+			.deck-bar {
+				top: 0;
+				display: grid;
+				grid-template-columns: auto 1fr auto;
+				gap: 1.5rem;
+				align-items: center;
+				width: 100%;
+				padding: 1rem clamp(1rem, 4vw, 4rem);
+				border-bottom: 1px solid var(--line);
+				background: #09100fe6;
+			}
+			.brand,
+			.eyebrow,
+			label,
+			.result-label {
+				font-family: var(--mono);
+				letter-spacing: 0.1em;
+				text-transform: uppercase;
+			}
+			.brand {
+				font-size: 0.72rem;
+				font-weight: 700;
+			}
+			.brand span,
+			.eyebrow,
+			.fact strong {
+				color: var(--lime);
+			}
+			.progress {
+				display: grid;
+				grid-template-columns: repeat(4, 1fr);
+				gap: 0.35rem;
+				max-width: 30rem;
+				width: 100%;
+				margin: auto;
+			}
+			.progress button {
+				height: 0.25rem;
+				padding: 0;
+				border: 0;
+				border-radius: 99px;
+				background: var(--line);
+				cursor: pointer;
+			}
+			.progress button[aria-current="step"] {
+				background: var(--lime);
+			}
+			.slide-count {
+				color: var(--muted);
+				font-family: var(--mono);
+				font-size: 0.78rem;
+			}
+
+			main,
+			.slide {
+				width: 100%;
+				height: 100%;
+			}
+			.slide {
+				position: absolute;
+				inset: 0;
+				display: grid;
+				place-items: center;
+				overflow: auto;
+				padding: 7rem clamp(1.5rem, 6vw, 6rem);
+			}
+			.slide[hidden] {
+				display: none;
+			}
+			.inner {
+				width: min(1200px, 100%);
+			}
+			.grid {
+				display: grid;
+				grid-template-columns: repeat(2, minmax(0, 1fr));
+				gap: clamp(2rem, 6vw, 6rem);
+				align-items: center;
+			}
+			.eyebrow {
+				margin: 0 0 1rem;
+				color: var(--muted);
+				font-size: 0.75rem;
+			}
+			h1,
+			h2 {
+				max-width: 15ch;
+				margin: 0 0 1.5rem;
+				letter-spacing: -0.06em;
+				line-height: 0.92;
+			}
+			h1 {
+				font-size: clamp(3.5rem, 8vw, 8rem);
+			}
+			h2 {
+				font-size: clamp(2.5rem, 5vw, 5.5rem);
+			}
+			.lede,
+			.note {
+				color: var(--muted);
+				font-size: clamp(1rem, 1.7vw, 1.3rem);
+				line-height: 1.55;
+			}
+			.note {
+				max-width: 42rem;
+				margin-top: 2rem;
+				font-size: 0.9rem;
+			}
+
+			.card {
+				padding: clamp(1.5rem, 4vw, 3rem);
+				border: 1px solid var(--line);
+				border-radius: 1.2rem;
+				background: var(--panel);
+			}
+			.facts {
+				display: grid;
+				gap: 0.75rem;
+			}
+			.fact {
+				display: flex;
+				justify-content: space-between;
+				gap: 1rem;
+				padding: 1rem 0;
+				border-bottom: 1px solid var(--line);
+				color: var(--muted);
+				font-family: var(--mono);
+			}
+			.fact strong {
+				font-size: 1.25rem;
+			}
+			.formula {
+				padding: 1rem;
+				border-left: 3px solid var(--lime);
+				background: #c7ff4a1a;
+				font-family: var(--mono);
+			}
+
+			form {
+				display: grid;
+				gap: 1rem;
+			}
+			.fields {
+				display: grid;
+				grid-template-columns: repeat(2, minmax(0, 1fr));
+				gap: 1rem;
+			}
+			label {
+				display: grid;
+				gap: 0.45rem;
+				color: var(--muted);
+				font-size: 0.7rem;
+			}
+			input {
+				width: 100%;
+				padding: 0.8rem;
+				border: 1px solid var(--line);
+				border-radius: 0.5rem;
+				background: var(--bg);
+				color: var(--ink);
+			}
+			.metrics {
+				display: grid;
+				grid-template-columns: repeat(3, 1fr);
+				gap: 1rem;
+			}
+			.metrics div {
+				padding-top: 0.75rem;
+				border-top: 1px solid var(--line);
+			}
+			.metrics span {
+				display: block;
+				color: var(--muted);
+				font-family: var(--mono);
+				font-size: 0.68rem;
+				text-transform: uppercase;
+			}
+			.result {
+				min-height: 100%;
+				background:
+					linear-gradient(145deg, #c7ff4a1a, transparent 45%), var(--panel);
+			}
+			.result-number {
+				display: block;
+				margin: 1.5rem 0;
+				color: var(--lime);
+				font-family: var(--mono);
+				font-size: clamp(5rem, 10vw, 9rem);
+				line-height: 0.85;
+			}
+
+			.checklist {
+				margin: 0;
+				padding: 0;
+				list-style: none;
+			}
+			.checklist li {
+				padding: 0.9rem 0;
+				border-bottom: 1px solid var(--line);
+				font-size: 1.05rem;
+			}
+			.checklist li::before {
+				margin-right: 0.8rem;
+				color: var(--lime);
+				content: "□";
+			}
+
+			.deck-nav {
+				right: clamp(1rem, 4vw, 4rem);
+				bottom: 1rem;
+				display: flex;
+				gap: 0.6rem;
+			}
+			.nav-button {
+				width: 2.9rem;
+				height: 2.9rem;
+				border: 1px solid var(--line);
+				border-radius: 50%;
+				background: var(--panel);
+				color: var(--ink);
+				cursor: pointer;
+			}
+			.nav-button:disabled {
+				opacity: 0.3;
+			}
+			@media (max-width: 720px) {
+				body {
+					overflow: auto;
+				}
+				.grid {
+					grid-template-columns: 1fr;
+					gap: 1.5rem;
+				}
+				.slide {
+					position: relative;
+					min-height: 100%;
+					height: auto;
+					padding-block: 7rem;
+				}
+				.fields,
+				.metrics {
+					grid-template-columns: 1fr;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<header class="deck-bar">
+			<div class="brand"><span>◆</span> MES / Risk Lab</div>
+			<nav class="progress" aria-label="Slides"></nav>
+			<output class="slide-count" aria-live="polite">01 / 04</output>
+		</header>
+
+		<main>
+			<section class="slide" id="slide-1" aria-labelledby="title-1">
+				<div class="inner grid">
+					<div>
+						<p class="eyebrow">Micro E-mini S&amp;P 500 futures</p>
+						<h1 id="title-1" tabindex="-1">
+							Size the risk. Then size the trade.
+						</h1>
+						<p class="lede">
+							Turn a chart stop into a planned dollar ceiling before the order
+							reaches the market.
+						</p>
+						<p class="note">
+							Educational example only. Margin, commissions, liquidity, gaps,
+							and slippage can change actual loss.
+						</p>
+					</div>
+					<aside class="card facts" aria-label="MES contract facts">
+						<div class="fact">
+							<span>Minimum tick</span><strong>$1.25</strong>
+						</div>
+						<div class="fact">
+							<span>Tick size</span><strong>0.25 pts</strong>
+						</div>
+						<div class="fact">
+							<span>Point value</span><strong>$5.00</strong>
+						</div>
+					</aside>
+				</div>
+			</section>
+
+			<section class="slide" id="slide-2" aria-labelledby="title-2" hidden>
+				<div class="inner">
+					<p class="eyebrow">01 / Translate the stop</p>
+					<h2 id="title-2" tabindex="-1">
+						The chart chooses the stop. The contract converts it.
+					</h2>
+					<p class="formula">
+						planned risk / contract = |entry − stop| × $5 + cost buffer
+					</p>
+					<div class="grid">
+						<form class="card" id="calculator">
+							<div class="fields">
+								<label
+									>Risk budget ($)<input
+										id="budget"
+										type="number"
+										min="0"
+										step="5"
+										value="150"
+										inputmode="decimal"
+								/></label>
+								<label
+									>Cost buffer / contract ($)<input
+										id="buffer"
+										type="number"
+										min="0"
+										step="0.25"
+										value="2.50"
+										inputmode="decimal"
+								/></label>
+								<label
+									>Entry price<input
+										id="entry"
+										type="number"
+										min="0"
+										step="0.25"
+										value="6450"
+										inputmode="decimal"
+								/></label>
+								<label
+									>Stop price<input
+										id="stop"
+										type="number"
+										min="0"
+										step="0.25"
+										value="6444.50"
+										inputmode="decimal"
+								/></label>
+							</div>
+							<div class="metrics" aria-label="Calculated risk details">
+								<div><span>Distance</span><b id="distance">5.50 pts</b></div>
+								<div><span>Ticks</span><b id="ticks">22</b></div>
+								<div>
+									<span>Per contract</span><b id="per-contract">$30.00</b>
+								</div>
+							</div>
+						</form>
+						<output class="card result" aria-live="polite">
+							<span class="result-label">Mechanical maximum</span>
+							<strong class="result-number" id="max-contracts">5</strong>
+							<span class="note" id="result-detail"
+								>A ceiling is not a recommendation.</span
+							>
+						</output>
+					</div>
+				</div>
+			</section>
+
+			<section class="slide" id="slide-3" aria-labelledby="title-3" hidden>
+				<div class="inner grid">
+					<div>
+						<p class="eyebrow">02 / Govern the session</p>
+						<h2 id="title-3" tabindex="-1">
+							Risk math is a gate, not a forecast.
+						</h2>
+						<p class="note">
+							After a loss: pause, reduce, or stop. Set the boundary before the
+							heat of the moment.
+						</p>
+						<ul class="checklist">
+							<li>Confirm the exact contract and expiration month.</li>
+							<li>Place the stop at the invalidation point.</li>
+							<li>Convert the stop to dollars and add a buffer.</li>
+							<li>Floor the size calculation. Never round up.</li>
+							<li>Check exposure, session limits, events, and liquidity.</li>
+						</ul>
+					</div>
+					<aside class="card">
+						<h3>Sources and scope</h3>
+						<p>
+							<a
+								href="https://www.cmegroup.com/articles/faqs/frequently-asked-questions-micro-e-mini-equity-index-futures.html"
+								target="_blank"
+								rel="noreferrer"
+								>CME Group — Micro E-mini FAQ</a
+							>
+						</p>
+						<p>
+							<a
+								href="https://www.cmegroup.com/trading/equity-index/files/cme-micro-e-mini-futures-fact-card.pdf"
+								target="_blank"
+								rel="noreferrer"
+								>CME Group — Micro E-mini fact card</a
+							>
+						</p>
+						<p class="note">
+							Educational demonstration only; not investment, tax, or legal
+							advice. Futures are leveraged and involve substantial risk.
+						</p>
+					</aside>
+				</div>
+			</section>
+		</main>
+
+		<nav class="deck-nav" aria-label="Presentation controls">
+			<button
+				class="nav-button"
+				id="previous"
+				type="button"
+				aria-label="Previous slide"
+			>
+				←
+			</button>
+			<button
+				class="nav-button"
+				id="next"
+				type="button"
+				aria-label="Next slide"
+			>
+				→
+			</button>
+		</nav>
+
+		<script>
+			(() => {
+				const slides = [...document.querySelectorAll(".slide")];
+				const progress = document.querySelector(".progress");
+				const count = document.querySelector(".slide-count");
+				const previous = document.querySelector("#previous");
+				const next = document.querySelector("#next");
+				const money = new Intl.NumberFormat("en-US", {
+					style: "currency",
+					currency: "USD",
+				});
+				let current = 0;
+
+				const buttons = slides.map((_, index) => {
+					const button = document.createElement("button");
+					button.type = "button";
+					button.ariaLabel = `Go to slide ${index + 1}`;
+					button.addEventListener("click", () => show(index));
+					progress.append(button);
+					return button;
+				});
+
+				const clamp = (value) =>
+					Math.min(slides.length - 1, Math.max(0, value));
+				const hashIndex = () =>
+					clamp(Number(location.hash.replace("#slide-", "")) - 1 || 0);
+				function show(index, writeHash = true) {
+					current = clamp(index);
+					slides.forEach((slide, index) => {
+						const active = index === current;
+						slide.hidden = !active;
+						slide.inert = !active;
+						slide.setAttribute("aria-hidden", String(!active));
+					});
+					buttons.forEach((button, index) =>
+						button.toggleAttribute("aria-current", index === current),
+					);
+					previous.disabled = current === 0;
+					next.disabled = current === slides.length - 1;
+					count.value = `${String(current + 1).padStart(2, "0")} / ${String(slides.length).padStart(2, "0")}`;
+					if (writeHash)
+						history.replaceState(null, "", `#slide-${current + 1}`);
+					slides[current]
+						.querySelector("h1, h2")
+						?.focus({ preventScroll: true });
+				}
+
+				previous.addEventListener("click", () => show(current - 1));
+				next.addEventListener("click", () => show(current + 1));
+				addEventListener("hashchange", () => show(hashIndex(), false));
+				addEventListener("keydown", (event) => {
+					if (
+						event.target.matches("input, textarea, select, [contenteditable]")
+					)
+						return;
+					const move = {
+						ArrowRight: 1,
+						PageDown: 1,
+						ArrowLeft: -1,
+						PageUp: -1,
+					}[event.key];
+					if (move) {
+						event.preventDefault();
+						show(current + move);
+					}
+					if (event.key === "Home") show(0);
+					if (event.key === "End") show(slides.length - 1);
+				});
+
+				const inputs = ["budget", "buffer", "entry", "stop"].map((id) =>
+					document.querySelector(`#${id}`),
+				);
+				const output = (id) => document.querySelector(`#${id}`);
+				function calculate() {
+					const [budget, buffer, entry, stop] = inputs.map(
+						(input) => Number(input.value) || 0,
+					);
+					const distance = Math.abs(entry - stop);
+					const perContract = distance * 5 + Math.max(0, buffer);
+					const contracts = perContract
+						? Math.floor(Math.max(0, budget) / perContract)
+						: 0;
+					output("distance").textContent = `${distance.toFixed(2)} pts`;
+					output("ticks").textContent = String(distance / 0.25);
+					output("per-contract").textContent = money.format(perContract);
+					output("max-contracts").textContent = String(contracts);
+					output("result-detail").innerHTML = contracts
+						? `contracts × <strong>${money.format(perContract)}</strong> planned risk = <strong>${money.format(contracts * perContract)}</strong>. A ceiling is not a recommendation.`
+						: `The budget does not cover one contract at <strong>${money.format(perContract)}</strong> planned risk.`;
+				}
+
+				inputs.forEach((input) => input.addEventListener("input", calculate));
+				show(hashIndex(), false);
+				calculate();
+			})();
+		</script>
+	</body>
 </html>

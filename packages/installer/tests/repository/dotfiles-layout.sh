@@ -23,7 +23,6 @@ codex/.codex/keybindings.json
 .oxfmtrc.json
 .vscode
 AGENTS.md
-TODO.md
 arc/StorableLinkRouting.json
 ghostty/config
 images/icon.png
@@ -62,7 +61,6 @@ done <<<"$required_paths"
 
 allowed_roots='
 .agents
-.agents-archive
 .github
 codex
 .gitignore
@@ -70,7 +68,6 @@ codex
 .oxfmtrc.json
 .vscode
 AGENTS.md
-TODO.md
 arc
 ghostty
 images

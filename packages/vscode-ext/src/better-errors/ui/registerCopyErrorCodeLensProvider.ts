@@ -5,7 +5,12 @@ import {
 	BETTER_ERRORS_COMMAND_TITLES,
 	BETTER_ERRORS_CONFIG,
 } from "../../shared/consts/betterErrors";
+import {
+	formatDiagnosticSeverity,
+	toBetterErrorRange,
+} from "../../shared/diagnostics";
 import { selectCodeLensDiagnostics } from "../diagnostics/selectCodeLensDiagnostics";
+import { isBetterErrorsEnabled } from "../settings";
 
 export function registerCopyErrorCodeLensProvider(): vscode.Disposable {
 	const onDidChangeCodeLenses = new vscode.EventEmitter<void>();
@@ -22,17 +27,8 @@ export function registerCopyErrorCodeLensProvider(): vscode.Disposable {
 				const diagnostics = selectCodeLensDiagnostics(
 					vscode.languages.getDiagnostics(document.uri).map((diagnostic) => ({
 						diagnostic,
-						range: {
-							start: {
-								line: diagnostic.range.start.line,
-								character: diagnostic.range.start.character,
-							},
-							end: {
-								line: diagnostic.range.end.line,
-								character: diagnostic.range.end.character,
-							},
-						},
-						severity: formatSeverity(diagnostic.severity),
+						range: toBetterErrorRange(diagnostic.range),
+						severity: formatDiagnosticSeverity(diagnostic.severity),
 					})),
 				);
 
@@ -72,27 +68,4 @@ export function registerCopyErrorCodeLensProvider(): vscode.Disposable {
 		configurationSubscription,
 		onDidChangeCodeLenses,
 	);
-}
-
-function isBetterErrorsEnabled(): boolean {
-	return vscode.workspace
-		.getConfiguration(BETTER_ERRORS_CONFIG.root)
-		.get(BETTER_ERRORS_CONFIG.enabled, true);
-}
-
-function formatSeverity(
-	severity: vscode.DiagnosticSeverity,
-): "error" | "warning" | "information" | "hint" | "unknown" {
-	switch (severity) {
-		case vscode.DiagnosticSeverity.Error:
-			return "error";
-		case vscode.DiagnosticSeverity.Warning:
-			return "warning";
-		case vscode.DiagnosticSeverity.Information:
-			return "information";
-		case vscode.DiagnosticSeverity.Hint:
-			return "hint";
-		default:
-			return "unknown";
-	}
 }

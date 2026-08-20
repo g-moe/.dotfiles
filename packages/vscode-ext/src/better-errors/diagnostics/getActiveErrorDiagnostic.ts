@@ -5,12 +5,13 @@ import type {
 	BetterErrorCallHierarchyItem,
 	BetterErrorCodeSnippet,
 	BetterErrorDiagnostic,
-	BetterErrorPosition,
-	BetterErrorRange,
 	BetterErrorReference,
-	BetterErrorSeverity,
 } from "../../shared/contracts/betterErrors";
 import { BETTER_ERRORS_CONFIG } from "../../shared/consts/betterErrors";
+import {
+	formatDiagnosticSeverity,
+	toBetterErrorRange,
+} from "../../shared/diagnostics";
 import { selectDiagnostic } from "./selectDiagnostic";
 
 const MAX_REFERENCES = 5;
@@ -29,11 +30,11 @@ export async function getActiveErrorDiagnostic(
 	const diagnostic = selectDiagnostic(
 		diagnostics.map((item) => ({
 			diagnostic: item,
-			range: toRange(item.range),
-			severity: formatSeverity(item.severity),
+			range: toBetterErrorRange(item.range),
+			severity: formatDiagnosticSeverity(item.severity),
 		})),
-		toRange(effectiveRange),
-		toPosition(effectiveActivePosition),
+		toBetterErrorRange(effectiveRange),
+		effectiveActivePosition,
 	);
 
 	if (!diagnostic) {
@@ -41,8 +42,8 @@ export async function getActiveErrorDiagnostic(
 	}
 
 	const filePath = getFilePath(editor.document.uri);
-	const diagnosticRange = toRange(diagnostic.range);
-	const selectionRange = toRange(selection);
+	const diagnosticRange = toBetterErrorRange(diagnostic.range);
+	const selectionRange = toBetterErrorRange(selection);
 	const symbolPosition = effectiveActivePosition;
 	const symbolRange =
 		editor.document.getWordRangeAtPosition(symbolPosition) ?? diagnostic.range;
@@ -65,14 +66,14 @@ export async function getActiveErrorDiagnostic(
 		documentLanguageId: editor.document.languageId,
 		range: diagnosticRange,
 		selection: selectionRange,
-		severity: formatSeverity(diagnostic.severity),
+		severity: formatDiagnosticSeverity(diagnostic.severity),
 		message: diagnostic.message,
 		rawMessage: diagnostic.message,
 		source: diagnostic.source,
 		code: normalizeDiagnosticCode(diagnostic.code),
 		relatedInformation: (diagnostic.relatedInformation ?? []).map((item) => ({
 			filePath: getFilePath(item.location.uri),
-			range: toRange(item.location.range),
+			range: toBetterErrorRange(item.location.range),
 			message: item.message,
 		})),
 		contextText: editor.document.getText(
@@ -142,7 +143,7 @@ async function getActiveScopeSnippet(
 
 	return {
 		filePath: getFilePath(document.uri),
-		range: toRange(snippetRange),
+		range: toBetterErrorRange(snippetRange),
 		languageId: document.languageId,
 		text: document.getText(snippetRange),
 	};
@@ -262,7 +263,7 @@ async function toReference(
 
 	return {
 		filePath: getFilePath(location.uri),
-		range: toRange(location.range),
+		range: toBetterErrorRange(location.range),
 		snippet: lineText,
 	};
 }
@@ -286,7 +287,7 @@ async function toCodeSnippet(
 
 	return {
 		filePath: getFilePath(targetUri),
-		range: toRange(targetRange),
+		range: toBetterErrorRange(targetRange),
 		languageId: document.languageId,
 		text: document.getText(snippetRange),
 	};
@@ -298,7 +299,7 @@ function toCallHierarchyItem(
 	return {
 		name: item.name,
 		filePath: getFilePath(item.uri),
-		range: toRange(item.range),
+		range: toBetterErrorRange(item.range),
 	};
 }
 
@@ -357,37 +358,6 @@ function getRangeArea(range: vscode.Range): number {
 
 function getLineSpan(range: vscode.Range): number {
 	return range.end.line - range.start.line;
-}
-
-function toPosition(position: vscode.Position): BetterErrorPosition {
-	return {
-		line: position.line,
-		character: position.character,
-	};
-}
-
-function toRange(range: vscode.Range | vscode.Selection): BetterErrorRange {
-	return {
-		start: toPosition(range.start),
-		end: toPosition(range.end),
-	};
-}
-
-function formatSeverity(
-	severity: vscode.DiagnosticSeverity,
-): BetterErrorSeverity {
-	switch (severity) {
-		case vscode.DiagnosticSeverity.Error:
-			return "error";
-		case vscode.DiagnosticSeverity.Warning:
-			return "warning";
-		case vscode.DiagnosticSeverity.Information:
-			return "information";
-		case vscode.DiagnosticSeverity.Hint:
-			return "hint";
-		default:
-			return "unknown";
-	}
 }
 
 function normalizeDiagnosticCode(
