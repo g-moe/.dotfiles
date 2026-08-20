@@ -434,5 +434,7 @@
     "workbench.editor.highlightModifiedTabs": true,
     "workbench.editor.showTabIndex": true,
     "workbench.editor.tabActionLocation": "left",
-    "remote.autoForwardPorts": false
+    "remote.autoForwardPorts": false,
+    "files.autoSave": "afterDelay",
+    "files.hotExit": "off"
 }

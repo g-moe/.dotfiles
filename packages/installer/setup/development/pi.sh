@@ -23,7 +23,7 @@ _install() {
 
 _configure() {
   safe_symlink_group 'Pi' \
-    "$ROOT_DIR/agents/AGENTS.md" "$HOME/.pi/agent/AGENTS.md"
+    "$ROOT_DIR/.agents/AGENTS.md" "$HOME/.pi/agent/AGENTS.md"
 }
 
 mac() {

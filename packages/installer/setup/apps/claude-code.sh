@@ -3,6 +3,7 @@ set -euo pipefail
 
 APP_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 INSTALLER_DIR="$(cd "$APP_DIR/../.." && pwd)"
+ROOT_DIR="$(cd "$INSTALLER_DIR/../.." && pwd)"
 . "$INSTALLER_DIR/lib/lib.sh"
 
 install_claude_code() {
@@ -13,13 +14,20 @@ install_claude_code() {
   esac
 }
 
+_configure() {
+  safe_symlink_group 'Claude Code' \
+    "$ROOT_DIR/.agents/AGENTS.md" "$HOME/.claude/AGENTS.md" \
+    "$ROOT_DIR/.agents/CLAUDE.md" "$HOME/.claude/CLAUDE.md"
+}
+
 mac() {
   brew_cask claude-code
+  _configure
 }
 
 linux() {
-  has claude && return 0
-  curl -fsSL https://claude.ai/install.sh | bash
+  has claude || curl -fsSL https://claude.ai/install.sh | bash
+  _configure
 }
 
 install_claude_code "$1"

@@ -14,7 +14,8 @@ fail() {
 
 required_paths='
 .agents
-agents/AGENTS.md
+.agents/AGENTS.md
+.agents/CLAUDE.md
 codex/.codex/config.toml
 codex/.codex/keybindings.json
 .gitignore
@@ -62,7 +63,6 @@ done <<<"$required_paths"
 allowed_roots='
 .agents
 .agents-archive
-agents
 codex
 .gitignore
 .nvmrc

@@ -34,14 +34,12 @@
 
 # Skills
 !/.agents/
+!/.agents/AGENTS.md
+!/.agents/CLAUDE.md
 !/.agents/skills/
 !/.agents/skills/**
 !/.agents-archive/
 !/.agents-archive/**
-
-# Agent instructions
-!/agents/
-!/agents/AGENTS.md
 
 # GitHub
 !/.github/

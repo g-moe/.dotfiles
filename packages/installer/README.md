@@ -123,9 +123,9 @@ Tests mirror the installer tree. Setup checks live under `tests/setup/<phase>/`,
 library checks under `tests/lib/`, top-level installer-flow checks at the tests
 root, and repository/link checks under `tests/repository/`.
 
-### Codex settings
+### Agent settings
 
-Development setup links the shared `agents/AGENTS.md` to both
+Development setup links the shared `.agents/AGENTS.md` to both
 `~/.codex/AGENTS.md` and `~/.pi/agent/AGENTS.md`. It also links
 `codex/.codex/config.toml` and `codex/.codex/keybindings.json` to `~/.codex/`.
 On another machine, clone or pull the repo at `~/.dotfiles`, then run
