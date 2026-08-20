@@ -1,7 +1,7 @@
 sandbox_mode = "danger-full-access"
 approval_policy = "never"
 model = "gpt-5.6-sol"
-model_reasoning_effort = "low"
+model_reasoning_effort = "medium"
 service_tier = "priority"
 allow_login_shell = true
 include_environment_context = true
@@ -13,7 +13,7 @@ personality = "friendly"
 
 [agents]
 max_threads = 4
-max_depth = 3
+max_depth = 2
 
 [desktop]
 followUpQueueMode = "queue"
@@ -67,7 +67,7 @@ skill = "#bc8cff"
 
 [features]
 js_repl = false
-default_mode_request_user_input = true
+default_mode_request_user_input = false
 terminal_visualization_instructions = true
 
 [projects."/Users/garrett/code/tradester/tradester-monorepo/tradester"]
