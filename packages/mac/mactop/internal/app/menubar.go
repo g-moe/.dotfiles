@@ -289,6 +289,7 @@ const (
 	fanSettingsError
 	fanSettingsUpdateRequired
 	fanSettingsHelperError
+	fanSettingsSuspended
 )
 
 func fanSettingsDisplay(status fanHelperStatus, requestErr error) (int, string, string) {
@@ -304,6 +305,8 @@ func fanSettingsDisplay(status fanHelperStatus, requestErr error) (int, string, 
 	switch status.State {
 	case "off":
 		return fanSettingsOff, messages.Text("Menu_FanCurveDetail"), status.Message
+	case "suspended":
+		return fanSettingsSuspended, messages.Text("Menu_FanCurveDetail"), status.Message
 	case "starting":
 		return fanSettingsStarting, messages.Text("Menu_FanPolicyStartingDetail"), ""
 	case "stopping":

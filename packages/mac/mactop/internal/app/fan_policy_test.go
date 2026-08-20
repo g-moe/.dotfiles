@@ -1,6 +1,7 @@
 package app
 
 import (
+	"context"
 	"errors"
 	"math"
 	"path/filepath"
@@ -245,7 +246,7 @@ func TestConstantFanPolicyWritesTargetBeforeMode(t *testing.T) {
 		Mode: fanModeConstant, ConstantRPM: 2200,
 	})
 	sample := SocMetrics{Fans: []FanInfo{{ID: 0, MinRPM: 1000, MaxRPM: 3000}}}
-	if _, targets, err := controller.apply(sample, SystemInfo{}); err != nil {
+	if _, targets, err := controller.apply(context.Background(), sample, SystemInfo{}); err != nil {
 		t.Fatal(err)
 	} else if targets[0] != 2200 {
 		t.Fatalf("target = %d, want 2200", targets[0])
@@ -264,7 +265,7 @@ func TestConstantFanPolicyRequiresExactTargetReadback(t *testing.T) {
 	sample := SocMetrics{Fans: []FanInfo{{
 		ID: 0, MinRPM: 1000, MaxRPM: 3000, Mode: 1, TargetRPM: 2199,
 	}}}
-	if _, _, err := controller.apply(sample, SystemInfo{}); err == nil {
+	if _, _, err := controller.apply(context.Background(), sample, SystemInfo{}); err == nil {
 		t.Fatal("inexact constant target readback returned no error")
 	}
 	if !reflect.DeepEqual(hardware.calls, []string{"reset"}) {
@@ -293,7 +294,7 @@ func TestFanPolicyApplyClassifiesModeThreeOwnershipLossAndRestoresAuto(t *testin
 	})
 	controller.lastRPM[0] = 2200
 
-	_, _, err := controller.apply(SocMetrics{Fans: []FanInfo{{
+	_, _, err := controller.apply(context.Background(), SocMetrics{Fans: []FanInfo{{
 		ID: 0, MinRPM: 1000, MaxRPM: 3000, Mode: 3, TargetRPM: 0,
 	}}}, SystemInfo{})
 	if !errors.Is(err, errFanManualOwnershipLost) {
@@ -335,6 +336,19 @@ func (f *fakeFanHardware) ResetToAuto() error {
 	return nil
 }
 
+type cancelAfterTargetFanHardware struct {
+	fakeFanHardware
+	cancel context.CancelFunc
+}
+
+func (f *cancelAfterTargetFanHardware) SetTarget(fanID, rpm int) error {
+	if err := f.fakeFanHardware.SetTarget(fanID, rpm); err != nil {
+		return err
+	}
+	f.cancel()
+	return nil
+}
+
 func validPolicySample(mode, target int) SocMetrics {
 	return SocMetrics{
 		Fans:        []FanInfo{{ID: 0, MinRPM: 1000, MaxRPM: 3000, Mode: mode, TargetRPM: target}},
@@ -342,10 +356,47 @@ func validPolicySample(mode, target int) SocMetrics {
 	}
 }
 
+func TestFanPolicyDoesNotStartWritesAfterCancellation(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	cancel()
+	hardware := &fakeFanHardware{}
+	controller := newFanPolicyControllerWithSettings(hardware, fanPolicySettings{
+		Mode: fanModeConstant, ConstantRPM: 2200,
+	})
+	_, _, err := controller.apply(ctx, validPolicySample(0, 1000), SystemInfo{})
+	if !errors.Is(err, context.Canceled) {
+		t.Fatalf("cancellation error = %v", err)
+	}
+	if len(hardware.calls) != 0 {
+		t.Fatalf("policy writes after cancellation = %v", hardware.calls)
+	}
+}
+
+func TestFanPolicyStopsWritesWhenCanceledBetweenTargetAndMode(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	hardware := &cancelAfterTargetFanHardware{cancel: cancel}
+	controller := newFanPolicyControllerWithSettings(hardware, fanPolicySettings{
+		Mode: fanModeConstant, ConstantRPM: 2200,
+	})
+	_, _, err := controller.apply(ctx, validPolicySample(0, 1000), SystemInfo{})
+	if !errors.Is(err, context.Canceled) {
+		t.Fatalf("cancellation error = %v", err)
+	}
+	if !reflect.DeepEqual(hardware.calls, []string{"target"}) {
+		t.Fatalf("policy writes = %v, want only target", hardware.calls)
+	}
+	if err := controller.Close(); err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(hardware.calls, []string{"target", "reset"}) {
+		t.Fatalf("cleanup calls = %v", hardware.calls)
+	}
+}
+
 func TestFanPolicyWritesTargetBeforeModeAndSuppressesNoOpWrites(t *testing.T) {
 	hardware := &fakeFanHardware{}
 	controller := newFanPolicyController(hardware)
-	_, targets, err := controller.apply(validPolicySample(0, 1000), SystemInfo{})
+	_, targets, err := controller.apply(context.Background(), validPolicySample(0, 1000), SystemInfo{})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -356,7 +407,7 @@ func TestFanPolicyWritesTargetBeforeModeAndSuppressesNoOpWrites(t *testing.T) {
 		t.Fatalf("calls = %v, want target, mode, then confirmed target", hardware.calls)
 	}
 
-	_, _, err = controller.apply(validPolicySample(1, 2000), SystemInfo{})
+	_, _, err = controller.apply(context.Background(), validPolicySample(1, 2000), SystemInfo{})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -384,7 +435,7 @@ func TestFanPolicySetsAllTargetsBeforeAnyManualMode(t *testing.T) {
 		},
 		TempSensors: []TempSensor{{Key: "Tp0", Name: "CPU P-Core", Value: 61.5}},
 	}
-	if _, _, err := controller.apply(sample, SystemInfo{}); err != nil {
+	if _, _, err := controller.apply(context.Background(), sample, SystemInfo{}); err != nil {
 		t.Fatal(err)
 	}
 	want := []string{"target", "target", "mode", "mode", "target", "target"}
@@ -405,7 +456,7 @@ func TestFanPolicyDeadbandKeepsLastWrittenTarget(t *testing.T) {
 			Fans:        []FanInfo{{ID: 0, MinRPM: 1000, MaxRPM: 3000, Mode: 1, TargetRPM: 2000}},
 			TempSensors: []TempSensor{{Key: "Tp0", Name: "CPU P-Core", Value: temperature}},
 		}
-		if _, _, err := controller.apply(sample, SystemInfo{}); err != nil {
+		if _, _, err := controller.apply(context.Background(), sample, SystemInfo{}); err != nil {
 			t.Fatalf("temperature %.1f: %v", temperature, err)
 		}
 	}
@@ -432,7 +483,7 @@ func TestFanPolicyFailureResetsOnce(t *testing.T) {
 			if test.name == "readback" {
 				controller.lastRPM[0] = 2000
 			}
-			if _, _, err := controller.apply(test.sample, SystemInfo{}); err == nil {
+			if _, _, err := controller.apply(context.Background(), test.sample, SystemInfo{}); err == nil {
 				t.Fatal("apply() returned no error")
 			}
 			_ = controller.Close()
@@ -451,7 +502,7 @@ func TestFanPolicyFailsClosedWhenManagedFanDisappears(t *testing.T) {
 		Fans:        []FanInfo{{ID: 1, MinRPM: 1000, MaxRPM: 3000, Mode: 0, TargetRPM: 1000}},
 		TempSensors: []TempSensor{{Key: "Tp0", Name: "CPU P-Core", Value: 50}},
 	}
-	if _, _, err := controller.apply(sample, SystemInfo{}); err == nil {
+	if _, _, err := controller.apply(context.Background(), sample, SystemInfo{}); err == nil {
 		t.Fatal("apply() returned no error")
 	}
 	if !reflect.DeepEqual(hardware.calls, []string{"reset"}) {
@@ -462,7 +513,7 @@ func TestFanPolicyFailsClosedWhenManagedFanDisappears(t *testing.T) {
 func TestFanPolicyReportsWriteAndResetFailures(t *testing.T) {
 	hardware := &fakeFanHardware{failTarget: true, failReset: true}
 	controller := newFanPolicyController(hardware)
-	_, _, err := controller.apply(validPolicySample(0, 1000), SystemInfo{})
+	_, _, err := controller.apply(context.Background(), validPolicySample(0, 1000), SystemInfo{})
 	if err == nil {
 		t.Fatal("apply() returned no error")
 	}

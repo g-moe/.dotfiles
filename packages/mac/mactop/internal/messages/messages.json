@@ -117,6 +117,7 @@
 	"Menu_FanPolicyStartingDetail": "Applying fan control and checking SMC readback…",
 	"Menu_FanPolicyStopping": "Stopping…",
 	"Menu_FanPolicyStoppingDetail": "Restoring automatic fan control…",
+	"Menu_FanPolicySuspended": "Suspended for Sleep",
 	"Menu_FanRangeCheckedOnApply": "Hardware range checked on Apply",
 	"Menu_FanStartRamp": "Start ramp (°C):",
 	"Menu_FanStatusSection": "Status and Helper",

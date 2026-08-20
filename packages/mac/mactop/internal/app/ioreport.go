@@ -367,7 +367,7 @@ func SetFanMode(fanIndex, mode int) error {
 	if mode != 0 && mode != 1 {
 		return fmt.Errorf("invalid fan mode %d", mode)
 	}
-	return setFanModeWithHardware(nativeFanModeHardware{}, fanIndex, mode, sleepForFanControl)
+	return setFanModeWithHardware(nativeFanModeHardware{}, fanIndex, mode, sleepForFanControl, noFanControlCheck)
 }
 
 // SetFanTarget sets the target RPM for a fan (clamped to min/max by C layer)

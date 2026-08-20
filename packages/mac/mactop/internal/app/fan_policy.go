@@ -169,12 +169,19 @@ type smcFanPolicyHardware struct {
 	context context.Context
 }
 
-func (smcFanPolicyHardware) SetTarget(fanID, rpm int) error { return SetFanTarget(fanID, rpm) }
+func (h smcFanPolicyHardware) SetTarget(fanID, rpm int) error {
+	if h.context != nil {
+		if err := h.context.Err(); err != nil {
+			return err
+		}
+	}
+	return SetFanTarget(fanID, rpm)
+}
 func (h smcFanPolicyHardware) SetMode(fanID, mode int) error {
 	if h.context == nil {
 		return SetFanMode(fanID, mode)
 	}
-	return setFanModeWithHardware(nativeFanModeHardware{}, fanID, mode, waitForFanControlContext(h.context))
+	return setFanModeWithHardware(nativeFanModeHardware{}, fanID, mode, waitForFanControlContext(h.context), checkFanControlContext(h.context))
 }
 func (smcFanPolicyHardware) ResetToAuto() error { return ResetFansToAuto() }
 
@@ -320,7 +327,10 @@ func (c *fanPolicyController) verifyLastWrite(fans []FanInfo) error {
 	return nil
 }
 
-func (c *fanPolicyController) apply(sample SocMetrics, sysInfo SystemInfo) (float64, map[int]int, error) {
+func (c *fanPolicyController) apply(ctx context.Context, sample SocMetrics, sysInfo SystemInfo) (float64, map[int]int, error) {
+	if err := ctx.Err(); err != nil {
+		return 0, nil, err
+	}
 	if err := c.verifyLastWrite(sample.Fans); err != nil {
 		return 0, nil, c.fail(err)
 	}
@@ -338,7 +348,13 @@ func (c *fanPolicyController) apply(sample SocMetrics, sysInfo SystemInfo) (floa
 			absInt(previous-target) <= fanTargetTolerance(c.settings.Mode) {
 			continue
 		}
+		if err := ctx.Err(); err != nil {
+			return 0, nil, err
+		}
 		if err := c.hardware.SetTarget(fan.ID, target); err != nil {
+			if ctx.Err() != nil {
+				return 0, nil, ctx.Err()
+			}
 			return 0, nil, c.fail(err)
 		}
 		writtenTargets[fan.ID] = target
@@ -347,7 +363,13 @@ func (c *fanPolicyController) apply(sample SocMetrics, sysInfo SystemInfo) (floa
 		if _, alreadyManaged := c.lastRPM[fan.ID]; alreadyManaged {
 			continue
 		}
+		if err := ctx.Err(); err != nil {
+			return 0, nil, err
+		}
 		if err := c.hardware.SetMode(fan.ID, 1); err != nil {
+			if ctx.Err() != nil {
+				return 0, nil, ctx.Err()
+			}
 			return 0, nil, c.fail(err)
 		}
 	}
@@ -364,7 +386,13 @@ func (c *fanPolicyController) apply(sample SocMetrics, sysInfo SystemInfo) (floa
 		if _, wasManaged := c.lastRPM[fan.ID]; wasManaged {
 			continue
 		}
+		if err := ctx.Err(); err != nil {
+			return 0, nil, err
+		}
 		if err := c.hardware.SetTarget(fan.ID, target); err != nil {
+			if ctx.Err() != nil {
+				return 0, nil, ctx.Err()
+			}
 			return 0, nil, c.fail(err)
 		}
 	}
@@ -460,7 +488,7 @@ func runFanPolicy(dryRun bool) (runErr error) {
 		if ctx.Err() != nil {
 			return nil
 		}
-		temperature, targets, err := controller.apply(sample, sysInfo)
+		temperature, targets, err := controller.apply(ctx, sample, sysInfo)
 		if err != nil {
 			return err
 		}

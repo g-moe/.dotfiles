@@ -26,6 +26,7 @@ type fanModeHardware interface {
 type nativeFanModeHardware struct{}
 
 type fanWait func(time.Duration) error
+type fanControlCheck func() error
 
 func fansHaveManualMode(fans []FanInfo) bool {
 	for _, fan := range fans {
@@ -70,14 +71,32 @@ func waitForFanControlContext(ctx context.Context) fanWait {
 	}
 }
 
-func setFanModeWithHardware(hardware fanModeHardware, fanID, mode int, wait fanWait) error {
+func noFanControlCheck() error { return nil }
+
+func checkFanControlContext(ctx context.Context) fanControlCheck {
+	if ctx == nil {
+		return noFanControlCheck
+	}
+	return ctx.Err
+}
+
+func setFanModeWithHardware(hardware fanModeHardware, fanID, mode int, wait fanWait, check fanControlCheck) error {
 	if mode == 0 {
 		return hardware.WriteMode(fanID, mode)
+	}
+	if check == nil {
+		check = noFanControlCheck
+	}
+	if err := check(); err != nil {
+		return err
 	}
 
 	directErr := hardware.WriteMode(fanID, mode)
 	if directErr == nil {
 		return nil
+	}
+	if err := check(); err != nil {
+		return err
 	}
 	if err := hardware.WriteForceTest(true); err != nil {
 		return errors.Join(directErr, fmt.Errorf("could not unlock fan control: %w", err))
@@ -88,6 +107,9 @@ func setFanModeWithHardware(hardware fanModeHardware, fanID, mode int, wait fanW
 	}
 	var retryErr error
 	for attempt := 0; attempt < fanUnlockAttempts; attempt++ {
+		if err := check(); err != nil {
+			return errors.Join(err, hardware.WriteForceTest(false))
+		}
 		retryErr = hardware.WriteMode(fanID, mode)
 		if retryErr == nil {
 			return nil

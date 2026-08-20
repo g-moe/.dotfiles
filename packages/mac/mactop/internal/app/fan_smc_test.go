@@ -63,7 +63,7 @@ func TestSetFanModeUsesDirectWriteWhenHardwareAcceptsIt(t *testing.T) {
 	if err := setFanModeWithHardware(hardware, 0, 1, func(time.Duration) error {
 		t.Fatal("direct mode write slept")
 		return nil
-	}); err != nil {
+	}, noFanControlCheck); err != nil {
 		t.Fatal(err)
 	}
 	if !reflect.DeepEqual(hardware.modeWrites, []int{1}) || len(hardware.forceTestWrites) != 0 {
@@ -86,7 +86,7 @@ func TestSetFanModeFallsBackToForceTestUnlock(t *testing.T) {
 	if err := setFanModeWithHardware(hardware, 0, 1, func(delay time.Duration) error {
 		sleeps = append(sleeps, delay)
 		return nil
-	}); err != nil {
+	}, noFanControlCheck); err != nil {
 		t.Fatal(err)
 	}
 	if !reflect.DeepEqual(hardware.modeWrites, []int{1, 1, 1, 1}) {
@@ -103,7 +103,7 @@ func TestSetFanModeFallsBackToForceTestUnlock(t *testing.T) {
 
 func TestSetFanModeClearsForceTestAfterUnlockTimeout(t *testing.T) {
 	hardware := &fakeFanModeHardware{modes: map[int]int{0: 3}, modeFailures: fanUnlockAttempts + 1}
-	err := setFanModeWithHardware(hardware, 0, 1, func(time.Duration) error { return nil })
+	err := setFanModeWithHardware(hardware, 0, 1, func(time.Duration) error { return nil }, noFanControlCheck)
 	if err == nil {
 		t.Fatal("unlock timeout returned no error")
 	}
@@ -112,16 +112,16 @@ func TestSetFanModeClearsForceTestAfterUnlockTimeout(t *testing.T) {
 	}
 }
 
-func TestSetFanModeClearsForceTestWhenPolicyIsCanceled(t *testing.T) {
+func TestSetFanModeDoesNotWriteWhenPolicyIsCanceled(t *testing.T) {
 	hardware := &fakeFanModeHardware{modes: map[int]int{0: 3}, modeFailures: 1}
 	ctx, cancel := context.WithCancel(context.Background())
 	cancel()
-	err := setFanModeWithHardware(hardware, 0, 1, waitForFanControlContext(ctx))
+	err := setFanModeWithHardware(hardware, 0, 1, waitForFanControlContext(ctx), checkFanControlContext(ctx))
 	if !errors.Is(err, context.Canceled) {
 		t.Fatalf("cancellation error = %v", err)
 	}
-	if !reflect.DeepEqual(hardware.forceTestWrites, []bool{true, false}) || hardware.forceTest != 0 {
-		t.Fatalf("force-test writes = %v, state = %d", hardware.forceTestWrites, hardware.forceTest)
+	if len(hardware.modeWrites) != 0 || len(hardware.forceTestWrites) != 0 {
+		t.Fatalf("mode writes = %v, force-test writes = %v", hardware.modeWrites, hardware.forceTestWrites)
 	}
 }
 

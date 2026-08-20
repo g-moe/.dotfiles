@@ -23,7 +23,7 @@ func TestFanHelperDiagnosticsRecordsRawFanReadback(t *testing.T) {
 			ID: 0, ActualRPM: 2987, TargetRPM: 3000, MinimumRPM: 1350, MaximumRPM: 5777, Mode: 3,
 		}},
 		ExpectedTargets: map[int]int{0: 3000}, ForceTest: &forceTest,
-		Reason: "manual_policy_still_verified", Error: "fan 0 did not enter manual mode",
+		Reason: "sleep", Error: "fan 0 did not enter manual mode",
 	}
 	if err := logger.Log(event); err != nil {
 		t.Fatal(err)

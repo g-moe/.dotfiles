@@ -49,20 +49,23 @@ The helper stores Constant and Curve settings in `/Library/Application Support/m
 
 Closing Settings or restarting the menu process does not stop the helper. The helper restores automatic mode on a normal shutdown, policy error, invalid sensor value, or failed SMC check. `SIGKILL` and power loss cannot run cleanup.
 
-### Wake policy
+### Sleep and wake policy
 
-Recovery requires a matched sleep event and wake event while Constant or Curve control is selected. A wake event alone never starts manual control.
+The helper treats a matched system sleep and wake as a pause while Constant or Curve control is selected. A wake event alone never starts manual control.
 
-- If the active policy verifies its next SMC sample, the helper keeps it running. It does not reset to Apple Default or write new fan targets.
-- If the manual policy loses fan ownership to macOS during sleep or in its first post-wake sample, it first restores Apple Default. After it ends, the helper makes one new attempt to restore the saved policy.
-- A sensor error, target mismatch, or other SMC error does not retry manual control after wake. The helper remains in Apple Default.
-- A new sleep, a settings change, Apple Default, or shutdown cancels an older pending recovery.
+- On system sleep, the helper preserves the selected policy, cancels the active policy, and restores Apple Default. It does not wait for macOS to reclaim fan ownership and it does not run an `Ftst` retry during sleep.
+- On wake, the helper waits for the stopped policy to finish cleanup and makes one resume attempt. The first SMC write still waits for the normal 500 ms metrics sample.
+- If automatic-mode cleanup fails, the helper cancels the resume and records the cleanup failure.
+- A new sleep cancels a queued or active resume. It keeps the selected policy for the next matched wake.
+- After the first verified manual-mode sample, the resumed policy is normal manual control. A later error is a policy error, not a wake-resume error.
+- A sensor error, target mismatch, or other non-sleep SMC error restores Apple Default and does not retry manual control automatically.
+- A settings change, Apple Default, or shutdown cancels an older pending resume.
 
 Power notifications are advisory. If macOS does not deliver a matched sleep and wake pair, the helper does not make an unprompted manual retry. The regular safety checks still restore Apple Default when manual control fails.
 
-The privileged helper records fan-control transitions in `/Library/Logs/mactop/fan-control.log`. The log is root-owned, readable by local administrators, and keeps the current 512 KiB file plus one `.1` backup. A failure entry includes the selected policy, every fan's raw mode and RPM readback, expected RPM targets, the `Ftst` state, and the automatic-control restoration result. Wake recovery adds `sleep_detected`, `wake_recovery_scheduled`, `wake_reapply_started`, `wake_reapply_verified`, `wake_reapply_failed`, or `wake_reapply_skipped`. `wake_recovery_scheduled` means the helper is waiting for verification, not that it will write fan targets. A skipped recovery has a reason: `manual_policy_still_verified` means the old policy stayed active without an SMC reset or restart; `manual_ownership_loss_not_observed` means the helper did not retry. Use `tail -n 200 /Library/Logs/mactop/fan-control.log` after a fallback.
+The privileged helper records fan-control transitions in `/Library/Logs/mactop/fan-control.log`. The log is root-owned, readable by local administrators, and keeps the current 512 KiB file plus one `.1` backup. A failure entry includes the selected policy, every fan's raw mode and RPM readback, expected RPM targets, the `Ftst` state, and the automatic-control restoration result. Sleep and wake handling adds `policy_suspend_requested`, `wake_resume_queued`, `wake_resume_cancelled`, `wake_resume_started`, `wake_resume_verified`, or `wake_resume_failed`. `policy_suspend_requested` means the helper cancelled manual writes; the following `apple_default_restored` confirms cleanup. `wake_resume_cancelled` records its reason. `wake_resume_failed` only means that the resume attempt failed before its first verified manual-mode sample. Use `tail -n 200 /Library/Logs/mactop/fan-control.log` after a fallback.
 
-For a manual hardware check, apply Constant or Curve control, let the Mac sleep and wake normally, then inspect the log. Expect `sleep_detected` and either `wake_reapply_skipped` with `manual_policy_still_verified`, or one `wake_reapply_started` followed by `wake_reapply_verified`. Do not force system sleep as part of automated tests.
+For a manual hardware check, apply Constant or Curve control, let the Mac sleep and wake normally, then inspect the log. Expect `policy_suspend_requested`, `apple_default_restored`, one `wake_resume_started`, and `wake_resume_verified`, or `wake_resume_cancelled` when the Mac sleeps again. Do not force system sleep as part of automated tests.
 
 Recovery and diagnostic commands:
 

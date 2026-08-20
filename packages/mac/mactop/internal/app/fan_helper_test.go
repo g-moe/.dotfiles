@@ -1034,6 +1034,14 @@ func TestFanSettingsDisplayUsesHelperAsSourceOfTruth(t *testing.T) {
 		t.Fatalf("display = %d, %q, %q", state, detail, message)
 	}
 
+	state, detail, message = fanSettingsDisplay(fanHelperStatus{
+		State:   "suspended",
+		Message: "Manual fan control is suspended for sleep.",
+	}, nil)
+	if state != fanSettingsSuspended || detail != "Choose Apple Default, Constant, or a CPU P-core curve." || message != "Manual fan control is suspended for sleep." {
+		t.Fatalf("suspended display = %d, %q, %q", state, detail, message)
+	}
+
 	state, _, message = fanSettingsDisplay(fanHelperStatus{}, &os.PathError{Op: "dial", Path: fanHelperSocketPath, Err: os.ErrNotExist})
 	if state != fanSettingsUnavailable || !strings.Contains(message, "not installed") {
 		t.Fatalf("unavailable display = %d, %q", state, message)

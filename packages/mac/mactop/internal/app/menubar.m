@@ -1153,7 +1153,8 @@ static NSView *addSettingsSection(NSView *parent, NSString *title,
     messageText(@"Menu_FanHelperMissing"), messageText(@"Menu_FanPolicyOff"),
     messageText(@"Menu_FanPolicyStarting"), messageText(@"Menu_FanPolicyActive"),
     messageText(@"Menu_FanPolicyStopping"), messageText(@"Menu_FanPolicyError"),
-    messageText(@"Menu_FanHelperUpdate"), messageText(@"Menu_FanHelperUnhealthyState")
+    messageText(@"Menu_FanHelperUpdate"), messageText(@"Menu_FanHelperUnhealthyState"),
+    messageText(@"Menu_FanPolicySuspended")
   ];
   int safeState = (state >= 0 && state < (int)names.count) ? state : 5;
   _fanPolicyStateLabel.stringValue = names[safeState];
@@ -1189,7 +1190,7 @@ static NSView *addSettingsSection(NSView *parent, NSString *title,
     _fanConfigLoaded = YES;
   }
   BOOL inFlight = safeState == 2 || safeState == 4;
-  BOOL canControl = safeState == 1 || safeState == 3 || safeState == 5;
+  BOOL canControl = safeState == 1 || safeState == 3 || safeState == 5 || safeState == 8;
   _fanApplyButton.title = inFlight ? messageText(@"Menu_FanApplying")
                                    : messageText(@"Menu_FanApply");
   if (inFlight) {
