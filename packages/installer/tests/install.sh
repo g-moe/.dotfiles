@@ -12,6 +12,11 @@ expect_file_contains "$installer" 'load_homebrew ||' \
   'install.sh must load Homebrew before --theme on macOS'
 expect_file_contains "$installer" "--retire) printf 'retire" \
   'install.sh must accept --retire'
+expect_file_contains "$installer" "--agents) printf 'agents" \
+  'install.sh must accept --agents'
+if grep -Fq -- '--skills' "$installer"; then
+  fail 'install.sh must not expose the retired --skills mode'
+fi
 if grep -Fq -- '--mactop' "$installer"; then
   fail 'install.sh must not expose a dedicated --mactop mode'
 fi
@@ -37,6 +42,9 @@ all_branch="$(sed -n '/^    all)/,/^      ;;/p' <<<"$main_body")"
 phase_branch="$(sed -n '/^    \*)/,/^      ;;/p' <<<"$main_body")"
 grep -Fq "run_strategy 'Machine name and color' identity.sh" <<<"$all_branch" ||
   fail 'the full install must configure machine identity'
+if grep -Fq 'install_agents' <<<"$all_branch"; then
+  fail 'the full install must not install agent configuration'
+fi
 if grep -Fq 'identity.sh' <<<"$phase_branch"; then
   fail 'individual phase flags must not configure machine identity'
 fi
@@ -49,9 +57,12 @@ finish_install="$(sed -n '/^finish_install() {/,/^}/p' "$installer")"
 grep -Fq '[[ "$mode" == all || "$mode" == system ]] || return 0' <<<"$finish_install" ||
   fail 'only full and system runs may offer to reboot'
 
-bad_npm="$(grep -E '"install:(git|skills|machine|theme|retire)"' "$ROOT_DIR/package.json" |
+bad_npm="$(grep -E '"install:(agents|git|machine|theme|retire)"' "$ROOT_DIR/package.json" |
   grep -v 'packages/installer/install\.sh' || true)"
 [[ -z "$bad_npm" ]] || fail 'root install commands must call packages/installer/install.sh'
+if grep -Fq '"install:skills"' "$ROOT_DIR/package.json"; then
+  fail 'package.json must not expose the retired install:skills command'
+fi
 if grep -Fq '"install:mactop"' "$ROOT_DIR/package.json"; then
   fail 'package.json must not expose a dedicated mactop install command'
 fi

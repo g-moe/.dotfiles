@@ -63,6 +63,7 @@ done <<<"$required_paths"
 allowed_roots='
 .agents
 .agents-archive
+.github
 codex
 .gitignore
 .nvmrc

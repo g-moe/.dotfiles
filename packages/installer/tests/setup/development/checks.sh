@@ -7,6 +7,11 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 expect_file_contains "$INSTALLER_DIR/setup/development/node.sh" \
   'mkdir -p "$HOME/.nvm"' 'Node setup must create the fixed NVM directory'
 
+development_body="$(sed -n '/^install_development() {/,/^}/p' "$INSTALLER_DIR/install.sh")"
+if grep -Fq 'install_agents' <<<"$development_body"; then
+  fail 'Development setup must not install agent configuration'
+fi
+
 pi="$INSTALLER_DIR/setup/development/pi.sh"
 expect_file_contains "$pi" \
   'npm install -g --ignore-scripts --min-release-age=0 --prefix "$HOME/.local"' \

@@ -6,7 +6,7 @@ ROOT_DIR="$(cd "$SCRIPT_DIR/../.." && pwd)"
 
 . "$SCRIPT_DIR/lib/lib.sh"
 
-usage='Use: bash packages/installer/install.sh [--apps|--development|--appearance|--input|--desktop|--files|--access|--system|--all|--git|--skills|--theme|--retire]'
+usage='Use: bash packages/installer/install.sh [--apps|--development|--appearance|--input|--desktop|--files|--access|--system|--all|--git|--agents|--theme|--retire]'
 
 validate_root() {
   [[ "$ROOT_DIR" == "$HOME/.dotfiles" ]] ||
@@ -74,8 +74,8 @@ install_git() {
   run_strategy 'Git, Git LFS, and GitHub login' development/git.sh
 }
 
-install_skills() {
-  run_strategy 'Agent skills' skills.sh
+install_agents() {
+  run_strategy 'Agent configuration' agents.sh
 }
 
 # Generate/install app theme packs (VS Code, Ghostty, nvim, …) from packages/theming/.
@@ -100,7 +100,6 @@ install_development() {
   run_strategy 'Codex' development/codex.sh
   run_strategy 'MCP servers' development/mcp-servers.sh
   run_strategy 'VSCodium extensions' development/vscodium-extensions.sh
-  install_skills
 }
 
 configure_appearance() {
@@ -184,7 +183,7 @@ run_phase() {
 parse_mode() {
   case "$1" in
     --git) printf 'git\n' ;;
-    --skills) printf 'skills\n' ;;
+    --agents) printf 'agents\n' ;;
     --theme) printf 'theme\n' ;;
     --retire) printf 'retire\n' ;;
     --apps | apps) printf 'apps\n' ;;
@@ -235,8 +234,8 @@ main() {
     git)
       install_git
       ;;
-    skills)
-      install_skills
+    agents)
+      install_agents
       ;;
     theme)
       install_theme

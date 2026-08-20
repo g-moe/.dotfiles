@@ -32,10 +32,6 @@ done < <(find "$ROOT_DIR/nvim" -type f | sort)
 expect_link "$ROOT_DIR/opencode/opencode.jsonc" "$HOME/.config/opencode/opencode.jsonc"
 expect_link "$ROOT_DIR/opencode/tui.jsonc" "$HOME/.config/opencode/tui.jsonc"
 expect_link "$ROOT_DIR/opencode/themes/gtheme.json" "$HOME/.config/opencode/themes/gtheme.json"
-expect_link "$ROOT_DIR/.agents/AGENTS.md" "$HOME/.codex/AGENTS.md"
-expect_link "$ROOT_DIR/.agents/AGENTS.md" "$HOME/.pi/agent/AGENTS.md"
-expect_link "$ROOT_DIR/.agents/AGENTS.md" "$HOME/.claude/AGENTS.md"
-expect_link "$ROOT_DIR/.agents/CLAUDE.md" "$HOME/.claude/CLAUDE.md"
 expect_link "$ROOT_DIR/codex/.codex/config.toml" "$HOME/.codex/config.toml"
 expect_link "$ROOT_DIR/codex/.codex/keybindings.json" "$HOME/.codex/keybindings.json"
 expect_link "$ROOT_DIR/tmux/tmux.conf" "$HOME/.tmux.conf"
@@ -63,18 +59,5 @@ esac
 
 expect_link "$ROOT_DIR/vscode/user/settings.json" "$vscodium/settings.json"
 expect_link "$ROOT_DIR/vscode/user/keybindings.json" "$vscodium/keybindings.json"
-
-for skill_source in "$ROOT_DIR"/.agents/skills/*; do
-  [[ -f "$skill_source/SKILL.md" ]] || continue
-  skill="$(basename "$skill_source")"
-  for target_root in \
-    "$HOME/.agents/skills" \
-    "$HOME/.codex/skills" \
-    "$HOME/.claude/skills" \
-    "$HOME/.cursor/skills" \
-    "$HOME/.config/opencode/skills"; do
-    expect_link "$skill_source" "$target_root/$skill"
-  done
-done
 
 printf 'Installed links point to ~/.dotfiles and are not broken.\n'

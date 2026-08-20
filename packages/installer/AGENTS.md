@@ -4,7 +4,7 @@ How to edit this tree. What the installer _is_ → [README.md](README.md). How t
 
 # DO
 
-- Route **all** machine install through `packages/installer/install.sh` (flags like `--git`, `--skills`, `--theme`, `--apps`, or no arg for full). npm `install:git` / `install:skills` / `install:theme` / `install:machine` must call that file.
+- Route **all** machine install through `packages/installer/install.sh` (flags like `--git`, `--agents`, `--theme`, `--apps`, or no arg for full). npm `install:git` / `install:agents` / `install:theme` / `install:machine` must call that file.
 - Keep these docs current; whitelist new tracked paths in the root `.gitignore`.
 - Source only `lib/lib.sh` from installer code. It loads `packages/lib/bash/lib.sh` before the installer-only libraries.
 - Put reusable Bash helpers and cross-platform Bash tools in `packages/lib/bash`. Keep package installation and OS validation in this package's `lib/`.

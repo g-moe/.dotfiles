@@ -23,7 +23,7 @@ Fixture for testing `$gh-pr-template` and `$gh-pr-comments`. Replace or expand a
 - [ ] Run `$gh-pr-comments` against the fake comments below
 - [ ] `npm run install:test` (installer shape / lib changes)
 - [ ] `npm run verify:machine` (symlink / install surface)
-- [ ] `npm run install:skills` (skill path / link changes)
+- [ ] `npm run install:agents` (agent path / link changes)
 - [ ] Re-sourced shell or restarted the affected app
 
 ## Repo checklist
@@ -44,4 +44,3 @@ Fixture for testing `$gh-pr-template` and `$gh-pr-comments`. Replace or expand a
    Response: Renamed the sample path and left a short README note.
    Links: https://github.com/example/commit/abc123
    ```
-

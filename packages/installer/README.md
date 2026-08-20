@@ -2,18 +2,18 @@
 
 The repo must live at `~/.dotfiles`. The installer links only the config files and config subfolders each app needs. On Mac, that includes Ghostty's config and themes. It does not link whole Ghostty, Neovim, OpenCode, Karabiner, or tmux source folders.
 
-**One entry point:** `packages/installer/install.sh`. Every install path goes through it — full run, phase slices, and single strategies (`--git`, `--skills`, `--theme`). Do not run `packages/installer/setup/**` or `packages/theming/create/controller.ts` yourself for install.
+**One entry point:** `packages/installer/install.sh`. Every install path goes through it — full run, phase slices, and single strategies (`--git`, `--agents`, `--theme`). Do not run `packages/installer/setup/**` or `packages/theming/create/controller.ts` yourself for install.
 
 ```bash
 bash packages/installer/install.sh                 # full machine
 bash packages/installer/install.sh --apps          # one phase
 bash packages/installer/install.sh --git           # Git only
-bash packages/installer/install.sh --skills        # Skills only
+bash packages/installer/install.sh --agents        # Agent instructions and skills
 bash packages/installer/install.sh --theme         # theme generation + install
 bash packages/installer/install.sh --retire        # remove recorded packages
 npm run install:machine                 # → install.sh
 npm run install:git                     # → install.sh --git
-npm run install:skills                  # → install.sh --skills
+npm run install:agents                  # → install.sh --agents
 npm run install:theme                   # → install.sh --theme
 npm run install:retire                  # → install.sh --retire
 npm run verify:machine                  # verify installed links after a VM install
@@ -23,7 +23,7 @@ npm run verify:machine                  # verify installed links after a VM inst
 
 Successful full and system-phase runs recommend a reboot and ask whether to
 reboot now. The default answer is no. Choosing yes reboots either macOS or
-Linux. Smaller phase runs and the Git, Skills, and theme commands do not ask.
+Linux. Smaller phase runs and the Git, agents, and theme commands do not ask.
 
 Normal user only (not root). `sudo` is used where the OS needs it.
 
@@ -43,7 +43,7 @@ Normal phase runs start with a read-only Linux desktop check, then use this orde
 | Phase         | Covers                                                                                   |
 | ------------- | ---------------------------------------------------------------------------------------- |
 | `apps`        | Apps (Homebrew / APT / vendor)                                                           |
-| `development` | Git, Node, Pi, AWS CLI, Cloudflare CLIs, Zsh, tmux, VSCodium, Codex, MCP servers, Skills |
+| `development` | Git, Node, Pi, AWS CLI, Cloudflare CLIs, Zsh, tmux, VSCodium, Codex, MCP servers |
 | `appearance`  | Wallpaper, screen saver, theme, icons, login screen                                      |
 | `input`       | Pointer, touchpad, keyboard, remapping                                                   |
 | `desktop`     | Workspaces, items/widgets, windows, lower panel, top bar, name display                   |
@@ -58,8 +58,8 @@ packages/installer/install.sh       **only** machine-install entry point
 packages/installer/setup/<phase>/…  strategies (launched by install.sh with OS as $1)
 packages/installer/config/          installer-owned configuration loaded by strategies
 packages/installer/setup/identity.sh before full or phase installs (skipped for single strategies)
-packages/installer/setup/skills.sh  from development (also --skills)
-agents/AGENTS.md                    global instructions shared by Codex and Pi
+packages/installer/setup/agents.sh  agent configuration and skills (--agents only)
+.agents/AGENTS.md                   global instructions shared by Codex and Pi
 codex/.codex/                       personal Codex settings linked during development
 packages/installer/lib/lib.sh       installer library entry point
 packages/installer/tests/           mirrors installer paths (`setup/`, `lib/`, and top-level flow)
@@ -101,7 +101,7 @@ Source `packages/installer/lib/lib.sh` through the local installer-relative path
 | `ask_choice` | Numbered menu → 0-based index |
 | `ask_binary` | Yes / no                      |
 
-Before setting up a group of links, such as Agent skills or Neovim, the installer checks the whole group. If it finds existing files or links pointing somewhere else, it asks once whether to **Skip** or **Replace with symlinks** for that group. Skip leaves each existing item alone while still creating missing links. It never replaces a real directory.
+Before setting up a group of links, such as agent configuration or Neovim, the installer checks the whole group. If it finds existing files or links pointing somewhere else, it asks once whether to **Skip** or **Replace with symlinks** for that group. Skip leaves each existing item alone while still creating missing links. It never replaces a real directory.
 
 **Skip / Disable / Enable** is a real triad when those are the labels: `0` skip, `1` disable, `2` enable (SSH, VNC). Everything else keeps domain labels — Dock hide/show, sizes, colors, power Skip/Normal/Server, Tailscale install modes, etc.
 
@@ -112,7 +112,7 @@ On macOS, **Window management** uses the same triad. Skip touches nothing. Disab
 ```bash
 npm run install:machine  # → install.sh (full)
 npm run install:git      # → install.sh --git
-npm run install:skills   # → install.sh --skills
+npm run install:agents   # → install.sh --agents
 npm run install:theme    # → install.sh --theme (theming package; not OS appearance)
 npm run install:retire   # → install.sh --retire
 npm run test:mactop      # full mactop test, race, vet, build, and shuffle checks
@@ -123,16 +123,22 @@ Tests mirror the installer tree. Setup checks live under `tests/setup/<phase>/`,
 library checks under `tests/lib/`, top-level installer-flow checks at the tests
 root, and repository/link checks under `tests/repository/`.
 
-### Agent settings
+### Agent settings and skills
 
-Development setup links the shared `.agents/AGENTS.md` to both
-`~/.codex/AGENTS.md` and `~/.pi/agent/AGENTS.md`. It also links
-`codex/.codex/config.toml` and `codex/.codex/keybindings.json` to `~/.codex/`.
+Agent setup is separate from development setup. It links `.agents/AGENTS.md`
+to Codex, Pi, and Claude Code. It also links `.agents/CLAUDE.md` to Claude
+Code and links the shared skills to every supported agent harness. Codex
+configuration remains part of development setup.
+
 On another machine, clone or pull the repo at `~/.dotfiles`, then run
-`bash packages/installer/install.sh --development`. Later pulls update the
+`bash packages/installer/install.sh --agents`. Later pulls update the
 linked files without recreating the links.
 
-The separate Skills installer remains unchanged.
+Full and development installs do not run agent setup. Run `--agents`
+separately when you need these links.
+
+Run `bash packages/installer/install.sh --apps` separately to install Claude
+Code.
 
 ### Global MCP servers
 

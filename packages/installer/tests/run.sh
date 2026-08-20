@@ -9,6 +9,7 @@ tests=(
   "$TESTS_DIR/setup/access/checks.sh"
   "$TESTS_DIR/setup/appearance/checks.sh"
   "$TESTS_DIR/setup/apps/checks.sh"
+  "$TESTS_DIR/setup/agents/checks.sh"
   "$TESTS_DIR/setup/desktop/checks.sh"
   "$TESTS_DIR/setup/development/checks.sh"
   "$TESTS_DIR/setup/development/mcp-servers.sh"

@@ -17,7 +17,7 @@ npm run install:test
 
 ## Hard rules
 
-1. Run install **only** via `bash packages/installer/install.sh` (or `npm run install:machine` / `install:git` / `install:skills` / `install:theme`). Never call `packages/installer/setup/…` or `packages/theming/create/controller.ts` directly for install.
+1. Run install **only** via `bash packages/installer/install.sh` (or `npm run install:machine` / `install:git` / `install:agents` / `install:theme`). Never call `packages/installer/setup/…` or `packages/theming/create/controller.ts` directly for install.
 2. One stopped **base** per OS (OS installed, this repo’s installer never run on it).
 3. Every first-run test = **disposable clone**. Base stays stopped and untouched.
 4. Clone the repo to **exactly** `~/.dotfiles` inside the guest (not a read-only share). The installer rejects every other location.
@@ -241,7 +241,7 @@ generated machine-color wallpaper used on macOS. Application theme packs from
 
 ## Pass checklists
 
-**Debian desktop** — LightDM owns the styled login screen; the session is X11; Xfce opens; the optional machine-color wallpaper, WhiteSur Dark styling, and icons apply; Mac-order window buttons are on the left; desktop icons and the lower panel are gone; the single near-black top bar has Tux, a Docklike Taskbar with four pinned apps and open-window handling, the machine-name menu with Restart, CPU/GPU/memory readouts, tray, and weekday-free clock with seconds; workspaces stay put; the browser default works and Xfce Terminal opens with its dark minimal settings; apps open; VSCodium/`code`, files, SSH, VNC, updates, power, and Skills work; no extra desktop session is offered.
+**Debian desktop** — LightDM owns the styled login screen; the session is X11; Xfce opens; the optional machine-color wallpaper, WhiteSur Dark styling, and icons apply; Mac-order window buttons are on the left; desktop icons and the lower panel are gone; the single near-black top bar has Tux, a Docklike Taskbar with four pinned apps and open-window handling, the machine-name menu with Restart, CPU/GPU/memory readouts, tray, and weekday-free clock with seconds; workspaces stay put; the browser default works and Xfce Terminal opens with its dark minimal settings; apps open; VSCodium/`code`, files, SSH, VNC, updates, power, and the separate agent setup work; no extra desktop session is offered.
 
 **Git** — `npm run install:git` / `install.sh --git` only; skip leaves Git alone; accept → LFS + filters; name/email/branch stick; settings match `git.sh`; GitHub skip vs browser login; no `GITHUB_TOKEN` in a new shell.
 
@@ -282,11 +282,12 @@ path.
 
 macOS 26 arm64 passed a clean full install, reboot, full repeat, and installed-link
 checks in UTM on July 17, 2026. Before the repeat, two Neovim links and two
-Agent skill links were replaced with regular files. The repeat asked once for
-Neovim and once for Agent skills, replaced both files in each group, and left
-every installed link valid. The available Debian base was already installed,
-so its July 17 run was a full repeat rather than a clean proof. It passed the
-same grouped-link test, a reboot and second full run, installed-link checks,
+Agent skill links were replaced with regular files. The full repeat asked once for
+Neovim. A separate agent setup then asked once for Agent configuration, replaced
+both files in its group, and left every installed link valid. The available Debian
+base was already installed, so its July 17 run was a full repeat rather than a
+clean proof. It passed the same grouped-link test, a reboot and second full run,
+installed-link checks,
 the Xfce X11 desktop, the earlier LightDM styling, Plank, SSH, and VNC. That
 Plank-based desktop was superseded by the single-panel rice above.
 

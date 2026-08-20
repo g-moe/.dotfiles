@@ -22,7 +22,7 @@
 - [ ]
 - [ ] `npm run install:test` (installer shape / lib changes)
 - [ ] `npm run verify:machine` (symlink / install surface)
-- [ ] `npm run install:skills` (skill path / link changes)
+- [ ] `npm run install:agents` (agent path / link changes)
 - [ ] Re-sourced shell or restarted the affected app
 
 ## Repo checklist
