@@ -1,6 +1,7 @@
 ---
 name: output-html
 description: Create a polished, self-contained HTML artifact. Use when the user wants a single `.html` file for a report, explainer, comparison, plan, visual, diagram, system walkthrough, interactive prototype, or browser-based slide deck. Use for both new artifacts and substantial rewrites. Do not use for a multi-file web app or a native presentation unless the user explicitly requests an HTML version.
+disable-model-invocation: true
 ---
 
 # Output HTML

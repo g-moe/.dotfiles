@@ -1,6 +1,7 @@
 ---
 name: manual-win
 description: Manual only. Use only for $manual-win to find, prove, implement, and unanimously review one small codebase win or improvement.
+disable-model-invocation: true
 ---
 
 # Manual Win

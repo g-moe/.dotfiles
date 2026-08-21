@@ -1,6 +1,7 @@
 ---
 name: manual-rebase
 description: Manual only. Rebase the current Git branch onto an explicit target branch with a permanent backup. Use only when the user invokes `$manual-rebase` and names the target branch in that request.
+disable-model-invocation: true
 ---
 
 # Rebase Rules

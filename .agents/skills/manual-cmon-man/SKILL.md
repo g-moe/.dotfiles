@@ -1,6 +1,7 @@
 ---
 name: manual-cmon-man
 description: Manual only. Re-read all applicable AGENTS.md files and correct an instruction-following mistake. Use only when the user invokes `$manual-cmon-man`.
+disable-model-invocation: true
 ---
 
 # Cmon Man

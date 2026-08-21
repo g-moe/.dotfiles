@@ -1,6 +1,7 @@
 ---
 name: gh-pr-comments
 description: Manual only. Handle GitHub PR review comments for the PR on the current branch. Use only when the user explicitly invokes `$gh-pr-comments`.
+disable-model-invocation: true
 ---
 
 # Workflow

@@ -1,6 +1,7 @@
 ---
 name: gh-pr-template
 description: Manual only. Fill the repo pull request template for the PR on the current branch. Use only when the user explicitly invokes `$gh-pr-template`.
+disable-model-invocation: true
 ---
 
 # Workflow

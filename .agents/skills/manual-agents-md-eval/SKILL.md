@@ -1,6 +1,7 @@
 ---
 name: manual-agents-md-eval
 description: Manual only. Run a configured multi-turn evaluation across coding harnesses, score each result against its configured criteria, and return the configured report. Use only when the user explicitly invokes this skill.
+disable-model-invocation: true
 ---
 
 # Manual AGENTS.md Eval

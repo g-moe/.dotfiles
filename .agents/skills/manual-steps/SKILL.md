@@ -1,6 +1,7 @@
 ---
 name: manual-steps
 description: Manual only. Use only when the user explicitly invokes $manual-steps to turn referenced work into a standalone, step-by-step guide for building or rebuilding the referenced work.
+disable-model-invocation: true
 ---
 
 # Manual Steps

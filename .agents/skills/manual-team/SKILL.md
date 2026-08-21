@@ -1,6 +1,7 @@
 ---
 name: manual-team
 description: Manual only. Use only when the user explicitly invokes $manual-team to run a reusable three-agent team for a task.
+disable-model-invocation: true
 ---
 
 # Manual Team

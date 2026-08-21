@@ -1,6 +1,7 @@
 ---
 name: manual-claude
 description: Manual only. Use only when the user explicitly invokes $manual-claude. Never invoke it from a plain mention of Claude or an implicit request.
+disable-model-invocation: true
 ---
 
 # Manual Claude
