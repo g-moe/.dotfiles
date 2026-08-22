@@ -37,6 +37,9 @@ export const PATHS = {
 			dark: path.join(OUTPUT_ROOT, "nvim/gtheme-dark.lua"),
 			light: path.join(OUTPUT_ROOT, "nvim/gtheme-light.lua"),
 		},
+		superfile: {
+			theme: path.join(OUTPUT_ROOT, "superfile/gtheme.toml"),
+		},
 		"oh-my-zsh": {
 			dark: path.join(OUTPUT_ROOT, "oh-my-zsh/gtheme-dark.zsh-theme"),
 			light: path.join(OUTPUT_ROOT, "oh-my-zsh/gtheme-light.zsh-theme"),
@@ -57,6 +60,9 @@ export const PATHS = {
 		nvim: {
 			dark: path.join(ROOT, "nvim/colors/gtheme-dark.lua"),
 			light: path.join(ROOT, "nvim/colors/gtheme-light.lua"),
+		},
+		superfile: {
+			theme: path.join(ROOT, "superfile/theme/gtheme.toml"),
 		},
 		"oh-my-zsh": {
 			dark: path.join(HOME, ".oh-my-zsh/custom/themes/gtheme-dark.zsh-theme"),

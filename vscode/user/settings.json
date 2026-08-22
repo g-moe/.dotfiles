@@ -436,5 +436,6 @@
 	"workbench.editor.tabActionLocation": "left",
 	"remote.autoForwardPorts": false,
 	"files.autoSave": "afterDelay",
-    "files.hotExit": "off"
+    "files.hotExit": "off",
+    "workbench.sideBar.location": "right"
 }

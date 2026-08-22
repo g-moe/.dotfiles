@@ -32,6 +32,7 @@ install_apps() {
   prepare_application_installer
   run_retire_packages
   run_strategy 'Fastfetch' apps/fastfetch.sh
+  run_strategy 'Superfile' apps/superfile.sh
   run_strategy 'GitHub CLI' apps/github-cli.sh
   run_strategy 'Neovim' apps/neovim.sh
   run_strategy 'tmux' apps/tmux.sh

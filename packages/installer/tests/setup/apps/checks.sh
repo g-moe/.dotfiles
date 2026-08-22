@@ -28,6 +28,14 @@ expect_file_contains "$INSTALLER_DIR/setup/apps/tailscale.sh" \
   'stable/debian/${LINUX_CODENAME}' 'Tailscale must use its Debian repository'
 expect_file_contains "$INSTALLER_DIR/setup/apps/prepare.sh" \
   'brew_formula jq' 'Mac preparation must install jq before retiring packages'
+expect_file_contains "$INSTALLER_DIR/setup/apps/superfile.sh" \
+  'brew_formula superfile' 'Mac must install Superfile from Homebrew'
+expect_file_contains "$INSTALLER_DIR/setup/apps/superfile.sh" \
+  'https://superfile.dev/install.sh' 'Linux must use the official Superfile installer'
+expect_file_contains "$INSTALLER_DIR/setup/apps/superfile.sh" \
+  'if ! has spf; then' 'Linux must not reinstall Superfile when it is already installed'
+expect_file_contains "$INSTALLER_DIR/setup/apps/superfile.sh" \
+  'safe_symlink_group Superfile' 'Superfile must link its configuration and theme'
 
 retire_file="$INSTALLER_DIR/packages/retire.json"
 retire_schema="$INSTALLER_DIR/packages/retire.schema.json"

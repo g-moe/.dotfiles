@@ -1,0 +1,3 @@
+# Repository-managed Superfile configuration.
+theme = "gtheme"
+ignore_missing_fields = true

@@ -66,6 +66,12 @@
 !/ghostty/themes/
 !/ghostty/themes/**
 
+# Superfile
+!/superfile/
+!/superfile/config.toml
+!/superfile/theme/
+!/superfile/theme/gtheme.toml
+
 # tmux
 !/tmux/
 !/tmux/tmux.conf
