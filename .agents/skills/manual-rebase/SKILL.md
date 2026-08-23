@@ -7,7 +7,9 @@ disable-model-invocation: true
 # Rebase Rules
 
 1. Require one exact local or remote-tracking target branch in the invocation. Do not infer it or accept a placeholder. If it is missing or ambiguous, ask for it and stop.
-2. Never push. Never delete, rename, or overwrite the backup branch. Do not fetch or change the target. Abort a failed rebase and restore the pre-rebase state before reporting it.
+2. Never push. Never delete, rename, or overwrite the backup branch. Do not fetch or change the target.
+3. Abort a failed rebase and restore the pre-rebase state before reporting it.
+4. Always replay current-branch commits on top of the target tip.
 
 ## Workflow
 

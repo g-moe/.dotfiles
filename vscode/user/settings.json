@@ -437,5 +437,6 @@
 	"remote.autoForwardPorts": false,
 	"files.autoSave": "afterDelay",
     "files.hotExit": "off",
-    "workbench.sideBar.location": "right"
+    "workbench.sideBar.location": "right",
+    "terminal.integrated.tabs.location": "left"
 }

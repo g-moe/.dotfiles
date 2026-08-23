@@ -1589,7 +1589,7 @@
 		"command": "-workbench.action.closeOtherEditors"
 	},
 	{
-		"key": "shift+cmd+d",
+		"key": "cmd+/",
 		"command": "editor.action.commentLine",
 		"when": "editorTextFocus && !editorReadonly"
 	},
@@ -1894,7 +1894,7 @@
 		"when": "isDevelopment"
 	},
 	{
-		"key": "alt+cmd+i",
+		"key": "shift+cmd+d",
 		"command": "workbench.action.togglePanel"
 	},
 	{
