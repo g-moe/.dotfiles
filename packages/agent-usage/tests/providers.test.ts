@@ -7,6 +7,7 @@ import {
 } from "../src/providers/claude/index.ts";
 import {
 	CursorProvider,
+	getCursorAuthFilePath,
 	parseCursorUsage,
 } from "../src/providers/cursor/index.ts";
 import {
@@ -161,4 +162,19 @@ test("Cursor maps model percentages and omits the total percentage", () => {
 
 test("Cursor returns no limits when plan usage is disabled", () => {
 	assert.deepEqual(parseCursorUsage({ enabled: false }), []);
+});
+
+test("Cursor uses the Cursor CLI authentication paths", () => {
+	assert.equal(
+		getCursorAuthFilePath("linux", "/home/user"),
+		"/home/user/.config/cursor/auth.json",
+	);
+	assert.equal(
+		getCursorAuthFilePath("linux", "/home/user", "/config"),
+		"/config/cursor/auth.json",
+	);
+	assert.equal(
+		getCursorAuthFilePath("darwin", "/Users/user"),
+		"/Users/user/.cursor/auth.json",
+	);
 });

@@ -1,7 +1,10 @@
-import { execFileSync } from "node:child_process";
 import { existsSync } from "node:fs";
 import { homedir } from "node:os";
-import { asJsonObject, type JsonObject } from "../../domain/json.js";
+import {
+	asJsonObject,
+	asNonEmptyString,
+	type JsonObject,
+} from "../../domain/json.js";
 import type { IProvider } from "../../domain/provider.js";
 import {
 	parseDateTime,
@@ -9,7 +12,7 @@ import {
 	type UsageLimit,
 	type UsageSnapshot,
 } from "../../domain/usage.js";
-import { readMacKeychain } from "../shared/files.js";
+import { readJsonFile, readMacKeychain } from "../shared/files.js";
 import { postJson } from "../shared/http.js";
 
 const USAGE_URL =
@@ -19,44 +22,36 @@ interface CursorAuth {
 	readonly accessToken: string;
 }
 
-function getCursorDatabasePaths(): readonly string[] {
-	if (process.platform === "darwin") {
-		return [
-			`${homedir()}/Library/Application Support/Cursor/User/globalStorage/state.vscdb`,
-		];
-	}
-	const config = process.env.XDG_CONFIG_HOME ?? `${homedir()}/.config`;
-	return [
-		`${config}/Cursor/User/globalStorage/state.vscdb`,
-		`${config}/cursor/User/globalStorage/state.vscdb`,
-	];
-}
-
-function getSqliteValue(path: string, key: string): string | undefined {
-	try {
-		const value = execFileSync(
-			"sqlite3",
-			[path, `SELECT value FROM ItemTable WHERE key='${key}' LIMIT 1;`],
-			{
-				encoding: "utf8",
-				stdio: ["ignore", "pipe", "ignore"],
-			},
-		).trim();
-		return value || undefined;
-	} catch {
-		return undefined;
-	}
+export function getCursorAuthFilePath(
+	platform: NodeJS.Platform = process.platform,
+	homeDirectory: string = homedir(),
+	configDirectory: string | undefined = process.env.XDG_CONFIG_HOME,
+): string {
+	if (platform === "darwin") return `${homeDirectory}/.cursor/auth.json`;
+	configDirectory ??= `${homeDirectory}/.config`;
+	return `${configDirectory}/cursor/auth.json`;
 }
 
 function getCursorAuth(): CursorAuth {
-	const database = getCursorDatabasePaths().find(existsSync);
-	const token = database
-		? getSqliteValue(database, "cursorAuth/accessToken")
-		: undefined;
-	const fallback = readMacKeychain("cursor-access-token");
-	if (token) return { accessToken: token };
-	if (fallback) return { accessToken: fallback };
-	throw new Error("Cursor is not signed in or sqlite3 is unavailable");
+	const environmentToken = asNonEmptyString(process.env.CURSOR_AUTH_TOKEN);
+	if (environmentToken) return { accessToken: environmentToken };
+
+	const usesFileStore =
+		process.platform !== "darwin" ||
+		process.env.AGENT_CLI_CREDENTIAL_STORE === "file";
+	const authFilePath = getCursorAuthFilePath();
+	if (usesFileStore && existsSync(authFilePath)) {
+		const authDocument = asJsonObject(readJsonFile(authFilePath));
+		const accessToken = asNonEmptyString(authDocument?.accessToken);
+		if (accessToken) return { accessToken };
+	}
+
+	const keychainToken = usesFileStore
+		? undefined
+		: readMacKeychain("cursor-access-token");
+	if (keychainToken) return { accessToken: keychainToken };
+
+	throw new Error("Cursor CLI is not signed in; run cursor-agent login");
 }
 
 function parseCursorLimit(

@@ -1,8 +1,8 @@
 # agent-usage
 
 `agent-usage` prints the current subscription limits for Codex, Claude Code,
-and Cursor. It reads credentials that the official tools already store on the
-machine and sends read-only requests to each provider.
+and Cursor Agent. It reads credentials that the official CLIs already store on
+the machine and sends read-only requests to each provider.
 
 Run it with no arguments:
 
