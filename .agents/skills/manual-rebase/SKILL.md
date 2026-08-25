@@ -15,7 +15,7 @@ disable-model-invocation: true
 
 1. Resolve the named current branch and `<target>^{commit}`. Stop on detached `HEAD`, an invalid target, or worktree changes that prevent rebase.
 2. Review `git status --short --branch`, ahead/behind counts, commits on each side, and `git diff --stat <target>...HEAD`.
-3. Save the old `HEAD` as `tmp/bak-<current-branch-name>`. Stop if this branch exists. Verify it points to the old `HEAD`.
+3. Save the old `HEAD` as `tmp/bak-<current-branch-name>-<UNIX-MS-TIMESTAMP>`. Stop if this branch exists. Verify it points to the old `HEAD`.
 4. Run `git rebase <target>`.
 5. On failure, save Git's error output, run `git rebase --abort`, and verify that no rebase is in progress, the current branch is unchanged, and `HEAD` equals the saved old `HEAD`. Report the cause, recovery result, and backup branch. Do not push.
 6. On success, verify that:
