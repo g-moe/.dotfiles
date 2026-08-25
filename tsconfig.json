@@ -2,6 +2,12 @@
 	"files": [],
 	"references": [
 		{
+			"path": "./packages/agent-usage/tsconfig.json"
+		},
+		{
+			"path": "./packages/agent-usage/tsconfig.test.json"
+		},
+		{
 			"path": "./packages/theming/create/tsconfig.json"
 		},
 		{

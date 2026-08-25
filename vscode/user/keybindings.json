@@ -1589,7 +1589,7 @@
 		"command": "-workbench.action.closeOtherEditors"
 	},
 	{
-		"key": "cmd+/",
+		"key": "shift+cmd+d",
 		"command": "editor.action.commentLine",
 		"when": "editorTextFocus && !editorReadonly"
 	},
@@ -1894,7 +1894,7 @@
 		"when": "isDevelopment"
 	},
 	{
-		"key": "shift+cmd+d",
+		"key": "shift+cmd+a",
 		"command": "workbench.action.togglePanel"
 	},
 	{
@@ -1912,5 +1912,50 @@
 	{
 		"key": "cmd+3",
 		"command": "workbench.action.openEditorAtIndex3"
+	},
+	{
+		"key": "shift+cmd+g",
+		"command": "-notebook.findPrevious.fromWidget",
+		"when": "findWidgetVisible && notebookEditorFocused"
+	},
+	{
+		"key": "shift+cmd+g",
+		"command": "-workbench.action.browser.findPrevious",
+		"when": "browserFindWidgetVisible && activeEditor == 'workbench.editor.browser'"
+	},
+	{
+		"key": "cmd+/",
+		"command": "-editor.action.commentLine",
+		"when": "editorTextFocus && !editorReadonly"
+	},
+	{
+		"key": "shift+cmd+a",
+		"command": "-workbench.action.openAgentsWindow",
+		"when": "config.chat.agent.enabled && !accessibilityModeEnabled && !chatSetupDisabledInWorkspace && !chatSetupHidden && !isAuxiliaryWindow && !isSessionsWindow"
+	},
+	{
+		"key": "shift+cmd+a",
+		"command": "-notification.acceptPrimaryAction",
+		"when": "accessibilityModeEnabled && notificationFocus || accessibilityModeEnabled && notificationToastsVisible"
+	},
+	{
+		"key": "shift+cmd+a",
+		"command": "-workbench.action.chat.focusConfirmation",
+		"when": "accessibilityModeEnabled && chatIsEnabled && !chatHasQuestionCarousel"
+	},
+	{
+		"key": "shift+cmd+a",
+		"command": "-workbench.action.chat.focusQuestionCarousel",
+		"when": "chatHasQuestionCarousel && inChat"
+	},
+	{
+		"key": "shift+cmd+a",
+		"command": "-workbench.action.browser.quickOpen",
+		"when": "activeEditor == 'workbench.editor.browser'"
+	},
+	{
+		"key": "cmd+/",
+		"command": "editor.action.commentLine",
+		"when": "editorTextFocus && !editorReadonly"
 	}
 ]

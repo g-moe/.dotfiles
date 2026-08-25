@@ -1,0 +1,16 @@
+{
+	"name": "agent-usage",
+	"private": true,
+	"bin": {
+		"agent-usage": "dist/cli/main.js"
+	},
+	"type": "module",
+	"scripts": {
+		"build": "tsc -p tsconfig.json",
+		"test": "node --import tsx --test tests/*.test.ts",
+		"typecheck:test": "tsc -b tsconfig.test.json --noEmit"
+	},
+	"engines": {
+		"node": ">=24 <25"
+	}
+}

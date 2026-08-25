@@ -104,6 +104,8 @@
 !/packages/
 !/packages/installer/
 !/packages/installer/**
+!/packages/agent-usage/
+!/packages/agent-usage/**
 !/packages/lib/
 !/packages/lib/bash/
 !/packages/lib/bash/**

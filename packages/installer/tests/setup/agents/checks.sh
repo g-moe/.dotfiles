@@ -20,6 +20,15 @@ expect_file_contains "$agents" \
 expect_file_contains "$agents" \
   "safe_symlink_group 'Agent skills'" \
   'Agents setup must link shared skills'
+expect_file_contains "$agents" \
+  "safe_symlink_group 'Agent usage CLI'" \
+  'Agents setup must install the agent usage CLI'
+expect_file_contains "$agents" \
+  'packages/agent-usage/tsconfig.json' \
+  'Agents setup must build the agent usage package'
+expect_file_contains "$agents" \
+  'chmod +x "$ROOT_DIR/packages/agent-usage/dist/cli/main.js"' \
+  'Agents setup must make the agent usage CLI executable'
 for target_root in \
   '$HOME/.agents/skills' \
   '$HOME/.codex/skills' \
