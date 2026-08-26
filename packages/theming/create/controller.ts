@@ -4,6 +4,7 @@ import { nvimApp } from "./apps/nvim";
 import { ohMyZshApp } from "./apps/oh-my-zsh";
 import { opencodeApp } from "./apps/opencode";
 import { superfileApp } from "./apps/superfile";
+import { t3CodeApp } from "./apps/t3code";
 import { vscodeApp } from "./apps/vscode";
 import { PATHS } from "./paths";
 import type { CreateInstallModule } from "./types";
@@ -14,6 +15,7 @@ const APPS: CreateInstallModule[] = [
 	opencodeApp,
 	ghosttyApp,
 	superfileApp,
+	t3CodeApp,
 	nvimApp,
 	ohMyZshApp,
 ];

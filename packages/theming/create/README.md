@@ -9,6 +9,7 @@ flowchart TD
   B --> F["packages/theming/create/apps/superfile.ts"]
   B --> G["packages/theming/create/apps/nvim.ts"]
   B --> H["packages/theming/create/apps/oh-my-zsh.ts"]
+  B --> V["packages/theming/create/apps/t3code.ts"]
 
   C --> I["packages/theming/output/vscode/*"]
   D --> J["packages/theming/output/opencode/*"]
@@ -16,6 +17,7 @@ flowchart TD
   F --> L["packages/theming/output/superfile/*"]
   G --> M["packages/theming/output/nvim/*"]
   H --> N["packages/theming/output/oh-my-zsh/*"]
+  V --> W["packages/theming/g-theme-t3.json"]
 
   I --> O["install copy -> packages/theming/vsce-package/themes/*"]
   J --> P["install copy -> opencode/themes/*"]
@@ -30,3 +32,8 @@ flowchart TD
 The Zsh prompt reads the saved machine color from `~/.dotfiles/machine.json`.
 The machine-name block uses white text on black and black text on every other
 supported color.
+
+The T3 Code export stays in one file. Its dark palette is the base `colors`
+object and its macOS light palette is stored in `variants.light`. Import
+`packages/theming/g-theme-t3.json` from T3 Code Settings → Themes → Import
+theme.

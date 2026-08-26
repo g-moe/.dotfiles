@@ -14,6 +14,9 @@ export const PATHS = {
 	createRoot: CREATE_ROOT,
 	outputRoot: OUTPUT_ROOT,
 	vscePackage: VSCE_PACKAGE,
+	t3code: {
+		theme: path.join(THEMING, "g-theme-t3.json"),
+	},
 	tokens: path.join(CREATE_ROOT, "tokens.css"),
 	templates: {
 		vscode: {

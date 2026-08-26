@@ -287,8 +287,7 @@
 	"terminal.integrated.fontLigatures.enabled": true,
 	"terminal.integrated.fontWeight": "normal",
 	"terminal.integrated.fontWeightBold": "bold",
-	"terminal.integrated.lineHeight": 1,
-	"terminal.integrated.minimumContrastRatio": 4,
+    "terminal.integrated.lineHeight": 1,
 	"terminal.integrated.shellIntegration.enabled": false,
 	"terminal.integrated.wordSeparators": " ()[]{}',\"`|│┃",
 	"terminal.integrated.enableFileLinks": "on",
@@ -438,5 +437,6 @@
 	"files.autoSave": "afterDelay",
     "files.hotExit": "off",
     "workbench.sideBar.location": "right",
-    "terminal.integrated.tabs.location": "left"
+    "terminal.integrated.tabs.location": "left",
+    "terminal.integrated.minimumContrastRatio": 4
 }
