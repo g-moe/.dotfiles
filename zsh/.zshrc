@@ -108,12 +108,6 @@ alias hist='fc -rl 1 | grep -i'
 # Reload zshrc
 alias reload='source ~/.zshrc'
 
-# Open files in VSCodium with the VS Code command
-alias code='codium'
-
-# Start the local T3 Code web server detached from the terminal and job table
-alias t3-serve='nohup npx t3 serve --host 0.0.0.0 --port 3333 >>/tmp/t3-serve.log 2>&1 &!'
-
 # Stop the process listening on a port
 kill-port() {
   [[ "$1" == <-> ]] || {
@@ -130,6 +124,18 @@ kill-port() {
 
   kill "${pids[@]}"
 }
+
+# Open files in VSCodium with the VS Code command
+alias code='codium'
+
+# Open Superfile
+alias files='spf'
+
+# T3 - start web server detached from the terminal and job table
+alias t3-serve='nohup npx t3 serve --host 0.0.0.0 --port 3333 --tailscale-serve >>/tmp/t3-serve.log 2>&1 &!'
+
+# T3 - Stop the web server running on port 3333
+alias t3-serve-kill='kill-port 3333'
 
 # List out directories with `cd` change directory
 unalias cd 2>/dev/null

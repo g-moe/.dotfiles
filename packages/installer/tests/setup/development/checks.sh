@@ -6,6 +6,8 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 expect_file_contains "$INSTALLER_DIR/setup/development/node.sh" \
   'mkdir -p "$HOME/.nvm"' 'Node setup must create the fixed NVM directory'
+expect_file_contains "$ROOT_DIR/zsh/.zshrc" \
+  "alias files='spf'" 'Zsh must provide the Superfile alias'
 
 development_body="$(sed -n '/^install_development() {/,/^}/p' "$INSTALLER_DIR/install.sh")"
 if grep -Fq 'install_agents' <<<"$development_body"; then

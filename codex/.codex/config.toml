@@ -32,6 +32,7 @@ avatar-overlay-mascot-width-px = 80
 conversationDetailMode = "STEPS_COMMANDS"
 defaultTerminalLocation = "right"
 appearanceDiffMarkerStyle = "symbols"
+composerPlainTextMode = true
 
 [desktop.appearanceLightChromeTheme]
 accent = "#0969da"
