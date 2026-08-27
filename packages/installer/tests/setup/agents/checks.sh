@@ -39,4 +39,9 @@ for target_root in \
     "Agents setup must link skills for $target_root"
 done
 
+agents_line="$(grep -n "agents.sh" "$INSTALLER_DIR/install.sh" | head -1 | cut -d: -f1)"
+mcp_line="$(grep -n "agents/mcp-servers.sh" "$INSTALLER_DIR/install.sh" | cut -d: -f1)"
+[[ "$mcp_line" -gt "$agents_line" ]] ||
+  fail 'MCP setup must run after the shared agent configuration'
+
 printf 'Agents setup checks passed.\n'

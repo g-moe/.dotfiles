@@ -40,16 +40,17 @@ Single strategies and individual phase flags (`--apps`, `--development`, …) sk
 
 Normal phase runs start with a read-only Linux desktop check, then use this order: `apps` → `development` → `appearance` → `input` → `desktop` → `files` → `access` → `system`. The check runs before every phase flag, so Linux work only starts after Xfce, LightDM, and X11 are ready. Changes to the LightDM X11 session stay in the system phase.
 
-| Phase         | Covers                                                                           |
-| ------------- | -------------------------------------------------------------------------------- |
-| `apps`        | Apps (Homebrew / APT / vendor)                                                   |
-| `development` | Git, Node, Pi, AWS CLI, Cloudflare CLIs, Zsh, tmux, VSCodium, Codex, MCP servers |
-| `appearance`  | Wallpaper, screen saver, theme, icons, login screen                              |
-| `input`       | Pointer, touchpad, keyboard, remapping                                           |
-| `desktop`     | Workspaces, items/widgets, windows, lower panel, top bar, name display           |
-| `files`       | Defaults, associations, Finder/Files                                             |
-| `access`      | Handoff, assistants, headless notes, SSH, VNC                                    |
-| `system`      | LightDM X11 session, updates, power, UI refresh                                  |
+| Phase         | Covers                                                                 |
+| ------------- | ---------------------------------------------------------------------- |
+| `apps`        | Apps (Homebrew / APT / vendor)                                         |
+| `development` | Git, Node, Pi, AWS CLI, Cloudflare CLIs, Zsh, tmux, VSCodium, Codex    |
+| `agents`      | Shared instructions, skills, usage CLI, and global MCP servers         |
+| `appearance`  | Wallpaper, screen saver, theme, icons, login screen                    |
+| `input`       | Pointer, touchpad, keyboard, remapping                                 |
+| `desktop`     | Workspaces, items/widgets, windows, lower panel, top bar, name display |
+| `files`       | Defaults, associations, Finder/Files                                   |
+| `access`      | Handoff, assistants, headless notes, SSH, VNC                          |
+| `system`      | LightDM X11 session, updates, power, UI refresh                        |
 
 ### Where things live
 
@@ -142,11 +143,11 @@ Code.
 
 ### Global MCP servers
 
-Development setup registers global MCP servers with Codex and Claude Code.
-Server definitions and add instructions live in
-[`setup/development/mcp-servers.sh`](setup/development/mcp-servers.sh), with
-focused checks in
-[`tests/setup/development/mcp-servers.sh`](tests/setup/development/mcp-servers.sh).
+Agent setup registers the pinned Chrome DevTools MCP server globally with
+Codex, Claude Code, and Cursor. npm installs the server once globally, and
+[`setup/agents/mcp-servers.sh`](setup/agents/mcp-servers.sh) passes the
+same absolute server command to each client. Focused checks live in
+[`tests/setup/agents/mcp-servers.sh`](tests/setup/agents/mcp-servers.sh).
 
 ### Platform quirks
 

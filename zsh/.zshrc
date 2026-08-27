@@ -82,24 +82,30 @@ bindkey '^R' history-incremental-search-backward
 # Print out alias
 alias alias-ls='sed -nE "s/^[[:space:]]*alias[[:space:]]+([^=]+)=.*/\1/p" ~/.zshrc'
 
-# List global MCP servers for Codex and Claude Code as one JSON object.
-# Codex provides JSON output. Claude Code does not, so read its user-scoped
-# mcpServers object and convert it to the same name-first list shape.
+# List global MCP servers for Codex, Claude Code, and Cursor as one JSON object.
+# Codex provides JSON output. The other clients do not, so read their global
+# mcpServers objects and convert them to the same name-first list shape.
 unalias mcp-ls 2>/dev/null
 mcp-ls() {
   local codex_servers
   local claude_servers='[]'
+  local cursor_servers='[]'
 
   codex_servers="$(codex mcp list --json)" || return
   if [[ -r "$HOME/.claude.json" ]]; then
     claude_servers="$(jq '[((.mcpServers // {}) | to_entries[]) | {name: .key} + .value]' \
       "$HOME/.claude.json")" || return
   fi
+  if [[ -r "$HOME/.cursor/mcp.json" ]]; then
+    cursor_servers="$(jq '[((.mcpServers // {}) | to_entries[]) | {name: .key} + .value]' \
+      "$HOME/.cursor/mcp.json")" || return
+  fi
 
   jq -n \
     --argjson codex "$codex_servers" \
     --argjson claude "$claude_servers" \
-    '{codex: $codex, claude: $claude}'
+    --argjson cursor "$cursor_servers" \
+    '{codex: $codex, claude: $claude, cursor: $cursor}'
 }
 
 # Search command history; for example, `hist git`.
