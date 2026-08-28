@@ -50,8 +50,8 @@ if [[ "$is_macos" == true ]]; then
   plugins+=(brew macos copypath copyfile)
 fi
 
-# Enable grep color when the installed grep supports --color
 if command grep --help 2>&1 | command grep -q -- '--color'; then
+  # Enable grep color when the installed grep supports --color
   alias grep='grep --color=auto'
 fi
 
@@ -79,8 +79,41 @@ if (( ${+widgets[history-substring-search-up]} )); then
 fi
 bindkey '^R' history-incremental-search-backward
 
-# Print out alias
-alias alias-ls='sed -nE "s/^[[:space:]]*alias[[:space:]]+([^=]+)=.*/\1/p" ~/.zshrc'
+# Print aliases and their directly preceding descriptions
+unalias alias-ls 2>/dev/null
+alias-ls() {
+  local zshrc_file="${1:-$HOME/.zshrc}"
+
+  awk '
+    /^[[:space:]]*$/ {
+      description = ""
+      next
+    }
+    /^[[:space:]]*#[[:space:]]/ {
+      description = $0
+      sub(/^[[:space:]]*#[[:space:]]*/, "", description)
+      next
+    }
+    /^[[:space:]]*alias[[:space:]]+/ {
+      alias_name = $0
+      sub(/^[[:space:]]*alias[[:space:]]+/, "", alias_name)
+      sub(/^-g[[:space:]]+/, "", alias_name)
+      sub(/[[:space:]]*=.*/, "", alias_name)
+      if (printed) {
+        print ""
+      }
+      if (description != "") {
+        printf "\"%s\"\n%s\n", description, alias_name
+      } else {
+        print alias_name
+      }
+      printed = 1
+      description = ""
+      next
+    }
+    { description = "" }
+  ' "$zshrc_file"
+}
 
 # List global MCP servers for Codex, Claude Code, and Cursor as one JSON object.
 # Codex provides JSON output. The other clients do not, so read their global
@@ -162,18 +195,18 @@ alias ssh-new="$HOME/.dotfiles/packages/lib/bash/bin/shared-ssh-new-host.sh"
 # Record and uninstall a package on this platform
 alias retire='RETIRE_FILE="$HOME/.dotfiles/packages/installer/packages/retire.json" "$HOME/.dotfiles/packages/lib/bash/bin/shared-retire-package.sh"'
 
-# Copy to clipboard and print to terminal
 if command -v copy-to-clipboard >/dev/null 2>&1; then
+  # Copy to clipboard and print to terminal
   alias -g yank='| tee /dev/tty | copy-to-clipboard'
 fi
 
 # Git stash including untracked files
 alias gitstash='git stash -u'
 
-# Git clean dry
+# Git clean dry run
 alias gc-dry='git clean -nd'
 
-# Git clean force
+# Git Clean
 alias gc='git clean -fd'
 
 # Support 256 color terminal
