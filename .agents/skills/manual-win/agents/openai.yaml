@@ -1,6 +1,0 @@
-interface:
-  display_name: "Manual Win"
-  short_description: "Find and prove one small codebase win"
-  default_prompt: "Use $manual-win to find, prove, and review one small codebase improvement."
-policy:
-  allow_implicit_invocation: false

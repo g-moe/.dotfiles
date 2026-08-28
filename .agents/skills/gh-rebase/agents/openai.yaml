@@ -1,0 +1,6 @@
+interface:
+  display_name: "GH Rebase"
+  short_description: "Rebase safely with an explicit target and backup"
+  default_prompt: "Use $gh-rebase to rebase my current branch onto <explicit-branch>."
+policy:
+  allow_implicit_invocation: false

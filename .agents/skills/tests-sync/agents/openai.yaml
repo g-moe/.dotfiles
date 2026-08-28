@@ -1,0 +1,6 @@
+interface:
+  display_name: "Tests Sync"
+  short_description: "Fix tests without hiding runtime bugs"
+  default_prompt: "Use $tests-sync to update tests for these code changes."
+policy:
+  allow_implicit_invocation: false

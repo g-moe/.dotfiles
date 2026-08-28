@@ -1,0 +1,6 @@
+interface:
+  display_name: "Agent Team"
+  short_description: "Run a reusable three-agent team"
+  default_prompt: "Use $agent-team for this task."
+policy:
+  allow_implicit_invocation: false

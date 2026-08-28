@@ -1,0 +1,7 @@
+interface:
+  display_name: "Evaluate AGENTS.md"
+  short_description: "Compare instruction-following across coding harnesses"
+  default_prompt: "Use $eval-agents-md to run the configured AGENTS.md evaluation and return its report."
+
+policy:
+  allow_implicit_invocation: false

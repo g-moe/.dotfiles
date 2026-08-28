@@ -1,6 +1,0 @@
-interface:
-  display_name: "Manual Cmon Man"
-  short_description: "Re-read project instructions after a mistake"
-  default_prompt: "Use $manual-cmon-man to re-read the applicable AGENTS.md instructions and correct your approach."
-policy:
-  allow_implicit_invocation: false

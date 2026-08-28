@@ -1,0 +1,6 @@
+interface:
+  display_name: "Small Win"
+  short_description: "Find and prove one small codebase win"
+  default_prompt: "Use $small-win to find, prove, and review one small codebase improvement."
+policy:
+  allow_implicit_invocation: false

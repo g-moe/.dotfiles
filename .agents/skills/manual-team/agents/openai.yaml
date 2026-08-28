@@ -1,6 +1,0 @@
-interface:
-  display_name: "Manual Team"
-  short_description: "Run a reusable three-agent team"
-  default_prompt: "Use $manual-team for this task."
-policy:
-  allow_implicit_invocation: false
