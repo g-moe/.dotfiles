@@ -1790,22 +1790,6 @@
 		"when": "editorHasReferenceProvider"
 	},
 	{
-		"key": "cmd+e cmd+r",
-		"command": "opencode.toggleChatView"
-	},
-	{
-		"key": "alt+cmd+k",
-		"command": "-opencode.addFilepathToTerminal"
-	},
-	{
-		"key": "cmd+escape",
-		"command": "-opencode.openTerminal"
-	},
-	{
-		"key": "shift+cmd+escape",
-		"command": "-opencode.openNewTerminal"
-	},
-	{
 		"key": "cmd+k v",
 		"command": "-markdown.showPreviewToSide",
 		"when": "!notebookEditorFocused && editorLangId == 'markdown'"

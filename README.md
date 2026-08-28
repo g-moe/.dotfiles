@@ -13,7 +13,7 @@ source folder as a whole.
 ```text
 .
 ├── .agents/                Shared agent instructions and skills
-├── .agents-archive/        Archived agent instructions and skills
+├── .archive/               Archived files grouped by former application
 ├── .github/                GitHub templates and repository automation
 ├── .vscode/                Settings for working on this repository
 ├── arc/                    Arc routing configuration
@@ -22,7 +22,6 @@ source folder as a whole.
 ├── images/                 Shared artwork used by the installer
 ├── karabiner/              Karabiner-Elements configuration
 ├── nvim/                   Neovim configuration and plugins
-├── opencode/               OpenCode configuration and themes
 ├── packages/
 │   ├── agent-usage/        Agent subscription usage CLI
 │   ├── installer/          Machine installer and installer tests
@@ -56,7 +55,6 @@ These folders contain application configuration, not installer logic.
 | `images/`       | Shared Tux artwork and other installer assets.                                                  |
 | `karabiner/`    | Karabiner-Elements keyboard remapping rules.                                                    |
 | `nvim/`         | Neovim entry point, options, keymaps, plugin setup, and plugins.                                |
-| `opencode/`     | OpenCode config, TUI settings, and generated themes.                                            |
 | `superfile/`    | Superfile config and generated theme.                                                           |
 | `tmux/`         | tmux configuration.                                                                             |
 | `vscode/user/`  | Editor settings, keybindings, and extensions for VS Code or VSCodium.                           |
@@ -140,7 +138,6 @@ packages/theming/create/controller.ts
         ├── packages/theming/output/ghostty/
         ├── packages/theming/output/nvim/
         ├── packages/theming/output/oh-my-zsh/
-        ├── packages/theming/output/opencode/
         ├── packages/theming/output/superfile/
         └── packages/theming/output/vscode/
 ```

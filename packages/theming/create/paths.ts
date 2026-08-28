@@ -29,9 +29,6 @@ export const PATHS = {
 			dark: path.join(OUTPUT_ROOT, "vscode/gtheme-dark.json"),
 			light: path.join(OUTPUT_ROOT, "vscode/gtheme-light.json"),
 		},
-		opencode: {
-			theme: path.join(OUTPUT_ROOT, "opencode/gtheme.json"),
-		},
 		ghostty: {
 			dark: path.join(OUTPUT_ROOT, "ghostty/gtheme-dark"),
 			light: path.join(OUTPUT_ROOT, "ghostty/gtheme-light"),
@@ -52,9 +49,6 @@ export const PATHS = {
 		vscode: {
 			dark: path.join(VSCE_PACKAGE, "themes/gtheme-dark.json"),
 			light: path.join(VSCE_PACKAGE, "themes/gtheme-light.json"),
-		},
-		opencode: {
-			theme: path.join(ROOT, "opencode/themes/gtheme.json"),
 		},
 		ghostty: {
 			dark: path.join(ROOT, "ghostty/themes/gtheme-dark"),

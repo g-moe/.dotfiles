@@ -1,6 +1,6 @@
 # Machine installer
 
-The repo must live at `~/.dotfiles`. The installer links only the config files and config subfolders each app needs. On Mac, that includes Ghostty's config and themes. It does not link whole Ghostty, Neovim, OpenCode, Karabiner, or tmux source folders.
+The repo must live at `~/.dotfiles`. The installer links only the config files and config subfolders each app needs. On Mac, that includes Ghostty's config and themes. It does not link whole Ghostty, Neovim, Karabiner, or tmux source folders.
 
 **One entry point:** `packages/installer/install.sh`. Every install path goes through it — full run, phase slices, and single strategies (`--git`, `--agents`, `--theme`). Do not run `packages/installer/setup/**` or `packages/theming/create/controller.ts` yourself for install.
 

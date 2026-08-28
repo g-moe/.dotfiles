@@ -39,8 +39,8 @@
 !/.agents/CLAUDE.md
 !/.agents/skills/
 !/.agents/skills/**
-!/.agents-archive/
-!/.agents-archive/**
+!/.archive/
+!/.archive/**
 
 # GitHub
 !/.github/
@@ -85,21 +85,6 @@
 !/nvim/lua/config/**
 !/nvim/lua/plugins/
 !/nvim/lua/plugins/**
-
-# OpenCode
-!/opencode/
-!/opencode/opencode.json
-!/opencode/opencode.jsonc
-!/opencode/tui.json
-!/opencode/tui.jsonc
-!/opencode/agent/
-!/opencode/agent/**
-!/opencode/commands/
-!/opencode/commands/**
-!/opencode/plugins/
-!/opencode/plugins/**
-!/opencode/themes/
-!/opencode/themes/**
 
 # Packages
 !/packages/

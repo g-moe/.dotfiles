@@ -204,11 +204,6 @@ autoload -U add-zsh-hook
 add-zsh-hook chpwd _use_node_version
 _use_node_version --silent
 
-# opencode
-if [[ -d "$HOME/.opencode/bin" ]]; then
-  export PATH="$HOME/.opencode/bin:$PATH"
-fi
-
 # Added by LM Studio CLI (lms)
 if [[ -d "$HOME/.lmstudio/bin" ]]; then
   export PATH="$PATH:$HOME/.lmstudio/bin"

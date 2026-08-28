@@ -33,8 +33,7 @@ for target_root in \
   '$HOME/.agents/skills' \
   '$HOME/.codex/skills' \
   '$HOME/.claude/skills' \
-  '$HOME/.cursor/skills' \
-  '$HOME/.config/opencode/skills'; do
+  '$HOME/.cursor/skills'; do
   expect_file_contains "$agents" "\"$target_root\"" \
     "Agents setup must link skills for $target_root"
 done

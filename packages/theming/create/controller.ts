@@ -2,7 +2,6 @@ import { spawn } from "child_process";
 import { ghosttyApp } from "./apps/ghostty";
 import { nvimApp } from "./apps/nvim";
 import { ohMyZshApp } from "./apps/oh-my-zsh";
-import { opencodeApp } from "./apps/opencode";
 import { superfileApp } from "./apps/superfile";
 import { t3CodeApp } from "./apps/t3code";
 import { vscodeApp } from "./apps/vscode";
@@ -12,7 +11,6 @@ import { parseCssTokens } from "./utils";
 
 const APPS: CreateInstallModule[] = [
 	vscodeApp,
-	opencodeApp,
 	ghosttyApp,
 	superfileApp,
 	t3CodeApp,

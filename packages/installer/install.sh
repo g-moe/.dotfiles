@@ -59,7 +59,6 @@ install_apps() {
   run_strategy 'Voice dictation' apps/voice-dictation.sh
   run_strategy 'Temperature monitor' apps/temperature-monitor.sh
   run_strategy 'System monitor' apps/system-monitor.sh
-  run_strategy 'OpenCode' apps/opencode.sh
   run_strategy 'Zsh' apps/zsh.sh
   run_strategy 'Clipboard tools' apps/clipboard.sh
   run_strategy 'Tailscale' apps/tailscale.sh

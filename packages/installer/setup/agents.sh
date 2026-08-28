@@ -30,8 +30,7 @@ _link_skills() {
     "$HOME/.agents/skills" \
     "$HOME/.codex/skills" \
     "$HOME/.claude/skills" \
-    "$HOME/.cursor/skills" \
-    "$HOME/.config/opencode/skills"; do
+    "$HOME/.cursor/skills"; do
     mkdir -p "$target_root"
     for source in "$ROOT_DIR"/.agents/skills/*; do
       [[ -f "$source/SKILL.md" ]] || continue

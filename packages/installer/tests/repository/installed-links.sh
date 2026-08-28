@@ -20,7 +20,7 @@ expect_link() {
 
 [[ -d "$ROOT_DIR/.git" ]] || fail "$ROOT_DIR is not the Git repo"
 
-for app in ghostty nvim opencode karabiner; do
+for app in ghostty nvim karabiner; do
   [[ ! -L "$HOME/.config/$app" ]] || fail "$HOME/.config/$app links a whole folder"
 done
 
@@ -29,9 +29,6 @@ while IFS= read -r source; do
   expect_link "$source" "$HOME/.config/nvim/$relative"
 done < <(find "$ROOT_DIR/nvim" -type f | sort)
 
-expect_link "$ROOT_DIR/opencode/opencode.jsonc" "$HOME/.config/opencode/opencode.jsonc"
-expect_link "$ROOT_DIR/opencode/tui.jsonc" "$HOME/.config/opencode/tui.jsonc"
-expect_link "$ROOT_DIR/opencode/themes/gtheme.json" "$HOME/.config/opencode/themes/gtheme.json"
 expect_link "$ROOT_DIR/codex/.codex/config.toml" "$HOME/.codex/config.toml"
 expect_link "$ROOT_DIR/codex/.codex/keybindings.json" "$HOME/.codex/keybindings.json"
 expect_link "$ROOT_DIR/tmux/tmux.conf" "$HOME/.tmux.conf"

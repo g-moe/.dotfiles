@@ -29,7 +29,6 @@ images/icon.png
 images/white.png
 karabiner/karabiner.json
 nvim/init.lua
-opencode/opencode.jsonc
 packages/installer/install.sh
 packages/installer/setup/agents/mcp-cursor.mjs
 packages/installer/setup/agents/mcp-servers.sh
@@ -61,6 +60,7 @@ done <<<"$required_paths"
   fail 'packages/mac/mactop must not be a nested Git repository'
 
 allowed_roots='
+.archive
 .agents
 .github
 codex
@@ -69,15 +69,17 @@ codex
 .oxfmtrc.json
 .vscode
 AGENTS.md
+README.md
+TODO.md
 arc
 ghostty
 images
 karabiner
 nvim
-opencode
 package-lock.json
 package.json
 packages
+superfile
 tmux
 tsconfig.json
 vscode
@@ -94,8 +96,6 @@ done < <(
 
 for path in \
   zed \
-  opencode/opencode.png \
-  opencode/package-lock.json \
   .zshrc \
   black.heic \
   icon.png \
@@ -106,7 +106,7 @@ for path in \
   [[ ! -e "$ROOT_DIR/$path" ]] || fail "old layout leftover is still present: $path"
 done
 
-for app in ghostty nvim opencode; do
+for app in ghostty nvim; do
   if grep -RFq "safe_symlink \"\$ROOT_DIR/$app\" \"\$HOME/.config/$app\"" \
     "$ROOT_DIR/packages/installer/setup"; then
     fail "$app links its whole source folder"
