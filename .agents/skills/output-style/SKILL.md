@@ -1,23 +1,23 @@
 ---
 name: output-style
-description: Apply one named output style to the user's request. Use only when the user manually invokes $output-style with a style name.
+description: Apply an output style to the user's request. Use only when the user manually invokes $output-style. The user can name a style or let the agent select one.
 ---
 
 # Output Style
 
-Find the style name anywhere in the manual invocation.
+If the invocation names a supported style, use it. If it does not name a style, select the style that communicates the requested details most clearly.
 
-| When                                                   | Use                                                            |
-| ------------------------------------------------------ | -------------------------------------------------------------- |
-| The invocation contains `box`                          | [references/box.md](references/box.md)                         |
-| The invocation contains `flowchart`                    | [references/flowchart.md](references/flowchart.md)             |
-| The invocation contains `input-output`                 | [references/input-output.md](references/input-output.md)       |
-| The invocation contains `before-after`                 | [references/before-after.md](references/before-after.md)       |
-| The invocation contains `anatomy`                      | [references/anatomy.md](references/anatomy.md)                 |
-| The invocation contains `section` or `section-divider` | [references/section-divider.md](references/section-divider.md) |
-| The invocation contains `tree`                         | [references/tree.md](references/tree.md)                       |
+| When | Use |
+| --- | --- |
+| A compact summary needs a visible boundary | [references/box.md](references/box.md) |
+| Steps, movement, or conditional paths explain the subject | [references/flowchart.md](references/flowchart.md) |
+| An operation transforms an input into an output | [references/input-output.md](references/input-output.md) |
+| The effect of a change is clearest as a before-and-after contrast | [references/before-after.md](references/before-after.md) |
+| Labels can explain the parts of one item | [references/anatomy.md](references/anatomy.md) |
+| Source code needs a prominent section comment | [references/section-divider.md](references/section-divider.md) |
+| Hierarchy, nesting, ownership, or file structure explains the subject | [references/tree.md](references/tree.md) |
 
-If the style is missing, unknown, or ambiguous, list the styles in the table and ask the user to select one.
+Prefer the smallest style that makes the details clear. If the user names an unknown or ambiguous style, list the supported styles and ask the user to select one.
 
 ## Apply
 
