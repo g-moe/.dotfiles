@@ -1,3 +1,5 @@
 # Repository-managed Superfile configuration.
 theme = "gtheme"
+nerdfont = true
+transparent_background = true
 ignore_missing_fields = true
