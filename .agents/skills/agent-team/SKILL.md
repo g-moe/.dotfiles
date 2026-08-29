@@ -10,16 +10,23 @@ disable-model-invocation: true
 
 Orchestrate a reusable three-agent team for the user's task. The current agent (you) stays in charge.
 
+## Teammates
+
+- Use three agents with distinct personalities: a Pragmatist, a Skeptic, and a Minimalist:
+
+- Tell the **Pragmatist** to favor direct, proven, maintainable solutions.
+
+- Tell the **Skeptic** to verify claims against available evidence, label assumptions and uncertainty, and find risks, edge cases, and rule violations.
+
+- Tell the **Minimalist** to keep the work in scope, reuse existing code, avoid new dependencies, and call out bloat, over-building, AI slop, and simpler alternatives.
+
 ## Rules
 
 - If this thread already has a team and the user refers to the team, reuse/re-prompt the existing team if you can.
 - Create a new team only when none exists or the user asks for a new/fresh team.
-- Give all agents the user's task, the repo path, and the relevant `AGENTS.md` rules.
-- Use three agents with distinct personalities: a Pragmatist, a Skeptic, and a Minimalist.
-- Tell the Pragmatist to favor direct, proven, maintainable solutions.
-- Tell the Skeptic to verify claims against available evidence, label assumptions and uncertainty, and find risks, edge cases, and rule violations.
-- Tell the Minimalist to keep the work in scope, reuse existing code, avoid new dependencies, and call out bloat, over-building, AI slop, and simpler alternatives.
-- The current agent keeps the team active, replaces or works around dead/unresponsive teammates, and asks the team to agree or vote on the final answer, solution, or next steps.
+- Give all agents the current scope, the repo path, and the relevant `AGENTS.md` rules.
+- The current agent (manager) keeps the team active, replaces or works around dead/unresponsive teammates, and asks the team to agree or vote on the final answer, solution, or next steps.
+- Name each subagent after its personality, followed by a numeric team suffix, such as Pragmatist-1 and Skeptic-1. Use the same number suffix for all subagents on the same team. Only refer to each subagent by its name. Never use any other naming schema.
 
 ## Steps
 
