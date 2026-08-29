@@ -22,27 +22,6 @@ _link_instructions() {
     "$ROOT_DIR/.agents/CLAUDE.md" "$HOME/.claude/CLAUDE.md"
 }
 
-_link_skills() {
-  local skill source target target_root
-  local links=()
-
-  for target_root in \
-    "$HOME/.agents/skills" \
-    "$HOME/.codex/skills" \
-    "$HOME/.claude/skills" \
-    "$HOME/.cursor/skills"; do
-    mkdir -p "$target_root"
-    for source in "$ROOT_DIR"/.agents/skills/*; do
-      [[ -f "$source/SKILL.md" ]] || continue
-      skill="$(basename "$source")"
-      target="$target_root/$skill"
-      links+=("$source" "$target")
-    done
-  done
-
-  safe_symlink_group 'Agent skills' "${links[@]}"
-}
-
 _install_agent_usage() {
   activate_repo_node "$ROOT_DIR" || die 'Run --development before --agents so Node.js is available.'
   if [[ ! -x "$ROOT_DIR/node_modules/.bin/tsc" ]]; then
@@ -57,13 +36,11 @@ _install_agent_usage() {
 
 mac() {
   _link_instructions
-  _link_skills
   _install_agent_usage
 }
 
 linux() {
   _link_instructions
-  _link_skills
   _install_agent_usage
 }
 

@@ -32,7 +32,9 @@ nvim/init.lua
 packages/installer/install.sh
 packages/installer/setup/agents/mcp-cursor.mjs
 packages/installer/setup/agents/mcp-servers.sh
+packages/installer/setup/agents/skills.sh
 packages/installer/tests/setup/agents/mcp-servers.sh
+packages/installer/tests/setup/agents/skills.sh
 packages/installer/packages/retire.json
 packages/installer/packages/retire.schema.json
 packages/lib/bash/lib.sh

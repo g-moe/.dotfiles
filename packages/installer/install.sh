@@ -76,6 +76,7 @@ install_git() {
 
 install_agents() {
   run_strategy 'Agent configuration' agents.sh
+  run_strategy 'Agent skills' agents/skills.sh
   run_strategy 'MCP servers' agents/mcp-servers.sh
 }
 

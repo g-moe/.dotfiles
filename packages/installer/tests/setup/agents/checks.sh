@@ -5,6 +5,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 . "$SCRIPT_DIR/../../lib/test.sh"
 
 agents="$INSTALLER_DIR/setup/agents.sh"
+skills="$INSTALLER_DIR/setup/agents/skills.sh"
 expect_file_contains "$agents" \
   '"$ROOT_DIR/.agents/AGENTS.md" "$HOME/.codex/AGENTS.md"' \
   'Agents setup must link Codex global instructions'
@@ -17,9 +18,6 @@ expect_file_contains "$agents" \
 expect_file_contains "$agents" \
   '"$ROOT_DIR/.agents/CLAUDE.md" "$HOME/.claude/CLAUDE.md"' \
   'Agents setup must link Claude Code global instructions'
-expect_file_contains "$agents" \
-  "safe_symlink_group 'Agent skills'" \
-  'Agents setup must link shared skills'
 expect_file_contains "$agents" \
   "safe_symlink_group 'Agent usage CLI'" \
   'Agents setup must install the agent usage CLI'
@@ -34,13 +32,18 @@ for target_root in \
   '$HOME/.codex/skills' \
   '$HOME/.claude/skills' \
   '$HOME/.cursor/skills'; do
-  expect_file_contains "$agents" "\"$target_root\"" \
+  expect_file_contains "$skills" "\"$target_root\"" \
     "Agents setup must link skills for $target_root"
 done
 
 agents_line="$(grep -n "agents.sh" "$INSTALLER_DIR/install.sh" | head -1 | cut -d: -f1)"
+skills_line="$(grep -n "agents/skills.sh" "$INSTALLER_DIR/install.sh" | cut -d: -f1)"
 mcp_line="$(grep -n "agents/mcp-servers.sh" "$INSTALLER_DIR/install.sh" | cut -d: -f1)"
+[[ "$skills_line" -gt "$agents_line" ]] ||
+  fail 'Skill setup must run after the shared agent configuration'
 [[ "$mcp_line" -gt "$agents_line" ]] ||
   fail 'MCP setup must run after the shared agent configuration'
+[[ "$mcp_line" -gt "$skills_line" ]] ||
+  fail 'MCP setup must run after skill setup'
 
 printf 'Agents setup checks passed.\n'

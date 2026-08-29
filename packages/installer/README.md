@@ -128,12 +128,16 @@ root, and repository/link checks under `tests/repository/`.
 
 Agent setup is separate from development setup. It links `.agents/AGENTS.md`
 to Codex, Pi, and Claude Code. It also links `.agents/CLAUDE.md` to Claude
-Code and links the shared skills to every supported agent harness. Codex
-configuration remains part of development setup.
+Code. On each run, it replaces the installed contents of the Agents, Codex,
+Claude Code, and Cursor skill folders with links to the current shared skills.
+Codex's internal `.system` skill directory is preserved. The command stops
+before cleanup when the repository has no valid skills. Codex configuration
+remains part of development setup.
 
 On another machine, clone or pull the repo at `~/.dotfiles`, then run
-`bash packages/installer/install.sh --agents`. Later pulls update the
-linked files without recreating the links.
+`bash packages/installer/install.sh --agents`. Later pulls update linked files.
+Run the command again after adding, renaming, archiving, or removing a skill so
+the installed skill folders are replaced with the current set.
 
 Full and development installs do not run agent setup. Run `--agents`
 separately when you need these links.
