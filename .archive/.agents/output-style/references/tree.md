@@ -31,4 +31,4 @@ Application
     └── Storage
 ```
 
-Keep labels short. Preserve the correct parent and child relationships. Do not add branches that are not present in the user's content.
+Keep labels short. Preserve the correct parent and child relationships. Do not add branches that are not present in the content.
