@@ -1,6 +1,0 @@
-interface:
-  display_name: "Github PR Template"
-  short_description: "Fill the PR template for the current branch"
-  default_prompt: "Use $gh-pr-template to fill the pull request template for the current branch."
-policy:
-  allow_implicit_invocation: false
