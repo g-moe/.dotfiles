@@ -1,0 +1,6 @@
+interface:
+  display_name: "Demo"
+  short_description: "Build small demos that teach from first principles"
+  default_prompt: "Use $demo to build a small, linear demo that teaches this behavior from first principles."
+policy:
+  allow_implicit_invocation: false
