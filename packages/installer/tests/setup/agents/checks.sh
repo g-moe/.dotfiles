@@ -19,6 +19,27 @@ expect_file_contains "$agents" \
   '"$ROOT_DIR/.agents/CLAUDE.md" "$HOME/.claude/CLAUDE.md"' \
   'Agents setup must link Claude Code global instructions'
 expect_file_contains "$agents" \
+  '"$ROOT_DIR/claude/settings.json" "$HOME/.claude/settings.json"' \
+  'Agents setup must link Claude Code settings'
+expect_file_contains "$ROOT_DIR/claude/settings.json" \
+  '"AskUserQuestion"' \
+  'Claude Code settings must disable the question tool'
+expect_file_contains "$ROOT_DIR/claude/settings.json" \
+  '"defaultMode": "bypassPermissions"' \
+  'Claude Code settings must default to full access'
+expect_file_contains "$ROOT_DIR/claude/settings.json" \
+  '"Read(./.env)"' \
+  'Claude Code settings must block environment file reads'
+expect_file_contains "$ROOT_DIR/claude/settings.json" \
+  '"Read(./.env.*)"' \
+  'Claude Code settings must block environment variant reads'
+expect_file_contains "$ROOT_DIR/claude/settings.json" \
+  '"commit": ""' \
+  'Claude Code settings must disable commit attribution'
+expect_file_contains "$ROOT_DIR/claude/settings.json" \
+  '"pr": ""' \
+  'Claude Code settings must disable pull-request attribution'
+expect_file_contains "$agents" \
   "safe_symlink_group 'Agent usage CLI'" \
   'Agents setup must install the agent usage CLI'
 expect_file_contains "$agents" \

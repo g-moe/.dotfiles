@@ -53,6 +53,10 @@
 !/codex/.codex/config.toml
 !/codex/.codex/keybindings.json
 
+# Claude Code
+!/claude/
+!/claude/settings.json
+
 # Karabiner
 !/karabiner/
 !/karabiner/karabiner.json

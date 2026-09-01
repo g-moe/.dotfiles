@@ -31,6 +31,7 @@ done < <(find "$ROOT_DIR/nvim" -type f | sort)
 
 expect_link "$ROOT_DIR/codex/.codex/config.toml" "$HOME/.codex/config.toml"
 expect_link "$ROOT_DIR/codex/.codex/keybindings.json" "$HOME/.codex/keybindings.json"
+expect_link "$ROOT_DIR/claude/settings.json" "$HOME/.claude/settings.json"
 expect_link "$ROOT_DIR/tmux/tmux.conf" "$HOME/.tmux.conf"
 expect_link "$ROOT_DIR/zsh/.zshenv" "$HOME/.zshenv"
 expect_link "$ROOT_DIR/zsh/.zprofile" "$HOME/.zprofile"

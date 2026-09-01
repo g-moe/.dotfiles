@@ -19,7 +19,8 @@ _link_instructions() {
     "$ROOT_DIR/.agents/AGENTS.md" "$HOME/.codex/AGENTS.md" \
     "$ROOT_DIR/.agents/AGENTS.md" "$HOME/.pi/agent/AGENTS.md" \
     "$ROOT_DIR/.agents/AGENTS.md" "$HOME/.claude/AGENTS.md" \
-    "$ROOT_DIR/.agents/CLAUDE.md" "$HOME/.claude/CLAUDE.md"
+    "$ROOT_DIR/.agents/CLAUDE.md" "$HOME/.claude/CLAUDE.md" \
+    "$ROOT_DIR/claude/settings.json" "$HOME/.claude/settings.json"
 }
 
 _install_agent_usage() {

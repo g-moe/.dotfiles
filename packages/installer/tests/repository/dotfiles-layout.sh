@@ -16,6 +16,7 @@ required_paths='
 .agents
 .agents/AGENTS.md
 .agents/CLAUDE.md
+claude/settings.json
 codex/.codex/config.toml
 codex/.codex/keybindings.json
 .gitignore
@@ -65,6 +66,7 @@ allowed_roots='
 .archive
 .agents
 .github
+claude
 codex
 .gitignore
 .nvmrc

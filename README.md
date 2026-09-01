@@ -17,6 +17,7 @@ source folder as a whole.
 ├── .github/                GitHub templates and repository automation
 ├── .vscode/                Settings for working on this repository
 ├── arc/                    Arc routing configuration
+├── claude/                 Claude Code settings
 ├── codex/.codex/           Codex settings and keybindings
 ├── ghostty/                Ghostty configuration and generated themes
 ├── images/                 Shared artwork used by the installer
@@ -50,6 +51,7 @@ These folders contain application configuration, not installer logic.
 | Folder          | Contents                                                                                        |
 | --------------- | ----------------------------------------------------------------------------------------------- |
 | `arc/`          | Arc's `StorableLinkRouting.json`. It stores Arc Space IDs and is used on macOS.                 |
+| `claude/`       | Personal Claude Code settings.                                                                  |
 | `codex/.codex/` | Personal Codex configuration and keybindings.                                                   |
 | `ghostty/`      | Ghostty config and the light and dark generated themes.                                         |
 | `images/`       | Shared Tux artwork and other installer assets.                                                  |
@@ -193,7 +195,7 @@ npm run install:machine       # Full machine setup
 npm run install:apps          # Applications phase
 npm run install:development  # Development tools and settings
 npm run install:theme         # Generate and install application themes
-npm run install:agents        # Link shared agent instructions and skills
+npm run install:agents        # Link agent instructions, settings, and skills
 ```
 
 The root `install:*` commands are thin wrappers around

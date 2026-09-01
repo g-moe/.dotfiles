@@ -44,7 +44,7 @@ Normal phase runs start with a read-only Linux desktop check, then use this orde
 | ------------- | ---------------------------------------------------------------------- |
 | `apps`        | Apps (Homebrew / APT / vendor)                                         |
 | `development` | Git, Node, Pi, AWS CLI, Cloudflare CLIs, Zsh, tmux, VSCodium, Codex    |
-| `agents`      | Shared instructions, skills, usage CLI, and global MCP servers         |
+| `agents`      | Shared instructions, Claude settings, skills, usage CLI, and MCP tools |
 | `appearance`  | Wallpaper, screen saver, theme, icons, login screen                    |
 | `input`       | Pointer, touchpad, keyboard, remapping                                 |
 | `desktop`     | Workspaces, items/widgets, windows, lower panel, top bar, name display |
@@ -61,6 +61,7 @@ packages/installer/config/          installer-owned configuration loaded by stra
 packages/installer/setup/identity.sh before full or phase installs (skipped for single strategies)
 packages/installer/setup/agents.sh  agent configuration and skills (--agents only)
 .agents/AGENTS.md                   global instructions shared by Codex and Pi
+claude/settings.json                personal Claude Code settings linked during agent setup
 codex/.codex/                       personal Codex settings linked during development
 packages/installer/lib/lib.sh       installer library entry point
 packages/installer/tests/           mirrors installer paths (`setup/`, `lib/`, and top-level flow)
@@ -128,11 +129,12 @@ root, and repository/link checks under `tests/repository/`.
 
 Agent setup is separate from development setup. It links `.agents/AGENTS.md`
 to Codex, Pi, and Claude Code. It also links `.agents/CLAUDE.md` to Claude
-Code. On each run, it replaces the installed contents of the Agents, Codex,
-Claude Code, and Cursor skill folders with links to the current shared skills.
-Codex's internal `.system` skill directory is preserved. The command stops
-before cleanup when the repository has no valid skills. Codex configuration
-remains part of development setup.
+Code and `claude/settings.json` to Claude Code's user settings. On each run, it
+replaces the installed contents of the Agents, Codex, Claude Code, and Cursor
+skill folders with links to the current shared skills. Codex's internal
+`.system` skill directory is preserved. The command stops before cleanup when
+the repository has no valid skills. Codex configuration remains part of
+development setup.
 
 On another machine, clone or pull the repo at `~/.dotfiles`, then run
 `bash packages/installer/install.sh --agents`. Later pulls update linked files.

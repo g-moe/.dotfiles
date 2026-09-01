@@ -1,0 +1,14 @@
+{
+	"model": "opus[1m]",
+	"tui": "fullscreen",
+	"skipDangerousModePermissionPrompt": true,
+	"theme": "dark-ansi",
+	"attribution": {
+		"commit": "",
+		"pr": ""
+	},
+	"permissions": {
+		"defaultMode": "bypassPermissions",
+		"deny": ["AskUserQuestion", "Read(./.env)", "Read(./.env.*)"]
+	}
+}
