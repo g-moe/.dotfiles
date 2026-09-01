@@ -417,15 +417,16 @@
 	"markdown.preview.typographer": true,
 	"githubPullRequests.hideViewedFiles": false,
 	"json.schemaDownload.trustedDomains": {
-		"https://developer.microsoft.com/json-schemas/": true,
-		"https://json-schema.org/": true,
-		"https://json.schemastore.org/": true,
-		"https://raw.githubusercontent.com/devcontainers/spec/": true,
-		"https://raw.githubusercontent.com/microsoft/vscode/": true,
-		"https://schemastore.azurewebsites.net/": true,
-		"https://www.raycast.com/schemas/extension.json": true,
-		"https://www.schemastore.org/": true
-	},
+        "https://developer.microsoft.com/json-schemas/": true,
+        "https://json-schema.org/": true,
+        "https://json.schemastore.org/": true,
+        "https://raw.githubusercontent.com/devcontainers/spec/": true,
+        "https://raw.githubusercontent.com/microsoft/vscode/": true,
+        "https://schemastore.azurewebsites.net/": true,
+        "https://turbo.build/schema.json": true,
+        "https://www.raycast.com/schemas/extension.json": true,
+        "https://www.schemastore.org/": true
+    },
 	"git.detectWorktrees": true,
 	"security.workspace.trust.enabled": false,
 	"scm.repositories.selectionMode": "single",
@@ -440,5 +441,6 @@
     "terminal.integrated.tabs.location": "left",
     "terminal.integrated.minimumContrastRatio": 4,
     "explorer.confirmDragAndDrop": false,
-    "explorer.confirmPasteNative": false
+    "explorer.confirmPasteNative": false,
+    "githubPullRequests.quickDiff": true
 }
