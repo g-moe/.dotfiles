@@ -54,7 +54,7 @@ The styles below are preferred response formats. Use your best judgment to selec
 
 #### Box
 
-- WHEN: a response contains a small, self-contained status summary or group of related values that should be scanned as one unit, place it in a box. When crafting response use Unicode box-drawing characters make each line the same display width, connect all corners and edges, and size the box to its longest line.
+- WHEN: a response contains a small, self-contained status summary or group of related values that should be scanned as one unit, place it in a box. Put the complete box in a fenced `text` code block. When crafting response use Unicode box-drawing characters make each line the same display width, connect all corners and edges, and size the box to its longest line.
 
   Example:
 
@@ -77,7 +77,7 @@ The styles below are preferred response formats. Use your best judgment to selec
 
 #### Flowchart
 
-- WHEN: steps, or conditional paths explain the subject, use a flowchart. Use arrows for linear steps and labeled branches for decisions. Keep each step short, show only supported paths, and end every branch at an outcome or another step. Use a tree for hierarchy without movement or decisions.
+- WHEN: steps, or conditional paths explain the subject, use a flowchart. Put the complete flowchart in a fenced `text` code block. Use arrows for linear steps and labeled branches for decisions. Keep each step short, show only supported paths, and end every branch at an outcome or another step. Use a tree for hierarchy without movement or decisions.
 
   Example:
 
@@ -104,7 +104,7 @@ The styles below are preferred response formats. Use your best judgment to selec
 
 #### Input and Output
 
-- WHEN: an operation transforms an input into an output, separate the original value, the operations, and the result. Preserve significant spaces, case, types, and other details. Do not show an operation that does not contribute to the output or invent an intermediate value.
+- WHEN: an operation transforms an input into an output, separate the original value, the operations, and the result. Put the complete visual in a fenced `text` code block. Preserve significant spaces, case, types, and other details. Do not show an operation that does not contribute to the output or invent an intermediate value.
 
   Example:
 
@@ -122,7 +122,7 @@ The styles below are preferred response formats. Use your best judgment to selec
 
 #### Before and After
 
-- WHEN: the effect of a change is clearest as a before-and-after contrast, show one focused change with the same structure and level of detail on both sides. Include only context that helps explain the change. Do not imply that unchanged behavior changed.
+- WHEN: the effect of a change is clearest as a before-and-after contrast, show one focused change with the same structure and level of detail on both sides. Put the complete visual in a fenced `text` code block. Include only context that helps explain the change. Do not imply that unchanged behavior changed.
 
   Example:
 
@@ -137,7 +137,7 @@ The styles below are preferred response formats. Use your best judgment to selec
 
 #### Anatomy
 
-- WHEN: labels can explain the parts of one item, use an anatomy view. Keep labels aligned with the parts they describe. Use a legend when direct labels do not fit, and label inferred parts as assumptions. Do not change the item to make the labels easier to align.
+- WHEN: labels can explain the parts of one item, use an anatomy view. Put the complete anatomy view in a fenced `text` code block. Keep labels aligned with the parts they describe. Use a legend when direct labels do not fit, and label inferred parts as assumptions. Do not change the item to make the labels easier to align.
 
   Example:
 
@@ -149,7 +149,7 @@ The styles below are preferred response formats. Use your best judgment to selec
 
 #### Section Divider
 
-- WHEN: source code needs a prominent section comment, use the target file type's valid comment syntax. Keep the divider close to 80 characters when the file format permits it. Do not add a divider to a format that does not support comments.
+- WHEN: source code needs a prominent section comment, use the target file type's valid comment syntax. Put the complete example in a fenced code block with the source language. Keep the divider close to 80 characters when the file format permits it. Do not add a divider to a format that does not support comments.
 
   Example:
 
@@ -161,7 +161,7 @@ The styles below are preferred response formats. Use your best judgment to selec
 
 #### Tree
 
-- WHEN: hierarchy, nesting, ownership, or file structure explains the subject, use a tree. Use `├──` for an item with a sibling below it, `└──` for the last item, and `│` for each active parent line. Keep labels short, preserve the correct relationships, and do not add branches that are not present in the content.
+- WHEN: hierarchy, nesting, ownership, or file structure explains the subject, use a tree. Put the complete tree in a fenced `text` code block. Use `├──` for an item with a sibling below it, `└──` for the last item, and `│` for each active parent line. Keep labels short, preserve the correct relationships, and do not add branches that are not present in the content.
 
   Example:
 
