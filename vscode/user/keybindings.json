@@ -1137,32 +1137,17 @@
 		"command": "-workbench.action.terminal.focus",
 		"when": "accessibilityModeEnabled && accessibleViewOnLastLine && terminalHasBeenCreated && accessibleViewCurrentProviderId == 'terminal' || accessibilityModeEnabled && accessibleViewOnLastLine && terminalProcessSupported && accessibleViewCurrentProviderId == 'terminal'"
 	},
-	{
-		"key": "shift+cmd+c",
-		"command": "copyFilePath",
-		"when": "!editorFocus"
-	},
-	{
+    {
 		"key": "alt+cmd+c",
 		"command": "-copyFilePath",
 		"when": "!editorFocus"
 	},
-	{
-		"key": "shift+cmd+c",
-		"command": "copyFilePath",
-		"when": "editorFocus"
-	},
-	{
+    {
 		"key": "cmd+r alt+cmd+c",
 		"command": "-copyFilePath",
 		"when": "editorFocus"
 	},
-	{
-		"key": "shift+cmd+c",
-		"command": "search.action.copyPath",
-		"when": "fileMatchOrFolderMatchWithResourceFocus"
-	},
-	{
+    {
 		"key": "alt+cmd+c",
 		"command": "-search.action.copyPath",
 		"when": "fileMatchOrFolderMatchWithResourceFocus"
@@ -1941,5 +1926,30 @@
 		"key": "cmd+/",
 		"command": "editor.action.commentLine",
 		"when": "editorTextFocus && !editorReadonly"
-	}
+    },
+    {
+        "key": "shift+cmd+c",
+        "command": "-workbench.action.browser.addElementToChat",
+        "when": "browserHasUrl && chatIsEnabled && !browserHasError && activeEditor == 'workbench.editor.browser'"
+    },
+    {
+        "key": "shift+cmd+c",
+        "command": "copyRelativeFilePath",
+        "when": "!editorFocus"
+    },
+    {
+        "key": "shift+alt+cmd+c",
+        "command": "-copyRelativeFilePath",
+        "when": "!editorFocus"
+    },
+    {
+        "key": "shift+cmd+c",
+        "command": "copyRelativeFilePath",
+        "when": "editorFocus"
+    },
+    {
+        "key": "cmd+k shift+alt+cmd+c",
+        "command": "-copyRelativeFilePath",
+        "when": "editorFocus"
+    }
 ]

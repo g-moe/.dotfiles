@@ -7,7 +7,7 @@
 #
 # Flow:
 # 1. Find each direct child directory that contains a package.json.
-# 2. For "install", install every extension from its own package-lock.json.
+# 2. For "install", install dependencies and build each extension for local use.
 # 3. For package scripts such as "test", "typecheck", and "build", run
 #    them one extension at a time and stop immediately if one fails.
 # 4. For "dev", start every extension watcher at the same time. When this
@@ -25,7 +25,7 @@ usage() {
 	echo "Usage: npm run raycast <command>"
 	echo
 	echo "Commands:"
-	echo "  install       Install every extension from its lockfile"
+	echo "  install       Prepare built extensions for import into Raycast"
 	echo "  dev           Start every extension in development mode"
 	echo "  build         Build every extension"
 	echo "  test          Test every extension"
@@ -40,7 +40,7 @@ if (($# != 1)); then
 fi
 
 case "$1" in
-install) command="ci" ;;
+install) command="install" ;;
 dev | build | test | typecheck | format-check | check) command="$1" ;;
 *)
 	usage
@@ -59,8 +59,14 @@ fi
 run() {
 	local package_dir="${1%/package.json}"
 	local operation="$2"
-	if [[ "$operation" == "ci" ]]; then
+	if [[ "$operation" == "install" ]]; then
 		npm --prefix "$package_dir" ci
+		npm --prefix "$package_dir" run build
+		echo "Build ready."
+		echo "Raycast will show this as a Development extension because it is a local import."
+		echo "If you want a Store-style extension, it must be published to the Raycast Store."
+		echo "In Raycast, use Import Extension and select:"
+		echo "  $(cd "$package_dir/dist" && pwd)"
 	else
 		npm --prefix "$package_dir" run "$operation"
 	fi
