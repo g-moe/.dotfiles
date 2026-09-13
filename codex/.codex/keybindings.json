@@ -48,10 +48,6 @@
 		"key": null
 	},
 	{
-		"command": "copySessionId",
-		"key": null
-	},
-	{
 		"command": "environmentAction1",
 		"key": null
 	},
@@ -93,6 +89,10 @@
 	},
 	{
 		"command": "nextThread",
+		"key": null
+	},
+	{
+		"command": "openAvatarOverlay",
 		"key": null
 	},
 	{

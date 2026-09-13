@@ -8,7 +8,6 @@ export async function copyActiveError(
 	targetRange?: vscode.Range,
 ): Promise<boolean> {
 	const diagnostic = await getActiveErrorDiagnostic(editor, targetRange);
-
 	if (!diagnostic) {
 		return false;
 	}

@@ -945,11 +945,6 @@
 		"when": "inFilesPicker && inQuickOpen"
 	},
 	{
-		"key": "cmd+e cmd+t",
-		"command": "workbench.action.terminal.toggleTerminal",
-		"when": "terminal.active"
-	},
-	{
 		"key": "cmd+e cmd+x",
 		"command": "workbench.view.extensions",
 		"when": "viewContainer.workbench.view.extensions.enabled"
@@ -1137,17 +1132,17 @@
 		"command": "-workbench.action.terminal.focus",
 		"when": "accessibilityModeEnabled && accessibleViewOnLastLine && terminalHasBeenCreated && accessibleViewCurrentProviderId == 'terminal' || accessibilityModeEnabled && accessibleViewOnLastLine && terminalProcessSupported && accessibleViewCurrentProviderId == 'terminal'"
 	},
-    {
+	{
 		"key": "alt+cmd+c",
 		"command": "-copyFilePath",
 		"when": "!editorFocus"
 	},
-    {
+	{
 		"key": "cmd+r alt+cmd+c",
 		"command": "-copyFilePath",
 		"when": "editorFocus"
 	},
-    {
+	{
 		"key": "alt+cmd+c",
 		"command": "-search.action.copyPath",
 		"when": "fileMatchOrFolderMatchWithResourceFocus"
@@ -1206,10 +1201,6 @@
 		"key": "cmd+r t",
 		"command": "-notebook.cell.expandCellOutput",
 		"when": "notebookCellListFocused && notebookCellOutputIsCollapsed"
-	},
-	{
-		"key": "cmd+e cmd+f",
-		"command": "workbench.action.findInFiles"
 	},
 	{
 		"key": "shift+cmd+f",
@@ -1594,12 +1585,12 @@
 		"key": "shift+cmd+o",
 		"command": "workbench.action.showAllSymbols"
 	},
-    {
+	{
 		"key": "ctrl+shift+-",
 		"command": "-workbench.action.navigateForward",
 		"when": "canNavigateForward"
 	},
-    {
+	{
 		"key": "cmd+k cmd+i",
 		"command": "-workbench.action.showHover",
 		"when": "!editorTextFocus"
@@ -1863,10 +1854,6 @@
 		"command": "-workbench.action.togglePanel"
 	},
 	{
-		"key": "cmd+1",
-		"command": "workbench.action.openEditorAtIndex1"
-	},
-	{
 		"key": "cmd+2",
 		"command": "workbench.action.openEditorAtIndex2"
 	},
@@ -1918,38 +1905,61 @@
 		"key": "cmd+/",
 		"command": "editor.action.commentLine",
 		"when": "editorTextFocus && !editorReadonly"
-    },
-    {
-        "key": "shift+cmd+c",
-        "command": "-workbench.action.browser.addElementToChat",
-        "when": "browserHasUrl && chatIsEnabled && !browserHasError && activeEditor == 'workbench.editor.browser'"
-    },
-    {
-        "key": "shift+cmd+c",
-        "command": "copyRelativeFilePath",
-        "when": "!editorFocus"
-    },
-    {
-        "key": "shift+alt+cmd+c",
-        "command": "-copyRelativeFilePath",
-        "when": "!editorFocus"
-    },
-    {
-        "key": "shift+cmd+c",
-        "command": "copyRelativeFilePath",
-        "when": "editorFocus"
-    },
-    {
-        "key": "cmd+k shift+alt+cmd+c",
-        "command": "-copyRelativeFilePath",
-        "when": "editorFocus"
-    },
-    {
-        "key": "ctrl+shift+alt+d",
-        "command": "workbench.action.navigateBackInEditLocations"
-    },
-    {
-        "key": "ctrl+shift+alt+f",
-        "command": "workbench.action.navigateForwardInEditLocations"
-    }
+	},
+	{
+		"key": "shift+cmd+c",
+		"command": "-workbench.action.browser.addElementToChat",
+		"when": "browserHasUrl && chatIsEnabled && !browserHasError && activeEditor == 'workbench.editor.browser'"
+	},
+	{
+		"key": "shift+cmd+c",
+		"command": "copyRelativeFilePath",
+		"when": "!editorFocus"
+	},
+	{
+		"key": "shift+alt+cmd+c",
+		"command": "-copyRelativeFilePath",
+		"when": "!editorFocus"
+	},
+	{
+		"key": "shift+cmd+c",
+		"command": "copyRelativeFilePath",
+		"when": "editorFocus"
+	},
+	{
+		"key": "cmd+k shift+alt+cmd+c",
+		"command": "-copyRelativeFilePath",
+		"when": "editorFocus"
+	},
+	{
+		"key": "ctrl+shift+alt+d",
+		"command": "workbench.action.navigateBackInEditLocations"
+	},
+	{
+		"key": "ctrl+shift+alt+f",
+		"command": "workbench.action.navigateForwardInEditLocations"
+	},
+	{
+		"key": "cmd+e cmd+f",
+		"command": "search.action.openEditor"
+	},
+	{
+		"key": "shift+alt+cmd+g",
+		"command": "-editor.action.announceCursorPosition",
+		"when": "accessibilityModeEnabled && editorTextFocus"
+	},
+	{
+		"key": "cmd+e cmd+r",
+		"command": "workbench.action.replaceInFiles",
+		"when": "!isSessionsWindow"
+	},
+	{
+		"key": "shift+cmd+h",
+		"command": "-workbench.action.replaceInFiles",
+		"when": "!isSessionsWindow"
+	},
+	{
+		"key": "cmd+e cmd+t",
+		"command": "better-vscode.terminal.focusAndMaximize"
+	}
 ]
