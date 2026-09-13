@@ -57,44 +57,66 @@ export class TerminalService<T extends Terminal> {
 		this.signal.throwIfAborted();
 		await this.checkClosedProcesses();
 
-		// Readiness includes a successful save. Warm calls need no new process lookup.
-		if (this.terminal && this.isLive(this.terminal) && this.terminalReady) {
-			this.assertUniqueName(this.terminal.name, this.terminal);
+		const ready = this.getReadyTerminal();
 
-			return this.terminal;
+		if (ready) {
+			return ready;
 		}
 
+		return this.prepareTerminal();
+	}
+
+	private getReadyTerminal(): T | undefined {
+		const terminal = this.terminal;
+
+		if (!terminal || !this.terminalReady || !this.isLive(terminal)) {
+			return undefined;
+		}
+
+		this.assertUniqueName(terminal.name, terminal);
+
+		return terminal;
+	}
+
+	private async prepareTerminal(): Promise<T> {
 		// Save ownership before creation so a failed startup can reuse its shell.
 		this.terminalReady = false;
 		await this.wait(this.host.save(this.state));
 
-		const terminal = (await this.findOwnedTerminal()) ?? this.createTerminal();
+		let terminal = await this.findOwnedTerminal();
+
+		if (!terminal) {
+			terminal = this.createTerminal();
+		}
 
 		this.assertUniqueName(terminal.name, terminal);
 		this.signal.throwIfAborted();
 		this.terminal = terminal;
 		await this.saveProcess(terminal);
 
-		// A failed save must retry acquisition instead of using the cached terminal.
+		// Only a successful save permits reuse without repeating startup.
 		this.terminalReady = true;
 
 		return terminal;
 	}
 
 	private async checkClosedProcesses(): Promise<void> {
-		// A panel/editor round trip can leave a closed shell in VS Code's list.
-		// Reject only a process that the OS confirms is gone.
-		for (const candidate of this.host.terminals()) {
-			if (
-				candidate === this.terminal ||
-				candidate.name === (this.terminal?.name ?? TERMINAL_NAME) ||
-				this.hasOwnershipMarker(candidate)
-			) {
-				const id = await this.wait(candidate.processId);
+		// VS Code can still list a closed shell after a panel/editor move.
+		for (const terminal of this.host.terminals()) {
+			const mayBeOwned =
+				terminal === this.terminal ||
+				terminal.name === (this.terminal?.name ?? TERMINAL_NAME) ||
+				this.hasOwnershipMarker(terminal);
 
-				if (id !== undefined && !this.host.processAlive(id)) {
-					this.closedProcesses.add(candidate);
-				}
+			if (!mayBeOwned) {
+				continue;
+			}
+
+			const id = await this.wait(terminal.processId);
+
+			// Missing process information does not prove that the shell has closed.
+			if (id !== undefined && !this.host.processAlive(id)) {
+				this.closedProcesses.add(terminal);
 			}
 		}
 	}
@@ -106,33 +128,51 @@ export class TerminalService<T extends Terminal> {
 		const marked = terminals.filter((terminal) =>
 			this.hasOwnershipMarker(terminal),
 		);
-		let terminal = marked.length === 1 ? marked[0] : undefined;
 
-		// Restored terminals can lose their creation environment after reload.
-		// Match both PID and start time so a reused PID cannot claim another shell.
-		if (!terminal && this.state.process) {
-			const saved = this.state.process;
-
-			for (const candidate of terminals) {
-				const id = await this.wait(candidate.processId);
-
-				if (
-					id === saved.id &&
-					(await this.wait(this.host.processStart(id))) === saved.start
-				) {
-					terminal = candidate;
-					break;
-				}
-			}
+		if (marked.length === 1) {
+			return marked[0];
 		}
 
-		if (!terminal && marked.length > 1) {
+		const restored = await this.findRestoredTerminal(terminals);
+
+		if (restored) {
+			return restored;
+		}
+
+		if (marked.length > 1) {
 			throw new Error(
 				"More than one terminal has the ownership marker. Close the extra terminal and try again.",
 			);
 		}
 
-		return terminal;
+		return undefined;
+	}
+
+	private async findRestoredTerminal(
+		terminals: readonly T[],
+	): Promise<T | undefined> {
+		const saved = this.state.process;
+
+		if (!saved) {
+			return undefined;
+		}
+
+		// Reload can remove the ownership marker. PID alone is not safe to reuse.
+		for (const terminal of terminals) {
+			const id = await this.wait(terminal.processId);
+
+			if (id !== saved.id) {
+				continue;
+			}
+
+			const start = await this.wait(this.host.processStart(id));
+
+			if (start === saved.start) {
+				return terminal;
+			}
+		}
+
+		return undefined;
 	}
 
 	private createTerminal(): T {
