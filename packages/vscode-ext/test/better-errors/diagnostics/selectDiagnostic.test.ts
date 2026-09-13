@@ -4,12 +4,12 @@ import assert from "node:assert/strict";
 import {
 	selectDiagnostic,
 	type SelectableDiagnostic,
-} from "../../diagnostics/selectDiagnostic";
+} from "../../../src/better-errors/diagnostics/selectDiagnostic";
 import type {
 	BetterErrorPosition,
 	BetterErrorRange,
 	BetterErrorSeverity,
-} from "../../../../shared/contracts/betterErrors";
+} from "../../../src/shared/contracts/betterErrors";
 
 test("selectDiagnostic prefers diagnostics containing the active position", () => {
 	const diagnostics = [
