@@ -1,4 +1,6 @@
+import { TERMINAL_STATE_KEY } from "./constants";
+
 export const TERMINAL_COMMANDS = {
-	focus: "better-vscode.terminal.focus",
-	focusAndMaximize: "better-vscode.terminal.focusAndMaximize",
+	focus: `${TERMINAL_STATE_KEY}.focus`,
+	focusAndMaximize: `${TERMINAL_STATE_KEY}.focusAndMaximize`,
 } as const;

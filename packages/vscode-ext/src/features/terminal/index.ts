@@ -1,5 +1,6 @@
 import * as vscode from "vscode";
 
+import { TERMINAL_STATE_KEY } from "./constants";
 import { TERMINAL_COMMANDS } from "./commands";
 import { focusTerminalEditor } from "./editor";
 import { TerminalService } from "./service";
@@ -7,13 +8,12 @@ import { readProcessStart, isProcessAlive } from "./process";
 import type { TerminalState } from "./contracts";
 
 export function registerBetterTerminal(context: vscode.ExtensionContext) {
-	const stateKey = "better-vscode.terminal";
 	const service = new TerminalService({
 		terminals: () => vscode.window.terminals,
 		create: (options) => vscode.window.createTerminal(options),
 		onClose: vscode.window.onDidCloseTerminal,
-		load: () => context.workspaceState.get<TerminalState>(stateKey),
-		save: (state) => context.workspaceState.update(stateKey, state),
+		load: () => context.workspaceState.get<TerminalState>(TERMINAL_STATE_KEY),
+		save: (state) => context.workspaceState.update(TERMINAL_STATE_KEY, state),
 		processStart: readProcessStart,
 		processAlive: isProcessAlive,
 	});
