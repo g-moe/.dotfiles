@@ -11,5 +11,8 @@
 	"arrowParens": "always",
 	"bracketSameLine": false,
 	"bracketSpacing": true,
-	"ignorePatterns": ["packages/raycast/*/raycast-env.d.ts"]
+	"ignorePatterns": [
+		"packages/raycast/*/raycast-env.d.ts",
+		"vscode/user/settings.json"
+	]
 }

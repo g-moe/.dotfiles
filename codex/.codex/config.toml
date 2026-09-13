@@ -1,11 +1,10 @@
 sandbox_mode = "danger-full-access"
 approval_policy = "never"
-model = "gpt-5.6-sol"
-model_reasoning_effort = "low"
-service_tier = "ultrafast"
+model = "gpt-6-astra"
+model_reasoning_effort = "medium"
+service_tier = "priority"
 allow_login_shell = true
 include_environment_context = true
-personality = "friendly"
 suppress_unstable_features_warning = true
 
 [agents]
@@ -14,7 +13,7 @@ max_depth = 2
 
 [desktop]
 followUpQueueMode = "queue"
-appearanceTheme = "system"
+appearanceTheme = "light"
 appearanceLightCodeThemeId = "github"
 appearanceDarkCodeThemeId = "github"
 sansFontSize = 14
@@ -30,6 +29,8 @@ conversationDetailMode = "STEPS_COMMANDS"
 defaultTerminalLocation = "right"
 appearanceDiffMarkerStyle = "symbols"
 composerPlainTextMode = true
+git-branch-prefix = "garrett/"
+git-pull-request-merge-method = "squash"
 
 [desktop.appearanceLightChromeTheme]
 accent = "#0969da"
@@ -63,6 +64,9 @@ diffAdded = "#3fb950"
 diffRemoved = "#f85149"
 skill = "#bc8cff"
 
+[desktop.open-in-target-preferences]
+global = "systemDefault"
+
 [features]
 js_repl = false
 default_mode_request_user_input = false
@@ -95,6 +99,12 @@ enabled = true
 [plugins."codex-app-tools@openai-bundled"]
 enabled = true
 
+[plugins."unified-computer-use@openai-bundled"]
+enabled = true
+
+[plugins."computer-use@openai-bundled"]
+enabled = false
+
 [apps.connector_20205bf7d4e99a89d7154bb849718324]
 enabled = false
 
@@ -102,6 +112,47 @@ enabled = false
 enabled = false
 
 [apps.asdk_app_69a089a326dc8191b32a3f2553f5be2c]
+enabled = false
+
+[apps.connector_openai_hotline]
+enabled = false
+
+[apps.connector_openai_safety_settings]
+enabled = false
+
+[apps.connector_openai_plugin_management]
+enabled = false
+
+# [[skills.config]]
+# path = "/Users/garrett/.codex/skills/.system/openai-docs/SKILL.md"
+# enabled = false
+
+# [[skills.config]]
+# path = "/Users/garrett/.codex/skills/.system/review-agent/SKILL.md"
+# enabled = false
+
+# [[skills.config]]
+# path = "/Users/garrett/.codex/skills/.system/skill-installer/SKILL.md"
+# enabled = false
+
+# [[skills.config]]
+# path = "/Users/garrett/.codex/skills/.system/plugin-creator/SKILL.md"
+# enabled = false
+
+# [[skills.config]]
+# path = "/Users/garrett/.codex/skills/.system/skill-creator/SKILL.md"
+# enabled = false
+
+[[skills.config]]
+name = "sites:sites-building"
+enabled = false
+
+[[skills.config]]
+name = "sites:sites-hosting"
+enabled = false
+
+[[skills.config]]
+name = "sites:sites-preview-troubleshooting"
 enabled = false
 
 [features.multi_agent_v2]
