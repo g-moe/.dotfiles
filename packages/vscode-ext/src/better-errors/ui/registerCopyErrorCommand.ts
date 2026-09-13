@@ -1,7 +1,9 @@
 import * as vscode from "vscode";
 
-import { BETTER_ERRORS_COMMANDS } from "../commands";
-import { BETTER_ERRORS_CONFIG } from "../../../shared/consts/betterErrors";
+import {
+	BETTER_ERRORS_COMMANDS,
+	BETTER_ERRORS_CONFIG,
+} from "../../shared/consts/betterErrors";
 import { copyActiveError } from "./copyActiveError";
 import { isBetterErrorsEnabled } from "../settings";
 

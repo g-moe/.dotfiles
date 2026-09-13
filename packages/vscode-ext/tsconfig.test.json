@@ -6,6 +6,5 @@
 		"composite": true,
 		"types": ["node"]
 	},
-	"include": ["src", "tests"],
-	"exclude": []
+	"include": ["src", "test"]
 }

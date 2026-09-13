@@ -2,8 +2,7 @@ src/**
 tsconfig.json
 tsconfig.test.json
 docs/**
-tests/**
+test/**
 dist-test/**
 *.vsix
 node_modules/**/.bin/**
-dist/**/tests/**
