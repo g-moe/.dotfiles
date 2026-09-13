@@ -55,7 +55,33 @@ export class TerminalService<T extends Terminal> {
 
 	private async acquire(): Promise<T> {
 		this.signal.throwIfAborted();
+		await this.checkClosedProcesses();
 
+		// Readiness includes a successful save. Warm calls need no new process lookup.
+		if (this.terminal && this.isLive(this.terminal) && this.terminalReady) {
+			this.assertUniqueName(this.terminal.name, this.terminal);
+
+			return this.terminal;
+		}
+
+		// Save ownership before creation so a failed startup can reuse its shell.
+		this.terminalReady = false;
+		await this.wait(this.host.save(this.state));
+
+		const terminal = (await this.findOwnedTerminal()) ?? this.createTerminal();
+
+		this.assertUniqueName(terminal.name, terminal);
+		this.signal.throwIfAborted();
+		this.terminal = terminal;
+		await this.saveProcess(terminal);
+
+		// A failed save must retry acquisition instead of using the cached terminal.
+		this.terminalReady = true;
+
+		return terminal;
+	}
+
+	private async checkClosedProcesses(): Promise<void> {
 		// A panel/editor round trip can leave a closed shell in VS Code's list.
 		// Reject only a process that the OS confirms is gone.
 		for (const candidate of this.host.terminals()) {
@@ -71,19 +97,9 @@ export class TerminalService<T extends Terminal> {
 				}
 			}
 		}
+	}
 
-		// Readiness includes a successful save. Missing optional process metadata
-		// must not force another external lookup on every warm call.
-		if (this.terminal && this.isLive(this.terminal) && this.terminalReady) {
-			this.assertUniqueName(this.terminal.name, this.terminal);
-
-			return this.terminal;
-		}
-
-		// Persist the owner before creation so a failed startup can reuse its shell.
-		this.terminalReady = false;
-		await this.wait(this.host.save(this.state));
-
+	private async findOwnedTerminal(): Promise<T | undefined> {
 		const terminals = this.host
 			.terminals()
 			.filter((terminal) => this.isLive(terminal));
@@ -116,15 +132,21 @@ export class TerminalService<T extends Terminal> {
 			);
 		}
 
-		this.assertUniqueName(terminal?.name ?? TERMINAL_NAME, terminal);
+		return terminal;
+	}
+
+	private createTerminal(): T {
+		this.assertUniqueName(TERMINAL_NAME);
 		this.signal.throwIfAborted();
-		terminal ??= this.host.create({
+
+		return this.host.create({
 			name: TERMINAL_NAME,
 			env: { [OWNER_ENV]: this.state.ownerId },
 			location: { viewColumn: 1 },
 		});
-		this.terminal = terminal;
+	}
 
+	private async saveProcess(terminal: T): Promise<void> {
 		const id = await this.wait(terminal.processId);
 		const start =
 			id === undefined
@@ -138,11 +160,6 @@ export class TerminalService<T extends Terminal> {
 		};
 		await this.wait(this.host.save(this.state));
 		this.assertLive(terminal);
-
-		// A failed save must retry acquisition instead of using the cached terminal.
-		this.terminalReady = true;
-
-		return terminal;
 	}
 
 	private hasOwnershipMarker(terminal: T) {
