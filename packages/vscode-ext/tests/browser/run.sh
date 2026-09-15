@@ -31,8 +31,7 @@ cat > "$extensions_dir/local.better-vscode-tests/package.json" <<'JSON'
   "contributes": {
     "keybindings": [
       { "command": "better-vscode.tests.continue", "key": "f19" },
-      { "command": "better-vscode.terminal.focus", "key": "f17" },
-      { "command": "better-vscode.terminal.focusAndMaximize", "key": "f18" }
+      { "command": "better-vscode.terminal.focus", "key": "f17" }
     ],
     "commands": [{
       "command": "better-vscode.tests.terminal",

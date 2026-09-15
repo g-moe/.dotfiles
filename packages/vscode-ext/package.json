@@ -52,13 +52,13 @@
 				"title": "better-errors: Toggle Enabled"
 			},
 			{
-				"command": "better-vscode.terminal.focus",
-				"title": "terminal - focus",
+				"command": "better-vscode.workbench.toggleMaximizeEditorGroup",
+				"title": "workbench - toggle maximize editor group",
 				"category": "better-vscode"
 			},
 			{
-				"command": "better-vscode.terminal.focusAndMaximize",
-				"title": "terminal - focus & maximize",
+				"command": "better-vscode.terminal.focus",
+				"title": "terminal - focus",
 				"category": "better-vscode"
 			}
 		],

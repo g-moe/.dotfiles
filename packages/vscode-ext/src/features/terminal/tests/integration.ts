@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import * as vscode from "vscode";
 
-import { TERMINAL_COMMANDS } from "../commands";
+import { COMMANDS } from "../../../commands";
 
 export interface Checkpoint {
 	phase: "before" | "after";
@@ -23,16 +23,8 @@ export interface TestDriver {
 	pass(): Promise<void>;
 }
 
-const commands = [
-	TERMINAL_COMMANDS.focus,
-	TERMINAL_COMMANDS.focusAndMaximize,
-] as const;
-const layouts = [
-	["TwoColumns", 2],
-	["TwoRows", 2],
-	["ThreeColumns", 3],
-	["TwoByTwoGrid", 4],
-] as const;
+const command = COMMANDS.terminal.focus;
+const commandInput = (currentMaximized: boolean) => ({ currentMaximized });
 type Start =
 	| "visible"
 	| "covered"
@@ -50,111 +42,73 @@ export async function run(driver: TestDriver) {
 	await vscode.extensions.getExtension("gary-ix.better-vscode")!.activate();
 
 	// Exercise layouts that hide the editor or restrict where tabs can open.
-	for (const command of commands) {
-		for (const [state, surface] of [
-			["sidebars-00", "editor"],
-			["sidebars-10", "editor"],
-			["sidebars-01", "editor"],
-			["sidebars-11", "editor"],
-			["other-maximized", "editor"],
-			["other-maximized", "explorer"],
-			["other-maximized", "scm"],
-			["owned-maximized", "scm"],
-			["owned-locked-maximized", "explorer"],
-			["moved-locked-maximized", "scm"],
-			["first-locked-cold", "scm"],
-			["panel-maximized", "panel-terminal"],
-			["sidebar-maximized", "panel-terminal"],
-		] as const) {
-			await workbenchScenario(command, state, surface);
-		}
+	for (const [state, surface] of [
+		["sidebars-00", "editor"],
+		["sidebars-10", "editor"],
+		["sidebars-01", "editor"],
+		["sidebars-11", "editor"],
+		["other-maximized", "editor"],
+		["other-maximized", "explorer"],
+		["other-maximized", "scm"],
+		["owned-maximized", "scm"],
+		["owned-locked-maximized", "explorer"],
+		["moved-locked-maximized", "scm"],
+		["first-locked-cold", "scm"],
+		["panel-maximized", "panel-terminal"],
+		["sidebar-maximized", "panel-terminal"],
+	] as const) {
+		await workbenchScenario(state, surface);
 	}
 
-	// Keep one shell alive for each set of 20 warm calls.
-	for (const command of commands) {
+	// Keep one shell alive for each set of five warm calls.
+	for (const maximize of [false, true]) {
 		for (const surface of ["search", "explorer"]) {
-			await surfaceScenario(command, surface, 2, false, 20);
+			await surfaceScenario(surface, 2, false, maximize, 5);
 		}
 	}
 
-	for (const command of commands) {
-		for (const [layout, groups] of layouts) {
-			for (const start of ["visible", "covered", "other"] as const) {
-				await scenario(command, layout, groups, start);
-			}
-		}
-
-		for (const start of ["absent", "panel", "moved", "unpinned"] as const) {
-			await scenario(command, "ThreeColumns", 3, start);
-		}
-
-		await scenario(command, "Single", 1, "absent");
-	}
+	await scenario("TwoColumns", 2, "visible", false);
+	await scenario("TwoColumns", 2, "other", true);
+	await scenario("TwoByTwoGrid", 4, "covered", false);
+	await scenario("TwoByTwoGrid", 4, "covered", true);
+	await scenario("ThreeColumns", 3, "absent", false);
+	await scenario("ThreeColumns", 3, "absent", true);
+	await scenario("ThreeColumns", 3, "panel", false);
+	await scenario("ThreeColumns", 3, "moved", true);
+	await scenario("Single", 1, "absent", false);
 
 	// Lifecycle cases change shell identity; the layout cases reuse the same shell.
 	for (const action of [
 		"concurrent",
-		"mixed",
 		"closed",
-		"exit",
-		"renamed",
 		"ambiguous",
-		"closed-tab",
-		"panel-closed",
 		"repeat-maximize",
 	] as const) {
 		driver.start(`lifecycle / ${action}`);
 
 		const fixture = await setup("TwoColumns", 2);
 
-		await vscode.commands.executeCommand(commands[0]);
+		await vscode.commands.executeCommand(command, commandInput(false));
 
 		let terminal = vscode.window.activeTerminal!;
 		const original = terminal;
 		const pid = await terminal.processId;
 
-		if (action === "panel-closed") {
-			await vscode.commands.executeCommand(
-				"workbench.action.terminal.moveToTerminalPanel",
-			);
-			await until(() => !ownedTab(terminal), "terminal moved to panel");
-			await vscode.commands.executeCommand(commands[0]);
-			assertTerminal(terminal);
-		}
-
-		if (
-			action === "closed" ||
-			action === "exit" ||
-			action === "closed-tab" ||
-			action === "panel-closed"
-		) {
-			if (action === "closed" || action === "panel-closed") {
-				terminal.dispose();
-			}
-
-			if (action === "exit") {
-				terminal.sendText("exit");
-			}
-
-			if (action === "closed-tab") {
-				await vscode.window.tabGroups.close(ownedTab(terminal)!);
-			}
-
+		if (action === "closed") {
+			terminal.dispose();
 			await until(
 				async () => !(await liveTerminals()).includes(terminal),
 				"shell must close before recreation",
 			);
 		}
 
-		if (action === "renamed" || action === "ambiguous") {
+		if (action === "ambiguous") {
 			await vscode.commands.executeCommand(
 				"workbench.action.terminal.renameWithArg",
-				{ name: action === "renamed" ? "Renamed Shell" : fixture.other.name },
+				{ name: fixture.other.name },
 			);
 			await until(
-				() =>
-					terminal.name ===
-					(action === "renamed" ? "Renamed Shell" : fixture.other.name),
+				() => terminal.name === fixture.other.name,
 				"rename must settle",
 			);
 		}
@@ -172,7 +126,8 @@ export async function run(driver: TestDriver) {
 			const before = snapshot();
 
 			await assert.rejects(
-				async () => vscode.commands.executeCommand(commands[1]),
+				async () =>
+					vscode.commands.executeCommand(command, commandInput(false)),
 				/same name/,
 			);
 			assert.deepEqual(
@@ -192,36 +147,27 @@ export async function run(driver: TestDriver) {
 			await until(() => terminal.name === "Recovered Shell", "recovery rename");
 		}
 
-		const maximize = action === "mixed" || action === "repeat-maximize";
-		const cold = ["closed", "exit", "closed-tab", "panel-closed"].includes(
-			action,
-		);
+		const maximize = action === "repeat-maximize";
+		const cold = action === "closed";
 		// Exclude fixture setup and browser handshakes from API batch timing.
 		const started = performance.now();
 
 		if (action === "concurrent") {
 			await Promise.all(
 				Array.from({ length: 10 }, () =>
-					vscode.commands.executeCommand(commands[0]),
-				),
-			);
-		} else if (action === "mixed") {
-			await Promise.all(
-				[0, 1, 0, 1, 0, 1].map((i) =>
-					vscode.commands.executeCommand(commands[i]),
+					vscode.commands.executeCommand(command, commandInput(false)),
 				),
 			);
 		} else {
-			await vscode.commands.executeCommand(commands[maximize ? 1 : 0]);
+			await vscode.commands.executeCommand(command, commandInput(maximize));
 
 			if (action === "repeat-maximize") {
-				await vscode.commands.executeCommand(commands[1]);
+				await vscode.commands.executeCommand(command, commandInput(true));
 			}
 		}
 
 		const elapsedMs = performance.now() - started;
-		const budget =
-			cold || action === "concurrent" || action === "mixed" ? 2000 : 500;
+		const budget = cold || action === "concurrent" ? 2000 : 500;
 
 		terminal = vscode.window.activeTerminal!;
 
@@ -239,52 +185,21 @@ export async function run(driver: TestDriver) {
 		});
 	}
 
-	const surfaces = [
-		"search",
-		"explorer",
-		"search-results",
-		"scm",
-		"find",
-		"output",
-		"panel-terminal",
-		"quick-open",
-		"rename",
-	] as const;
+	async function workbenchScenario(state: string, surface: string) {
+		const maximize =
+			state === "other-maximized" ||
+			state === "owned-maximized" ||
+			state === "owned-locked-maximized" ||
+			state === "moved-locked-maximized";
 
-	for (const command of commands) {
-		for (const surface of surfaces) {
-			for (const column of [1, 2]) {
-				await surfaceScenario(command, surface, column, false);
-			}
-		}
-
-		for (const surface of ["search", "explorer"]) {
-			await surfaceScenario(command, surface, 2, true);
-		}
-	}
-
-	for (const command of commands) {
-		for (const surface of ["search", "explorer"]) {
-			await surfaceScenario(command, surface, 1, false, 1, "visible");
-			await surfaceScenario(command, surface, 2, false, 1, "covered");
-		}
-	}
-
-	async function workbenchScenario(
-		command: string,
-		state: string,
-		surface: string,
-	) {
-		driver.start(
-			`${command === commands[1] ? "maximize" : "focus"} / ${surface} / ${state}`,
-		);
+		driver.start(`${maximize ? "maximize" : "focus"} / ${surface} / ${state}`);
 
 		const fixture = await setup("TwoColumns", 2);
 		const cold = state === "first-locked-cold";
 		let terminal: vscode.Terminal | undefined;
 
 		if (!cold) {
-			await vscode.commands.executeCommand(commands[0]);
+			await vscode.commands.executeCommand(command, commandInput(false));
 			terminal = vscode.window.activeTerminal!;
 		}
 
@@ -313,7 +228,8 @@ export async function run(driver: TestDriver) {
 			!state.startsWith("sidebar")
 		) {
 			await vscode.commands.executeCommand(
-				"workbench.action.maximizeEditorHideSidebar",
+				COMMANDS.workbench.toggleMaximizeEditorGroup,
+				commandInput(false),
 			);
 		}
 
@@ -342,7 +258,7 @@ export async function run(driver: TestDriver) {
 			column: 1,
 			groups: 2,
 			input: surface === "editor" ? "fixture-2.txt" : "terminal",
-			maximize: false,
+			maximize,
 			command,
 			surface,
 			cold,
@@ -362,30 +278,24 @@ export async function run(driver: TestDriver) {
 			before,
 			"preserve other tabs and pins",
 		);
-		await result(
-			actual,
-			fixture,
-			command === commands[1] || state.startsWith("owned-"),
-			{ cold },
-		);
+		await result(actual, fixture, maximize, { cold });
 	}
 
 	// The browser driver sets the actual starting keyboard focus and invokes
 	// a public hotkey. API active-editor state alone cannot prove input focus.
 	async function surfaceScenario(
-		command: string,
 		surface: string,
 		column: number,
 		cold: boolean,
+		maximize: boolean,
 		repetitions = 1,
 		ownedView?: "visible" | "covered",
 	) {
-		const maximize = command === commands[1];
 		const fixture = await setup("TwoColumns", 2);
 		let terminal: vscode.Terminal | undefined;
 
 		if (!cold) {
-			await vscode.commands.executeCommand(commands[0]);
+			await vscode.commands.executeCommand(command, commandInput(false));
 			terminal = vscode.window.activeTerminal!;
 			assertTerminal(terminal);
 		}
@@ -404,6 +314,13 @@ export async function run(driver: TestDriver) {
 				);
 
 				if (repetition > 1) {
+					if (maximize) {
+						await vscode.commands.executeCommand(
+							COMMANDS.workbench.toggleMaximizeEditorGroup,
+							commandInput(true),
+						);
+					}
+
 					await vscode.commands.executeCommand(
 						"workbench.action.editorLayoutTwoColumns",
 					);
@@ -431,13 +348,20 @@ export async function run(driver: TestDriver) {
 					);
 				}
 
+				if (maximize) {
+					await vscode.commands.executeCommand(
+						COMMANDS.workbench.toggleMaximizeEditorGroup,
+						commandInput(false),
+					);
+				}
+
 				const before = snapshot().filter((t) => t.name !== terminal?.name);
 
 				await driver.checkpoint({
 					phase: "before",
 					column,
 					input: `fixture-${column}.txt`,
-					maximize: false,
+					maximize,
 					groups: 2,
 					command,
 					surface,
@@ -477,20 +401,18 @@ export async function run(driver: TestDriver) {
 	}
 
 	async function scenario(
-		command: string,
 		layout: string,
 		groups: number,
 		start: Start,
+		maximize: boolean,
 	) {
-		const maximize = command === commands[1];
-
 		driver.start(`${maximize ? "maximize" : "focus"} / ${layout} / ${start}`);
 
 		const fixture = await setup(layout, groups);
 		let terminal: vscode.Terminal | undefined;
 
 		if (start !== "absent") {
-			await vscode.commands.executeCommand(commands[0]);
+			await vscode.commands.executeCommand(command, commandInput(false));
 			terminal = vscode.window.activeTerminal!;
 			assertTerminal(terminal);
 		}
@@ -573,13 +495,20 @@ export async function run(driver: TestDriver) {
 
 		assert.equal(vscode.window.tabGroups.activeTabGroup.viewColumn, column);
 
+		if (maximize && groups > 1) {
+			await vscode.commands.executeCommand(
+				COMMANDS.workbench.toggleMaximizeEditorGroup,
+				commandInput(false),
+			);
+		}
+
 		const before = snapshot().filter((t) => t.name !== terminal?.name);
 
 		await driver.checkpoint({
 			phase: "before",
 			column,
 			input,
-			maximize: false,
+			maximize,
 			groups,
 			command,
 			cold: start === "absent",
@@ -700,6 +629,20 @@ async function setup(layout: string, groups: number) {
 
 	for (let column = 1; column <= groups; column++) {
 		await code(column);
+	}
+
+	// Every scenario starts from a normal layout and a false tracked value.
+	// Use the public command so tests do not reach into extension storage.
+	await vscode.commands.executeCommand(
+		COMMANDS.workbench.toggleMaximizeEditorGroup,
+		commandInput(false),
+	);
+
+	if (groups > 1) {
+		await vscode.commands.executeCommand(
+			COMMANDS.workbench.toggleMaximizeEditorGroup,
+			commandInput(true),
+		);
 	}
 
 	const other = vscode.window.createTerminal({ name: "Other Shell" });

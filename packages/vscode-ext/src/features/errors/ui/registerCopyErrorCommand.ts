@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 
-import { BETTER_ERRORS_COMMANDS } from "../commands";
+import { COMMANDS } from "../../../commands";
 import { BETTER_ERRORS_CONFIG } from "../../../shared/consts/betterErrors";
 import { copyActiveError } from "./copyActiveError";
 import { isBetterErrorsEnabled } from "../settings";
@@ -11,7 +11,7 @@ export function registerCopyErrorCommands(): vscode.Disposable[] {
 
 function registerCopyErrorCommand(): vscode.Disposable {
 	return vscode.commands.registerCommand(
-		BETTER_ERRORS_COMMANDS.copyError,
+		COMMANDS.errors.copyError,
 		async (_uri?: vscode.Uri, targetRange?: vscode.Range) => {
 			if (!isBetterErrorsEnabled()) {
 				void vscode.window.showInformationMessage("better-errors is disabled.");
@@ -43,7 +43,7 @@ function registerCopyErrorCommand(): vscode.Disposable {
 
 function registerToggleEnabledCommand(): vscode.Disposable {
 	return vscode.commands.registerCommand(
-		BETTER_ERRORS_COMMANDS.toggleEnabled,
+		COMMANDS.errors.toggleEnabled,
 		async () => {
 			const config = vscode.workspace.getConfiguration(
 				BETTER_ERRORS_CONFIG.root,

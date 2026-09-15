@@ -1,9 +1,6 @@
 import * as vscode from "vscode";
 
-import {
-	BETTER_ERRORS_COMMANDS,
-	BETTER_ERRORS_COMMAND_TITLES,
-} from "../commands";
+import { COMMANDS, COMMAND_TITLES } from "../../../commands";
 import { BETTER_ERRORS_CONFIG } from "../../../shared/consts/betterErrors";
 import {
 	formatDiagnosticSeverity,
@@ -35,8 +32,8 @@ export function registerCopyErrorCodeLensProvider(): vscode.Disposable {
 				return diagnostics.map(
 					(diagnostic) =>
 						new vscode.CodeLens(diagnostic.range, {
-							command: BETTER_ERRORS_COMMANDS.copyError,
-							title: BETTER_ERRORS_COMMAND_TITLES.copyError,
+							command: COMMANDS.errors.copyError,
+							title: COMMAND_TITLES.errors.copyError,
 							arguments: [document.uri, diagnostic.range],
 						}),
 				);

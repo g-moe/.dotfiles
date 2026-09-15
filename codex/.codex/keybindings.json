@@ -48,6 +48,10 @@
 		"key": null
 	},
 	{
+		"command": "copyWorkingDirectory",
+		"key": null
+	},
+	{
 		"command": "environmentAction1",
 		"key": null
 	},

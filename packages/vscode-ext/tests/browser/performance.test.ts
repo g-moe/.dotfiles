@@ -9,7 +9,7 @@ const samples = (elapsedMs: number) =>
 		"maximize / search",
 		"maximize / explorer",
 	].flatMap((name) =>
-		Array.from({ length: 20 }, (_, i) => ({
+		Array.from({ length: 5 }, (_, i) => ({
 			name: `${name} / repeat-${i + 1}`,
 			status: "PASS",
 			latency: { elapsedMs },

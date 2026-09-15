@@ -1,20 +1,24 @@
 import * as vscode from "vscode";
 
+import type {
+	EditorSnapshot,
+	WorkbenchEditor,
+} from "../../shared/workbench/editor";
+
 // Keep the workbench operations in order: each one acts on the active editor.
 export async function focusTerminalEditor(
 	terminal: vscode.Terminal,
-	maximize: boolean,
+	workbenchEditor: WorkbenchEditor,
+	snapshot: EditorSnapshot,
 	signal: AbortSignal,
 ) {
-	const editor = new TerminalEditor(terminal, signal);
+	const terminalEditor = new TerminalEditor(terminal, signal);
 
-	await editor.reveal();
-	await editor.moveToFirstGroup();
-	await editor.pinFirstTab();
+	await terminalEditor.reveal();
+	await terminalEditor.moveToFirstGroup();
+	await terminalEditor.pinFirstTab();
 
-	if (maximize) {
-		await editor.maximize();
-	}
+	await workbenchEditor.restore(snapshot);
 
 	assertActiveTerminal(terminal, signal);
 }
@@ -51,11 +55,14 @@ class TerminalEditor {
 			await vscode.commands.executeCommand(
 				"workbench.action.terminal.moveToEditor",
 			);
+			await this.waitUntil(() => activeTerminalTab(terminal) !== undefined);
+			terminal.show();
+			await this.waitUntil(() => vscode.window.activeTerminal === terminal);
+
+			return;
 		}
 
 		await this.waitUntil(() => activeTerminalTab(terminal) !== undefined);
-		terminal.show();
-		await this.waitUntil(() => vscode.window.activeTerminal === terminal);
 	}
 
 	private async selectGroup(
@@ -89,6 +96,10 @@ class TerminalEditor {
 		// Clear any multiple-tab selection so only the terminal moves to group 1.
 		const tab = activeTerminalTab(terminal)!;
 
+		if (tab.group.viewColumn === vscode.ViewColumn.One) {
+			return;
+		}
+
 		await vscode.commands.executeCommand(
 			"workbench.action.openEditorAtIndex",
 			tab.group.tabs.indexOf(tab),
@@ -111,8 +122,18 @@ class TerminalEditor {
 
 	async pinFirstTab(): Promise<void> {
 		const { terminal, signal } = this;
+		const tab = activeTerminalTab(terminal)!;
+
+		if (tab.isPinned && tab.group.tabs[0] === tab) {
+			return;
+		}
 
 		// VS Code calls a sticky tab "pinned". Pin first, then place it before other pins.
+		await vscode.commands.executeCommand(
+			"workbench.action.openEditorAtIndex",
+			tab.group.tabs.indexOf(tab),
+		);
+		assertActiveTerminal(terminal, signal);
 		await vscode.commands.executeCommand("workbench.action.pinEditor");
 		assertActiveTerminal(terminal, signal);
 		await vscode.commands.executeCommand("moveActiveEditor", {
@@ -129,26 +150,6 @@ class TerminalEditor {
 				tab.group.tabs[0] === tab
 			);
 		});
-	}
-
-	async maximize(): Promise<void> {
-		const { terminal, signal } = this;
-
-		// Focusing another group exits an existing maximized layout and restores its
-		// sizes. Return to group 1 before toggling so repeated calls stay maximized.
-		// Unlike maximizeEditorHideSidebar, these commands preserve both sidebars.
-		if (vscode.window.tabGroups.all.length > 1) {
-			assertActiveTerminal(terminal, signal);
-			await vscode.commands.executeCommand("runCommands", {
-				commands: [
-					"workbench.action.focusLastEditorGroup",
-					"workbench.action.focusFirstEditorGroup",
-					"workbench.action.toggleMaximizeEditorGroup",
-				],
-			});
-		}
-
-		assertActiveTerminal(terminal, signal);
 	}
 
 	// Tab events arrive after the commands complete. Bound every state wait and

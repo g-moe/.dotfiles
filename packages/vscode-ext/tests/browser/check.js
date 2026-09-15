@@ -1,5 +1,5 @@
-// Use the current keyboard focus. F17/F18 bind directly to production commands
-// only in the separate test extension. Browser timing includes tool overhead.
+// Use the current keyboard focus. F17 binds directly to the production terminal
+// command only in the separate test extension. Browser timing includes tool overhead.
 const timings = new Map();
 
 // The test extension exposes the current step through its status-bar label.
@@ -299,31 +299,21 @@ export async function checkCheckpoint(browser, keyboard, id, phase, proofPath) {
 
 	if (phase === "before") {
 		if (check.command) {
-			const maximize = check.command.endsWith("focusAndMaximize");
-
 			if (!check.surface) {
-				await palette(
-					browser,
-					keyboard,
-					maximize
-						? "better-vscode: terminal - focus & maximize"
-						: "better-vscode: terminal - focus",
-				);
+				await palette(browser, keyboard, "better-vscode: terminal - focus");
 			}
 
 			// Start timing at dispatch and stop only when the complete outcome is visible.
 			const start = performance.now();
 
-			await keyboard.pressKey(
-				check.surface ? (maximize ? "F18" : "F17") : "Return",
-			);
+			await keyboard.pressKey(check.surface ? "F17" : "Return");
 
 			const expected = {
 				...check,
 				phase: "after",
 				column: 1,
 				input: "terminal",
-				maximize: maximize || Boolean(check.state?.startsWith("owned-")),
+				maximize: check.maximize,
 			};
 			let ready;
 
@@ -380,9 +370,11 @@ export async function checkCheckpoint(browser, keyboard, id, phase, proofPath) {
 
 		// Type through the current focus. A locator that focuses the terminal here
 		// would conceal a broken command. Only the shell may produce this proof.
-		await keyboard.typeText(
-			`printf '%s' '${JSON.stringify({ id, elapsedMs })}' > '${proofPath}'`,
+		const proof = Buffer.from(JSON.stringify({ id, elapsedMs })).toString(
+			"base64",
 		);
+
+		await keyboard.typeText(`echo ${proof} | base64 -d > ${proofPath}`);
 		await keyboard.pressKey("Return");
 	}
 

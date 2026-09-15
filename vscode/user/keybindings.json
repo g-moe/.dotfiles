@@ -1768,8 +1768,19 @@
 	},
 	{
 		"key": "shift+cmd+f",
-		"command": "workbench.action.toggleMaximizeEditorGroup",
-		"when": "editorPartMaximizedEditorGroup || editorPartMultipleEditorGroups"
+		"command": "better-vscode.workbench.toggleMaximizeEditorGroup",
+		"args": {
+			"currentMaximized": true
+		},
+		"when": "editorPartMaximizedEditorGroup"
+	},
+	{
+		"key": "shift+cmd+f",
+		"command": "better-vscode.workbench.toggleMaximizeEditorGroup",
+		"args": {
+			"currentMaximized": false
+		},
+		"when": "!editorPartMaximizedEditorGroup && editorPartMultipleEditorGroups"
 	},
 	{
 		"key": "cmd+g s",
@@ -1960,6 +1971,6 @@
 	},
 	{
 		"key": "cmd+e cmd+t",
-		"command": "better-vscode.terminal.focusAndMaximize"
+		"command": "better-vscode.terminal.focus"
 	}
 ]

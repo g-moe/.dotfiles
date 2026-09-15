@@ -13,9 +13,9 @@ max_depth = 2
 
 [desktop]
 followUpQueueMode = "queue"
-appearanceTheme = "light"
+appearanceTheme = "system"
 appearanceLightCodeThemeId = "github"
-appearanceDarkCodeThemeId = "github"
+appearanceDarkCodeThemeId = "gruvbox"
 sansFontSize = 14
 codeFontSize = 12
 usePointerCursors = true
@@ -27,21 +27,24 @@ ambient-suggestions-enabled = false
 avatar-overlay-mascot-width-px = 80
 conversationDetailMode = "STEPS_COMMANDS"
 defaultTerminalLocation = "right"
-appearanceDiffMarkerStyle = "symbols"
+appearanceDiffMarkerStyle = "color"
 composerPlainTextMode = true
 git-branch-prefix = "garrett/"
 git-pull-request-merge-method = "squash"
+notifications-turn-mode = "off"
+realtimeVoiceScreenContextEnabled = false
+localeOverride = "en-US"
 
 [desktop.appearanceLightChromeTheme]
 accent = "#0969da"
-contrast = 45
-ink = "#1e1e1e"
+accentSource = "custom"
+contrast = 50
+ink = "#000000"
 opaqueWindows = true
-surface = "#eff1f5"
+surface = "#f4f4f5"
 
 [desktop.appearanceLightChromeTheme.fonts]
-code = "JetBrains Mono"
-ui = "Satoshi"
+code = '"JetBrains Mono"'
 
 [desktop.appearanceLightChromeTheme.semanticColors]
 diffAdded = "#1a7f37"
@@ -49,20 +52,20 @@ diffRemoved = "#cf222e"
 skill = "#8250df"
 
 [desktop.appearanceDarkChromeTheme]
-accent = "#1f6feb"
+accent = "#458588"
+accentSource = "custom"
 contrast = 45
-ink = "#e6edf3"
+ink = "#f4f4f5"
 opaqueWindows = true
-surface = "#1e1e1e"
+surface = "#282828"
 
 [desktop.appearanceDarkChromeTheme.fonts]
 code = "JetBrains Mono"
-ui = "Satoshi"
 
 [desktop.appearanceDarkChromeTheme.semanticColors]
-diffAdded = "#3fb950"
-diffRemoved = "#f85149"
-skill = "#bc8cff"
+diffAdded = "#1f7841"
+diffRemoved = "#9e2e36"
+skill = "#b16286"
 
 [desktop.open-in-target-preferences]
 global = "systemDefault"

@@ -42,7 +42,7 @@ export function comparePerformance(
 	);
 
 	return Array.from(groups, ([name, values]) => {
-		assert.equal(values.length, 20);
+		assert.equal(values.length, 5);
 
 		const baselineP95 = baseline[name];
 

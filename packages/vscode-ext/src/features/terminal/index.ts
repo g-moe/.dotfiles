@@ -1,13 +1,20 @@
 import * as vscode from "vscode";
 
+import { COMMANDS } from "../../commands";
+import {
+	readCurrentMaximized,
+	type WorkbenchEditor,
+} from "../../shared/workbench/editor";
 import { TERMINAL_STATE_KEY } from "./constants";
-import { TERMINAL_COMMANDS } from "./commands";
 import { focusTerminalEditor } from "./editor";
 import { TerminalService } from "./service";
 import { readProcessStart, isProcessAlive } from "./process";
 import type { TerminalState } from "./contracts";
 
-export function registerBetterTerminal(context: vscode.ExtensionContext) {
+export function registerBetterTerminal(
+	context: vscode.ExtensionContext,
+	editor: WorkbenchEditor,
+) {
 	const service = new TerminalService({
 		terminals: () => vscode.window.terminals,
 		create: (options) => vscode.window.createTerminal(options),
@@ -18,29 +25,15 @@ export function registerBetterTerminal(context: vscode.ExtensionContext) {
 		processAlive: isProcessAlive,
 	});
 
-	// Workbench commands share active-editor state. Serialize the whole operation,
-	// not only shell creation, so rapid calls cannot move different active tabs.
-	let pending = Promise.resolve();
-
 	context.subscriptions.push(service);
+	context.subscriptions.push(
+		vscode.commands.registerCommand(COMMANDS.terminal.focus, (input: unknown) =>
+			editor.run(async () => {
+				const snapshot = await editor.capture(readCurrentMaximized(input));
+				const terminal = await service.getTerminal();
 
-	for (const [command, maximize] of [
-		[TERMINAL_COMMANDS.focus, false],
-		[TERMINAL_COMMANDS.focusAndMaximize, true],
-	] as const) {
-		context.subscriptions.push(
-			vscode.commands.registerCommand(command, () => {
-				const operation = pending.then(async () => {
-					const terminal = await service.getTerminal();
-
-					await focusTerminalEditor(terminal, maximize, service.signal);
-				});
-
-				// Return the failure to the caller, but allow the next command to run.
-				pending = operation.catch(() => {});
-
-				return operation;
+				await focusTerminalEditor(terminal, editor, snapshot, service.signal);
 			}),
-		);
-	}
+		),
+	);
 }
