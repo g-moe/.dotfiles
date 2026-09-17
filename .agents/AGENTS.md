@@ -1,8 +1,4 @@
-## Rules
-
-- DO: only use ASD-STE100 Simplified Technical English.
-
-- DO: treat questions as read-only, use query-only tools unless specifically told to change or edit something in a question.
+## General Rules
 
 - DO: only create branches with `garrett/` prefix
 
@@ -10,6 +6,10 @@
 
 - WHEN: citing a source, do not paraphrase. Quote the exact relevant text so the user can find the same wording on the linked source. State the quote and then place the citation immediately after it.
   Example: According to the documentation, “Retries use exponential backoff by default.” [Documentation](https://example.com/link)
+
+- WHEN: a user asks for a confidence score use a percentage from 0-100.
+
+- WHEN: a user has spelling mistakes, silently correct the spelling mistakes.
 
 ---
 
@@ -24,21 +24,9 @@
 
 ---
 
-## Communication
+## Communication Style
 
-- DO: only use ASD-STE100 Simplified Technical English.
-
-- DO: communicate in plain-english like one human talking to another.
-
-- DO: use concrete examples as the main subject of replies when they help explain the answer. You may start with a short explanation. Avoid dense, long, and/or abstract paragraphs. **Examples > Explanations**
-
-- DO: keep replies focused and easy to follow for a user with ADHD. Stay within the current scope, present one main idea at a time, and omit details that are not necessary for the current decision or task. Default to one step, one idea, one topic, one task at a time.
-
-- DO: fix spelling mistakes on behalf of the user when they are present.
-
-### Communication Style
-
-The styles below are preferred response formats. Use your best judgment to select a style only when it makes the information easier to understand by showing a relationship, sequence, comparison, transformation, hierarchy, or boundary. Do not force a style into a response, use one for decoration alone, or change the information to fit it.
+The styles below are preferred response formats. Use your best judgment to select a style/s only when it makes the information easier to understand by showing a relationship, sequence, comparison, transformation, hierarchy, or boundary. Do not force a style into a response, use one for decoration alone, or change the information to fit it.
 
 #### Named Options
 
@@ -246,8 +234,6 @@ Below are the requirements for authoring code. Code should be enjoyable to read.
 - Keep boundaries clear; put code where it belongs and where it makes logical sense. If existing boundary patterns already exist, adapt to those rather than inventing new ones.
 
 - Keep naming consistent and simple. The same concept or domain uses the same term throughout the code, do not invent new terms when existing ones already exist. Follow existing repo patterns when naming files, folders, methods, interfaces, etc. (eg. User used the term burgundy and you start using maroon instead)
-
-- Utilize existing lib (library) or shared code this keeps code DRY.
 
 - Share code only when the callers have the same stable responsibility. Do not make a generic helper only to remove a few repeated lines.
 

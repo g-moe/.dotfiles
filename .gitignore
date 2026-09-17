@@ -34,7 +34,7 @@
 !/vscode/user/settings.json
 !/vscode/user/personal.code-snippets
 
-# Skills
+# Agents
 !/.agents/
 !/.agents/AGENTS.md
 !/.agents/CLAUDE.md
@@ -42,6 +42,8 @@
 !/.agents/skills/**
 !/.archive/
 !/.archive/**
+!/.agents/prompts/
+!/.agents/prompts/**
 
 # GitHub
 !/.github/

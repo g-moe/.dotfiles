@@ -1834,11 +1834,7 @@
 		"command": "-workbench.view.explorer",
 		"when": "viewContainer.workbench.view.explorer.enabled"
 	},
-	{
-		"key": "cmd+e shift+cmd+f",
-		"command": "workbench.action.toggleMaximizedPanel"
-	},
-	{
+    {
 		"key": "cmd+e b",
 		"command": "workbench.action.focusSideBar"
 	},
