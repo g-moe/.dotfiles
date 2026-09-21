@@ -443,5 +443,6 @@
 	"workbench.tree.indent": 4,
 	"githubPullRequests.fileAutoReveal": false,
 	"terminal.integrated.fontSize": 13,
-	"scm.diffDecorations": "overview"
+    "scm.diffDecorations": "overview",
+    "scm.autoReveal": false
 }

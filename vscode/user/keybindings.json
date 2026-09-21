@@ -1550,12 +1550,7 @@
 		"command": "-editor.action.deleteLines",
 		"when": "textInputFocus && !editorReadonly"
 	},
-	{
-		"key": "cmd+e cmd+g",
-		"command": "workbench.view.scm",
-		"when": "workbench.scm.active"
-	},
-	{
+    {
 		"key": "ctrl+shift+g",
 		"command": "-workbench.view.scm",
 		"when": "workbench.scm.active && !gitlens:disabled && config.gitlens.keymap == 'chorded'"
@@ -1968,5 +1963,9 @@
 	{
 		"key": "cmd+e cmd+t",
 		"command": "better-vscode.terminal.focus"
-	}
+    },
+    {
+        "key": "cmd+e cmd+g",
+        "command": "workbench.view.scm"
+    }
 ]
