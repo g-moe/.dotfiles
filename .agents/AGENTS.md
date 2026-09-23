@@ -197,6 +197,35 @@ Signals clarify meaning or intent. Apply them in the contexts specified below.
 
 Use these established formats for their stated situations, reusing primitives and signals where applicable.
 
+#### Task Report
+
+- WHEN: wrapping up a larger task, use this format to report its outcomes. Don't use it just because a turn ended. Use bullets for What Landed, What Failed, and Callouts. Start each bullet with a bold label naming the feature, behavior, or concern the summary describes, followed by a colon. When a subject has multiple points, nest bullets under its labeled bullet. Group related bullets together, and include impact for failures. Use Callouts for meaningful resolved problems, deliberate deferrals, noteworthy differences, or work friction. For command or tool-call friction, name the command or tool, explain what went wrong, how it was resolved, and the outcome so the reader doesn't need follow-up questions. Omit routine false starts. Then report staging state and relevant verification commands with their outcomes, in that order. Omit Callouts when empty, write "None" for no unresolved failures, and explain checks that did not run.
+
+  Example:
+
+  ```md
+  ### ✅ What Landed
+
+  - **Session handling:**
+    - Expired sessions are rejected before user data loads.
+    - Session renewal no longer interrupts an in-flight request.
+  - **Route change:** Refresh path changed from `/api/auth/refresh` to `/api/oauth/refresh`
+
+  ### ⚠️ What Failed
+
+  - **Password Reset Emails:** The current email API token returned 401 errors. I am guessing the token provided has expired or is invalid.
+
+  ### 📌 Callouts
+
+  - **Existing sessions:** Remain valid during rollout (users aren't forced to sign in again).
+  - **Stale docs:** `/docs/AUTH.md` still references the old refresh path.
+  - **Failed to run recommended lint command:** `npm run lint` failed because ...
+
+  ### 🧪 Checks
+
+  - `exact command` — pass / fail / not run (reason).
+  ```
+
 #### Sidebar
 
 - WHEN: off-topic or tangential information is directly relevant to continuing the work and offers substantial value, use a sidebar. Sidebars should be rare; omit them unless both conditions are met. Place the sidebar after the main answer in a fenced `text` code block. Use `↳ SIDEBAR` on its own line and indent the content beneath it by two spaces. Keep it brief, and keep information that materially affects the current or adjacent topics.
