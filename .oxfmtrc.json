@@ -12,6 +12,7 @@
 	"bracketSameLine": false,
 	"bracketSpacing": true,
 	"ignorePatterns": [
+		"**/*.md",
 		"packages/raycast/*/raycast-env.d.ts",
 		"vscode/user/settings.json"
 	]

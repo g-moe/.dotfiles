@@ -199,6 +199,8 @@ Use these established formats for their stated situations, reusing primitives an
 
 #### Task Report
 
+Always put a blank line between report list items, including nested items, and between headings and content. Preserve these blank lines when formatting Markdown. Never collapse reports into tight lists.
+
 - WHEN: reporting results of implementation work that changed multiple files, ran checks, or has unresolved failures, use this format to report its outcomes. Don't use it just because a turn ended. Use bullets for What Landed, What Failed, and Callouts. Start each bullet with a bold label naming the feature, behavior, or concern the summary describes, followed by a colon. When a subject has multiple points, nest bullets under its labeled bullet. Group related bullets together, and include impact for failures. Use Callouts for meaningful resolved problems, deliberate deferrals, noteworthy differences, or work friction. For command or tool-call friction, name the command or tool, explain what went wrong, how it was resolved, and the outcome so the reader doesn't need follow-up questions. Omit routine false starts. Then report relevant verification commands with their outcomes, in that order. Omit Callouts when empty, write "None" for no unresolved failures, and explain checks that did not run.
 
   Example:
@@ -207,8 +209,11 @@ Use these established formats for their stated situations, reusing primitives an
   ### ✅ What Landed
 
   - **Session handling:**
+
     - Expired sessions are rejected before user data loads.
+
     - Session renewal no longer interrupts an in-flight request.
+
   - **Route change:** Refresh path changed from `/api/auth/refresh` to `/api/oauth/refresh`
 
   ### ⚠️ What Failed
@@ -218,7 +223,9 @@ Use these established formats for their stated situations, reusing primitives an
   ### 📌 Callouts
 
   - **Existing sessions:** Remain valid during rollout (users aren't forced to sign in again).
+
   - **Stale docs:** `/docs/AUTH.md` still references the old refresh path.
+
   - **Failed to run recommended lint command:** `npm run lint` failed because ...
 
   ### 🧪 Checks
