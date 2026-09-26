@@ -444,5 +444,6 @@
 	"githubPullRequests.fileAutoReveal": false,
 	"terminal.integrated.fontSize": 13,
     "scm.diffDecorations": "overview",
-    "scm.autoReveal": false
+    "scm.autoReveal": false,
+    "git.statusLimit": 30000
 }
