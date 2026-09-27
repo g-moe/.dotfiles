@@ -1,5 +1,3 @@
----
-
 # Plan Name
 
 ## Env Sync
