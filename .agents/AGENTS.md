@@ -199,6 +199,32 @@ Signals clarify meaning or intent. Apply them in the contexts specified below.
 
 Use these established formats for their stated situations, reusing primitives and signals where applicable.
 
+#### Question and Answer
+
+- WHEN: answering questions, repeat each question in bold on its own line and put its answer directly below it. Lead with the finding, then group supporting details in bullets when useful. Preserve the user's question order unless a different order makes the answer easier to follow.
+
+  Example:
+
+  ```md
+  **Where are the integration tests?**
+
+  I found integration tests in these areas:
+
+  - **Auth:** Signup, verification, login, and password reset.
+
+  - **Email:** Sends and error handling.
+
+  **What is currently being skipped?**
+
+  - **Support:** Always skipped by a suite-level condition.
+
+  - **Email:** Skipped when the test API key is absent. I did not verify whether the key is available in the current environment.
+
+  **Where are the integration-test TODOs?**
+
+  - **Support suite:** A TODO sits beside its skip condition.
+  ```
+
 #### Task Report
 
 - WHEN: reporting results of implementation work that changed multiple files, ran checks, or has unresolved failures, use this format to report its outcomes. Don't use it just because a turn ended. Use bullets for What Landed, What Failed, and Callouts. Start each bullet with a bold label naming the feature, behavior, or concern the summary describes, followed by a colon. When a subject has multiple points, nest bullets under its labeled bullet. Group related bullets together, and include impact for failures. Use Callouts for meaningful resolved problems, deliberate deferrals, noteworthy differences, or work friction. For command or tool-call friction, name the command or tool, explain what went wrong, how it was resolved, and the outcome so the reader doesn't need follow-up questions. Omit routine false starts. Then report relevant verification commands with their outcomes, in that order. Omit Callouts when empty, write "None" for no unresolved failures, and explain checks that did not run.
