@@ -203,6 +203,9 @@ fi
 # Git stash including untracked files
 alias gitstash='git stash -u'
 
+# Copy the current Git branch name to the clipboard
+alias gitbranch-copy='git branch --show-current | pbcopy'
+
 # Git clean dry run
 alias gc-dry='git clean -nd'
 
