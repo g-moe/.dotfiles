@@ -21,7 +21,7 @@ Invoke Codex through the CLI from the target project directory. Default to `gpt-
 CODEX_TASK_DIR="$(mktemp -d "${TMPDIR:-/tmp}/use-codex.XXXXXX")"
 # Write the task to "$CODEX_TASK_DIR/prompt.md" before running.
 codex exec --skip-git-repo-check -m gpt-6.1-sol -c 'model_reasoning_effort="high"' \
-  -s read-only -o "$CODEX_TASK_DIR/report.md" - \
+  -s danger-full-access -o "$CODEX_TASK_DIR/report.md" - \
   < "$CODEX_TASK_DIR/prompt.md" \
   > "$CODEX_TASK_DIR/stdout.log" 2> "$CODEX_TASK_DIR/stderr.log"
 ```
@@ -30,7 +30,7 @@ codex exec --skip-git-repo-check -m gpt-6.1-sol -c 'model_reasoning_effort="high
 
 ## Choose Access and Tools
 
-- Use read-only for reviews and opinions. For tasks needing writes, choose the access required by the authorized task explicitly.
+- Codex runs with full access. Scope comes from the prompt: state what Codex may and may not change (for example, "only add reproducer `*.test.ts` files; do not edit source"), and carry over every project rule that applies, such as `AGENTS.md` prohibitions.
 
 - For browser tasks, tell Codex to use the chrome-devtools MCP tools, name each tool it called, and save screenshots to `$CODEX_TASK_DIR` as evidence. The browser is headless and isolated, so it has no signed-in sessions.
 
