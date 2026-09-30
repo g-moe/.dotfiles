@@ -107,7 +107,7 @@ Before setting up a group of links, such as agent configuration or Neovim, the i
 
 **Skip / Disable / Enable** is a real triad when those are the labels: `0` skip, `1` disable, `2` enable (SSH, VNC). Everything else keeps domain labels — Dock hide/show, sizes, colors, power Skip/Normal/Server, Tailscale install modes, etc.
 
-On macOS, **Window management** uses the same triad. Skip touches nothing. Disable removes only the installer-managed Hammerspoon loader and `center-fill` state. Enable then asks for a named **Window configuration**; the first configuration is `center-fill`, backed by Hammerspoon. Its rule fills resizable windows inside the menu bar and Dock with a 16-pixel gap around them, centers fixed-size windows without resizing them, and never uses macOS Full Screen. After a first-time Hammerspoon install, the installer waits for both the app and its running process before continuing. The installer preserves other `~/.hammerspoon/init.lua` code and keeps Hammerspoon startup when other Hammerspoon code remains. Accessibility permission must still be granted by the user in System Settings.
+The macOS desktop phase leaves window placement and native tiling preferences unchanged. Linux window setup configures Xfce button order, opacity, centering, and compositing.
 
 ### npm scripts
 

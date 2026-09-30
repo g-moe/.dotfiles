@@ -184,26 +184,12 @@ changes are visible in VNC and VNC input is visible locally. For **Disable**,
 the service must be disabled and stopped. For **Skip**, its prior state must not
 change.
 
-## macOS window-management checks
+## macOS desktop checks
 
 After the desktop phase, confirm Apps is immediately after Finder in the Dock,
 followed by Mission Control, Settings, Ghostty, VSCodium, and Chrome.
 
-Run the desktop phase three times on a disposable macOS guest. For **Skip**, compare Hammerspoon, `~/.hammerspoon`, login items, and running processes before and after; nothing may change. For **Enable**, select **Center + Fill**, grant Hammerspoon Accessibility permission yourself, and check:
-
-```bash
-cat ~/.hammerspoon/.dotfiles-window-configuration
-grep -n 'dotfiles installer: window management' ~/.hammerspoon/init.lua
-grep -c 'BEGIN dotfiles installer: window management' ~/.hammerspoon/init.lua
-plutil -lint ~/Library/LaunchAgents/com.dotfiles.window-management.hammerspoon.plist
-pgrep -x Hammerspoon
-```
-
-The stored name must be `center-fill`, both marked loader lines must appear, the `BEGIN` count must be `1`, the login file must be valid, and Hammerspoon must be running. On a clean first install, Enable must wait for the app and process and finish without a second installer run. Add user-owned Lua above and below the marked block, rerun Enable, and confirm the user code stays intact and the loader is not duplicated. Repeat once with `init.lua` as a symlink and confirm the symlink remains in place.
-
-Open a normal resizable window and confirm it fills the current screen inside the menu bar and Dock with a 16-pixel gap on every side, without entering Full Screen or another Space. Open a fixed-size dialog and confirm its size stays unchanged while it moves to the center. Repeat with a window on another screen, a newly opened window, a focused window, and a window restored from the Dock. There must be no movement animation or tiling.
-
-For **Disable**, confirm the managed lines and saved name are gone and Hammerspoon reloads when it was running. User Lua must remain. The installer login file must be removed when no other Hammerspoon code remains and kept when other Hammerspoon code remains. Hammerspoon itself and other window tools must remain installed and unchanged.
+The desktop phase must leave window placement and native tiling preferences unchanged.
 
 ## File sidebar checks
 
@@ -227,7 +213,6 @@ Hidden files must remain visible in both Finder and Thunar after each run.
 | Tux login + centered dark card   | n/a   | Pass      |
 | VNC Skip / Disable / Enable      | Kept  | Pass      |
 | `.dotfiles` file sidebar         | Code  | Code      |
-| Window management                | Code  | n/a       |
 | amd64 package paths              | n/a   | Code only |
 | arm64 full UTM proof             | n/a   | Pass      |
 
@@ -259,13 +244,9 @@ favorite with `.dotfiles`. Linux now has checks that require the same
 `.dotfiles` bookmark in both GTK bookmark files. The no-VM installer tests pass;
 clean VM proof of these sidebar checks is pending.
 
-On July 18, 2026, a fresh Hammerspoon install exposed a macOS app-name lookup
-delay, and the same run exposed a launchd stop/start race in the machine-name
-menu item. Window management now opens the installed app by its exact path,
-waits for the app bundle and running process, and reports a clear failure if
-either never appears. The menu item waits for its old process to stop before
-starting again. The no-VM installer tests passed; another clean Hammerspoon
-install is pending.
+On July 18, 2026, a macOS install exposed a launchd stop/start race in the
+machine-name menu item. The menu item now waits for its old process to stop
+before starting again. The no-VM installer tests passed.
 
 The finished Linux rice was added to the installer and passed a clean Debian 13
 arm64 full install, saved setting checks, reboot, login-screen check, desktop

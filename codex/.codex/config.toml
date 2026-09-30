@@ -1,7 +1,7 @@
 sandbox_mode = "danger-full-access"
 approval_policy = "never"
-model = "gpt-6-sol"
-model_reasoning_effort = "medium"
+model = "gpt-6.1-sol"
+model_reasoning_effort = "low"
 service_tier = "priority"
 allow_login_shell = true
 include_environment_context = true
@@ -21,7 +21,7 @@ codeFontSize = 12
 usePointerCursors = true
 mac-menu-bar-enabled = false
 show-context-window-usage = true
-enabled-reasoning-efforts = ["low", "medium", "high", "xhigh", "ultra", "max"]
+enabled-reasoning-efforts = ["low", "medium", "high", "xhigh", "max"]
 open-link-in-target-preference = "in-app-browser"
 ambient-suggestions-enabled = false
 avatar-overlay-mascot-width-px = 80
@@ -35,6 +35,7 @@ notifications-turn-mode = "off"
 realtimeVoiceScreenContextEnabled = false
 localeOverride = "en-US"
 appshotSoundEnabled = false
+browser-show-full-url = true
 
 [desktop.appearanceLightChromeTheme]
 accent = "#0969da"
@@ -125,6 +126,12 @@ enabled = false
 enabled = false
 
 [apps.connector_openai_plugin_management]
+enabled = false
+
+[apps.connector_openai_chatgpt_pets]
+enabled = false
+
+[apps.connector_openai_pages]
 enabled = false
 
 # [[skills.config]]
