@@ -4,11 +4,15 @@
 		"pr": ""
 	},
 	"permissions": {
-		"deny": ["AskUserQuestion", "Read(./.env)", "Read(./.env.*)"],
+    "deny": [
+      "AskUserQuestion",
+      "Read(./.env)",
+      "Read(./.env.*)"
+    ],
 		"defaultMode": "bypassPermissions"
 	},
 	"model": "opus[1m]",
 	"tui": "fullscreen",
 	"skipDangerousModePermissionPrompt": true,
-	"theme": "light"
+  "theme": "dark"
 }

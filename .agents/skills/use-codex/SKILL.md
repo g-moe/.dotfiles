@@ -15,29 +15,35 @@ Identify requested skills as the user's explicit invocations and instruct Codex 
 
 ## Invoke the CLI
 
-Invoke Codex through the CLI from the target project directory. Default to `gpt-6.1-sol` with `high` reasoning effort unless the request specifies overrides. Inherit other configured settings:
+Invoke Codex through the CLI from the target project directory. Default to `gpt-6.1-sol` with `high` reasoning effort unless the request specifies overrides. Tools, MCP servers, and their approvals come from `~/.codex/config.toml`; do not override them here.
 
 ```bash
 CODEX_TASK_DIR="$(mktemp -d "${TMPDIR:-/tmp}/use-codex.XXXXXX")"
 # Write the task to "$CODEX_TASK_DIR/prompt.md" before running.
-codex exec -m gpt-6.1-sol -c 'model_reasoning_effort="high"' \
+codex exec --skip-git-repo-check -m gpt-6.1-sol -c 'model_reasoning_effort="high"' \
   -s read-only -o "$CODEX_TASK_DIR/report.md" - \
   < "$CODEX_TASK_DIR/prompt.md" \
   > "$CODEX_TASK_DIR/stdout.log" 2> "$CODEX_TASK_DIR/stderr.log"
 ```
 
+`stderr.log` holds Codex's full transcript, not only errors: the session ID, every tool call, and the final message.
+
 ## Choose Access and Tools
 
 - Use read-only for reviews and opinions. For tasks needing writes, choose the access required by the authorized task explicitly.
 
-- For computer use, require actual interaction and evidence. If the needed tools are unavailable, report that limitation; do not substitute imagined results.
+- For browser tasks, tell Codex to use the chrome-devtools MCP tools, name each tool it called, and save screenshots to `$CODEX_TASK_DIR` as evidence. The browser is headless and isolated, so it has no signed-in sessions.
 
 ## Wait for Completion
 
-- Allow enough time for completion; use a background job and check its status if the shell tool's timeout is too short. Do not treat a partial report as success.
+- Run Codex as a background job and tell the user it is running. Do not treat a partial report as success.
 
 ## Check the Result
 
-- Check the exit status and read the report. On failure, inspect the logs and report the error. If `codex` is unavailable, report that instead of silently doing the task yourself.
+- Check the exit status and read the report. On failure, inspect `stderr.log` and report the error. If `codex` is unavailable, report that instead of silently doing the task yourself.
+
+- For browser tasks, confirm the `mcp: chrome-devtools/...` calls in `stderr.log` and open the screenshots before trusting Codex's claims.
 
 - Verify consequential findings against the code or artifacts before acting on them. Distinguish verified results from claims you have not checked.
+
+- End with the session ID from the `session id:` line in `stderr.log` and the command to reopen it: `codex resume --include-non-interactive <id>`.
