@@ -121,7 +121,7 @@
 	"debug.console.fontSize": 10,
 	"debug.console.lineHeight": 1.3,
 	"diffEditor.experimental.useTrueInlineView": true,
-	"diffEditor.ignoreTrimWhitespace": false,
+	"diffEditor.ignoreTrimWhitespace": true,
 	"diffEditor.renderSideBySide": true,
 	"diffEditor.renderSideBySideInlineBreakpoint": 100,
 	"editor.accessibilitySupport": "off",

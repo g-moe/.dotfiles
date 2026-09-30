@@ -1,0 +1,4 @@
+interface:
+  display_name: "Use Codex"
+  short_description: "Delegate a task to Codex"
+  default_prompt: "Use $use-codex to delegate this task to Codex and check its result."
