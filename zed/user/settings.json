@@ -1,4 +1,26 @@
 {
+  "ui_font_weight": 400.0,
+  "agent_buffer_font_size": 12.0,
+  "text_rendering_mode": "platform_default",
+  "markdown_preview": {
+    "font_size": 12.0,
+    "font_family": ".ZedSans",
+    "code_font_family": ".ZedSans"
+  },
+  "ui_font_family": ".ZedSans",
+  "agent_ui_font_family": ".ZedSans",
+  "agent_buffer_font_family": ".ZedSans",
+  "agent_ui_font_size": 13.0,
+  "active_pane_modifiers": {
+    "border_size": 0.0
+  },
+  "fullscreen_mode": "native",
+  "vim": {
+    "cursor_shape": {
+      "normal": "bar"
+    },
+    "toggle_relative_line_numbers": true
+  },
   "show_edit_predictions": true,
   "agent_servers": {
     "pi-acp": {
@@ -11,7 +33,7 @@
       "default_config_options": {
         "reasoning_effort": "medium",
         "mode": "agent-full-access",
-        "model": "gpt-5.6-sol",
+        "model": "gpt-6.1-sol",
         "fast-mode": true
       },
       "type": "registry"
@@ -19,7 +41,7 @@
     "claude-acp": {
       "default_config_options": {
         "effort": "medium",
-        "fast": true
+        "fast": false
       },
       "type": "registry"
     }
@@ -47,24 +69,29 @@
     "dock": "left"
   },
   "agent": {
+    "notify_when_agent_waiting": "never",
+    "expand_edit_card": false,
+    "expand_terminal_card": false,
     "show_turn_stats": true,
     "thinking_display": "always_collapsed",
-    "play_sound_when_agent_done": "always",
+    "play_sound_when_agent_done": "never",
     "enable_feedback": false,
     "single_file_review": true,
     "threads_sidebar": {
+      "position": "right",
       "default_width": 325.0,
       "auto_open": false
     },
-    "flexible": false,
+    "flexible": true,
     "dock": "right",
     "favorite_models": [],
     "model_parameters": []
   },
   "diff_view_style": "split",
   "git_panel": {
+    "entry_primary_click_action": "file_diff",
     "group_by": "staging",
-    "dock": "right",
+    "dock": "left",
     "tree_view": true
   },
   "ssh_connections": [
@@ -91,6 +118,11 @@
           "paths": [
             "/home/linux/code/tradester/tradester-monorepo/tradester-2"
           ]
+        },
+        {
+          "paths": [
+            "/home/linux/code/tradester/tradester-monorepo/tradester-3/./"
+          ]
         }
       ]
     },
@@ -115,8 +147,10 @@
     "trust_all_worktrees": true,
     "restore_unsaved_buffers": false
   },
-  "vim_mode": true,
+  "vim_mode": false,
   "terminal": {
+    "flexible": false,
+    "dock": "bottom",
     "font_size": 13,
     "font_family": "JetBrains Mono",
     "line_height": {
@@ -136,7 +170,7 @@
       "program": "zsh"
     }
   },
-  "reduce_motion": "on",
+  "reduce_motion": "off",
   "project_panel": {
     "dock": "left",
     "auto_fold_dirs": false,
@@ -200,8 +234,8 @@
   "preferred_line_length": 80,
   "soft_wrap": "editor_width",
   "base_keymap": "VSCode",
-  "ui_font_size": 16,
-  "buffer_font_size": 15,
+  "ui_font_size": 12.0,
+  "buffer_font_size": 12.0,
   "theme": "GitHub Light",
   "close_on_file_delete": true,
   "window_title_separator": "",

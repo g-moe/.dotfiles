@@ -64,7 +64,7 @@ function prompt_git_line() {
 }
 
 function prompt_input_line() {
-  print -nr -- "%F{\${path_fg}}❯%f"
+  print -nr -- "%f❯"
 }
 
 function prompt_system_stats() {
