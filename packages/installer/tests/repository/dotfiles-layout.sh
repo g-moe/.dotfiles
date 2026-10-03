@@ -48,6 +48,8 @@ packages/raycast
 packages/theming/create/controller.ts
 packages/vscode-ext/package.json
 tmux/tmux.conf
+zed/user/settings.json
+zed/user/keymap.json
 package-lock.json
 package.json
 tsconfig.json
@@ -87,6 +89,7 @@ superfile
 tmux
 tsconfig.json
 vscode
+zed
 zsh
 '
 while IFS= read -r root; do
@@ -99,7 +102,6 @@ done < <(
 )
 
 for path in \
-  zed \
   .zshrc \
   black.heic \
   icon.png \

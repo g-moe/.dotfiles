@@ -34,6 +34,12 @@
 !/vscode/user/settings.json
 !/vscode/user/personal.code-snippets
 
+# Zed
+!/zed/
+!/zed/user/
+!/zed/user/settings.json
+!/zed/user/keymap.json
+
 # Agents
 !/.agents/
 !/.agents/AGENTS.md

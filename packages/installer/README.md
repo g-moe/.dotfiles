@@ -11,6 +11,7 @@ bash packages/installer/install.sh --git           # Git only
 bash packages/installer/install.sh --agents        # Agent instructions and skills
 bash packages/installer/install.sh --theme         # theme generation + install
 bash packages/installer/install.sh --retire        # remove recorded packages
+bash packages/installer/install.sh --zed           # Zed settings and keymap only
 npm run install:machine                 # → install.sh
 npm run install:git                     # → install.sh --git
 npm run install:agents                  # → install.sh --agents
@@ -104,6 +105,11 @@ Source `packages/installer/lib/lib.sh` through the local installer-relative path
 | `ask_binary` | Yes / no                      |
 
 Before setting up a group of links, such as agent configuration or Neovim, the installer checks the whole group. If it finds existing files or links pointing somewhere else, it asks once whether to **Skip** or **Replace with symlinks** for that group. Skip leaves each existing item alone while still creating missing links. It never replaces a real directory.
+
+Zed follows the VSCodium per-file pattern: `zed/user/settings.json` and
+`zed/user/keymap.json` link into `~/.config/zed/` on macOS and Linux. The
+development phase configures these links; `--zed` runs only that strategy.
+It does not install Zed or replace its config directory, themes, or prompts.
 
 **Skip / Disable / Enable** is a real triad when those are the labels: `0` skip, `1` disable, `2` enable (SSH, VNC). Everything else keeps domain labels — Dock hide/show, sizes, colors, power Skip/Normal/Server, Tailscale install modes, etc.
 

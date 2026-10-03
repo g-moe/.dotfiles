@@ -36,6 +36,7 @@ source folder as a whole.
 ├── superfile/              Superfile configuration and theme
 ├── tmux/                   tmux configuration
 ├── vscode/user/            VS Code / VSCodium user settings
+├── zed/user/               Zed settings and keymap
 ├── zsh/                    Zsh startup files
 │
 ├── AGENTS.md               Instructions for agents editing this repository
@@ -60,6 +61,7 @@ These folders contain application configuration, not installer logic.
 | `superfile/`    | Superfile config and generated theme.                                                           |
 | `tmux/`         | tmux configuration.                                                                             |
 | `vscode/user/`  | Editor settings, keybindings, and extensions for VS Code or VSCodium.                           |
+| `zed/user/`     | Zed settings and keymap, individually linked into `~/.config/zed/`.                             |
 | `zsh/`          | `.zshenv`, `.zprofile`, and `.zshrc`. The installer links these into the user's home directory. |
 
 Themes in these folders are outputs. Edit the shared theme tokens and generator

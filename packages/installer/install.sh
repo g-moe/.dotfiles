@@ -6,7 +6,7 @@ ROOT_DIR="$(cd "$SCRIPT_DIR/../.." && pwd)"
 
 . "$SCRIPT_DIR/lib/lib.sh"
 
-usage='Use: bash packages/installer/install.sh [--apps|--development|--appearance|--input|--desktop|--files|--access|--system|--all|--git|--agents|--theme|--retire]'
+usage='Use: bash packages/installer/install.sh [--apps|--development|--appearance|--input|--desktop|--files|--access|--system|--all|--git|--agents|--theme|--retire|--zed]'
 
 validate_root() {
   [[ "$ROOT_DIR" == "$HOME/.dotfiles" ]] ||
@@ -89,6 +89,10 @@ install_theme() {
   run_step 'Custom themes' bash -c 'cd "$1" && npx tsx packages/theming/create/controller.ts' bash "$ROOT_DIR"
 }
 
+configure_zed() {
+  run_strategy 'Zed settings' development/zed-settings.sh
+}
+
 install_development() {
   install_git
   run_strategy 'Node.js 24' development/node.sh
@@ -99,6 +103,7 @@ install_development() {
   run_strategy 'Zsh' development/zsh.sh
   run_strategy 'tmux configuration' development/tmux.sh
   run_strategy 'VSCodium settings' development/vscodium-settings.sh
+  configure_zed
   run_strategy 'Codex' development/codex.sh
   run_strategy 'VSCodium extensions' development/vscodium-extensions.sh
 }
@@ -184,6 +189,7 @@ run_phase() {
 parse_mode() {
   case "$1" in
     --git) printf 'git\n' ;;
+    --zed) printf 'zed\n' ;;
     --agents) printf 'agents\n' ;;
     --theme) printf 'theme\n' ;;
     --retire) printf 'retire\n' ;;
@@ -232,6 +238,9 @@ main() {
   run_step 'Check your user' validate_user
 
   case "$mode" in
+    zed)
+      configure_zed
+      ;;
     git)
       install_git
       ;;

@@ -47,4 +47,14 @@ expect_file_contains "$INSTALLER_DIR/setup/development/cloudflare.sh" \
 expect_file_contains "$INSTALLER_DIR/setup/development/cloudflare.sh" \
   'npm install --global wrangler@latest' 'Cloudflare must install Wrangler'
 
+zed="$INSTALLER_DIR/setup/development/zed-settings.sh"
+expect_file_contains "$zed" "safe_symlink_group 'Zed settings'" \
+  'Zed must use the same grouped per-file linking helper as VSCodium'
+expect_file_contains "$zed" '"$ROOT_DIR/zed/user/settings.json" "$HOME/.config/zed/settings.json"' \
+  'Zed settings must link from the application config folder'
+expect_file_contains "$zed" '"$ROOT_DIR/zed/user/keymap.json" "$HOME/.config/zed/keymap.json"' \
+  'Zed keymap must link from the application config folder'
+expect_file_contains "$INSTALLER_DIR/install.sh" "--zed) printf 'zed" \
+  'The installer must offer a Zed-only settings mode'
+
 printf 'Development setup checks passed.\n'

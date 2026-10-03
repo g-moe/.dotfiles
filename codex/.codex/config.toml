@@ -1,7 +1,6 @@
 sandbox_mode = "danger-full-access"
 approval_policy = "never"
 model = "gpt-6.1-sol"
-model_reasoning_effort = "low"
 service_tier = "priority"
 allow_login_shell = true
 include_environment_context = true
@@ -12,6 +11,7 @@ max_threads = 4
 max_depth = 2
 
 [desktop]
+default-mode-request-user-input-enabled = false
 followUpQueueMode = "queue"
 appearanceTheme = "system"
 appearanceLightCodeThemeId = "github"
@@ -70,7 +70,7 @@ diffRemoved = "#9e2e36"
 skill = "#b16286"
 
 [desktop.open-in-target-preferences]
-global = "systemDefault"
+global = "zed"
 
 [features]
 js_repl = false
