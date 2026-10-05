@@ -1,5 +1,22 @@
 {
-  "ui_font_weight": 400.0,
+  "toolbar": {
+    "code_actions": false
+  },
+  "relative_line_numbers": "disabled",
+  "rounded_selection": true,
+  "cursor_animation": {
+    "enabled": false
+  },
+  "reveal_if_open": true,
+  "when_closing_with_no_tabs": "keep_window_open",
+  "indent_guides": {
+    "background_coloring": "disabled",
+    "coloring": "fixed",
+    "active_line_width": 2,
+    "line_width": 1,
+    "enabled": true
+  },
+  "ui_font_weight": 300.0,
   "agent_buffer_font_size": 12.0,
   "text_rendering_mode": "platform_default",
   "markdown_preview": {
@@ -19,7 +36,7 @@
     "cursor_shape": {
       "normal": "bar"
     },
-    "toggle_relative_line_numbers": true
+    "toggle_relative_line_numbers": false
   },
   "show_edit_predictions": true,
   "agent_servers": {
@@ -31,7 +48,7 @@
     },
     "codex-acp": {
       "default_config_options": {
-        "reasoning_effort": "medium",
+        "reasoning_effort": "high",
         "mode": "agent-full-access",
         "model": "gpt-6.1-sol",
         "fast-mode": true
@@ -53,7 +70,7 @@
       "prediction_debounce": 0
     }
   },
-  "on_new_window": "empty_tab",
+  "on_new_window": "launchpad",
   "tab_bar": {
     "show_pinned_tabs_in_separate_row": true,
     "show": true
@@ -63,12 +80,16 @@
     "enabled": false
   },
   "outline_panel": {
+    "indent_size": 8.0,
     "dock": "left"
   },
   "collaboration_panel": {
     "dock": "left"
   },
   "agent": {
+    "limit_content_width": false,
+    "default_height": 350.0,
+    "default_width": 640.0,
     "notify_when_agent_waiting": "never",
     "expand_edit_card": false,
     "expand_terminal_card": false,
@@ -78,20 +99,28 @@
     "enable_feedback": false,
     "single_file_review": true,
     "threads_sidebar": {
-      "position": "right",
+      "position": "left",
       "default_width": 325.0,
       "auto_open": false
     },
-    "flexible": true,
-    "dock": "right",
+    "flexible": false,
+    "dock": "left",
     "favorite_models": [],
     "model_parameters": []
   },
   "diff_view_style": "split",
   "git_panel": {
+    "scrollbar": {
+      "show": "system"
+    },
+    "show_count_badge": false,
+    "diff_stats": true,
+    "folder_indicator": "both",
+    "file_icons": false,
+    "status_style": "icon",
     "entry_primary_click_action": "file_diff",
     "group_by": "staging",
-    "dock": "left",
+    "dock": "right",
     "tree_view": true
   },
   "ssh_connections": [
@@ -102,6 +131,11 @@
         {
           "paths": [
             "/home/linux"
+          ]
+        },
+        {
+          "paths": [
+            "/home/linux/.dotfiles"
           ]
         },
         {
@@ -147,7 +181,7 @@
     "trust_all_worktrees": true,
     "restore_unsaved_buffers": false
   },
-  "vim_mode": false,
+  "vim_mode": true,
   "terminal": {
     "flexible": false,
     "dock": "bottom",
@@ -172,11 +206,11 @@
   },
   "reduce_motion": "off",
   "project_panel": {
-    "dock": "left",
+    "dock": "right",
     "auto_fold_dirs": false,
-    "indent_size": 4,
+    "indent_size": 8.0,
     "indent_guides": {
-      "show": "always"
+      "show": "never"
     }
   },
   "git": {
@@ -192,6 +226,8 @@
   },
   "mouse_wheel_zoom": true,
   "gutter": {
+    "min_line_number_digits": 1,
+    "line_numbers": true,
     "folds": true
   },
   "minimap": {
@@ -203,12 +239,12 @@
       "horizontal": false,
       "vertical": true
     },
-    "cursors": false,
+    "cursors": true,
     "show": "always",
     "git_diff": true
   },
   "hover_popover_delay": 500,
-  "selection_highlight": false,
+  "selection_highlight": true,
   "cursor_blink": true,
   "use_system_window_tabs": true,
   "autosave": {
@@ -234,12 +270,12 @@
   "preferred_line_length": 80,
   "soft_wrap": "editor_width",
   "base_keymap": "VSCode",
-  "ui_font_size": 12.0,
-  "buffer_font_size": 12.0,
-  "theme": "GitHub Light",
+  "ui_font_size": 14.0,
+  "buffer_font_size": 13.0,
+  "theme": "GitHub Dark Dimmed",
   "close_on_file_delete": true,
   "window_title_separator": "",
-  "buffer_font_weight": 500.0,
+  "buffer_font_weight": 350.0,
   "buffer_font_features": {
     "liga": true,
     "calt": true
@@ -247,7 +283,7 @@
   "buffer_line_height": {
     "custom": 1.6
   },
-  "show_wrap_guides": true,
+  "show_wrap_guides": false,
   "window_title_format": "${projectName}:${branch}",
   "max_tabs": 10,
   "file_scan_exclusions": [

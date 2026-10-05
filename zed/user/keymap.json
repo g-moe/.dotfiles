@@ -570,7 +570,8 @@
     "use_key_equivalents": true,
     "bindings": {
       "ctrl-`": "workspace::CloseActiveDock",
-      "cmd-e a": "pane::RevealInProjectPanel",
+      "cmd-e a": "agent::FocusAgent",
+      "cmd-e cmd-a": "agent::FocusAgent",
       "cmd-\\": "pane::SplitRight",
       "cmd-o": "outline::Toggle",
       "cmd-e cmd-x": "zed::Extensions",
@@ -601,7 +602,7 @@
       "cmd-e t": [
         "action::Sequence",
         [
-          "workspace::ActivateLastPane",
+          ["workspace::ActivatePane", 0],
           ["action::Sequence", [["pane::ActivateItem", 0]]]
         ]
       ],
@@ -620,7 +621,7 @@
       "cmd-e f": [
         "action::Sequence",
         [
-          "workspace::ActivateLastPane",
+          ["workspace::ActivatePane", 0],
           [
             "action::Sequence",
             [
@@ -633,7 +634,7 @@
       "cmd-e cmd-f": [
         "action::Sequence",
         [
-          "workspace::ActivateLastPane",
+          ["workspace::ActivatePane", 0],
           [
             "action::Sequence",
             [
@@ -652,7 +653,7 @@
       "cmd-e cmd-t": [
         "action::Sequence",
         [
-          "workspace::ActivateLastPane",
+          ["workspace::ActivatePane", 0],
           [
             "action::Sequence",
             [["pane::ActivateItem", 0]]
@@ -775,7 +776,7 @@
       "cmd-g d": [
         "git::RestoreFile",
         {
-          "skip_prompt": false
+          "skip_prompt": true
         }
       ]
     }

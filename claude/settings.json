@@ -1,18 +1,18 @@
 {
-	"attribution": {
-		"commit": "",
-		"pr": ""
-	},
-	"permissions": {
+  "attribution": {
+    "commit": "",
+    "pr": ""
+  },
+  "permissions": {
     "deny": [
       "AskUserQuestion",
       "Read(./.env)",
       "Read(./.env.*)"
     ],
-		"defaultMode": "bypassPermissions"
-	},
-	"model": "opus[1m]",
-	"tui": "fullscreen",
-	"skipDangerousModePermissionPrompt": true,
+    "defaultMode": "bypassPermissions"
+  },
+  "model": "opus[1m]",
+  "tui": "fullscreen",
+  "skipDangerousModePermissionPrompt": true,
   "theme": "dark"
 }
