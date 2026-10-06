@@ -170,12 +170,6 @@ alias code='codium'
 # Open Superfile
 alias files='spf'
 
-# T3 - start web server detached from the terminal and job table
-alias t3-serve='nohup npx t3 serve --host 0.0.0.0 --port 3333 --tailscale-serve >>/tmp/t3-serve.log 2>&1 &!'
-
-# T3 - Stop the web server running on port 3333
-alias t3-serve-kill='kill-port 3333'
-
 # List out directories with `cd` change directory
 unalias cd 2>/dev/null
 cd() {

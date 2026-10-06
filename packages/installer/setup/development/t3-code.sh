@@ -3,7 +3,6 @@ set -euo pipefail
 
 STRATEGY_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 INSTALLER_DIR="$(cd "$STRATEGY_DIR/../.." && pwd)"
-ROOT_DIR="$(cd "$INSTALLER_DIR/../.." && pwd)"
 . "$INSTALLER_DIR/lib/lib.sh"
 
 install_t3_code() {
@@ -15,8 +14,9 @@ install_t3_code() {
 }
 
 _install() {
-  activate_repo_node "$ROOT_DIR" || die 'Node.js is not available.'
-  npm install --global t3@latest
+  [[ -x "$HOME/.local/bin/t3" ]] && return 0
+  ask_binary 'Install the T3 Code CLI?' || return 0
+  curl -fsSL https://t3.codes/install.sh | sh
 }
 
 mac() {
