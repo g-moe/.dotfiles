@@ -135,26 +135,6 @@ enabled = false
 [apps.connector_openai_pages]
 enabled = false
 
-# [[skills.config]]
-# path = "/Users/garrett/.codex/skills/.system/openai-docs/SKILL.md"
-# enabled = false
-
-# [[skills.config]]
-# path = "/Users/garrett/.codex/skills/.system/review-agent/SKILL.md"
-# enabled = false
-
-# [[skills.config]]
-# path = "/Users/garrett/.codex/skills/.system/skill-installer/SKILL.md"
-# enabled = false
-
-# [[skills.config]]
-# path = "/Users/garrett/.codex/skills/.system/plugin-creator/SKILL.md"
-# enabled = false
-
-# [[skills.config]]
-# path = "/Users/garrett/.codex/skills/.system/skill-creator/SKILL.md"
-# enabled = false
-
 [[skills.config]]
 name = "sites:sites-building"
 enabled = false
