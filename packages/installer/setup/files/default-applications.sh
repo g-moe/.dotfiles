@@ -21,6 +21,7 @@ mac() {
     "$(duti -d https 2>/dev/null || true)" == 'com.google.Chrome' ]]; then
     return 0
   fi
+  ask_binary 'Make Chrome the default browser?' || return 0
 
   # macOS asks the signed-in user to approve a default-browser change. Setting
   # the HTTP handler opens that one system prompt and approval covers HTTPS too.
@@ -46,6 +47,8 @@ linux() {
     *) die "No default browser is configured for $LINUX_ARCH" ;;
   esac
 
+  [[ "$(xdg-settings get default-web-browser 2>/dev/null || true)" == "$browser" ]] && return 0
+  ask_binary "Make ${browser%.desktop} the default browser?" || return 0
   xdg-settings set default-web-browser "$browser"
 
   [[ "$(xdg-settings get default-web-browser)" == "$browser" ]] ||
