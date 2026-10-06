@@ -26,7 +26,6 @@ configure_chrome_devtools() {
   local browser_path
 
   activate_repo_node "$ROOT_DIR" || die 'Node.js is not available.'
-  make_codex_available "$os"
   # MCP servers are machine tools, not repository development dependencies.
   # Install one pinned global copy for every client to share.
   npm install --global chrome-devtools-mcp@1.8.0
@@ -45,18 +44,6 @@ configure_chrome_devtools() {
   register_global_server chrome-devtools \
     "$node_path" "$entrypoint" \
     --headless --isolated --executablePath "$browser_path"
-}
-
-make_codex_available() {
-  local os="$1"
-  local bundled_codex='/Applications/ChatGPT.app/Contents/Resources/codex'
-
-  # ChatGPT ships Codex on macOS, but normal terminals do not include its app
-  # resources in PATH. Prefer an existing CLI and otherwise expose the bundle.
-  if ! has codex && [[ "$os" == mac && -x "$bundled_codex" ]]; then
-    PATH="$(dirname "$bundled_codex"):$PATH"
-    export PATH
-  fi
 }
 
 chrome_browser_path() {

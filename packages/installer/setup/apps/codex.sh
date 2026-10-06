@@ -13,9 +13,11 @@ install_codex() {
   esac
 }
 
+# ChatGPT bundles Codex inside the app, off PATH; the cask gives terminals
+# and the MCP setup a real `codex`.
 mac() {
   brew_cask chatgpt
-#   brew_formula codex
+  brew_cask codex
 }
 
 linux() {

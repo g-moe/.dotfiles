@@ -13,7 +13,7 @@ expect_file_contains "$INSTALLER_DIR/setup/apps/arc-routing.sh" \
 expect_file_contains "$INSTALLER_DIR/setup/apps/codex.sh" \
   'brew_cask chatgpt' 'Mac must install the ChatGPT app'
 expect_file_contains "$INSTALLER_DIR/setup/apps/codex.sh" \
-  'brew_formula codex' 'Mac must install the Codex CLI'
+  'brew_cask codex' 'Mac must install the Codex CLI cask'
 expect_file_contains "$INSTALLER_DIR/setup/apps/claude-code.sh" \
   'brew_cask claude-code' 'Mac must install the Claude Code cask'
 expect_file_contains "$INSTALLER_DIR/setup/apps/claude-code.sh" \
