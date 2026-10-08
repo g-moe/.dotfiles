@@ -1,3 +1,8 @@
+// ============================================================================
+// Validate the saved T3 Code theme and return its path for manual import.
+// Installation returns the same file; it does not register the theme in T3 Code.
+// ============================================================================
+
 import { PATHS } from "../paths";
 import type { CreateInstallModule } from "../types";
 import { readJsonc } from "../utils";

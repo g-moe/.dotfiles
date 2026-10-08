@@ -15,9 +15,12 @@ install_agents() {
 }
 
 _link_instructions() {
+  local opencode_dir="${OPENCODE_CONFIG_DIR:-${XDG_CONFIG_HOME:-$HOME/.config}/opencode}"
+
   safe_symlink_group 'Agent instructions' \
     "$ROOT_DIR/.agents/AGENTS.md" "$HOME/.codex/AGENTS.md" \
     "$ROOT_DIR/.agents/AGENTS.md" "$HOME/.pi/agent/AGENTS.md" \
+    "$ROOT_DIR/.agents/AGENTS.md" "$opencode_dir/AGENTS.md" \
     "$ROOT_DIR/.agents/AGENTS.md" "$HOME/.claude/AGENTS.md" \
     "$ROOT_DIR/.agents/CLAUDE.md" "$HOME/.claude/CLAUDE.md" \
     "$ROOT_DIR/claude/settings.json" "$HOME/.claude/settings.json"

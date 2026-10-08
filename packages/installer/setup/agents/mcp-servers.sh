@@ -37,9 +37,10 @@ configure_chrome_devtools() {
   [[ -f "$entrypoint" ]] || die 'Chrome DevTools MCP is not installed.'
   [[ -x "$browser_path" ]] || die "MCP browser is missing: $browser_path"
 
-  # Cursor has no add CLI. Validate its existing JSON before native clients
-  # change, so malformed Cursor state cannot cause a partial update.
+  # Validate file-backed clients before native clients change, so malformed
+  # user state cannot cause a partial update.
   node "$STRATEGY_DIR/mcp-cursor.mjs" validate "$HOME/.cursor/mcp.json"
+  node "$STRATEGY_DIR/mcp-opencode.mjs" validate
 
   register_global_server chrome-devtools \
     "$node_path" "$entrypoint" \
@@ -60,6 +61,24 @@ register_global_server() {
   register_codex_server "$@"
   register_claude_server "$@"
   register_cursor_server "$@"
+  register_pi_server "$@"
+  register_opencode_server "$@"
+}
+
+register_pi_server() {
+  local name="$1"
+  shift
+
+  if has pi; then
+    # Pi replaces one named server in its user configuration by default.
+    pi mcp add "$name" -- "$@"
+  else
+    log "Pi CLI is unavailable; skipping its $name MCP registration."
+  fi
+}
+
+register_opencode_server() {
+  node "$STRATEGY_DIR/mcp-opencode.mjs" merge "$@"
 }
 
 register_codex_server() {

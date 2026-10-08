@@ -62,7 +62,7 @@ packages/installer/setup/<phase>/…  strategies (launched by install.sh with OS
 packages/installer/config/          installer-owned configuration loaded by strategies
 packages/installer/setup/identity.sh machine name and color (full installs only)
 packages/installer/setup/agents.sh  agent configuration and usage CLI (--agents only)
-.agents/AGENTS.md                   global instructions shared by Codex, Pi, and Claude Code
+.agents/AGENTS.md                   global instructions shared by the coding clients
 claude/settings.json                personal Claude Code settings linked during agent setup
 codex/.codex/                       personal Codex settings linked during development
 packages/installer/lib/lib.sh       installer library entry point
@@ -98,13 +98,23 @@ entry points, and shared behavior. `npm run install:test` checks strategy struct
 ### Agent settings and skills
 
 Agent setup is separate from development setup. It links `.agents/AGENTS.md`
-to Codex, Pi, and Claude Code. It also links `.agents/CLAUDE.md` to Claude
+to Codex, Pi, Claude Code, and OpenCode. OpenCode uses `OPENCODE_CONFIG_DIR`
+when set, or the `opencode` folder under `XDG_CONFIG_HOME` (default
+`~/.config`). It also links `.agents/CLAUDE.md` to Claude
 Code and `claude/settings.json` to Claude Code's user settings. On each run, it
 replaces the installed contents of the Agents, Codex, Claude Code, and Cursor
 skill folders with links to the current shared skills. Codex's internal
 `.system` skill directory is preserved. The command stops before cleanup when
 the repository has no valid skills. Codex configuration remains part of
 development setup.
+
+Development setup installs OpenCode under `~/.local`; use `opencode upgrade`
+for updates. Pi and OpenCode read the shared `~/.agents/skills` folder.
+Cursor uses a generated `alwaysApply` rule in
+`~/.cursor/plugins/local/garrett-instructions`. Run `--agents` again after
+changing global instructions. Cursor must allow local plugin imports. The
+generator copies the text because Cursor skips external plugin symlinks; see
+[cursor-rules.mjs](setup/agents/cursor-rules.mjs) for the source documentation.
 
 On another machine, clone or pull the repo at `~/.dotfiles`, then run
 `bash packages/installer/install.sh --agents`. Later pulls update linked files.
@@ -120,7 +130,16 @@ Code.
 ### Global MCP servers
 
 Agent setup registers the pinned Chrome DevTools MCP server globally with
-Codex, Claude Code, and Cursor. npm installs the server once globally, and
+Codex, Claude Code, Cursor, Pi, and OpenCode. npm installs the server once
+globally, and
 [`setup/agents/mcp-servers.sh`](setup/agents/mcp-servers.sh) passes the
 same absolute server command to each client. Focused checks live in
 [`tests/setup/agents/mcp-servers.sh`](tests/setup/agents/mcp-servers.sh).
+
+OpenCode's MCP add command is interactive. The installer edits its documented
+config format and preserves JSONC comments and unrelated settings; see
+[mcp-opencode.mjs](setup/agents/mcp-opencode.mjs) for the source documentation.
+Missing native clients are reported; rerun `--agents` after installing them.
+
+T3 Code uses its selected client's configuration. Custom account homes and
+remote servers need separate setup. T3 `0.0.45` has no Pi adapter.

@@ -1,4 +1,11 @@
 #!/usr/bin/env bash
+
+# =============================================================================
+# Replace installed skills with links to this repository to remove stale skills.
+# Remove all existing entries except Codex's built-in .system directory.
+# Check the source skills and all target roots before removing any entries.
+# =============================================================================
+
 set -euo pipefail
 
 SETUP_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"

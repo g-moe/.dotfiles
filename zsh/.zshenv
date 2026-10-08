@@ -30,3 +30,4 @@ if [[ -s "$NVM_DIR/nvm.sh" ]]; then
   source "$NVM_DIR/nvm.sh" --no-use >/dev/null 2>&1
   _use_node_version --silent
 fi
+. "$HOME/.cargo/env"

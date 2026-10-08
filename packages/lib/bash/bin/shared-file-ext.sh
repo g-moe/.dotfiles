@@ -1,4 +1,11 @@
 #!/usr/bin/env bash
+
+# =============================================================================
+# Set VSCodium as the default application for the extensions below.
+# macOS uses Swift to set and verify each file type through NSWorkspace.
+# Linux uses MIME types, so one setting can apply to several extensions.
+# =============================================================================
+
 set -euo pipefail
 
 BIN_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
