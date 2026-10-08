@@ -182,10 +182,6 @@
 		"when": "canNavigateBack"
 	},
 	{
-		"key": "cmd+e a",
-		"command": "workbench.files.action.showActiveFileInExplorer"
-	},
-	{
 		"key": "cmd+9",
 		"command": "-workbench.action.lastEditorInGroup"
 	},
@@ -1550,7 +1546,7 @@
 		"command": "-editor.action.deleteLines",
 		"when": "textInputFocus && !editorReadonly"
 	},
-    {
+	{
 		"key": "ctrl+shift+g",
 		"command": "-workbench.view.scm",
 		"when": "workbench.scm.active && !gitlens:disabled && config.gitlens.keymap == 'chorded'"
@@ -1829,7 +1825,7 @@
 		"command": "-workbench.view.explorer",
 		"when": "viewContainer.workbench.view.explorer.enabled"
 	},
-    {
+	{
 		"key": "cmd+e b",
 		"command": "workbench.action.focusSideBar"
 	},
@@ -1963,9 +1959,9 @@
 	{
 		"key": "cmd+e cmd+t",
 		"command": "better-vscode.terminal.focus"
-    },
-    {
-        "key": "cmd+e cmd+g",
-        "command": "workbench.view.scm"
-    }
+	},
+	{
+		"key": "cmd+e cmd+g",
+		"command": "workbench.view.scm"
+	}
 ]

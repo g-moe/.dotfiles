@@ -111,6 +111,9 @@ enabled = true
 [plugins."computer-use@openai-bundled"]
 enabled = false
 
+[plugins."code-review@openai-bundled"]
+enabled = false
+
 [apps.connector_20205bf7d4e99a89d7154bb849718324]
 enabled = false
 
