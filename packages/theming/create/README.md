@@ -10,19 +10,6 @@ flowchart TD
   B --> H["packages/theming/create/apps/oh-my-zsh.ts"]
   B --> V["packages/theming/create/apps/t3code.ts"]
 
-  C --> I["packages/theming/output/vscode/*"]
-  E --> K["packages/theming/output/ghostty/*"]
-  F --> L["packages/theming/output/superfile/*"]
-  G --> M["packages/theming/output/nvim/*"]
-  H --> N["packages/theming/output/oh-my-zsh/*"]
-  V --> W["packages/theming/g-theme-t3.json"]
-
-  I --> O["install copy -> packages/theming/vsce-package/themes/*"]
-  K --> Q["install copy -> ghostty/themes/*"]
-  L --> R["install copy -> superfile/theme/*"]
-  M --> S["install copy -> nvim/colors/*"]
-  N --> T["install copy -> ~/.oh-my-zsh/custom/themes/*"]
-
   U["bash packages/installer/install.sh --theme\n(npm run install:theme)"] --> B
 ```
 

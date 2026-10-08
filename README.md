@@ -93,19 +93,17 @@ under `packages/installer/setup/` directly.
 
 See [`packages/installer/README.md`](packages/installer/README.md) for the
 install phases, supported systems, link behavior, and platform details. See
-[`packages/installer/TESTING.md`](packages/installer/TESTING.md) for VM testing.
+[`packages/installer/TESTING.md`](packages/installer/TESTING.md) for test commands and layout.
 
 ### `packages/lib/`
 
 Shared libraries are independent of the installer.
 
-- `packages/lib/bash/` contains reusable Bash libraries and cross-platform
-  command-line tools. The `bin/` folder is for standalone tools.
+- [`packages/lib/bash/`](packages/lib/bash/README.md) contains shared Bash
+  helpers and standalone tools. Its README covers layout, entry points, and use.
+
 - `packages/lib/ts/` is reserved for shared TypeScript. It is empty except for
   `.gitkeep` until shared code is added.
-
-Installer-only helpers stay in `packages/installer/lib/`. This keeps the shared
-library usable by other packages.
 
 ### `packages/mac/`
 
@@ -247,8 +245,8 @@ tests run in disposable UTM clones, not on the main workstation.
 
 - [`AGENTS.md`](AGENTS.md) — repository rules and package boundaries
 - [`packages/installer/README.md`](packages/installer/README.md) — installer
-- [`packages/installer/TESTING.md`](packages/installer/TESTING.md) — VM and
-  no-VM tests
+- [`packages/installer/TESTING.md`](packages/installer/TESTING.md) — test commands
+  and layout
 - [`packages/mac/mactop/README.md`](packages/mac/mactop/README.md) — mactop
 - [`packages/agent-usage/README.md`](packages/agent-usage/README.md) — usage
   CLI
