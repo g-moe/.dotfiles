@@ -121,7 +121,7 @@
 		"status_style": "icon",
 		"entry_primary_click_action": "file_diff",
 		"group_by": "staging",
-		"dock": "right",
+		"dock": "left",
 		"tree_view": true
 	},
 	"ssh_connections": [

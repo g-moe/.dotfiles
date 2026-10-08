@@ -72,7 +72,7 @@ function prompt_system_stats() {
   print -n -- "%F{\${muted_color}}%{\\e[73m%}$(/usr/local/bin/xfce-system-stats --prompt)%{\\e[75m%}%f"
 }
 
-PROMPT='$(prompt_context_line)\n$(prompt_git_line)\n$(prompt_input_line) '
+PROMPT='\n$(prompt_context_line)\n$(prompt_git_line)\n$(prompt_input_line) '
 RPROMPT='$(prompt_system_stats)'
 `;
 }
