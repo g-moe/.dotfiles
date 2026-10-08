@@ -97,6 +97,7 @@ install_development() {
   install_git
   run_strategy 'Node.js 24' development/node.sh
   run_strategy 'Pi coding agent' development/pi.sh
+  run_strategy 'Cursor CLI' development/cursor-cli.sh
   run_strategy 'T3 Code' development/t3-code.sh
   run_strategy 'AWS CLI' development/aws-cli.sh
   run_strategy 'Cloudflare CLIs' development/cloudflare.sh
