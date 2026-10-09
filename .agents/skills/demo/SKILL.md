@@ -18,7 +18,7 @@ Create a small, working demo that teaches from first principles.
 - Remove types, helpers, state, models, and UI that do not teach the target.
 - Define a technical term before using it to explain another concept.
 - Add console output when inputs and results help the lesson.
-- Verify real behavior. Do not weaken checks because the work is a demo.
+- Verify real behavior.
 
 ## Workflow
 
@@ -73,12 +73,3 @@ console.info("Rows found through the account index:", rows);
 - Read the code from top to bottom as a beginner.
 - Remove anything that does not teach, run, display, or verify the target.
 - Report failed or unavailable checks.
-
-## Avoid
-
-- Restating the next line of code in a comment.
-- Assuming the reader knows the system behind the abstraction.
-- Adding named types or generic helpers only to make the demo look complete.
-- Explaining what happens without explaining why.
-- Teaching every feature when one coherent path proves the concept.
-- Adding comments or logs that do not change what the reader understands.

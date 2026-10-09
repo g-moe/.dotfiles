@@ -1,6 +1,6 @@
 ---
 name: use-codex
-description: Transform the user's request into a prompt and invoke Codex through the CLI, preserving requested skills and constraints.
+description: Use when the user explicitly invokes `$use-codex` or says "use codex".
 ---
 
 # Use Codex

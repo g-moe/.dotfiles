@@ -554,7 +554,9 @@ function infrastructureProblem(call, parsed, needsSessionId) {
 			retry: false,
 		};
 	}
-	if (isCapacityFailure(`${call.stdout}\n${call.stderr}`)) {
+
+	const failed = call.exitCode !== 0 || !parsed.reply;
+	if (failed && isCapacityFailure(`${call.stdout}\n${call.stderr}`)) {
 		return {
 			message: "model was at capacity",
 			retry: true,
