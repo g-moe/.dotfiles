@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 ## Overview
 
-Inspect the changed code, then update tests to match the runtime behavior. Only add additional tests if a new feature was added or you were explicitly told to add.
+Inspect the changed code, then update tests to match the runtime behavior. Only add additional tests if a new feature was added or you were explicitly told to add new tests.
 
 ## Rules
 
