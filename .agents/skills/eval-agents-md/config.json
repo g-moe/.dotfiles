@@ -51,6 +51,8 @@
 				"resume",
 				"{sessionId}",
 				"--json",
+				"-c",
+				"sandbox_mode=\"read-only\"",
 				"--model",
 				"{model}",
 				"-c",

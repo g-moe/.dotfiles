@@ -23,11 +23,8 @@
 
 | Harness | Model | Result | Turns | Avg. Reply | Avg. Chars |
 | ------- | ----- | :----: | :---: | ---------: | ---------: |
-
 <!-- BEGIN MODEL -->
-
 | {{HARNESS_LABEL}} | {{MODEL_LABEL}} | {{RESULT_BY_RUN}} | {{TURNS_BY_RUN}} | {{AVERAGE_REPLY_TIME}} | {{AVERAGE_REPLY_CHARS}} |
-
 <!-- END MODEL -->
 
 ## Scoring criteria

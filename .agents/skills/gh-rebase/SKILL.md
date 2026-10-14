@@ -23,5 +23,5 @@ disable-model-invocation: true
    - `<target>` is an ancestor of `HEAD`;
    - the current branch name did not change;
    - the backup still points to the old `HEAD`; and
-   - `git range-diff <target>...<backup> <target>...HEAD` shows no unexplained lost or changed work.
+   - `git range-diff <target> <backup> HEAD` shows no unexplained lost or changed work.
 7. Report the target, old and new commit IDs, backup branch, verification result, and that nothing was pushed.
