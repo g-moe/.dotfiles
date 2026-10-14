@@ -12,6 +12,11 @@
 !/package.json
 !/tsconfig.json
 
+# Displays
+!/displays/
+!/displays/benq-rd280u-portrait.bin
+!/displays/instructions.md
+
 # Images
 !/images/
 !/images/icon.png

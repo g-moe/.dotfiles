@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 ## Overview
 
-Inspect the changed code (`git diff <base>...HEAD` plus uncommitted changes), then update tests to assert its intended behavior. Only add additional tests if a new feature was added or you were explicitly told to add new tests.
+Inspect the changed code (`git diff <base>...HEAD` plus uncommitted changes), then update tests to assert its intended behavior. Only add additional tests if a new feature was added or you were explicitly told to add new tests new tests.
 
 ## Rules
 
