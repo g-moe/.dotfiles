@@ -404,7 +404,6 @@
 	},
 	"workbench.activityBar.location": "top",
 	"window.density.editorTabHeight": "compact",
-	"workbench.preferredDarkColorTheme": "gtheme-dark",
 	"redhat.telemetry.enabled": false,
 	"workbench.browser.showInTitleBar": false,
 	"window.customTitleBarVisibility": "never",
@@ -439,10 +438,18 @@
 	"explorer.confirmDragAndDrop": false,
 	"explorer.confirmPasteNative": false,
 	"githubPullRequests.quickDiff": true,
-	"workbench.tree.indent": 4,
 	"githubPullRequests.fileAutoReveal": false,
 	"terminal.integrated.fontSize": 13,
     "scm.diffDecorations": "overview",
     "scm.autoReveal": false,
-    "git.statusLimit": 30000
+    "git.statusLimit": 30000,
+    "workbench.panel.showLabels": false,
+	"git.blame.editorDecoration.disableHover": true,
+	"git.blame.ignoreWhitespace": true,
+	"workbench.preferredDarkColorTheme": "GitHub Light Default",
+	"workbench.editor.swipeToNavigate": true,
+	"workbench.experimental.modernUI": true,
+	"workbench.experimental.modernUIUppercaseViewHeaders": true,
+	"workbench.tree.indent": 12,
+	"terminal.integrated.enableMultiLinePasteWarning": "never"
 }

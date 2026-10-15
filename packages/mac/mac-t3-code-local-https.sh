@@ -2,20 +2,20 @@
 
 # Required parameters:
 # @raycast.schemaVersion 1
-# @raycast.title T3 Code (Alpha)
+# @raycast.title T3 Code (Nightly)
 # @raycast.mode silent
 
 # Optional parameters:
-# @raycast.icon /Applications/T3 Code (Alpha).app/Contents/Resources/icon.icns
+# @raycast.icon /Applications/T3 Code (Nightly).app/Contents/Resources/icon.icns
 # @raycast.packageName Developer Tools
-# @raycast.description Open T3 Code (Alpha) with certificate checks disabled for local development.
+# @raycast.description Open T3 Code (Nightly) with certificate checks disabled for local development.
 
 set -euo pipefail
 
-APP_PATH='/Applications/T3 Code (Alpha).app'
-APP_EXECUTABLE="$APP_PATH/Contents/MacOS/T3 Code (Alpha)"
+APP_PATH='/Applications/T3 Code (Nightly).app'
+APP_EXECUTABLE="$APP_PATH/Contents/MacOS/T3 Code (Nightly)"
 APP_BUNDLE_ID='com.t3tools.t3code'
-APP_PROCESS_PATTERN='T3 Code \(Alpha\)'
+APP_PROCESS_PATTERN='T3 Code \(Nightly\)'
 INSECURE_FLAG='--ignore-certificate-errors'
 
 # Hide the app if it is already in front.
@@ -56,7 +56,7 @@ fi
 
 # Restart the app if its current process does not have the required flag.
 if pgrep -x "$APP_PROCESS_PATTERN" >/dev/null; then
-  osascript -e 'quit app "T3 Code (Alpha)"'
+  osascript -e 'quit app "T3 Code (Nightly)"'
 
   for _ in {1..100}; do
     pgrep -x "$APP_PROCESS_PATTERN" >/dev/null || break
@@ -64,7 +64,7 @@ if pgrep -x "$APP_PROCESS_PATTERN" >/dev/null; then
   done
 
   if pgrep -x "$APP_PROCESS_PATTERN" >/dev/null; then
-    osascript -e 'display notification "Quit T3 Code (Alpha) manually, then run this command again." with title "T3 Code Local HTTPS"'
+    osascript -e 'display notification "Quit T3 Code (Nightly) manually, then run this command again." with title "T3 Code Local HTTPS"'
     exit 1
   fi
 fi

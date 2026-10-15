@@ -37,6 +37,7 @@ realtimeVoiceScreenContextEnabled = false
 localeOverride = "en-US"
 appshotSoundEnabled = false
 browser-show-full-url = true
+composer-predictions-enabled = false
 
 [desktop.appearanceLightChromeTheme]
 accent = "#0969da"
