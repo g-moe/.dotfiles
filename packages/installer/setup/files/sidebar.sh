@@ -15,11 +15,12 @@ configure_file_sidebar() {
 }
 
 _mac_sidebar() {
+  local folders="$1"
   local pid seconds=0
 
   /usr/bin/osascript -l JavaScript "$STRATEGY_DIR/finder-sidebar.js" \
     "$HOME" "$ROOT_DIR" "$HOME/code" /Applications \
-    "$HOME/Desktop" "$HOME/Documents" "$HOME/Downloads" \
+    "$folders/Desktop" "$folders/Documents" "$folders/Downloads" \
     "$HOME/Pictures" "$HOME/Movies" &
   pid=$!
   while silent kill -0 "$pid"; do
@@ -31,12 +32,32 @@ _mac_sidebar() {
     sleep 1
     seconds=$((seconds + 1))
   done
-  wait "$pid"
+  wait "$pid" || return 1
+
+  # The files phase must reload favorites without waiting for the system phase.
+  silent killall sharedfilelistd || true
+  silent killall Finder || true
 }
 
 mac() {
+  local choice folder folders="$HOME"
+
+  choice="$(ask_choice 'Finder sidebar:' Skip 'With iCloud' 'Default (local folders)')"
+  case "$choice" in
+    0) return 0 ;;
+    1)
+      folders="$HOME/Library/Mobile Documents/com~apple~CloudDocs"
+      for folder in Desktop Documents Downloads; do
+        [[ -d "$folders/$folder" ]] ||
+          die "Missing iCloud folder: $folders/$folder. Set up these folders in iCloud Drive, then rerun the files phase."
+      done
+      ;;
+    2) ;;
+    *) die "Unsupported Finder sidebar choice: $choice" ;;
+  esac
+
   mkdir -p "$HOME/code"
-  if _mac_sidebar; then
+  if _mac_sidebar "$folders"; then
     return 0
   fi
 
@@ -48,7 +69,7 @@ mac() {
 
   printf 'Grant Full Disk Access, then press Enter to retry: ' >/dev/tty
   read -r </dev/tty
-  _mac_sidebar || die 'Finder sidebar setup still does not have Full Disk Access.'
+  _mac_sidebar "$folders" || die 'Finder sidebar setup still does not have Full Disk Access.'
 }
 
 linux() {

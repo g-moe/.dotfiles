@@ -78,6 +78,7 @@ AGENTS.md
 README.md
 TODO.md
 arc
+displays
 ghostty
 images
 karabiner
