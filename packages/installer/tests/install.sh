@@ -91,4 +91,99 @@ expect_file_contains "$file_ext" 'setDefaultApplication(at: application, toOpen:
 expect_file_contains "$file_ext" 'urlForApplication(toOpen: type) == application' \
   'macOS file associations must verify the Finder handler'
 
+# Exercise the real entry point with isolated strategies and machine checks.
+temporary_dir="$(mktemp -d)"
+trap 'rm -rf "$temporary_dir"' EXIT
+fixture_root="$temporary_dir/home/.dotfiles"
+fixture_installer="$fixture_root/packages/installer"
+mkdir -p "$fixture_installer/lib" "$temporary_dir/bin" "$temporary_dir/node-bin"
+cp "$installer" "$fixture_installer/install.sh"
+cp "$ROOT_DIR/.nvmrc" "$fixture_root/.nvmrc"
+
+for command in bash dirname mkdir cp tr; do
+  ln -s "$(command -v "$command")" "$temporary_dir/bin/$command"
+done
+
+cat >"$fixture_installer/lib/lib.sh" <<'SCRIPT'
+. "$DEVELOPMENT_TEST_LIB"
+# OS detection and privilege checks use fixture values, not the host machine.
+detect_os() { export OS="$DEVELOPMENT_TEST_OS"; }
+validate_os() { [[ "$OS" == mac || "$OS" == linux ]]; }
+validate_user() { return 0; }
+SCRIPT
+
+while IFS= read -r strategy; do
+  mkdir -p "$fixture_installer/setup/$(dirname "$strategy")"
+  cat >"$fixture_installer/setup/$strategy" <<'SCRIPT'
+#!/usr/bin/env bash
+set -euo pipefail
+case "${BASH_SOURCE[0]}" in
+  */system/desktop-environment.sh | */development/git.sh) exit 0 ;;
+esac
+[[ "$1" == "$DEVELOPMENT_TEST_OS" ]]
+# Each consumer checks Node commands from its own process.
+node --version
+npm --version
+npx --version
+printf 'consumer %s\n' "${BASH_SOURCE[0]##*/}" >>"$DEVELOPMENT_TEST_LOG"
+SCRIPT
+done < <(sed -nE "s/.*run_strategy '[^']+' ([^[:space:]]+)$/\\1/p" "$installer")
+
+cat >"$fixture_installer/setup/development/node.sh" <<'SCRIPT'
+#!/usr/bin/env bash
+set -euo pipefail
+printf 'setup\n' >>"$DEVELOPMENT_TEST_LOG"
+mkdir -p "$HOME/.nvm"
+cp "$DEVELOPMENT_TEST_NVM" "$HOME/.nvm/nvm.sh"
+SCRIPT
+
+cat >"$temporary_dir/nvm.sh" <<'SCRIPT'
+[[ "$*" == --no-use ]] || return 1
+nvm() {
+  [[ "$*" == "use $DEVELOPMENT_TEST_NODE_VERSION" ]] || return 1
+  [[ "${DEVELOPMENT_TEST_ACTIVATION_FAIL:-0}" == 0 ]] || return 1
+  printf 'activate\n' >>"$DEVELOPMENT_TEST_LOG"
+  export PATH="$DEVELOPMENT_TEST_NODE_BIN:$PATH"
+}
+SCRIPT
+
+for command in node npm npx; do
+  printf '#!/usr/bin/env bash\n[[ "$*" == --version ]]\n' >"$temporary_dir/node-bin/$command"
+  chmod +x "$temporary_dir/node-bin/$command"
+done
+
+for platform in mac linux; do
+  commands="$temporary_dir/$platform.log"
+  HOME="$temporary_dir/home" PATH="$temporary_dir/bin" \
+    DEVELOPMENT_TEST_LIB="$INSTALLER_DIR/lib/lib.sh" DEVELOPMENT_TEST_OS="$platform" \
+    DEVELOPMENT_TEST_LOG="$commands" DEVELOPMENT_TEST_NVM="$temporary_dir/nvm.sh" \
+    DEVELOPMENT_TEST_NODE_BIN="$temporary_dir/node-bin" \
+    DEVELOPMENT_TEST_NODE_VERSION="$(tr -d '[:space:]' <"$ROOT_DIR/.nvmrc")" \
+    bash "$fixture_installer/install.sh" --development >"$temporary_dir/output" 2>&1 || {
+      cat "$temporary_dir/output"
+      fail "$platform development consumers must inherit Node after setup"
+    }
+  [[ "$(head -n 2 "$commands")" == $'setup\nactivate' ]] ||
+    fail "$platform must activate Node in the parent after setup"
+  for consumer in pi.sh opencode.sh vscodium-extensions.sh; do
+    expect_file_contains "$commands" "consumer $consumer" \
+      "$platform must run $consumer with Node available"
+  done
+
+  : >"$commands"
+  if HOME="$temporary_dir/home" PATH="$temporary_dir/bin" \
+    DEVELOPMENT_TEST_LIB="$INSTALLER_DIR/lib/lib.sh" DEVELOPMENT_TEST_OS="$platform" \
+    DEVELOPMENT_TEST_LOG="$commands" DEVELOPMENT_TEST_NVM="$temporary_dir/nvm.sh" \
+    DEVELOPMENT_TEST_NODE_BIN="$temporary_dir/node-bin" \
+    DEVELOPMENT_TEST_NODE_VERSION="$(tr -d '[:space:]' <"$ROOT_DIR/.nvmrc")" \
+    DEVELOPMENT_TEST_ACTIVATION_FAIL=1 \
+    bash "$fixture_installer/install.sh" --development >"$temporary_dir/output" 2>&1; then
+    fail "$platform must stop when Node activation fails"
+  fi
+  [[ "$(cat "$commands")" == setup ]] ||
+    fail "$platform must stop before consumers when Node activation fails"
+  expect_file_contains "$temporary_dir/output" 'Node.js is not available.' \
+    "$platform must explain Node activation failures"
+done
+
 printf 'Installer flow checks passed.\n'

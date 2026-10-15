@@ -77,7 +77,10 @@ packages/lib/ts/                    standalone shared TypeScript (empty for now)
 
 ### A strategy file
 
-`install.sh` runs each setup file in a **new** Bash process with the OS as `$1`, so every file can define plain `mac()` / `linux()`:
+`install.sh` runs each setup file in a **new** Bash process with the OS as `$1`.
+After Node setup, the development phase activates Node in the parent installer
+process so every subsequent setup process inherits its exported `PATH`.
+Every file can define plain `mac()` / `linux()`:
 
 ```bash
 install_vscodium() {

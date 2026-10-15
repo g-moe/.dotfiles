@@ -97,6 +97,9 @@ configure_zed() {
 install_development() {
   install_git
   run_strategy 'Node.js 24' development/node.sh
+
+  activate_repo_node "$ROOT_DIR" || die 'Node.js is not available.'
+
   run_strategy 'Pi coding agent' development/pi.sh
   run_strategy 'OpenCode CLI' development/opencode.sh
   run_strategy 'Cursor CLI' development/cursor-cli.sh
