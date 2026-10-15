@@ -28,6 +28,9 @@ Linux. Smaller phase runs and the Git, agents, and theme commands do not ask.
 
 Normal user only (not root). `sudo` is used where the OS needs it.
 
+Homebrew cask installs use `--force` to replace existing app artifacts, including
+apps installed outside Homebrew.
+
 The only supported Linux base is **Debian 13 (trixie), amd64 or arm64**. In the Debian installer, select **Xfce**, **SSH server**, and **standard system utilities**. The normal user must have `sudo`. The machine installer expects Xfce, LightDM, and the X11 session to already exist; it does not install or replace the desktop.
 
 - Agents editing this tree: [AGENTS.md](AGENTS.md)

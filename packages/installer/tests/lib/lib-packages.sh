@@ -8,6 +8,27 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 temporary_dir="$(mktemp -d)"
 trap 'rm -rf "$temporary_dir"' EXIT
 
+# Exercise cask installation without changing the machine.
+(
+  load_homebrew() { return 0; }
+  brew() {
+    printf '%s\n' "$@" >"$temporary_dir/brew-arguments"
+    return "${brew_status:-0}"
+  }
+
+  brew_cask google-chrome arc
+  expected_arguments=$'install\n--no-ask\n--cask\n--force\ngoogle-chrome\narc'
+  [[ "$(cat "$temporary_dir/brew-arguments")" == "$expected_arguments" ]] ||
+    fail 'cask installs must force replacement and preserve every requested cask'
+
+  brew_status=23
+  if brew_cask google-chrome; then
+    fail 'cask installation must propagate Homebrew failures'
+  else
+    [[ "$?" == 23 ]] || fail 'cask installation must preserve the Homebrew exit code'
+  fi
+)
+
 valid="$temporary_dir/valid.json"
 cat >"$valid" <<'EOF'
 [

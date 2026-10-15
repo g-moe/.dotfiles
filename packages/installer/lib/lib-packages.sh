@@ -138,11 +138,11 @@ brew_formula() {
   brew install --no-ask --formula "$@"
 }
 
-# Install one or more Homebrew casks.
+# Install one or more Homebrew casks, overwriting existing app artifacts.
 # Usage: brew_cask ghostty
 brew_cask() {
   load_homebrew || die 'Homebrew is not installed.'
-  brew install --no-ask --cask "$@"
+  brew install --no-ask --cask --force "$@"
 }
 
 # Install one or more APT packages.
