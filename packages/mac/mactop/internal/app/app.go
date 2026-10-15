@@ -527,6 +527,10 @@ func togglePartyMode() {
 }
 
 func renderUI() {
+	if menubar {
+		return
+	}
+
 	renderMutex.Lock()
 	defer renderMutex.Unlock()
 	w, h := ui.TerminalDimensions()
@@ -875,7 +879,10 @@ func Run() {
 	}()
 
 	go collectMetrics(done, cpuMetricsChan, gpuMetricsChan, tbNetStatsChan, triggerProcessCollectionChan)
-	go collectProcessMetrics(done, processMetricsChan, triggerProcessCollectionChan)
+	if !menubar {
+		go collectProcessMetrics(done, processMetricsChan, triggerProcessCollectionChan)
+	}
+
 	go collectNetDiskMetrics(done, netdiskMetricsChan)
 
 	uiEvents := ui.PollEvents()

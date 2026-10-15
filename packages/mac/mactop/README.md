@@ -82,6 +82,8 @@ mactop probes each fan's mode-key casing at runtime. It first tries the direct m
 
 ## Menu bar
 
+Menu bar mode skips recurring process scans and terminal rendering.
+
 The **Menubar** Settings tab controls CPU, GPU, and RAM visibility and colors, plus status-item width and font size. Fan control stays in the **Fans** tab. mactop does not add a separate fan icon.
 
 ## Overlay
