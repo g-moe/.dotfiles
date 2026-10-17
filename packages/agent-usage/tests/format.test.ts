@@ -25,6 +25,16 @@ test("snapshot formatter shows remaining percentages and reset credits", () => {
 	assert.match(output, /\n  Reset credits: 1\n    1\. Expires /);
 });
 
+test("snapshot formatter shows zero reset credits", () => {
+	const output = formatUsageSnapshot({
+		providerId: "claude",
+		displayName: "Claude",
+		limits: [{ label: "Weekly", usedPercent: 10 }],
+		resetCredits: [],
+	});
+	assert.equal(output, "Claude\n  Weekly: 90% left\n  Reset credits: 0");
+});
+
 test("snapshot formatter separates each limit group with one empty line", () => {
 	const output = formatUsageSnapshot({
 		providerId: "cursor",

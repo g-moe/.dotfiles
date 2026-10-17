@@ -3,11 +3,13 @@ import test from "node:test";
 import type { IProvider } from "../src/domain/provider.ts";
 import {
 	ClaudeProvider,
+	parseClaudeResetCredits,
 	parseClaudeUsage,
 } from "../src/providers/claude/index.ts";
 import {
 	CursorProvider,
 	getCursorAuthFilePath,
+	parseCursorResetCredits,
 	parseCursorUsage,
 } from "../src/providers/cursor/index.ts";
 import {
@@ -39,7 +41,7 @@ test("all providers parse raw usage into snapshots with matching identities", ()
 		}),
 		new ClaudeProvider()._parseUsage({ five_hour: { utilization: 20 } }),
 		new CursorProvider()._parseUsage({
-			planUsage: { autoPercentUsed: 30 },
+			usage: { planUsage: { autoPercentUsed: 30 } },
 		}),
 	];
 	assert.deepEqual(
@@ -138,6 +140,97 @@ test("Claude parses the limits-array response shape", () => {
 			{ label: "Session", usedPercent: 15 },
 			{ label: "Weekly", usedPercent: 35 },
 		],
+	);
+});
+
+test("Claude expands reset grants into credits in expiry order", () => {
+	const credits = parseClaudeResetCredits({
+		cedar_ember: {
+			grants: [
+				{ resets_left: 1, ends_at: "2026-10-30T00:00:00Z" },
+				{ resets_left: 0, ends_at: "2026-10-01T00:00:00Z" },
+				{ resets_left: 2, ends_at: "2026-10-22T00:00:00Z" },
+				{ ends_at: "2026-10-02T00:00:00Z" },
+			],
+		},
+	});
+	assert.deepEqual(
+		credits.map(({ expiresAt }) => expiresAt?.toISOString()),
+		[
+			"2026-10-22T00:00:00.000Z",
+			"2026-10-22T00:00:00.000Z",
+			"2026-10-30T00:00:00.000Z",
+		],
+	);
+});
+
+test("Claude returns no reset credits when the account is ineligible", () => {
+	assert.deepEqual(
+		parseClaudeResetCredits({
+			cedar_ember: { eligible: false, grants: [] },
+		}),
+		[],
+	);
+	assert.deepEqual(parseClaudeResetCredits({ cedar_ember: null }), []);
+});
+
+test("Cursor maps banked resets into credits in expiry order", () => {
+	const credits = parseCursorResetCredits({
+		resets: [
+			{ id: "2", expiresAt: "2026-11-02T00:00:00Z" },
+			{ id: "3" },
+			{ id: "1", expiresAt: "2026-11-01T00:00:00Z" },
+		],
+	});
+	assert.deepEqual(
+		credits.map(({ expiresAt }) => expiresAt?.toISOString()),
+		["2026-11-01T00:00:00.000Z", "2026-11-02T00:00:00.000Z", undefined],
+	);
+	assert.deepEqual(parseCursorResetCredits({}), []);
+});
+
+test("Cursor attaches banked resets to the snapshot", () => {
+	const snapshot = new CursorProvider()._parseUsage({
+		usage: { planUsage: { autoPercentUsed: 30 } },
+		resets: { resets: [{ id: "1", expiresAt: "2026-11-01T00:00:00Z" }] },
+	});
+	assert.equal(snapshot.resetCredits?.length, 1);
+});
+
+test("providers report zero reset credits when the reset data has none", () => {
+	const snapshots = [
+		new OpenAIProvider()._parseUsage({
+			usage: { rate_limit: { primary: { used_percent: 10 } } },
+			credits: { credits: [] },
+		}),
+		new ClaudeProvider()._parseUsage({
+			five_hour: { utilization: 20 },
+			cedar_ember: { eligible: false, grants: [] },
+		}),
+		new CursorProvider()._parseUsage({
+			usage: { planUsage: { autoPercentUsed: 30 } },
+			resets: {},
+		}),
+	];
+	assert.deepEqual(
+		snapshots.map(({ resetCredits }) => resetCredits),
+		[[], [], []],
+	);
+});
+
+test("providers omit reset credits when the reset data is missing", () => {
+	const snapshots = [
+		new OpenAIProvider()._parseUsage({
+			usage: { rate_limit: { primary: { used_percent: 10 } } },
+		}),
+		new ClaudeProvider()._parseUsage({ five_hour: { utilization: 20 } }),
+		new CursorProvider()._parseUsage({
+			usage: { planUsage: { autoPercentUsed: 30 } },
+		}),
+	];
+	assert.deepEqual(
+		snapshots.map(({ resetCredits }) => resetCredits),
+		[undefined, undefined, undefined],
 	);
 });
 

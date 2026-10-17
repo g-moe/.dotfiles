@@ -26,9 +26,8 @@ export function formatUsageSnapshot(snapshot: UsageSnapshot): string {
 	const lines = [snapshot.displayName];
 	for (const [index, limit] of snapshot.limits.entries()) {
 		if (index > 0) lines.push("");
-		lines.push(
-			`  ${limit.label}: ${formatPercent(Math.max(0, 100 - limit.usedPercent))} left`,
-		);
+		const percentLeft = Math.max(0, 100 - limit.usedPercent);
+		lines.push(`  ${limit.label}: ${formatPercent(percentLeft)} left`);
 		if (limit.resetsAt)
 			lines.push(`  Resets: ${formatDateTime(limit.resetsAt)}`);
 	}

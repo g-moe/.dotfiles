@@ -1,3 +1,5 @@
+import { asFiniteNumber } from "./json.js";
+
 export type UsageProviderId = "openai" | "claude" | "cursor";
 
 export interface UsageLimit {
@@ -31,12 +33,40 @@ export function parseDateTime(value: unknown): Date | undefined {
 }
 
 export function parseUsedPercent(value: unknown): number | undefined {
-	const parsed =
-		typeof value === "number"
-			? value
-			: typeof value === "string" && value.trim() !== ""
-				? Number(value)
-				: Number.NaN;
-	if (!Number.isFinite(parsed) || parsed < 0) return undefined;
+	const parsed = asFiniteNumber(value);
+	if (parsed === undefined || parsed < 0) return undefined;
 	return Math.min(100, parsed);
+}
+
+/**
+ * Build a usage limit, leaving `resetsAt` out when the reset time is unknown.
+ */
+export function createUsageLimit(
+	label: string,
+	usedPercent: number,
+	resetsAt: Date | undefined,
+): UsageLimit {
+	return resetsAt ? { label, usedPercent, resetsAt } : { label, usedPercent };
+}
+
+/**
+ * Build a reset credit, leaving `expiresAt` out when the expiry is unknown.
+ */
+export function createResetCredit(
+	expiresAt: Date | undefined,
+): UsageResetCredit {
+	return expiresAt ? { expiresAt } : {};
+}
+
+/**
+ * Order reset credits by expiry, soonest first; credits without an expiry go last.
+ */
+export function sortResetCredits(
+	credits: readonly UsageResetCredit[],
+): readonly UsageResetCredit[] {
+	return [...credits].sort(
+		(left, right) =>
+			(left.expiresAt?.valueOf() ?? Number.POSITIVE_INFINITY) -
+			(right.expiresAt?.valueOf() ?? Number.POSITIVE_INFINITY),
+	);
 }

@@ -9,8 +9,11 @@ import {
 } from "../../domain/json.js";
 import type { IProvider } from "../../domain/provider.js";
 import {
+	createResetCredit,
+	createUsageLimit,
 	parseDateTime,
 	parseUsedPercent,
+	sortResetCredits,
 	type UsageLimit,
 	type UsageResetCredit,
 	type UsageSnapshot,
@@ -53,20 +56,31 @@ function getOpenAIAuth(): OpenAIAuth {
 	return accountId ? { accessToken, accountId } : { accessToken };
 }
 
+function getOpenAILimitLabel(windowSeconds: number, index: number): string {
+	if (windowSeconds === 604_800) return "Weekly";
+	if (windowSeconds === 18_000) return "Session";
+
+	// Unknown durations fall back to position: the primary window is the session
+	return index === 0 ? "Session" : "Weekly";
+}
+
+function parseOpenAIResetTime(value: JsonObject | undefined): Date | undefined {
+	const absoluteReset = parseDateTime(value?.reset_at);
+	if (absoluteReset) return absoluteReset;
+
+	const relativeSeconds = asFiniteNumber(value?.reset_after_seconds);
+	if (relativeSeconds === undefined) return undefined;
+
+	return new Date(Date.now() + relativeSeconds * 1_000);
+}
+
 function parseOpenAILimit(
 	label: string,
 	value: JsonObject | undefined,
 ): UsageLimit | undefined {
 	const usedPercent = parseUsedPercent(value?.used_percent);
 	if (usedPercent === undefined) return undefined;
-	const absoluteReset = parseDateTime(value?.reset_at);
-	const relativeSeconds = asFiniteNumber(value?.reset_after_seconds);
-	const resetsAt =
-		absoluteReset ??
-		(relativeSeconds === undefined
-			? undefined
-			: new Date(Date.now() + relativeSeconds * 1_000));
-	return resetsAt ? { label, usedPercent, resetsAt } : { label, usedPercent };
+	return createUsageLimit(label, usedPercent, parseOpenAIResetTime(value));
 }
 
 export function parseOpenAIUsage(body: JsonObject): readonly UsageLimit[] {
@@ -77,18 +91,10 @@ export function parseOpenAIUsage(body: JsonObject): readonly UsageLimit[] {
 		asJsonObject(rateLimit?.secondary_window) ??
 		asJsonObject(rateLimit?.secondary);
 	const classified = [primary, secondary].map((window, index) => {
-		const seconds =
+		const windowSeconds =
 			asFiniteNumber(window?.limit_window_seconds) ??
 			(asFiniteNumber(window?.window_minutes) ?? 0) * 60;
-		const label =
-			seconds === 604_800
-				? "Weekly"
-				: seconds === 18_000
-					? "Session"
-					: index === 0
-						? "Session"
-						: "Weekly";
-		return parseOpenAILimit(label, window);
+		return parseOpenAILimit(getOpenAILimitLabel(windowSeconds, index), window);
 	});
 	return classified.filter((value): value is UsageLimit => value !== undefined);
 }
@@ -96,22 +102,15 @@ export function parseOpenAIUsage(body: JsonObject): readonly UsageLimit[] {
 export function parseResetCredits(
 	body: JsonObject,
 ): readonly UsageResetCredit[] {
-	return asJsonArray(body.credits)
+	const credits = asJsonArray(body.credits)
 		.map(asJsonObject)
 		.filter(
 			(credit): credit is JsonObject =>
 				credit !== undefined &&
 				(credit.status === undefined || credit.status === "available"),
 		)
-		.map((credit) => {
-			const expiresAt = parseDateTime(credit.expires_at);
-			return expiresAt ? { expiresAt } : {};
-		})
-		.sort(
-			(left, right) =>
-				(left.expiresAt?.valueOf() ?? Number.POSITIVE_INFINITY) -
-				(right.expiresAt?.valueOf() ?? Number.POSITIVE_INFINITY),
-		);
+		.map((credit) => createResetCredit(parseDateTime(credit.expires_at)));
+	return sortResetCredits(credits);
 }
 
 export class OpenAIProvider implements IProvider<OpenAIAuth, OpenAIRawUsage> {
@@ -143,18 +142,16 @@ export class OpenAIProvider implements IProvider<OpenAIAuth, OpenAIRawUsage> {
 		if (limits.length === 0)
 			throw new Error("OpenAI returned no usage windows");
 
-		const resetCredits = rawUsage.credits
-			? parseResetCredits(rawUsage.credits)
-			: [];
+		const snapshot = {
+			providerId: this.id,
+			displayName: this.displayName,
+			limits,
+		};
 
-		return resetCredits.length > 0
-			? {
-					providerId: this.id,
-					displayName: this.displayName,
-					limits,
-					resetCredits,
-				}
-			: { providerId: this.id, displayName: this.displayName, limits };
+		// Omit reset credits only when the credits request failed, so failure never reads as zero
+		return rawUsage.credits
+			? { ...snapshot, resetCredits: parseResetCredits(rawUsage.credits) }
+			: snapshot;
 	}
 
 	async getUsage(): Promise<UsageSnapshot> {
