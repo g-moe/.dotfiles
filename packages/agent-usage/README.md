@@ -23,6 +23,7 @@ an expired session, the tool updates the existing Claude Code credential store.
 ## Domain terms
 
 - A provider gets authentication data, fetches raw usage, and parses a snapshot.
-- A snapshot contains the limits for one provider.
+- A snapshot contains the limits and unused reset credits for one provider.
+- A reset credit is a banked limit reset with an optional expiry date-time.
 - A limit contains a used percentage and an optional reset date-time.
 - The CLI converts each used percentage to the percentage that is left.

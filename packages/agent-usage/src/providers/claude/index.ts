@@ -8,9 +8,13 @@ import {
 } from "../../domain/json.js";
 import type { IProvider } from "../../domain/provider.js";
 import {
+	createResetCredit,
+	createUsageLimit,
 	parseDateTime,
 	parseUsedPercent,
+	sortResetCredits,
 	type UsageLimit,
+	type UsageResetCredit,
 	type UsageSnapshot,
 } from "../../domain/usage.js";
 import {
@@ -24,7 +28,8 @@ const CLIENT_ID = "9d1c250a-e61b-44d9-88ed-5944d1962f5e";
 const REFRESH_URL = "https://platform.claude.com/v1/oauth/token";
 const SCOPES =
 	"user:profile user:inference user:sessions:claude_code user:mcp_servers user:file_upload";
-const USAGE_URL = "https://api.anthropic.com/api/oauth/usage";
+// `cedar_ember=1` adds the banked limit-reset grants to the usage response.
+const USAGE_URL = "https://api.anthropic.com/api/oauth/usage?cedar_ember=1";
 
 interface ClaudeAuth {
 	readonly authData: JsonObject;
@@ -93,16 +98,15 @@ async function refreshClaudeAuth(claudeAuth: ClaudeAuth): Promise<string> {
 		throw new Error("Claude returned invalid refreshed credentials");
 
 	const expiresInSeconds = asFiniteNumber(body?.expires_in);
+	const lifetimeSeconds =
+		expiresInSeconds !== undefined && expiresInSeconds > 0
+			? expiresInSeconds
+			: 3_600;
 	const nextAuth: JsonObject = {
 		...claudeAuth.authData,
 		accessToken,
 		refreshToken: asNonEmptyString(body?.refresh_token) ?? refreshToken,
-		expiresAt:
-			Date.now() +
-			(expiresInSeconds !== undefined && expiresInSeconds > 0
-				? expiresInSeconds
-				: 3_600) *
-				1_000,
+		expiresAt: Date.now() + lifetimeSeconds * 1_000,
 	};
 	const nextDocument = claudeAuth.credentialDocument.claudeAiOauth
 		? { ...claudeAuth.credentialDocument, claudeAiOauth: nextAuth }
@@ -116,11 +120,10 @@ async function refreshClaudeAuth(claudeAuth: ClaudeAuth): Promise<string> {
 async function fetchClaudeUsage(claudeAuth: ClaudeAuth): Promise<JsonObject> {
 	let accessToken = asNonEmptyString(claudeAuth.authData.accessToken);
 	const expiresAt = asFiniteNumber(claudeAuth.authData.expiresAt);
+	const expiresWithinFiveMinutes =
+		expiresAt !== undefined && expiresAt <= Date.now() + 300_000;
 
-	if (
-		!accessToken ||
-		(expiresAt !== undefined && expiresAt <= Date.now() + 300_000)
-	)
+	if (!accessToken || expiresWithinFiveMinutes)
 		accessToken = await refreshClaudeAuth(claudeAuth);
 
 	const request = () =>
@@ -159,9 +162,17 @@ function parseLegacyLimit(
 
 	if (usedPercent === undefined) return undefined;
 
-	const resetsAt = parseDateTime(window?.resets_at);
+	return createUsageLimit(label, usedPercent, parseDateTime(window?.resets_at));
+}
 
-	return resetsAt ? { label, usedPercent, resetsAt } : { label, usedPercent };
+function getClaudeLimitLabel(limit: JsonObject): string | undefined {
+	const kind = asNonEmptyString(limit.kind);
+	const group = asNonEmptyString(limit.group);
+
+	if (kind === "session" || group === "session") return "Session";
+	if (kind === "weekly_all" || group === "weekly") return "Weekly";
+
+	return undefined;
 }
 
 export function parseClaudeUsage(body: JsonObject): readonly UsageLimit[] {
@@ -177,14 +188,7 @@ export function parseClaudeUsage(body: JsonObject): readonly UsageLimit[] {
 		.flatMap((limit) => {
 			if (!limit) return [];
 
-			const kind = asNonEmptyString(limit.kind);
-			const group = asNonEmptyString(limit.group);
-			const label =
-				kind === "session" || group === "session"
-					? "Session"
-					: kind === "weekly_all" || group === "weekly"
-						? "Weekly"
-						: undefined;
+			const label = getClaudeLimitLabel(limit);
 
 			if (!label) return [];
 
@@ -192,12 +196,37 @@ export function parseClaudeUsage(body: JsonObject): readonly UsageLimit[] {
 
 			if (usedPercent === undefined) return [];
 
-			const resetsAt = parseDateTime(limit.resets_at);
-
 			return [
-				resetsAt ? { label, usedPercent, resetsAt } : { label, usedPercent },
+				createUsageLimit(label, usedPercent, parseDateTime(limit.resets_at)),
 			];
 		});
+}
+
+/**
+ * Expand Claude limit-reset grants into one credit per reset left.
+ * Each grant shares its `ends_at` expiry across all of its resets.
+ *
+ * @example
+ * parseClaudeResetCredits({
+ * 	cedar_ember: { grants: [{ resets_left: 2, ends_at: "2026-10-22T07:00:00Z" }] },
+ * }).length; // 2
+ */
+export function parseClaudeResetCredits(
+	body: JsonObject,
+): readonly UsageResetCredit[] {
+	const grants = asJsonArray(asJsonObject(body.cedar_ember)?.grants);
+
+	const credits = grants.map(asJsonObject).flatMap((grant) => {
+		const resetsLeft = asFiniteNumber(grant?.resets_left);
+
+		if (resetsLeft === undefined || !Number.isInteger(resetsLeft)) return [];
+
+		const credit = createResetCredit(parseDateTime(grant?.ends_at));
+
+		return Array.from({ length: Math.max(0, resetsLeft) }, () => credit);
+	});
+
+	return sortResetCredits(credits);
 }
 
 export class ClaudeProvider implements IProvider<ClaudeAuth, JsonObject> {
@@ -218,7 +247,16 @@ export class ClaudeProvider implements IProvider<ClaudeAuth, JsonObject> {
 		if (limits.length === 0)
 			throw new Error("Claude returned no usage windows");
 
-		return { providerId: this.id, displayName: this.displayName, limits };
+		const snapshot = {
+			providerId: this.id,
+			displayName: this.displayName,
+			limits,
+		};
+
+		// Omit reset credits only when the reset status block is missing, so failure never reads as zero
+		return asJsonObject(rawUsage.cedar_ember)
+			? { ...snapshot, resetCredits: parseClaudeResetCredits(rawUsage) }
+			: snapshot;
 	}
 
 	async getUsage(): Promise<UsageSnapshot> {

@@ -7,11 +7,9 @@ export function readJsonFile(path: string): unknown {
 }
 
 export function expandHome(path: string): string {
-	return path === "~"
-		? homedir()
-		: path.startsWith("~/")
-			? `${homedir()}/${path.slice(2)}`
-			: path;
+	if (path === "~") return homedir();
+	if (path.startsWith("~/")) return `${homedir()}/${path.slice(2)}`;
+	return path;
 }
 
 export function readMacKeychain(service: string): string | undefined {
