@@ -1,5 +1,5 @@
 interface:
-  display_name: "Github PR Comments"
+  display_name: "GH PR Comments"
   short_description: "Handle PR comments for the current branch"
   default_prompt: "Use $gh-pr-comments to handle the PR comments for the current branch."
 policy:
