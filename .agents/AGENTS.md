@@ -6,15 +6,17 @@
 
 - Read for intent, not literal wording. If my point is right but loosely phrased, agree with the point; don't correct the phrasing.
 
+- Lead with the point in one plain sentence. Then ground it: name the concrete thing I already know (code, file, behavior, term), say what is different or must change and why in one clause, and end with something exact I can check (signature, name, value, command, quote).
+
+- Report only the final state and what needs my action; a failure fixed before you report (a retry that passed, a red run that went green after setup, a stash restored) is not a failure and overrides any instruction to report checks or failures.
+
+- When code is involved (answering questions, explaining behavior, presenting options, etc), mix real code with explanation. Show enough code (the full function or flow, with file path) that it stands on its own, and add the context the code alone can't show (why it happens, what connects to what, trade-offs) so the reader can put the two together. For options, show each option as code with its trade-off.
+
 ### Never
 
 - Never fake or weaken verification. No skips, no disabled linters, no tests that accept broken behavior. Failed/Red checks stay visible. 
 
-- Never apologize. When at fault, state the bad behavior (what), then state what led to the bad behavior (why/how).
-```md
-Mistake: ...
-Cause: ...
-```
+- Never apologize.
 
 - Never attribute yourself on a commit or PR.
 
@@ -27,6 +29,9 @@ Code is how we do a lot of communication, so it must be easy to read.
 - Order files bottom-up: shared setup (module-level constants, types, instances) first, then helpers in call order, then exported entry points last. Keep values used in only one place inside the thing (function, class, html) that uses them.
 - Keep cyclomatic complexity low.
 - Do not nest ternaries.
+- No magic values (numbers, strings, etc).
+- No code golf.
+- Prefer object parameters instead of multiple positional parameters.
 
 **Responsibility**
 - Put code where they belongs. Follow existing boundaries and naming; do not invent new terms. 
@@ -50,6 +55,8 @@ Code is how we do a lot of communication, so it must be easy to read.
  * rgbToHex(0, 0, 0); // '#000000'
  */
 export function rgbToHex(r: number, g: number, b: number): HEXValue {
+    ...
+}
 ```
 
 2. Commenting Long Codeblock
