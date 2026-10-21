@@ -1,4 +1,4 @@
-import type { UsageSnapshot } from "../domain/usage.js";
+import type { UsageSnapshot, UsageSpend } from "../domain/usage.js";
 
 const DATE_FORMATTER = new Intl.DateTimeFormat("en-US", {
 	month: "short",
@@ -9,6 +9,11 @@ const DATE_FORMATTER = new Intl.DateTimeFormat("en-US", {
 });
 
 const MINIMUM_BOX_WIDTH = 40;
+
+const USD_FORMATTER = new Intl.NumberFormat("en-US", {
+	style: "currency",
+	currency: "USD",
+});
 
 const PERCENT_FORMATTER = new Intl.NumberFormat("en-US", {
 	maximumFractionDigits: 1,
@@ -22,6 +27,34 @@ function formatPercent(value: number): string {
 	return `${PERCENT_FORMATTER.format(value)}%`;
 }
 
+function formatUsd(value: number): string {
+	return USD_FORMATTER.format(value);
+}
+
+/**
+ * Format each credential as one group with its cap and spend, followed by a
+ * monthly total when there is more than one credential.
+ */
+function formatSpend(spend: readonly UsageSpend[]): readonly string[] {
+	const lines: string[] = [];
+
+	for (const [index, entry] of spend.entries()) {
+		if (index > 0) lines.push("");
+		lines.push(`  ${entry.label}`);
+		if (entry.capUsedPercent !== undefined) {
+			const percentLeft = Math.max(0, 100 - entry.capUsedPercent);
+			lines.push(`    Cap: ${formatPercent(percentLeft)} left`);
+		}
+		lines.push(
+			`    Spend: ${formatUsd(entry.monthUsd)} month · ${formatUsd(entry.weekUsd)} week · ${formatUsd(entry.todayUsd)} today`,
+		);
+	}
+	if (spend.length < 2) return lines;
+
+	const monthTotal = spend.reduce((total, { monthUsd }) => total + monthUsd, 0);
+	return [...lines, "", `  Total: ${formatUsd(monthTotal)} month`];
+}
+
 export function formatUsageSnapshot(snapshot: UsageSnapshot): string {
 	const lines = [snapshot.displayName];
 	for (const [index, limit] of snapshot.limits.entries()) {
@@ -30,6 +63,10 @@ export function formatUsageSnapshot(snapshot: UsageSnapshot): string {
 		lines.push(`  ${limit.label}: ${formatPercent(percentLeft)} left`);
 		if (limit.resetsAt)
 			lines.push(`  Resets: ${formatDateTime(limit.resetsAt)}`);
+	}
+	if (snapshot.spend) {
+		if (snapshot.limits.length > 0) lines.push("");
+		lines.push(...formatSpend(snapshot.spend));
 	}
 	if (snapshot.resetCredits) {
 		lines.push(`  Reset credits: ${snapshot.resetCredits.length}`);

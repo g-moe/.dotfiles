@@ -163,8 +163,9 @@ Browser test tools are under `tests/browser/`. Extension documentation is in
 ### `packages/agent-usage/`
 
 This TypeScript CLI reads the usage limits already stored by supported coding
-agent CLIs and prints the remaining subscription usage. Its source is split
-into `src/cli/`, `src/domain/`, and `src/providers/`; tests are in `tests/`.
+agent CLIs and prints the remaining subscription usage and OpenRouter key
+spend. Its source is split into `src/cli/`, `src/domain/`, and
+`src/providers/`; tests are in `tests/`.
 The package does not store provider credentials.
 
 ## Dependency boundaries

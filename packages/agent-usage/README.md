@@ -1,8 +1,8 @@
 # agent-usage
 
 `agent-usage` prints the current subscription limits for Codex, Claude Code,
-and Cursor Agent. It reads credentials that the official CLIs already store on
-the machine and sends read-only requests to each provider.
+and Cursor Agent, and the OpenRouter spend of the API keys. It reads credentials that the CLIs already store on the machine and
+sends read-only requests to each provider.
 
 Run it with no arguments:
 
@@ -27,3 +27,6 @@ an expired session, the tool updates the existing Claude Code credential store.
 - A reset credit is a banked limit reset with an optional expiry date-time.
 - A limit contains a used percentage and an optional reset date-time.
 - The CLI converts each used percentage to the percentage that is left.
+- A spend is the dollars one API key used in the current UTC day, week, and
+  month. OpenRouter reports spend per key, not per account, and a key with a
+  spending cap also shows the percentage of the cap that is left.

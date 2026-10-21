@@ -50,6 +50,38 @@ test("snapshot formatter separates each limit group with one empty line", () => 
 	);
 });
 
+test("snapshot formatter groups cap and spend per credential with a monthly total", () => {
+	const output = formatUsageSnapshot({
+		providerId: "openrouter",
+		displayName: "OpenRouter",
+		limits: [],
+		spend: [
+			{
+				label: "OpenCode",
+				capUsedPercent: 0.1,
+				todayUsd: 0.42,
+				weekUsd: 3.1,
+				monthUsd: 11.85,
+			},
+			{ label: "pi", todayUsd: 0, weekUsd: 0.75, monthUsd: 2.2 },
+		],
+	});
+	assert.equal(
+		output,
+		[
+			"OpenRouter",
+			"  OpenCode",
+			"    Cap: 99.9% left",
+			"    Spend: $11.85 month · $3.10 week · $0.42 today",
+			"",
+			"  pi",
+			"    Spend: $2.20 month · $0.75 week · $0.00 today",
+			"",
+			"  Total: $14.05 month",
+		].join("\n"),
+	);
+});
+
 test("error formatter redacts API keys and bearer tokens", () => {
 	const output = formatProviderError(
 		"Claude",
