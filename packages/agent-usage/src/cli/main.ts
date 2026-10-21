@@ -7,6 +7,7 @@ import {
 import { ClaudeProvider } from "../providers/claude/index.js";
 import { CursorProvider } from "../providers/cursor/index.js";
 import { OpenAIProvider } from "../providers/openai/index.js";
+import { OpenRouterProvider } from "../providers/openrouter/index.js";
 
 if (process.argv.length > 2) {
 	console.error("agent-usage does not accept arguments");
@@ -16,6 +17,7 @@ if (process.argv.length > 2) {
 		new OpenAIProvider(),
 		new ClaudeProvider(),
 		new CursorProvider(),
+		new OpenRouterProvider(),
 	] as const;
 	const results = await Promise.allSettled(
 		providers.map((provider) => provider.getUsage()),

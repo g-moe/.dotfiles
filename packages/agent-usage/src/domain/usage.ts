@@ -1,6 +1,6 @@
 import { asFiniteNumber } from "./json.js";
 
-export type UsageProviderId = "openai" | "claude" | "cursor";
+export type UsageProviderId = "openai" | "claude" | "cursor" | "openrouter";
 
 export interface UsageLimit {
 	readonly label: string;
@@ -12,11 +12,24 @@ export interface UsageResetCredit {
 	readonly expiresAt?: Date;
 }
 
+/**
+ * Dollars spent through one credential in the current UTC day, week, and month.
+ * `capUsedPercent` is present only when the credential has a spending cap.
+ */
+export interface UsageSpend {
+	readonly label: string;
+	readonly capUsedPercent?: number;
+	readonly todayUsd: number;
+	readonly weekUsd: number;
+	readonly monthUsd: number;
+}
+
 export interface UsageSnapshot {
 	readonly providerId: UsageProviderId;
 	readonly displayName: string;
 	readonly limits: readonly UsageLimit[];
 	readonly resetCredits?: readonly UsageResetCredit[];
+	readonly spend?: readonly UsageSpend[];
 }
 
 export function parseDateTime(value: unknown): Date | undefined {

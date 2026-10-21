@@ -1,4 +1,6 @@
 import assert from "node:assert/strict";
+import { mkdtempSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
 import test from "node:test";
 import type { IProvider } from "../src/domain/provider.ts";
 import {
@@ -17,12 +19,19 @@ import {
 	parseOpenAIUsage,
 	parseResetCredits,
 } from "../src/providers/openai/index.ts";
+import {
+	getOpenRouterKeys,
+	getOpenRouterKeySources,
+	OpenRouterProvider,
+	parseOpenRouterSpend,
+} from "../src/providers/openrouter/index.ts";
 
 test("all providers implement the same public contract", () => {
 	const providers: readonly IProvider[] = [
 		new OpenAIProvider(),
 		new ClaudeProvider(),
 		new CursorProvider(),
+		new OpenRouterProvider(),
 	];
 	for (const provider of providers) {
 		assert.equal(typeof provider.id, "string");
@@ -43,6 +52,12 @@ test("all providers parse raw usage into snapshots with matching identities", ()
 		new CursorProvider()._parseUsage({
 			usage: { planUsage: { autoPercentUsed: 30 } },
 		}),
+		new OpenRouterProvider()._parseUsage([
+			{
+				label: "pi",
+				body: { data: { usage_daily: 0, usage_weekly: 0, usage_monthly: 0 } },
+			},
+		]),
 	];
 	assert.deepEqual(
 		snapshots.map(({ providerId, displayName }) => ({
@@ -53,6 +68,7 @@ test("all providers parse raw usage into snapshots with matching identities", ()
 			{ providerId: "openai", displayName: "OpenAI" },
 			{ providerId: "claude", displayName: "Claude" },
 			{ providerId: "cursor", displayName: "Cursor" },
+			{ providerId: "openrouter", displayName: "OpenRouter" },
 		],
 	);
 });
@@ -269,5 +285,65 @@ test("Cursor uses the Cursor CLI authentication paths", () => {
 	assert.equal(
 		getCursorAuthFilePath("darwin", "/Users/user"),
 		"/Users/user/.cursor/auth.json",
+	);
+});
+
+test("OpenRouter reads keys from OpenCode and pi auth files", () => {
+	const home = mkdtempSync(`${tmpdir()}/agent-usage-`);
+	const [opencode, pi] = getOpenRouterKeySources(home, `${home}/data`);
+	assert.equal(opencode?.path, `${home}/data/opencode/auth.json`);
+	assert.equal(pi?.path, `${home}/.pi/agent/auth.json`);
+});
+
+test("OpenRouter skips missing files and keys already seen", () => {
+	const directory = mkdtempSync(`${tmpdir()}/agent-usage-`);
+	const write = (name: string, key: string) => {
+		const path = `${directory}/${name}.json`;
+		writeFileSync(path, JSON.stringify({ openrouter: { type: "api", key } }));
+		return path;
+	};
+	const keys = getOpenRouterKeys([
+		{ label: "OpenCode", path: write("opencode", "sk-or-one") },
+		{ label: "Missing", path: `${directory}/missing.json` },
+		{ label: "pi", path: write("pi", "sk-or-two") },
+		{ label: "Copy", path: write("copy", "sk-or-one") },
+	]);
+	assert.deepEqual(
+		keys.map(({ label }) => label),
+		["OpenCode", "pi"],
+	);
+	assert.throws(
+		() => getOpenRouterKeys([{ label: "Missing", path: `${directory}/none` }]),
+		/No OpenRouter key found/,
+	);
+});
+
+test("OpenRouter maps key usage into spend and rejects invalid usage", () => {
+	assert.deepEqual(
+		parseOpenRouterSpend("pi", {
+			data: { usage_daily: 0.5, usage_weekly: 2, usage_monthly: 7.25 },
+		}),
+		{ label: "pi", todayUsd: 0.5, weekUsd: 2, monthUsd: 7.25 },
+	);
+	assert.throws(
+		() => parseOpenRouterSpend("pi", { data: { usage_daily: 1 } }),
+		/invalid key usage/,
+	);
+});
+
+test("OpenRouter attaches the cap only to capped keys", () => {
+	const usage = { usage_daily: 0, usage_weekly: 0, usage_monthly: 0 };
+	assert.equal(
+		parseOpenRouterSpend("pi", {
+			data: { ...usage, limit: 20, limit_remaining: 15 },
+		}).capUsedPercent,
+		25,
+	);
+	assert.equal(
+		"capUsedPercent" in
+			parseOpenRouterSpend("pi", {
+				data: { ...usage, limit: null, limit_remaining: null },
+			}),
+		false,
 	);
 });
