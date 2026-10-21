@@ -31,7 +31,7 @@ Code is how we do a lot of communication, so it must be easy to read.
 - Do not nest ternaries.
 - No magic values (numbers, strings, etc).
 - No code golf.
-- Prefer object parameters instead of multiple positional parameters.
+- Prefer object parameters instead of multiple positional parameters...an exception would be using positional args when in the hot-path.
 
 **Responsibility**
 - Put code where they belongs. Follow existing boundaries and naming; do not invent new terms. 
