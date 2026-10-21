@@ -221,10 +221,6 @@ else
   export VISUAL='vi'
 fi
 
-# AWS
-export AWS_PROFILE=tradester-test
-export AWS_REGION=us-east-1
-
 # NVM
 [[ -s "$NVM_DIR/bash_completion" ]] && source "$NVM_DIR/bash_completion"
 

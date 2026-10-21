@@ -11,7 +11,8 @@ trap 'rm -rf "$temporary_dir"' EXIT
 link_function="$(sed -n '/^_link_instructions() {/,/^}/p' "$INSTALLER_DIR/setup/agents.sh")"
 for mode in default xdg override; do
   fake_home="$temporary_dir/$mode"
-  mkdir -p "$fake_home"
+  mkdir -p "$fake_home/.pi/agent"
+  printf '{"shellPath":"/bin/bash"}\n' >"$fake_home/.pi/agent/settings.json"
   xdg_dir=''
   override_dir=''
   case "$mode" in
@@ -25,13 +26,21 @@ for mode in default xdg override; do
   esac
   for run in 1 2; do
     HOME="$fake_home" XDG_CONFIG_HOME="$xdg_dir" OPENCODE_CONFIG_DIR="$override_dir" \
-      bash -c 'set -euo pipefail; . "$1/lib/lib.sh"; ROOT_DIR="$2"; eval "$3"; _link_instructions' \
+      bash -c 'set -euo pipefail; . "$1/lib/lib.sh"; ask_choice() { printf "1\n"; }; ROOT_DIR="$2"; eval "$3"; _link_instructions' \
       bash "$INSTALLER_DIR" "$ROOT_DIR" "$link_function" >"$temporary_dir/output"
+    pi_settings="$fake_home/.pi/agent/settings.json"
+    [[ -L "$pi_settings" && "$(readlink "$pi_settings")" == "$ROOT_DIR/pi/settings.json" ]] ||
+      fail "$mode run $run Pi settings must link to the shared configuration"
+    cmp -s "$pi_settings" "$ROOT_DIR/pi/settings.json" ||
+      fail "$mode run $run Pi settings cannot be read"
   done
   [[ -L "$target/AGENTS.md" && "$(readlink "$target/AGENTS.md")" == "$ROOT_DIR/.agents/AGENTS.md" ]] ||
     fail "$mode OpenCode instructions have the wrong source"
   cmp -s "$target/AGENTS.md" "$ROOT_DIR/.agents/AGENTS.md" ||
     fail "$mode OpenCode instructions cannot be read"
 done
+
+node -e 'const assert = require("node:assert/strict"); const settings = require(process.argv[1]); assert.equal(settings.shellPath, "/bin/zsh");' \
+  "$ROOT_DIR/pi/settings.json"
 
 printf 'Global instruction link checks passed.\n'

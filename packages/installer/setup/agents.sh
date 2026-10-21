@@ -23,7 +23,8 @@ _link_instructions() {
     "$ROOT_DIR/.agents/AGENTS.md" "$opencode_dir/AGENTS.md" \
     "$ROOT_DIR/.agents/AGENTS.md" "$HOME/.claude/AGENTS.md" \
     "$ROOT_DIR/.agents/CLAUDE.md" "$HOME/.claude/CLAUDE.md" \
-    "$ROOT_DIR/claude/settings.json" "$HOME/.claude/settings.json"
+    "$ROOT_DIR/claude/settings.json" "$HOME/.claude/settings.json" \
+    "$ROOT_DIR/pi/settings.json" "$HOME/.pi/agent/settings.json"
 }
 
 _install_agent_usage() {

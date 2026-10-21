@@ -1,0 +1,32 @@
+{
+	"lastChangelogVersion": "1.0.3",
+	"theme": "dark",
+	"showCacheMissNotices": true,
+	"tuiMode": "regular",
+	"defaultProvider": "openai-codex",
+	"defaultModel": "gpt-6-sol",
+	"enabledModels": [
+		"openai-codex/gpt-6-astra",
+		"openai-codex/gpt-5.6-sol",
+		"openrouter/deepseek/deepseek-v4.1-flash",
+		"openai-codex/gpt-6-sol",
+		"openai-codex/gpt-6-luna",
+		"openrouter/z-ai/glm-5.3-flash"
+	],
+	"fullscreenScrollbar": "always",
+	"markdown": {
+		"mermaid": "final"
+	},
+	"terminal": {
+		"showTerminalProgress": true
+	},
+	"transport": "auto",
+	"treeFilterMode": "default",
+	"packages": ["npm:pi-openai-fast-mode"],
+	"doubleEscapeAction": "none",
+	"hideThinkingBlock": true,
+	"defaultProjectTrust": "always",
+	"editorPaddingX": 1,
+	"outputPad": 1,
+	"shellPath": "/bin/zsh"
+}

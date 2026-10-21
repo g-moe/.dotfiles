@@ -1,3 +1,8 @@
+# AWS defaults apply to interactive terminals and noninteractive agent commands.
+# Keep an explicitly selected profile or region.
+export AWS_PROFILE="${AWS_PROFILE:-tradester-test}"
+export AWS_REGION="${AWS_REGION:-us-east-1}"
+
 # Load NVM and select the nearest project's version, or the default otherwise.
 export NVM_DIR="$HOME/.nvm"
 

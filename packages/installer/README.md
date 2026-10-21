@@ -49,7 +49,7 @@ Normal phase runs start with a read-only Linux desktop check, then use this orde
 | ------------- | ---------------------------------------------------------------------- |
 | `apps`        | Apps (Homebrew / APT / vendor)                                         |
 | `development` | Development tools, coding CLIs, shell, and editor settings             |
-| `agents`      | Shared instructions, Claude settings, skills, usage CLI, and MCP tools |
+| `agents`      | Shared instructions, Claude and Pi settings, skills, usage CLI, and MCP tools |
 | `appearance`  | Wallpaper, screen saver, theme, icons, login screen                    |
 | `input`       | Pointer, touchpad, keyboard, remapping                                 |
 | `desktop`     | Workspaces, items/widgets, windows, lower panel, top bar, name display |
@@ -67,6 +67,7 @@ packages/installer/setup/identity.sh machine name and color (full installs only)
 packages/installer/setup/agents.sh  agent configuration and usage CLI (--agents only)
 .agents/AGENTS.md                   global instructions shared by the coding clients
 claude/settings.json                personal Claude Code settings linked during agent setup
+pi/settings.json                    personal Pi settings linked during agent setup; uses /bin/zsh
 codex/.codex/                       personal Codex settings linked during development
 packages/installer/lib/lib.sh       installer library entry point
 packages/installer/tests/           mirrors installer paths (`setup/`, `lib/`, and top-level flow)

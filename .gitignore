@@ -71,6 +71,10 @@
 !/claude/
 !/claude/settings.json
 
+# Pi
+!/pi/
+!/pi/settings.json
+
 # Karabiner
 !/karabiner/
 !/karabiner/karabiner.json

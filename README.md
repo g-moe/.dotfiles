@@ -23,6 +23,7 @@ source folder as a whole.
 ├── images/                 Shared artwork used by the installer
 ├── karabiner/              Karabiner-Elements configuration
 ├── nvim/                   Neovim configuration and plugins
+├── pi/                     Pi coding agent settings
 ├── packages/
 │   ├── agent-usage/        Agent subscription usage CLI
 │   ├── installer/          Machine installer and installer tests
@@ -58,6 +59,7 @@ These folders contain application configuration, not installer logic.
 | `images/`       | Shared Tux artwork and other installer assets.                                                  |
 | `karabiner/`    | Karabiner-Elements keyboard remapping rules.                                                    |
 | `nvim/`         | Neovim entry point, options, keymaps, plugin setup, and plugins.                                |
+| `pi/`           | Pi settings, linked to `~/.pi/agent/settings.json` during agent setup.                          |
 | `superfile/`    | Superfile config and generated theme.                                                           |
 | `tmux/`         | tmux configuration.                                                                             |
 | `vscode/user/`  | Editor settings, keybindings, and extensions for VS Code or VSCodium.                           |
