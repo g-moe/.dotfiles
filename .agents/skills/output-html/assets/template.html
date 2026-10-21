@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>TITLE</title>
+<style>
+    :root { --bg: #ffffff; --panel: #f6f8fa; --line: #d0d7de; --text: #1f2328; --muted: #59636e; --accent: #0969da; --good: #1a7f37; --bad: #cf222e; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--text); font: 14px/1.55 system-ui, sans-serif; }
+    header { padding: 20px 28px 0; }
+    h1 { margin: 0 0 4px; font-size: 20px; }
+    header p { margin: 0 0 16px; color: var(--muted); }
+    nav { display: flex; gap: 4px; padding: 0 28px; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+    nav button { background: none; border: 0; border-bottom: 2px solid transparent; color: var(--muted); padding: 10px 14px; font: inherit; cursor: pointer; }
+    nav button.active { color: var(--text); border-bottom-color: var(--accent); }
+    section { display: none; padding: 20px 28px 48px; max-width: 1100px; }
+    section.active { display: block; }
+    h2 { font-size: 17px; margin: 0 0 6px; }
+    h3 { font-size: 14px; margin: 22px 0 6px; color: var(--accent); }
+    .idea { color: var(--muted); margin: 0 0 12px; }
+    pre { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 12px 14px; overflow-x: auto; font: 12.5px/1.5 ui-monospace, monospace; }
+    code { font-family: ui-monospace, monospace; font-size: 12.5px; }
+    table { border-collapse: collapse; width: 100%; margin: 8px 0; }
+    th, td { border: 1px solid var(--line); padding: 6px 10px; text-align: left; vertical-align: top; }
+    th { background: var(--panel); }
+    ul { margin: 6px 0; padding-left: 20px; }
+    .pro::marker { content: '+  '; color: var(--good); }
+    .con::marker { content: '−  '; color: var(--bad); }
+    .tag { display: inline-block; font-size: 11px; padding: 1px 8px; border-radius: 10px; margin-left: 8px; vertical-align: middle; }
+    .rec { background: #dafbe1; color: var(--good); }
+    .no { background: #ffebe9; color: var(--bad); }
+    .tok-c { color: #6e7781; }
+    .tok-s { color: #0a3069; }
+    .tok-k { color: #cf222e; }
+    .tok-n { color: #0550ae; }
+    .tok-f { color: #8250df; }
+    .tok-t { color: #953800; }
+    @media print { nav { display: none; } section { display: block; } }
+</style>
+</head>
+<body>
+<header>
+    <h1>TITLE</h1>
+    <p>One sentence: what this page is for.</p>
+</header>
+
+<!-- One button per section; data-tab matches the section id. -->
+<nav>
+    <button data-tab="a" class="active">A · First option</button>
+    <button data-tab="b">B · Second option</button>
+</nav>
+
+<section id="a" class="active">
+    <h2>A · First option <span class="tag rec">recommended</span></h2>
+    <p class="idea">One-line idea.</p>
+
+    <h3>Code</h3>
+<pre>// file.ts
+export function example({ value }: { readonly value: number }): string {
+    return `value: ${value}`;
+}</pre>
+
+    <h3>Trade-offs</h3>
+    <ul>
+        <li class="pro">A benefit.</li>
+        <li class="con">A cost.</li>
+    </ul>
+</section>
+
+<section id="b">
+    <h2>B · Second option <span class="tag no">not recommended</span></h2>
+    <p class="idea">One-line idea.</p>
+
+    <table>
+        <tr><th>Column</th><th>Column</th></tr>
+        <tr><td>Value</td><td>Value</td></tr>
+    </table>
+</section>
+
+<script>
+    // GitHub light syntax highlighting for code in <pre>
+    const KEYWORDS = new Set('as async await boolean break case catch class const constructor continue default else export extends false finally for from function get if implements import in interface let new null number of private protected public readonly return set static string switch this throw true try type typeof undefined void while'.split(' '));
+    const TOKEN = /(\/\/[^\n]*|\/\*[\s\S]*?\*\/)|('(?:[^'\\\n]|\\.)*'|`(?:[^`\\]|\\.)*`|"(?:[^"\\\n]|\\.)*")|\b(\d[\d_]*(?:\.\d+)?)\b|([A-Za-z_$][\w$]*)(?=\s*(?:&lt;[^&]*?&gt;)?\()|([A-Za-z_$][\w$]*)/g;
+    const escape = text => text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    const span = (kind, text) => `<span class="tok-${kind}">${text}</span>`;
+
+    document.querySelectorAll('pre').forEach(pre => {
+        pre.innerHTML = escape(pre.textContent).replace(TOKEN, (match, comment, string, number, call, word) => {
+            if (comment) return span('c', comment);
+            if (string) return span('s', string);
+            if (number) return span('n', number);
+            if (call) return KEYWORDS.has(call) ? span('k', call) : span('f', call);
+            if (KEYWORDS.has(word)) return span('k', word);
+            if (/^[A-Z][A-Z0-9_]+$/.test(word)) return span('n', word);
+            if (/^[A-Z]/.test(word)) return span('t', word);
+            return word;
+        });
+    });
+
+    // Tabs; the URL hash keeps the open tab on reload
+    const buttons = [...document.querySelectorAll('nav button')];
+    const show = id => {
+        buttons.forEach(button => button.classList.toggle('active', button.dataset.tab === id));
+        document.querySelectorAll('section').forEach(section => section.classList.toggle('active', section.id === id));
+    };
+
+    buttons.forEach(button => button.addEventListener('click', () => {
+        show(button.dataset.tab);
+        history.replaceState(null, '', `#${button.dataset.tab}`);
+    }));
+
+    const initial = location.hash.slice(1);
+    if (buttons.some(button => button.dataset.tab === initial)) {
+        show(initial);
+    }
+</script>
+</body>
+</html>
