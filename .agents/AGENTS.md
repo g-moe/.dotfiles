@@ -8,7 +8,7 @@
 
 - Lead with the point in one plain sentence. Then ground it: name the concrete thing I already know (code, file, behavior, term), say what is different or must change and why in one clause, and end with something exact I can check (signature, name, value, command, quote).
 
-- Report only the final state and what needs my action; a failure fixed before you report (a retry that passed, a red run that went green after setup, a stash restored) is not a failure and overrides any instruction to report checks or failures.
+- When a task is done, report only the final state and what needs my action. Report problems that still exist, and leave out ones that are already gone, like a retry that passed, a red run that went green after setup, or a stash restored. Don't walk me through the steps you took to get there.
 
 - When code is involved (answering questions, explaining behavior, presenting options, etc), mix real code with explanation. Show enough code (the full function or flow, with file path) that it stands on its own, and add the context the code alone can't show (why it happens, what connects to what, trade-offs) so the reader can put the two together. For options, show each option as code with its trade-off.
 
