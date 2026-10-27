@@ -59,7 +59,33 @@ export function rgbToHex(r: number, g: number, b: number): HEXValue {
 }
 ```
 
-2. Commenting Long Codeblock
+2. Commenting Functions with Links to Docs/Resources
+```typescript
+/**
+ * Send a single transactional email through Postmark.
+ * Does not retry; the caller handles a rejected promise (network failure or a non-2xx status).
+ *
+ * API: `POST https://api.postmarkapp.com/email`
+ * Auth: `X-Postmark-Server-Token` header
+ *
+ * @see {@link https://postmarkapp.com/developer/api/email-api#send-a-single-email Postmark API: Send a single email}
+ *
+ * @example
+ * const receipt = await sendPostmarkEmail({
+ *     from: 'support@tradester.com',
+ *     htmlBody: '<p>Your order was filled.</p>',
+ *     subject: 'Order filled',
+ *     to: 'trader@example.com'
+ * });
+ * receipt.messageId; // 'b7bc2f4a-e38e-4336-af7d-e6c392c2f817'
+ */
+export async function sendPostmarkEmail(params: SendPostmarkEmailParams): Promise<PostmarkEmailReceipt> {
+    ...
+}
+
+```
+
+3. Commenting Long Codeblock
 ```typescript
 /** 
  * Reads local runtime metadata and verifies repository prerequisites. 
