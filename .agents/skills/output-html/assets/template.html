@@ -11,7 +11,7 @@
     header { padding: 20px 28px 0; }
     h1 { margin: 0 0 4px; font-size: 20px; }
     header p { margin: 0 0 16px; color: var(--muted); }
-    nav { display: flex; gap: 4px; padding: 0 28px; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+    nav { display: flex; gap: 4px; padding: 0 14px; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
     nav button { background: none; border: 0; border-bottom: 2px solid transparent; color: var(--muted); padding: 10px 14px; font: inherit; cursor: pointer; }
     nav button.active { color: var(--text); border-bottom-color: var(--accent); }
     section { display: none; padding: 20px 28px 48px; max-width: 1100px; }
@@ -21,61 +21,335 @@
     .idea { color: var(--muted); margin: 0 0 12px; }
     pre { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 12px 14px; overflow-x: auto; font: 12.5px/1.5 ui-monospace, monospace; }
     code { font-family: ui-monospace, monospace; font-size: 12.5px; }
+    .codefile { margin: 8px 0; }
+    .codefile figcaption { font: 12px ui-monospace, monospace; color: var(--muted); background: var(--panel); border: 1px solid var(--line); border-bottom: 0; border-radius: 6px 6px 0 0; padding: 6px 14px; }
+    .codefile pre { margin: 0; border-radius: 0 0 6px 6px; background: var(--bg); }
+    .tree { font: 12.5px/1.6 ui-monospace, monospace; white-space: pre; background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 12px 14px; margin: 8px 0; }
+    .tree em { color: var(--muted); font-style: normal; }
+    .cmd { position: relative; font: 12.5px/1.5 ui-monospace, monospace; white-space: pre; background: var(--text); color: #e6edf3; border-radius: 6px; padding: 10px 14px; margin: 8px 0; }
+    .cmd span { color: #8b949e; user-select: none; }
+    .cmd .copy { position: absolute; top: 6px; right: 6px; font: 11px system-ui, sans-serif; background: #30363d; color: #e6edf3; border: 0; border-radius: 4px; padding: 3px 8px; cursor: pointer; }
+    .steps { counter-reset: step; list-style: none; padding: 0; margin: 8px 0 8px 11px; }
+    .steps li { counter-increment: step; position: relative; padding: 0 0 14px 24px; border-left: 2px solid var(--line); }
+    .steps li:last-child { border-left-color: transparent; }
+    .steps li::before { content: counter(step); position: absolute; left: -12px; top: 0; width: 22px; height: 22px; border-radius: 50%; background: var(--accent); color: #fff; font-size: 12px; line-height: 22px; text-align: center; }
+    .steps .steps { counter-reset: substep; margin-top: 10px; }
+    .steps .steps li { counter-increment: substep; }
+    .steps .steps li::before { content: counter(step) counter(substep, lower-alpha); background: var(--bg); color: var(--accent); border: 1px solid var(--accent); font-size: 11px; line-height: 20px; }
+    .flow { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 8px 0; }
+    .flow span { border: 1px solid var(--line); border-radius: 6px; padding: 6px 12px; background: var(--panel); }
+    .flow i { color: var(--muted); font-style: normal; }
+    .checks { list-style: none; padding-left: 0; }
+    .checks li::before { content: '☐  '; color: var(--muted); }
+    .checks li.done::before { content: '☑  '; color: var(--good); }
+    .checks .checks { padding-left: 22px; margin: 2px 0; }
+    .meter-row { display: grid; grid-template-columns: 140px 1fr 48px; gap: 10px; align-items: center; margin: 4px 0; }
+    .meter { height: 8px; background: var(--panel); border: 1px solid var(--line); border-radius: 4px; overflow: hidden; }
+    .meter i { display: block; height: 100%; background: var(--accent); }
+    details { border: 1px solid var(--line); border-radius: 6px; padding: 8px 14px; margin: 8px 0; }
+    summary { cursor: pointer; font-weight: 600; }
+    details p { margin: 8px 0 0; }
+    .seq { position: relative; overflow: hidden; display: grid; grid-template-columns: repeat(var(--actors, 3), 1fr); row-gap: 10px; margin: 8px 0; padding-bottom: 8px; }
+    .seq b { position: relative; justify-self: center; background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 4px 12px; }
+    .seq b::after { content: ''; position: absolute; top: 100%; left: 50%; height: 100vh; border-left: 1px solid var(--line); }
+    .seq .msg { grid-column: var(--from) / span var(--span); margin: 0 calc(50% / var(--span)); border-bottom: 1px solid var(--muted); text-align: center; font-size: 12px; position: relative; }
+    .seq .msg::after { content: '▶'; position: absolute; right: -6px; bottom: -8px; font-size: 9px; color: var(--muted); }
+    .seq .msg.back::after { content: '◀'; right: auto; left: -6px; }
+    .timeline { display: flex; margin: 8px 0 16px; border-top: 2px solid var(--line); }
+    .timeline div { flex: 1; position: relative; padding-top: 14px; font-size: 13px; }
+    .timeline div::before { content: ''; position: absolute; top: -7px; left: 0; width: 12px; height: 12px; border-radius: 50%; background: var(--accent); }
+    .timeline div.next::before { background: var(--bg); border: 2px solid var(--accent); box-sizing: border-box; }
+    .timeline time { display: block; color: var(--muted); font-size: 12px; }
     table { border-collapse: collapse; width: 100%; margin: 8px 0; }
     th, td { border: 1px solid var(--line); padding: 6px 10px; text-align: left; vertical-align: top; }
     th { background: var(--panel); }
     ul { margin: 6px 0; padding-left: 20px; }
     .pro::marker { content: '+  '; color: var(--good); }
     .con::marker { content: '−  '; color: var(--bad); }
-    .tag { display: inline-block; font-size: 11px; padding: 1px 8px; border-radius: 10px; margin-left: 8px; vertical-align: middle; }
-    .rec { background: #dafbe1; color: var(--good); }
-    .no { background: #ffebe9; color: var(--bad); }
     .tok-c { color: #6e7781; }
     .tok-s { color: #0a3069; }
     .tok-k { color: #cf222e; }
     .tok-n { color: #0550ae; }
     .tok-f { color: #8250df; }
     .tok-t { color: #953800; }
+
+    /* Brainstorm: candidate primitives. Keep what you pick, delete the rest. */
+    .codegroup figcaption { display: flex; gap: 2px; padding: 0 6px; overflow-x: auto; }
+    .codegroup figcaption button { background: none; border: 0; border-bottom: 2px solid transparent; color: var(--muted); font: inherit; padding: 6px 8px; cursor: pointer; }
+    .codegroup figcaption button.active { color: var(--text); border-bottom-color: var(--accent); }
+    pre[data-lines] { counter-reset: line; }
+    pre .line { display: block; min-height: 1.5em; margin: 0 -14px; padding: 0 14px; }
+    pre .line::before { counter-increment: line; content: counter(line); display: inline-block; width: 2em; margin-right: 12px; text-align: right; color: var(--muted); user-select: none; }
+    pre .line.hl { background: #fff8c5; }
+    a.ref { font: 12.5px ui-monospace, monospace; color: var(--accent); text-decoration: none; border-bottom: 1px dotted var(--accent); }
+    .fields code:first-child { font-weight: 600; }
+    .fields .type { font: 12.5px ui-monospace, monospace; color: #953800; }
+    .fields .opt { color: var(--muted); font-size: 12px; }
+    del { color: var(--bad); }
+    ins { color: var(--good); text-decoration: none; }
+    .cases tr.fail td { background: #ffebe9; }
+    .cases .pass { color: var(--good); }
+    .cases .failed { color: var(--bad); }
+    .dtree, .dtree ul { list-style: none; margin: 4px 0; }
+    .dtree { padding-left: 0; }
+    .dtree ul { padding-left: 18px; border-left: 1px solid var(--line); margin-left: 6px; }
+    .dtree li { margin: 4px 0; }
+    .dtree em { color: var(--accent); font-style: normal; font-size: 12px; margin-right: 6px; }
+    .transitions { display: grid; gap: 6px; margin: 8px 0; }
+    .transitions div { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .transitions b { font-weight: 500; border: 1px solid var(--line); border-radius: 12px; padding: 2px 10px; background: var(--panel); }
+    .transitions i { font-style: normal; font-size: 12px; color: var(--muted); }
+    .split { display: flex; height: 14px; border-radius: 4px; overflow: hidden; margin: 8px 0 6px; }
+    .legend { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 12px; color: var(--muted); }
+    .split span { background: var(--swatch); }
+    .legend span::before { content: ''; display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; background: var(--swatch); }
+    .c1 { --swatch: #0969da; }
+    .c2 { --swatch: #8250df; }
+    .c3 { --swatch: #bf8700; }
+    .c4 { --swatch: #d0d7de; }
+    .scale { position: relative; height: 8px; border-radius: 4px; margin: 14px 0 6px; background: linear-gradient(to right, var(--good) 0 var(--ok), #bf8700 var(--ok) var(--warn), var(--bad) var(--warn)); }
+    .scale i { position: absolute; top: -5px; width: 3px; height: 18px; border-radius: 2px; background: var(--text); }
+    .scale i span { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); font-size: 12px; font-style: normal; white-space: nowrap; }
+    .scale-labels { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); }
+    .spark { vertical-align: middle; }
+    .spark polyline { fill: none; stroke: var(--accent); stroke-width: 1.5; }
+    .wire { display: grid; grid-template-columns: 1fr 3fr; grid-template-rows: auto 120px; gap: 6px; max-width: 480px; border: 1px solid var(--line); border-radius: 6px; padding: 6px; margin: 8px 0; }
+    .wire div { border: 1px dashed var(--line); border-radius: 4px; padding: 6px 8px; font-size: 12px; color: var(--muted); }
+    .wire .top { grid-column: 1 / -1; }
+    .wire .focus { border: 1px solid var(--accent); background: #ddf4ff; color: var(--text); }
+    .swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 8px; margin: 8px 0; }
+    .swatches div { border: 1px solid var(--line); border-radius: 6px; overflow: hidden; font-size: 12px; }
+    .swatches i { display: block; height: 40px; }
+    .swatches span { display: block; padding: 4px 8px; }
+    .swatches code { color: var(--muted); font-size: 11px; }
+    .diagram { font: 12.5px/1.4 ui-monospace, monospace; white-space: pre; overflow-x: auto; border: 1px solid var(--line); border-radius: 6px; padding: 12px 14px; margin: 8px 0; }
     @media print { nav { display: none; } section { display: block; } }
 </style>
 </head>
 <body>
 <header>
     <h1>TITLE</h1>
-    <p>One sentence: what this page is for.</p>
 </header>
 
 <!-- One button per section; data-tab matches the section id. -->
 <nav>
     <button data-tab="a" class="active">A · First option</button>
     <button data-tab="b">B · Second option</button>
+    <button data-tab="brainstorm">Brainstorm</button>
 </nav>
 
 <section id="a" class="active">
-    <h2>A · First option <span class="tag rec">recommended</span></h2>
+    <h2>A · First option</h2>
     <p class="idea">One-line idea.</p>
 
+    <h3>Flow</h3>
+    <div class="flow"><span>Input</span><i>→</i><span>Parse</span><i>→</i><span>Output</span></div>
+
+    <h3>Sequence</h3>
+    <!-- --from: left actor's column; --span: columns from left actor to right actor, inclusive. "back" points the arrow left. -->
+    <div class="seq" style="--actors: 3">
+        <b>Client</b><b>API</b><b>DB</b>
+        <div class="msg" style="--from: 1; --span: 2">request</div>
+        <div class="msg" style="--from: 2; --span: 2">query</div>
+        <div class="msg back" style="--from: 2; --span: 2">rows</div>
+        <div class="msg back" style="--from: 1; --span: 2">response</div>
+    </div>
+
     <h3>Code</h3>
-<pre>// file.ts
-export function example({ value }: { readonly value: number }): string {
+    <figure class="codefile">
+        <figcaption>file.ts</figcaption>
+<pre>export function example({ value }: { readonly value: number }): string {
     return `value: ${value}`;
 }</pre>
+    </figure>
+
+    <h3>Run</h3>
+    <div class="cmd"><span>$ </span>pnpm test<button class="copy" data-copy="pnpm test">Copy</button></div>
 
     <h3>Trade-offs</h3>
     <ul>
         <li class="pro">A benefit.</li>
         <li class="con">A cost.</li>
     </ul>
+
+    <details>
+        <summary>Detail most readers skip</summary>
+        <p>Long logs, full output, or background.</p>
+    </details>
 </section>
 
 <section id="b">
-    <h2>B · Second option <span class="tag no">not recommended</span></h2>
+    <h2>B · Second option</h2>
     <p class="idea">One-line idea.</p>
 
     <table>
         <tr><th>Column</th><th>Column</th></tr>
         <tr><td>Value</td><td>Value</td></tr>
     </table>
+
+    <h3>Bars</h3>
+    <div class="meter-row"><span>Label</span><div class="meter"><i style="width: 70%"></i></div><span>70%</span></div>
+    <div class="meter-row"><span>Label</span><div class="meter"><i style="width: 40%"></i></div><span>40%</span></div>
+
+    <h3>Steps</h3>
+    <ol class="steps">
+        <li><strong>First</strong> step.</li>
+        <li><strong>Second</strong> step, with optional sub-steps.
+            <ol class="steps">
+                <li>Sub-step.</li>
+                <li>Sub-step.</li>
+            </ol>
+        </li>
+        <li><strong>Third</strong> step.</li>
+    </ol>
+
+    <h3>Checklist</h3>
+    <ul class="checks">
+        <li class="done">Done item.</li>
+        <li>Open item, with optional sub-items.
+            <ul class="checks">
+                <li class="done">Done sub-item.</li>
+                <li>Open sub-item.</li>
+            </ul>
+        </li>
+    </ul>
+
+    <h3>Timeline</h3>
+    <div class="timeline">
+        <div><time>Date</time>Done milestone</div>
+        <div class="next"><time>Date</time>Upcoming milestone</div>
+    </div>
+
+    <h3>Files</h3>
+    <div class="tree">src/
+├── parse.ts      <em>one-line role</em>
+└── index.ts</div>
+</section>
+
+<!-- Brainstorm: candidate primitives. Keep what you pick, delete the rest. -->
+<section id="brainstorm">
+    <h2>Brainstorm</h2>
+    <p class="idea">Candidate primitives. Pick by number.</p>
+
+    <h3>1 · Code group</h3>
+    <p class="idea">Use for: one change across several files, one tab per file.</p>
+    <figure class="codefile codegroup">
+        <figcaption><button class="active">parse.ts</button><button>parse.test.ts</button></figcaption>
+<pre>export function parse({ raw }: { readonly raw: string }): Payload {
+    return PayloadSchema.parse(JSON.parse(raw));
+}</pre>
+<pre hidden>test('rejects bad json', () => {
+    expect(() => parse({ raw: '{' })).toThrow();
+});</pre>
+    </figure>
+
+    <h3>2 · Line numbers + highlighted lines</h3>
+    <p class="idea">Use for: pointing at exact lines without comments. Set <code>data-lines="2,3"</code>.</p>
+    <figure class="codefile">
+        <figcaption>sync.ts:80</figcaption>
+<pre data-lines="2,3">for (const job of jobs) {
+    await run(job);
+    await sleep(0);
+}</pre>
+    </figure>
+
+    <h3>3 · Editor links</h3>
+    <p class="idea">Use for: file references that open in VS Code on click.</p>
+    <p>The check lives in <a class="ref" href="vscode://file/Users/garrett/.dotfiles/packages/lib/ts/parse.ts:12">parse.ts:12</a> and runs before <a class="ref" href="vscode://file/Users/garrett/.dotfiles/packages/lib/ts/index.ts:4">index.ts:4</a>.</p>
+
+    <h3>4 · Fields</h3>
+    <p class="idea">Use for: the shape of a type, config, or payload.</p>
+    <table class="fields">
+        <tr><th>Field</th><th>Type</th><th>Notes</th></tr>
+        <tr><td><code>id</code></td><td class="type">number</td><td>Server-assigned.</td></tr>
+        <tr><td><code>name</code></td><td class="type">string</td><td>1–80 chars.</td></tr>
+        <tr><td><code>email</code></td><td class="type">string</td><td><span class="opt">optional</span> Lowercased on save.</td></tr>
+    </table>
+
+    <h3>5 · Config change</h3>
+    <p class="idea">Use for: settings whose value changes, old next to new.</p>
+    <table>
+        <tr><th>Setting</th><th>Value</th></tr>
+        <tr><td><code>timeout</code></td><td><del>5000</del> → <ins>10000</ins></td></tr>
+        <tr><td><code>retries</code></td><td><del>0</del> → <ins>3</ins></td></tr>
+    </table>
+
+    <h3>6 · Test cases</h3>
+    <p class="idea">Use for: inputs, expected vs. actual, failures stand out.</p>
+    <table class="cases">
+        <tr><th>Input</th><th>Expected</th><th>Actual</th><th></th></tr>
+        <tr><td><code>"42"</code></td><td>42</td><td>42</td><td class="pass">✓</td></tr>
+        <tr class="fail"><td><code>" 42 "</code></td><td>42</td><td>NaN</td><td class="failed">✗</td></tr>
+    </table>
+
+    <h3>7 · Decision tree</h3>
+    <p class="idea">Use for: "if this, then that" logic the reader follows.</p>
+    <ul class="dtree">
+        <li><strong>Is the input external?</strong>
+            <ul>
+                <li><em>yes</em>Validate at the boundary.</li>
+                <li><em>no</em><strong>Is it already typed?</strong>
+                    <ul>
+                        <li><em>yes</em>Use it directly.</li>
+                        <li><em>no</em>Add a type at the source.</li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+    </ul>
+
+    <h3>8 · State transitions</h3>
+    <p class="idea">Use for: states and the events that move between them.</p>
+    <div class="transitions">
+        <div><b>idle</b><i>— submit →</i><b>loading</b></div>
+        <div><b>loading</b><i>— success →</i><b>done</b></div>
+        <div><b>loading</b><i>— error →</i><b>failed</b><i>— retry →</i><b>loading</b></div>
+    </div>
+
+    <h3>9 · Proportion bar</h3>
+    <p class="idea">Use for: how one whole splits into parts.</p>
+    <div class="split"><span class="c1" style="width: 48%"></span><span class="c2" style="width: 27%"></span><span class="c3" style="width: 15%"></span><span class="c4" style="width: 10%"></span></div>
+    <div class="legend"><span class="c1">app 48%</span><span class="c2">react 27%</span><span class="c3">zod 15%</span><span class="c4">other 10%</span></div>
+
+    <h3>10 · Scale with thresholds</h3>
+    <p class="idea">Use for: where one value sits against good / warn / bad limits.</p>
+    <div class="scale" style="--ok: 50%; --warn: 80%"><i style="left: 64%"><span>p95: 320 ms</span></i></div>
+    <div class="scale-labels"><span>0 ms</span><span>500 ms</span></div>
+
+    <h3>11 · Sparkline</h3>
+    <p class="idea">Use for: a trend inside a table cell or sentence.</p>
+    <table>
+        <tr><th>Metric</th><th>Last 7 days</th></tr>
+        <tr><td>Errors</td><td><svg class="spark" width="80" height="20" viewBox="0 0 80 20"><polyline points="0,15 13,12 26,14 40,6 53,8 66,4 80,2"/></svg></td></tr>
+        <tr><td>Latency</td><td><svg class="spark" width="80" height="20" viewBox="0 0 80 20"><polyline points="0,4 13,6 26,5 40,10 53,12 66,14 80,16"/></svg></td></tr>
+    </table>
+
+    <h3>12 · Wireframe</h3>
+    <p class="idea">Use for: where a UI change lands on the page.</p>
+    <div class="wire">
+        <div class="top">Header</div>
+        <div>Sidebar</div>
+        <div class="focus">Main · new filter bar here</div>
+    </div>
+
+    <h3>13 · Color swatches</h3>
+    <p class="idea">Use for: theme or palette changes.</p>
+    <div class="swatches">
+        <div><i style="background: #0969da"></i><span>accent<br><code>#0969da</code></span></div>
+        <div><i style="background: #1a7f37"></i><span>good<br><code>#1a7f37</code></span></div>
+        <div><i style="background: #cf222e"></i><span>bad<br><code>#cf222e</code></span></div>
+    </div>
+
+    <h3>14 · Box diagram</h3>
+    <p class="idea">Use for: free-form architecture an agent can draw in text.</p>
+    <div class="diagram">┌──────────┐     ┌──────────┐
+│ installer│────▶│ lib/bash │
+└────┬─────┘     └──────────┘
+     │
+     ▼
+┌──────────┐
+│   mac    │
+└──────────┘</div>
 </section>
 
 <script>
@@ -109,6 +383,27 @@ export function example({ value }: { readonly value: number }): string {
         show(button.dataset.tab);
         history.replaceState(null, '', `#${button.dataset.tab}`);
     }));
+
+    // Copy buttons on .cmd blocks
+    document.querySelectorAll('.cmd .copy').forEach(button => button.addEventListener('click', () => {
+        navigator.clipboard.writeText(button.dataset.copy);
+    }));
+
+    // Brainstorm: code group tabs
+    document.querySelectorAll('.codegroup').forEach(group => {
+        const tabs = [...group.querySelectorAll('figcaption button')];
+        const files = [...group.querySelectorAll('pre')];
+        tabs.forEach((tab, index) => tab.addEventListener('click', () => {
+            tabs.forEach(other => other.classList.toggle('active', other === tab));
+            files.forEach((file, fileIndex) => { file.hidden = fileIndex !== index; });
+        }));
+    });
+
+    // Brainstorm: line numbers and highlighted lines for <pre data-lines>
+    document.querySelectorAll('pre[data-lines]').forEach(pre => {
+        const marked = new Set(pre.dataset.lines.split(',').map(Number));
+        pre.innerHTML = pre.innerHTML.split('\n').map((line, index) => `<span class="line${marked.has(index + 1) ? ' hl' : ''}">${line}</span>`).join('');
+    });
 
     const initial = location.hash.slice(1);
     if (buttons.some(button => button.dataset.tab === initial)) {

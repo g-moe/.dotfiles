@@ -8,6 +8,10 @@ disable-model-invocation: true
 
 Copy [assets/template.html](assets/template.html) and replace its content. Keep its style and script.
 
-- One tab per option or topic. Only the content the user asked for.
-- Code in `<pre>` gets GitHub light highlighting automatically. Escape `<`, `>`, `&` as `&lt;`, `&gt;`, `&amp;`.
+- Use only the components the content needs, not every one the template shows.
+
+- Code always goes in a `codefile` figure with its file path in the caption.
+
+- Escape `<`, `>`, `&` in code as `&lt;`, `&gt;`, `&amp;`.
+
 - Save where the user says; otherwise in a gitignored folder (for example `.local/`). Give the full path.
