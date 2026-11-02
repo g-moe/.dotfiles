@@ -1,0 +1,6 @@
+interface:
+  display_name: "Lesson"
+  short_description: "Build self-contained, reviewed HTML lessons"
+  default_prompt: "Use $lesson to build a self-contained HTML course from the supplied source material."
+policy:
+  allow_implicit_invocation: false
