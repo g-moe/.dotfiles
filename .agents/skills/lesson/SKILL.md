@@ -105,3 +105,5 @@ Start every reviewer in a fresh context holding only its brief and the files it 
 ## Delivery
 
 Show the user nothing until the final check passes. Report any problem you can't resolve instead of hiding it. Finish with links to the pages, then only the decisions the user must make and any bugs found in the source material.
+
+**Mobile layout.** Use the template’s single mobile breakpoint, `max-width: 640px`, for all mobile rules. Keep the built-in navigation script: it turns page navigation tabs into a hamburger menu on mobile, closes after selection or Escape, and leaves desktop tabs visible. Insert navigation before `DOMContentLoaded` fires.

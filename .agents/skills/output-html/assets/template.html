@@ -124,6 +124,18 @@
     .swatches code { color: var(--muted); font-size: 11px; }
     .diagram { font: 12.5px/1.4 ui-monospace, monospace; white-space: pre; overflow-x: auto; border: 1px solid var(--line); border-radius: 6px; padding: 12px 14px; margin: 8px 0; }
     @media print { nav { display: none; } section { display: block; } }
+
+    /* Shared mobile breakpoint: use 640px for all mobile layout rules. */
+    .nav-toggle { display: none; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); color: var(--text); padding: 10px 14px; margin: 12px 20px; font: inherit; cursor: pointer; }
+    @media (max-width: 640px) {
+        .nav-toggle { display: inline-flex; align-items: center; gap: 8px; }
+        nav.mobile-nav { display: none; flex-direction: column; align-items: stretch; }
+        nav.mobile-nav.open { display: flex; }
+        nav.mobile-nav button { text-align: left; }
+        header { padding: 20px 16px 0; }
+        section { padding: 20px 16px 40px; }
+    }
+    @media print { .nav-toggle { display: none; } }
 </style>
 </head>
 <body>
@@ -409,6 +421,44 @@
     if (buttons.some(button => button.dataset.tab === initial)) {
         show(initial);
     }
+</script>
+
+<script>
+    // Keep the toggle outside nav so lesson/tab selectors only find navigation items.
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('nav').forEach((nav, index) => {
+            const toggle = document.createElement('button');
+            toggle.type = 'button';
+            toggle.className = 'nav-toggle';
+            toggle.innerHTML = '<span aria-hidden="true">☰</span> Menu';
+            nav.id ||= `page-navigation-${index}`;
+            nav.classList.add('mobile-nav');
+            toggle.setAttribute('aria-controls', nav.id);
+            toggle.setAttribute('aria-expanded', 'false');
+            nav.before(toggle);
+
+            const close = ({ restoreFocus = false } = {}) => {
+                nav.classList.remove('open');
+                toggle.setAttribute('aria-expanded', 'false');
+                if (restoreFocus && getComputedStyle(toggle).display !== 'none') toggle.focus();
+            };
+
+            toggle.addEventListener('click', () => {
+                const expanded = nav.classList.toggle('open');
+                toggle.setAttribute('aria-expanded', String(expanded));
+            });
+            nav.addEventListener('click', event => {
+                if (event.target.closest('button, a')) close({ restoreFocus: true });
+            });
+            document.addEventListener('keydown', event => {
+                if (event.key === 'Escape' && nav.classList.contains('open')) close({ restoreFocus: true });
+            });
+            document.addEventListener('click', event => {
+                if (!nav.contains(event.target) && !toggle.contains(event.target)) close();
+            });
+            window.addEventListener('resize', () => close());
+        });
+    });
 </script>
 </body>
 </html>

@@ -15,3 +15,5 @@ Copy [assets/template.html](assets/template.html) and replace its content. Keep 
 - Escape `<`, `>`, `&` in code as `&lt;`, `&gt;`, `&amp;`.
 
 - Save where the user says; otherwise in a gitignored folder (for example `.local/`). Give the full path.
+
+**Mobile layout.** Use the template’s single mobile breakpoint, `max-width: 640px`, for all mobile rules. Keep the built-in navigation script: it turns page navigation tabs into a hamburger menu on mobile, closes after selection or Escape, and leaves desktop tabs visible. Insert navigation before `DOMContentLoaded` fires.
