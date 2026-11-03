@@ -187,3 +187,10 @@ for platform in mac linux; do
 done
 
 printf 'Installer flow checks passed.\n'
+
+expect_file_contains "$ROOT_DIR/package.json" \
+  '"install:run-it": "bash packages/installer/install.sh --run-it"' \
+  'run-it installation must use the public installer'
+expect_file_contains "$INSTALLER_DIR/setup/development/run-it.sh" \
+  '"$ROOT_DIR/packages/run-it/dist/cli/main.js" "$HOME/.local/bin/run-it"' \
+  'run-it installation must link the compiled executable'
