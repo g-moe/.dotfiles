@@ -112,6 +112,17 @@ Shared libraries are independent of the installer.
 macOS-only tools live here. This includes small window, Dock, Finder, Ghostty,
 and browser helpers, plus the canonical `mactop` source.
 
+`mac-window-top-half.sh` and `mac-window-bottom-half.sh` are free Raycast Script
+Commands for the focused window. They measure its current display, split at the
+full display's physical midpoint, and then respect the menu bar and Dock, with
+8-point outer gaps and one 8-point gap centered on the split. This keeps windows
+on their respective panels when a stacked monitor presents as one display.
+Add the scripts to Raycast and assign hotkeys manually. The commands require
+Accessibility access for the app running them and use `swiftc` from Xcode Command
+Line Tools to cache their shared helper on first use. Run either script with
+`--dry-run` to print target bounds for every display without accessing or moving
+windows. Test the geometry with `bash packages/mac/window-half/mac-test.sh`.
+
 `packages/mac/mactop/` is an independent Go application. It monitors Apple
 Silicon system resources and provides terminal, menu bar, overlay, and headless
 interfaces. The installer builds this source for the machine. See its
