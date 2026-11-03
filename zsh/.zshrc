@@ -164,6 +164,26 @@ kill-port() {
   kill "${pids[@]}"
 }
 
+# Run a command repeatedly with a timer; stop on the first nonzero exit.
+run-it() {
+    local runs=$1
+    local command=$2
+    local i start code
+
+    for ((i = 1; i <= runs; i++)); do
+        start=$SECONDS
+
+        if (eval "$command") >/dev/null 2>&1; then
+            echo "Run $i/$runs passed in $((SECONDS - start))s"
+        else
+            code=$?
+            echo "Run $i/$runs failed after $((SECONDS - start))s (exit $code)" >&2
+            return "$code"
+        fi
+    done
+}
+
+
 # Open files in VSCodium with the VS Code command
 alias code='codium'
 
