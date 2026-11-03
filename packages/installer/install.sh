@@ -6,7 +6,7 @@ ROOT_DIR="$(cd "$SCRIPT_DIR/../.." && pwd)"
 
 . "$SCRIPT_DIR/lib/lib.sh"
 
-usage='Use: bash packages/installer/install.sh [--apps|--development|--appearance|--input|--desktop|--files|--access|--system|--all|--git|--agents|--theme|--retire|--zed]'
+usage='Use: bash packages/installer/install.sh [--apps|--development|--appearance|--input|--desktop|--files|--access|--system|--all|--git|--agents|--theme|--retire|--zed|--run-it]'
 
 validate_root() {
   [[ "$ROOT_DIR" == "$HOME/.dotfiles" ]] ||
@@ -94,11 +94,17 @@ configure_zed() {
   run_strategy 'Zed settings' development/zed-settings.sh
 }
 
+install_run_it() {
+  run_strategy 'Run-it CLI' development/run-it.sh
+}
+
 install_development() {
   install_git
   run_strategy 'Node.js 24' development/node.sh
 
   activate_repo_node "$ROOT_DIR" || die 'Node.js is not available.'
+
+  install_run_it
 
   run_strategy 'Pi coding agent' development/pi.sh
   run_strategy 'OpenCode CLI' development/opencode.sh
@@ -194,6 +200,7 @@ run_phase() {
 # Map one CLI arg to a mode. Phases also accept the bare name (apps) for older calls.
 parse_mode() {
   case "$1" in
+    --run-it) printf 'run-it\n' ;;
     --git) printf 'git\n' ;;
     --zed) printf 'zed\n' ;;
     --agents) printf 'agents\n' ;;
@@ -244,6 +251,9 @@ main() {
   run_step 'Check your user' validate_user
 
   case "$mode" in
+    run-it)
+      install_run_it
+      ;;
     zed)
       configure_zed
       ;;

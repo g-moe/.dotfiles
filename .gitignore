@@ -114,6 +114,8 @@
 !/packages/installer/**
 !/packages/agent-usage/
 !/packages/agent-usage/**
+!/packages/run-it/
+!/packages/run-it/**
 !/packages/lib/
 !/packages/lib/bash/
 !/packages/lib/bash/**

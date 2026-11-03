@@ -160,6 +160,13 @@ in the first editor group. Source and feature tests are under `src/features/`.
 Browser test tools are under `tests/browser/`. Extension documentation is in
 `packages/vscode-ext/README.md`.
 
+### `packages/run-it/`
+
+CLI for repeated commands with optional CPU and shared memory limits.
+Install with `npm run install:run-it`; use
+`run-it "pnpm run tests --force" --runs=10 --cpu=2 --mem=8`.
+See [run-it usage](packages/run-it/README.md).
+
 ### `packages/agent-usage/`
 
 This TypeScript CLI reads the usage limits already stored by supported coding

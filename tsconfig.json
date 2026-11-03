@@ -12,6 +12,12 @@
 		},
 		{
 			"path": "./packages/vscode-ext/tsconfig.test.json"
+		},
+		{
+			"path": "./packages/run-it/tsconfig.json"
+		},
+		{
+			"path": "./packages/run-it/tsconfig.test.json"
 		}
 	]
 }
