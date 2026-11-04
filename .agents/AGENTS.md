@@ -22,11 +22,10 @@
 
 ## Code Style
 
-Code is how we do a lot of communication, so it must be easy to read.
+Code is how we do a majority of our communication, so it must be easy to read.
 
 **Readability**
-- Use empty lines to break up long-scoped function, method, or script blocks.
-- Order files bottom-up: shared setup (module-level constants, types, instances) first, then helpers in call order, then exported entry points last. Keep values used in only one place inside the thing (function, class, html) that uses them.
+- Use empty lines to break up long-scoped function, method, or script blocks. Group together relevant code in "chunks" and add a top-line comment to narrate the long scope (see coding comment example below).
 - Keep cyclomatic complexity low.
 - Do not nest ternaries.
 - No magic values (numbers, strings, etc).
@@ -37,8 +36,8 @@ Code is how we do a lot of communication, so it must be easy to read.
 - Put code where they belongs. Follow existing boundaries and naming; do not invent new terms. 
 
 **Patterns**
-- Validate data at the boundaries. This means public -> private, or external -> internal. We transform/validate data into a shape that we know. We ONLY want to interact with data in our shape and do not mix shapes.
-- Use readonly types where applicable.
+- Validate data at the boundaries. We transform/validate data once at the boundary into a shape that we know. We ONLY want to interact with data in our shape and do not mix shapes.
+- Use readonly types and data structures where applicable.
 - Pit of success by Rico Mariani - safe behaviours happen by default so authors can't get it wrong.
 
 
