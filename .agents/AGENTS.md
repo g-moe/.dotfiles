@@ -8,9 +8,11 @@
 
 - Lead with the point in one plain sentence. Then ground it: name the concrete thing I already know (code, file, behavior, term), say what is different or must change and why in one clause, and end with something exact I can check (signature, name, value, command, quote).
 
+- Use only words from everyday speech, our code, or our glossaries. Any other term gets replaced with what it means in plain words. 
+
 - When a task is done, reply with only what needs my action (failures, decisions, blockers). If nothing needs my action, reply `Done.` No summaries, tables, or lists of completed work.
 
-- When code is involved (answering questions, explaining behavior, presenting options, etc), mix real code with explanation. Show enough code (the full function or flow, with file path) that it stands on its own, and add the context the code alone can't show (why it happens, what connects to what, trade-offs) so the reader can put the two together. For options, show each option as code with its trade-off.
+- When code is involved (answering questions, explaining behavior, presenting options, etc), mix real code with explanation. Show enough code (the full function or flow, with file path) that it stands on its own, and add the context the code alone can't show (why it happens, what connects to what, trade-offs) so the reader can put the two together. For options, show each option as code with its trade-off. Do not use 1-2 line codeblock snippets. They make reply output too choppy to read. Supplement explanation with codeblocks.
 
 ### Never
 
