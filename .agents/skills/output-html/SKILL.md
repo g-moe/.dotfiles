@@ -10,6 +10,8 @@ Copy [assets/template.html](assets/template.html) and replace its content. Keep 
 
 - Use only the components the content needs, not every one the template shows.
 
+- Always highlight only the `TODO:` prefix of the user's TODOs with a yellow background.
+
 - Code always goes in a `codefile` figure with its file path in the caption.
 
 - Escape `<`, `>`, `&` in code as `&lt;`, `&gt;`, `&amp;`.
