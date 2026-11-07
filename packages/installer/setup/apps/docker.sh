@@ -14,7 +14,7 @@ install_docker() {
 }
 
 mac() {
-  brew_cask docker-desktop
+  brew_formula docker
 }
 
 linux() {
