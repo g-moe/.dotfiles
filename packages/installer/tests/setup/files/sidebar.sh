@@ -37,6 +37,16 @@ killall() {
   printf 'refresh %s\n' "$*" >>"$case_dir/events"
 }
 
+ls() {
+  # Emulate macOS ACL output when these fixtures run on Linux.
+  if [[ "$1" == -lde ]]; then
+    shift
+    command ls -ld "$@"
+    return
+  fi
+  command ls "$@"
+}
+
 prepare_case() {
   case_dir="$temporary_dir/$1"
   HOME="$case_dir/home"
@@ -91,15 +101,30 @@ test_skip() (
 
 test_folder_choice() (
   prepare_case "$1" "$2"
-  local folders="$HOME"
+  local folder folders="$HOME"
   if [[ "$test_choice" == 1 ]]; then
     folders="$HOME/Library/Mobile Documents/com~apple~CloudDocs"
   fi
   mkdir -p "$folders/Desktop" "$folders/Documents" "$folders/Downloads"
+  if [[ "$test_choice" == 1 ]]; then
+    for folder in Desktop Documents Downloads; do
+      mkdir "$HOME/$folder"
+      touch "$HOME/$folder/local-file"
+    done
+  fi
 
   configure_file_sidebar mac
 
   expect_sidebar_configured "$folders"
+  for folder in Desktop Documents Downloads; do
+    if [[ "$test_choice" == 1 ]]; then
+      [[ -L "$HOME/$folder" && "$HOME/$folder" -ef "$folders/$folder" ]] ||
+        fail "$folder must link to iCloud"
+      [[ -f "$HOME/$folder-local/local-file" ]] || fail "$folder must preserve local files"
+    else
+      [[ -d "$HOME/$folder" && ! -L "$HOME/$folder" ]] || fail "$folder must stay local"
+    fi
+  done
   [[ ! -e "$case_dir/code-existed-at-prompt" ]] ||
     fail 'the sidebar prompt must precede folder creation'
 
@@ -107,6 +132,37 @@ test_folder_choice() (
   rm "$case_dir/events"
   configure_file_sidebar mac
   expect_sidebar_configured "$folders"
+)
+
+test_icloud_backup_conflict() (
+  prepare_case backup-conflict 1
+  local folders="$HOME/Library/Mobile Documents/com~apple~CloudDocs"
+  mkdir -p "$folders"/{Desktop,Documents,Downloads} "$HOME"/{Desktop,Downloads,Downloads-local}
+
+  if (configure_file_sidebar mac) </dev/null >"$case_dir/output" 2>&1; then
+    fail 'iCloud setup must reject an existing backup path'
+  fi
+
+  expect_file_contains "$case_dir/output" "$HOME/Downloads-local" 'the backup conflict must be identified'
+  expect_no_sidebar_changes
+  [[ -d "$HOME/Desktop" && ! -L "$HOME/Desktop" ]] || fail 'preflight must preserve Desktop'
+  [[ -d "$HOME/Downloads" && ! -L "$HOME/Downloads" ]] || fail 'preflight must preserve Downloads'
+)
+
+test_icloud_link_failure() (
+  prepare_case link-failure 1
+  local folders="$HOME/Library/Mobile Documents/com~apple~CloudDocs"
+  mkdir -p "$folders"/{Desktop,Documents,Downloads} "$HOME/Desktop"
+  touch "$HOME/Desktop/local-file"
+
+  ln() { return 1; }
+  if (configure_file_sidebar mac) </dev/null >"$case_dir/output" 2>&1; then
+    fail 'iCloud setup must report a failed link'
+  fi
+  expect_file_contains "$case_dir/output" 'Could not link' 'the link failure must be reported'
+  [[ -f "$HOME/Desktop/local-file" && ! -L "$HOME/Desktop" ]] || fail 'failed links must restore the local folder'
+  [[ ! -e "$HOME/Desktop-local" ]] || fail 'the backup must return to its original location'
+  [[ ! -e "$HOME/Documents" ]] || fail 'link failure must stop before the next folder'
 )
 
 test_missing_icloud_folder() (
@@ -145,6 +201,8 @@ main() {
   test_missing_icloud_folder Desktop
   test_missing_icloud_folder Documents
   test_missing_icloud_folder Downloads
+  test_icloud_backup_conflict
+  test_icloud_link_failure
   test_write_failure
 
   printf 'Finder sidebar checks passed.\n'
