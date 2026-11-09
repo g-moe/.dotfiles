@@ -8,6 +8,7 @@
 !/.oxfmtrc.json
 !/AGENTS.md
 !/README.md
+!/favicon.png
 !/package-lock.json
 !/package.json
 !/tsconfig.json
@@ -19,7 +20,6 @@
 
 # Images
 !/images/
-!/images/icon.png
 !/images/white.png
 
 # Zsh

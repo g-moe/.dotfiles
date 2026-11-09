@@ -28,5 +28,5 @@ TypeScript and links `dist/cli/main.js` into `~/.local/bin/run-it`. Development
 setup installs it too. Existing shells that loaded the old function need
 `unfunction run-it` once, or a fresh shell.
 
-Validation: `npm run test:run-it` and
+Validation: `npm --prefix packages/run-it test` and
 `npx tsc -b packages/run-it/tsconfig.test.json --noEmit`.

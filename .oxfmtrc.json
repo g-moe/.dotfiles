@@ -14,6 +14,8 @@
 	"ignorePatterns": [
 		"**/*.md",
 		"packages/raycast/*/raycast-env.d.ts",
+		"packages/theming/output/**",
+		"packages/theming/vsce-package/themes/**",
 		"vscode/user/settings.json"
 	]
 }

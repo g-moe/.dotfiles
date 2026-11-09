@@ -17,6 +17,7 @@ npm run install:git                     # → install.sh --git
 npm run install:agents                  # → install.sh --agents
 npm run install:theme                   # → install.sh --theme
 npm run install:retire                  # → install.sh --retire
+npm run install:run-it                  # → install.sh --run-it
 npm run verify:machine                  # verify installed links after a VM install
 ```
 

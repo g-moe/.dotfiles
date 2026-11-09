@@ -67,9 +67,6 @@ if grep -Fq '"install:mactop"' "$ROOT_DIR/package.json"; then
   fail 'package.json must not expose a dedicated mactop install command'
 fi
 expect_file_contains "$ROOT_DIR/package.json" \
-  '"test:mactop": "cd packages/mac/mactop && make verify"' \
-  'package.json must expose the mactop verification matrix'
-expect_file_contains "$ROOT_DIR/package.json" \
   '"install:file-ext": "bash packages/lib/bash/bin/shared-file-ext.sh"' \
   'package.json must expose standalone file associations'
 if grep -Fq 'files/associations.sh' "$installer"; then

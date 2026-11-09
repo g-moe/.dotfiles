@@ -14,9 +14,23 @@ install_neovim() {
   esac
 }
 
+_remove_broken_links() {
+  local source_root="$1"
+  local target_root="$2"
+  local link
+
+  [[ -d "$target_root" ]] || return 0
+  while IFS= read -r -d '' link; do
+    [[ ! -e "$link" && "$(readlink "$link")" == "$source_root/"* ]] || continue
+    rm -- "$link"
+  done < <(find "$target_root" -type l -print0)
+}
+
 _configure() {
   local relative source target="$HOME/.config/nvim"
   local links=()
+
+  _remove_broken_links "$ROOT_DIR/nvim" "$target"
 
   while IFS= read -r source; do
     relative="${source#"$ROOT_DIR/nvim/"}"
@@ -36,4 +50,6 @@ linux() {
   _configure
 }
 
-install_neovim "$1"
+if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then
+  install_neovim "$1"
+fi

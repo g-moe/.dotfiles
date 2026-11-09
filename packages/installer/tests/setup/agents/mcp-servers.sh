@@ -51,8 +51,11 @@ node_path="$(command -v node)"
 node_dir="$(dirname "$node_path")"
 global_node_modules="$temporary_dir/global/lib/node_modules"
 entrypoint="$global_node_modules/chrome-devtools-mcp/build/src/bin/chrome-devtools-mcp.js"
-chrome_path='/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
-mkdir -p "$(dirname "$entrypoint")"
+# A fake browser keeps the test independent of the machine's installed browsers.
+chrome_path="$temporary_dir/browser/Google Chrome"
+mkdir -p "$(dirname "$entrypoint")" "$(dirname "$chrome_path")"
+printf '#!/usr/bin/env bash\n' >"$chrome_path"
+chmod +x "$chrome_path"
 touch "$entrypoint"
 make_client codex "$clients"
 make_client claude "$clients"
@@ -75,7 +78,8 @@ esac
 SCRIPT
 chmod +x "$clients/npm"
 
-# Every strategy run uses the same isolated npm package and command paths.
+# Every strategy run uses the same isolated npm package, browser, and command paths.
+# The strategy is sourced so the test can replace its browser lookup.
 run_strategy() {
   local fixture_home="$1"
   local fixture_log="$2"
@@ -83,7 +87,12 @@ run_strategy() {
 
   env -u OPENCODE_CONFIG -u OPENCODE_CONFIG_DIR -u OPENCODE_CONFIG_CONTENT -u XDG_CONFIG_HOME \
     HOME="$fixture_home" MCP_TEST_LOG="$fixture_log" MCP_TEST_NPM_ROOT="$global_node_modules" \
-    PATH="$fixture_clients:$node_dir:/usr/bin:/bin" bash "$strategy" mac
+    MCP_TEST_BROWSER="$chrome_path" PATH="$fixture_clients:$node_dir:/usr/bin:/bin" \
+    bash -c '
+      . "$1"
+      chrome_browser_path() { printf "%s\n" "$MCP_TEST_BROWSER"; }
+      configure_mcp_servers mac
+    ' run_strategy "$strategy"
 }
 
 # Command parity: every client receives one identical command, and a rerun

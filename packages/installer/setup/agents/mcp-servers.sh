@@ -147,4 +147,6 @@ linux() {
   configure_chrome_devtools linux
 }
 
-configure_mcp_servers "$1"
+if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then
+  configure_mcp_servers "$1"
+fi

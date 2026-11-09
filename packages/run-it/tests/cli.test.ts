@@ -36,7 +36,11 @@ test("skips CPUs used by other run-it commands and refuses to share", () => {
 	const availableCpus = [0, 1, 2, 3, 4, 5, 6, 7];
 
 	assert.deepEqual(
-		pickFreeCpus({ availableCpus, takenCpus: new Set([0, 1]), requestedCount: 4 }),
+		pickFreeCpus({
+			availableCpus,
+			takenCpus: new Set([0, 1]),
+			requestedCount: 4,
+		}),
 		[2, 3, 4, 5],
 	);
 	assert.deepEqual(
@@ -44,11 +48,17 @@ test("skips CPUs used by other run-it commands and refuses to share", () => {
 		[0, 1],
 	);
 	assert.throws(
-		() => pickFreeCpus({ availableCpus, takenCpus: new Set([0, 1, 2, 3, 4]), requestedCount: 4 }),
+		() =>
+			pickFreeCpus({
+				availableCpus,
+				takenCpus: new Set([0, 1, 2, 3, 4]),
+				requestedCount: 4,
+			}),
 		/only 3 are free/,
 	);
 	assert.throws(
-		() => pickFreeCpus({ availableCpus, takenCpus: new Set(), requestedCount: 9 }),
+		() =>
+			pickFreeCpus({ availableCpus, takenCpus: new Set(), requestedCount: 9 }),
 		/only 8 are available/,
 	);
 });

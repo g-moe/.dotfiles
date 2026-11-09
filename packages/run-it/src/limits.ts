@@ -72,7 +72,10 @@ async function allowedCpus(pid: string): Promise<number[] | undefined> {
 /** List the direct child PIDs of a process; empty when it has exited. */
 async function childPids(pid: string): Promise<string[]> {
 	try {
-		const children = await readFile(`/proc/${pid}/task/${pid}/children`, "utf8");
+		const children = await readFile(
+			`/proc/${pid}/task/${pid}/children`,
+			"utf8",
+		);
 		return children.split(" ").filter(Boolean);
 	} catch {
 		return [];
@@ -105,7 +108,9 @@ async function otherRunItPids(): Promise<string[]> {
 }
 
 /** Collect CPUs pinned by other run-it commands, read from their running child's affinity. */
-async function cpusUsedByOtherRuns(availableCpus: readonly number[]): Promise<Set<number>> {
+async function cpusUsedByOtherRuns(
+	availableCpus: readonly number[],
+): Promise<Set<number>> {
 	const takenCpus = new Set<number>();
 
 	for (const pid of await otherRunItPids()) {

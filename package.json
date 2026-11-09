@@ -16,6 +16,7 @@
 		"install:git": "bash packages/installer/install.sh --git",
 		"install:theme": "bash packages/installer/install.sh --theme",
 		"install:retire": "bash packages/installer/install.sh --retire",
+		"install:run-it": "bash packages/installer/install.sh --run-it",
 		"install:machine": "bash packages/installer/install.sh",
 		"install:test": "bash packages/installer/tests/run.sh",
 		"install:vscode-ext": "npm --prefix packages/vscode-ext run install:codium",

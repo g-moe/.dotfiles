@@ -243,8 +243,8 @@ npm run format:check      # Check formatting
 npm run typecheck         # Check referenced TypeScript projects
 npm run install:test      # Check installer structure and shared libraries
 npm run verify:machine    # Check links after a machine install
-npm run test:mactop       # Test the Go mactop application
-npm run test:agent-usage  # Test the agent-usage CLI
+make -C packages/mac/mactop verify       # Test the Go mactop application
+npm --prefix packages/agent-usage test   # Test the agent-usage CLI
 npm run raycast check     # Test all Raycast extensions
 ```
 

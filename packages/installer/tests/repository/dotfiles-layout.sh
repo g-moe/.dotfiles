@@ -27,7 +27,7 @@ codex/.codex/keybindings.json
 AGENTS.md
 arc/StorableLinkRouting.json
 ghostty/config
-images/icon.png
+favicon.png
 images/white.png
 karabiner/karabiner.json
 nvim/init.lua
@@ -81,6 +81,7 @@ README.md
 TODO.md
 arc
 displays
+favicon.png
 ghostty
 images
 karabiner

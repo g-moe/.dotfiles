@@ -118,8 +118,8 @@ A minimal theme file is enough:
 ## Development
 
 ```sh
-cd ~/.dotfiles
-npm run test:mactop
+cd ~/.dotfiles/packages/mac/mactop
+make verify
 ```
 
 Follow the root dotfiles repository instructions for branches, review, and installation.
