@@ -55,6 +55,9 @@ done
 expect_file_contains "$ROOT_DIR/packages/theming/create/apps/oh-my-zsh.ts" \
   '$(/usr/local/bin/xfce-system-stats --prompt)' \
   'the Linux prompt must reuse the Xfce system stats collector'
+expect_file_contains "$ROOT_DIR/packages/theming/create/apps/oh-my-zsh.ts" \
+  'local mactop_stats_file="$mactop_state_dir/prompt-stats"' \
+  'the macOS prompt must read the mactop menu bar prompt stats file'
 expect_file_contains "$stats" "printf 'CPU-%d%%%% | GPU-%d%%%% | MEM %d%%%%" \
   'the Linux prompt stats must escape percentages and use separators'
 expect_file_contains "$stats" 'size="medium">%s  %s  %s</span>' \
