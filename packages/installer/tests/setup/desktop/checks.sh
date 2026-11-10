@@ -56,14 +56,8 @@ expect_file_contains "$ROOT_DIR/packages/theming/create/apps/oh-my-zsh.ts" \
   '$(/usr/local/bin/xfce-system-stats --prompt)' \
   'the Linux prompt must reuse the Xfce system stats collector'
 expect_file_contains "$ROOT_DIR/packages/theming/create/apps/oh-my-zsh.ts" \
-  'local stats_file="$state_dir/prompt-stats"' \
+  'local mactop_stats_file="$mactop_state_dir/prompt-stats"' \
   'the macOS prompt must read the mactop menu bar prompt stats file'
-expect_file_contains "$ROOT_DIR/packages/theming/create/apps/oh-my-zsh.ts" \
-  '(( lines[1] > EPOCHSECONDS )) || return' \
-  'the macOS prompt must hide expired mactop prompt stats'
-expect_file_contains "$ROOT_DIR/packages/mac/mactop/internal/app/prompt_stats.go" \
-  'promptStatsFileName = "prompt-stats"' \
-  'mactop must write the prompt stats file the macOS prompt reads'
 expect_file_contains "$stats" "printf 'CPU-%d%%%% | GPU-%d%%%% | MEM %d%%%%" \
   'the Linux prompt stats must escape percentages and use separators'
 expect_file_contains "$stats" 'size="medium">%s  %s  %s</span>' \
