@@ -17,6 +17,11 @@ The Zsh prompt reads the saved machine color from `~/.dotfiles/machine.json`.
 The machine-name block uses white text on black and black text on every other
 supported color.
 
+The right side of the prompt shows CPU, GPU, and memory use. Linux reads them
+from `/usr/local/bin/xfce-system-stats --prompt`. macOS reads the
+`prompt-stats` file that the mactop menu bar writes, and shows nothing when the
+menu bar is not running.
+
 The T3 Code export stays in one file. Its dark palette is the base `colors`
 object and its macOS light palette is stored in `variants.light`. Import
 `packages/theming/g-theme-t3.json` from T3 Code Settings → Themes → Import

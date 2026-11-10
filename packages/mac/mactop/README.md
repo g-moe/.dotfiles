@@ -86,6 +86,8 @@ Menu bar mode skips recurring process scans and terminal rendering.
 
 The **Menubar** Settings tab controls CPU, GPU, and RAM visibility and colors, plus status-item width and font size. Fan control stays in the **Fans** tab. mactop does not add a separate fan icon.
 
+Each menu bar sample also writes `prompt-stats` for the Zsh prompt: an expiry time in Unix seconds on the first line, then `CPU-4% | GPU-2% | MEM 33%`. The expiry is three update intervals ahead, so the prompt hides the stats when the menu bar stops.
+
 ## Overlay
 
 The overlay requires Screen Recording permission for FPS data:
@@ -98,11 +100,12 @@ Use `mactop --dump-fps` to check permission and display capture. Other overlay m
 
 ## Configuration
 
-| File   | With XDG variable                     | Fallback                |
-| ------ | ------------------------------------- | ----------------------- |
-| Config | `$XDG_CONFIG_HOME/mactop/config.json` | `~/.mactop/config.json` |
-| Theme  | `$XDG_CONFIG_HOME/mactop/theme.json`  | `~/.mactop/theme.json`  |
-| Log    | `$XDG_STATE_HOME/mactop/mactop.log`   | `~/.mactop/mactop.log`  |
+| File   | With XDG variable                     | Fallback                 |
+| ------ | ------------------------------------- | ------------------------ |
+| Config | `$XDG_CONFIG_HOME/mactop/config.json` | `~/.mactop/config.json`  |
+| Theme  | `$XDG_CONFIG_HOME/mactop/theme.json`  | `~/.mactop/theme.json`   |
+| Log    | `$XDG_STATE_HOME/mactop/mactop.log`   | `~/.mactop/mactop.log`   |
+| Prompt | `$XDG_STATE_HOME/mactop/prompt-stats` | `~/.mactop/prompt-stats` |
 
 XDG base paths must be absolute.
 

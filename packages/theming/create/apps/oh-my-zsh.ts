@@ -67,9 +67,40 @@ function prompt_input_line() {
   print -nr -- "%f❯"
 }
 
+# Set REPLY to the mactop menu bar's latest sample, escaped for the prompt.
+# The menu bar writes an expiry time and the stats text on each sample; see
+# packages/mac/mactop/internal/app/prompt_stats.go. A stopped menu bar leaves
+# an expired file, which shows nothing.
+zmodload zsh/datetime
+function prompt_mactop_stats() {
+  local state_dir="$HOME/.mactop"
+  [[ "$XDG_STATE_HOME" == /* ]] && state_dir="$XDG_STATE_HOME/mactop"
+  local stats_file="$state_dir/prompt-stats"
+  local -a lines
+  REPLY=''
+
+  [[ -r "$stats_file" ]] || return
+  lines=("\${(@f)$(<"$stats_file")}")
+  [[ \${lines[1]} == <-> ]] && (( lines[1] > EPOCHSECONDS )) || return
+  REPLY="\${lines[2]//\\%/%%}"
+}
+
 function prompt_system_stats() {
-  [[ "$OSTYPE" == linux* && -x /usr/local/bin/xfce-system-stats ]] || return
-  print -n -- "%F{\${muted_color}}%{\\e[73m%}$(/usr/local/bin/xfce-system-stats --prompt)%{\\e[75m%}%f"
+  local stats
+
+  case "$OSTYPE" in
+    linux*)
+      [[ -x /usr/local/bin/xfce-system-stats ]] || return
+      stats="$(/usr/local/bin/xfce-system-stats --prompt)"
+      ;;
+    darwin*)
+      prompt_mactop_stats
+      stats="$REPLY"
+      ;;
+  esac
+
+  [[ -n "$stats" ]] || return
+  print -n -- "%F{\${muted_color}}%{\\e[73m%}\${stats}%{\\e[75m%}%f"
 }
 
 PROMPT='\n$(prompt_context_line)\n$(prompt_git_line)\n$(prompt_input_line) '

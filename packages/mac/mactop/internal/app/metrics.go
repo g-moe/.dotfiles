@@ -596,6 +596,7 @@ func collectMetrics(done chan struct{}, cpumetricsChan chan CPUMetrics, gpumetri
 			nd := lastNetDiskMetrics
 			renderMutex.Unlock()
 			pushMenuBarMetricsToWorker(m, cpuMetrics, gpuMetrics, nd, sysInfo, maxFP32TFLOPs, cpuMetrics.AvgUsage, thermalStr, rdmaStat)
+			publishPromptStats(cpuMetrics.AvgUsage, gpuMetrics)
 		}
 
 		// Push to overlay worker
