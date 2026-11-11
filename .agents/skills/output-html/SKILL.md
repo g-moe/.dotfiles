@@ -14,6 +14,8 @@ Copy [assets/template.html](assets/template.html) and replace its content. Keep 
 
 - Code always goes in a `codefile` figure with its file path in the caption.
 
+- Shiki colors code by the caption's file extension. Set `data-lang` on the `pre` when the caption has none (for example `data-lang="bash"`).
+
 - Escape `<`, `>`, `&` in code as `&lt;`, `&gt;`, `&amp;`.
 
 - Save where the user says; otherwise in a gitignored folder (for example `.local/`). Give the full path.

@@ -20,9 +20,9 @@ A multi-page course ends with a **capstone** page that follows one concrete exam
 
 ## The page
 
-**Self-contained.** All CSS and JavaScript are inline, and the page makes no network requests, so it works opened from disk or hosted alone. Copy in the code and facts a lesson relies on. When a page builds on another page, open with a short recap of what it needs.
+**Self-contained.** All CSS and JavaScript are inline, and the page makes no network requests except the template's SHA-pinned Shiki files, so it works opened from disk or hosted alone. Without network, code shows uncolored. Copy in the code and facts a lesson relies on. When a page builds on another page, open with a short recap of what it needs.
 
-**Template.** Start from [assets/template.html](assets/template.html). It holds the page shell and styles; you supply the body, the navigation script and the widgets. Use its classes for these blocks, and style the blocks it lacks to match:
+**Template.** Start from [assets/template.html](assets/template.html). It holds the page shell, styles and Shiki code highlighting: each `pre` takes its language from `data-lang` or the file extension in the `.file` above it, and `pre.out` and `pre.err` stay plain. You supply the body, the navigation script and the widgets. Use its classes for these blocks, and style the blocks it lacks to match:
 
 | Block | Class |
 | --- | --- |
@@ -100,7 +100,7 @@ Start every reviewer in a fresh context holding only its brief and the files it 
 5. **Learner check.** One subagent per about five lessons answers each exercise before opening its solution, then compares. It recomputes every result and fixes, in its assigned lessons, anything wrong, unclear or unanswerable.
 6. **Blind solve.** For each group, a reader gets the built page with every solution removed, solves every exercise and reproduces every printed result, and only then receives the solutions. Fix every exercise they couldn't solve, every one where they reached a different valid result, and every result they couldn't reproduce. Rerun the blind solve on the changed lessons until it finds nothing.
 7. **Re-audit.** An auditor re-checks every claim, example, result and widget changed in phases 4 to 6 against the source.
-8. **Final check.** Build every page, open each from disk in a browser, and click every tab, solution and widget control, including reset. Confirm there are no console errors or network requests, and that the page reads well at phone width.
+8. **Final check.** Build every page, open each from disk in a browser, and click every tab, solution and widget control, including reset. Confirm there are no console errors or network requests beyond the Shiki files, and that the page reads well at phone width.
 
 ## Delivery
 

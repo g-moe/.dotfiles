@@ -369,24 +369,6 @@
 				content: "−  ";
 				color: var(--bad);
 			}
-			.tok-c {
-				color: #6e7781;
-			}
-			.tok-s {
-				color: #0a3069;
-			}
-			.tok-k {
-				color: #cf222e;
-			}
-			.tok-n {
-				color: #0550ae;
-			}
-			.tok-f {
-				color: #8250df;
-			}
-			.tok-t {
-				color: #953800;
-			}
 
 			/* Brainstorm: candidate primitives. Keep what you pick, delete the rest. */
 			.codegroup figcaption {
@@ -1071,36 +1053,264 @@ for (const job of jobs) {
 			</div>
 		</section>
 
-		<script>
-			// GitHub light syntax highlighting for code in <pre>
-			const KEYWORDS = new Set(
-				"as async await boolean break case catch class const constructor continue default else export extends false finally for from function get if implements import in interface let new null number of private protected public readonly return set static string switch this throw true try type typeof undefined void while".split(
-					" ",
-				),
-			);
-			const TOKEN =
-				/(\/\/[^\n]*|\/\*[\s\S]*?\*\/)|('(?:[^'\\\n]|\\.)*'|`(?:[^`\\]|\\.)*`|"(?:[^"\\\n]|\\.)*")|\b(\d[\d_]*(?:\.\d+)?)\b|([A-Za-z_$][\w$]*)(?=\s*(?:&lt;[^&]*?&gt;)?\()|([A-Za-z_$][\w$]*)/g;
-			const escape = (text) =>
-				text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-			const span = (kind, text) => `<span class="tok-${kind}">${text}</span>`;
+		<!-- Shiki 4.5.0 from npm via jsDelivr; every file is pinned by its SHA-384 -->
+		<script type="importmap">
+			{
+				"imports": {
+					"@shikijs/core": "https://cdn.jsdelivr.net/npm/@shikijs/core@4.5.0/dist/index.mjs",
+					"@shikijs/engine-javascript": "https://cdn.jsdelivr.net/npm/@shikijs/engine-javascript@4.5.0/dist/index.mjs",
+					"@shikijs/langs/": "https://cdn.jsdelivr.net/npm/@shikijs/langs@4.5.0/dist/",
+					"@shikijs/primitive": "https://cdn.jsdelivr.net/npm/@shikijs/primitive@4.5.0/dist/index.mjs",
+					"@shikijs/themes/": "https://cdn.jsdelivr.net/npm/@shikijs/themes@4.5.0/dist/",
+					"@shikijs/types": "https://cdn.jsdelivr.net/npm/@shikijs/types@4.5.0/dist/index.mjs",
+					"@shikijs/vscode-textmate": "https://cdn.jsdelivr.net/npm/@shikijs/vscode-textmate@10.1.0/dist/index.js",
+					"ccount": "https://cdn.jsdelivr.net/npm/ccount@2.0.1/index.js",
+					"character-entities-html4": "https://cdn.jsdelivr.net/npm/character-entities-html4@2.1.0/index.js",
+					"character-entities-legacy": "https://cdn.jsdelivr.net/npm/character-entities-legacy@3.0.0/index.js",
+					"comma-separated-tokens": "https://cdn.jsdelivr.net/npm/comma-separated-tokens@2.0.3/index.js",
+					"hast-util-to-html": "https://cdn.jsdelivr.net/npm/hast-util-to-html@9.0.6/index.js",
+					"hast-util-whitespace": "https://cdn.jsdelivr.net/npm/hast-util-whitespace@3.0.0/index.js",
+					"html-void-elements": "https://cdn.jsdelivr.net/npm/html-void-elements@3.0.0/index.js",
+					"oniguruma-parser/parser": "https://cdn.jsdelivr.net/npm/oniguruma-parser@0.12.2/dist/parser/parse.js",
+					"oniguruma-parser/traverser": "https://cdn.jsdelivr.net/npm/oniguruma-parser@0.12.2/dist/traverser/traverse.js",
+					"oniguruma-to-es": "https://cdn.jsdelivr.net/npm/oniguruma-to-es@4.3.6/dist/esm/index.js",
+					"property-information": "https://cdn.jsdelivr.net/npm/property-information@7.2.0/index.js",
+					"regex-recursion": "https://cdn.jsdelivr.net/npm/regex-recursion@6.0.2/src/index.js",
+					"regex-utilities": "https://cdn.jsdelivr.net/npm/regex-utilities@2.3.0/src/index.js",
+					"regex/internals": "https://cdn.jsdelivr.net/npm/regex@6.1.0/src/internals.js",
+					"space-separated-tokens": "https://cdn.jsdelivr.net/npm/space-separated-tokens@2.0.2/index.js",
+					"stringify-entities": "https://cdn.jsdelivr.net/npm/stringify-entities@4.0.4/index.js",
+					"zwitch": "https://cdn.jsdelivr.net/npm/zwitch@2.0.4/index.js"
+				},
+				"integrity": {
+					"https://cdn.jsdelivr.net/npm/@shikijs/core@4.5.0/dist/index.mjs": "sha384-K/+2Tw1Exlz2PlAjCjLwVTfrW3jHSuqf2AYZvX9e2DPjLq8Epe0GA8UukffYVw33",
+					"https://cdn.jsdelivr.net/npm/@shikijs/engine-javascript@4.5.0/dist/engine-compile.mjs": "sha384-iOyyV8VD/MJo/2i8mLokj9QDHZeA/1dCmxQWFDgMiY+6OUeTE0N7JduAHNNDJN+P",
+					"https://cdn.jsdelivr.net/npm/@shikijs/engine-javascript@4.5.0/dist/engine-raw.mjs": "sha384-McSUwf8IcEEOQ9Y5ve/Cfre6uRHjWuSFyRtOSs0pW2TWSTkoXrZApTHpEs76nEpP",
+					"https://cdn.jsdelivr.net/npm/@shikijs/engine-javascript@4.5.0/dist/index.mjs": "sha384-6vimtEKxXJGUJe8dOGSCpMvkhIWCLtIlvSB5+6JFQyxSBSz+oodwqNCDMwdTtsG7",
+					"https://cdn.jsdelivr.net/npm/@shikijs/engine-javascript@4.5.0/dist/string-TLTPtCPs.mjs": "sha384-SxRYtJl0AH0jA3seo4UyFvl5n37D9Jmf2IGqitgh2Sw6ZTo7S5kMTeKb2x+GOPeq",
+					"https://cdn.jsdelivr.net/npm/@shikijs/langs@4.5.0/dist/css.mjs": "sha384-TuWVUGVdsYhmPn+xP3owi2bzDh9yEVwPqe53Fo9NcEHxs1PVoAlCHxr6Ufnx9gUc",
+					"https://cdn.jsdelivr.net/npm/@shikijs/langs@4.5.0/dist/diff.mjs": "sha384-VCewUEXj0HNKqHoaz7QcQJNZl4DFD26FXLAHgj9MPPfx9NO8+59aD/wzylNejiCC",
+					"https://cdn.jsdelivr.net/npm/@shikijs/langs@4.5.0/dist/html.mjs": "sha384-g6WxYZY/tDdFajeJ78fTgm1q0K+FSgHwMz8o52+htCJ/rShuvZ50jQKbii1C6uo8",
+					"https://cdn.jsdelivr.net/npm/@shikijs/langs@4.5.0/dist/javascript.mjs": "sha384-MWbPEqIvlSDJ2Ppt5PPe4zhLuY60LK5l2eQu0qbys5YB8pOdwxCgf2bALDkFSVXg",
+					"https://cdn.jsdelivr.net/npm/@shikijs/langs@4.5.0/dist/json.mjs": "sha384-Uj1p4RL+ve1oN3eHV0bM4SA/4WIwCUd3wiLoVJp4l7oRoW7xMlvNjNIBVPYe2UeJ",
+					"https://cdn.jsdelivr.net/npm/@shikijs/langs@4.5.0/dist/jsx.mjs": "sha384-8RNcGcQ3Y4luSzTAszPBo7SPbmAufGb8tthAA2XNQmuoXGeAK4ZA/+792w2z3IHW",
+					"https://cdn.jsdelivr.net/npm/@shikijs/langs@4.5.0/dist/markdown.mjs": "sha384-BBVF5ZpWj4Lw776PNY2SF/Hlr4Pr2FTAOXnuB1Cq0dh8htPBTEZe5oYr0eQQ9oft",
+					"https://cdn.jsdelivr.net/npm/@shikijs/langs@4.5.0/dist/postcss.mjs": "sha384-TBcCA4z5gLn8jhu3D8mJ6EiODuFKK3nA8Np0p3CqhzX0FN3XV8LcJa4Yh8ZHcyan",
+					"https://cdn.jsdelivr.net/npm/@shikijs/langs@4.5.0/dist/python.mjs": "sha384-MdJuwvTHXMejD+Pw+VQUXRcRXX7dyZjMY3DhHywI5e3xPmGFRpeY98ytDxpEAE24",
+					"https://cdn.jsdelivr.net/npm/@shikijs/langs@4.5.0/dist/shellscript.mjs": "sha384-486bkcEH/cXXUfRKi/+DXXDbXGuOXKAhjO1bJ9keOVmbu0Lm+mRnuf/eqpHx7fzU",
+					"https://cdn.jsdelivr.net/npm/@shikijs/langs@4.5.0/dist/sql.mjs": "sha384-d+UaJJXa0aa8P1XQlhyoIfMMePZzlSEzh88UpSBFy45c5NqHKr+AfvJ+9FA8df1z",
+					"https://cdn.jsdelivr.net/npm/@shikijs/langs@4.5.0/dist/svelte.mjs": "sha384-eoLV1T7ijzGPdbqdvAe2h4pTT4QR2WUZlqqUB8nCJ2pdOj3HQEw9mMZkgYt1ZDRP",
+					"https://cdn.jsdelivr.net/npm/@shikijs/langs@4.5.0/dist/toml.mjs": "sha384-Zl/rx+QrsVNcH9tu2/AmIYrysL5yyGO1Sx18ajnrtQ2orGmMw3JCWoL4T+13metB",
+					"https://cdn.jsdelivr.net/npm/@shikijs/langs@4.5.0/dist/tsx.mjs": "sha384-YjBxEuKtJgm6dE73qDj1XqYCNTA/SBeskGWvFt32Os5ymIf5Wf245kGai5MS4kSd",
+					"https://cdn.jsdelivr.net/npm/@shikijs/langs@4.5.0/dist/typescript.mjs": "sha384-o2qVQFwh+OhT4ULghRepGT8F53Rc+/f+JHpE5bwdjIiuGvtac57oE1dOOPnYPLUY",
+					"https://cdn.jsdelivr.net/npm/@shikijs/langs@4.5.0/dist/yaml.mjs": "sha384-gTdSN7vmahzobnKwrsfd53RvLvlgcyhKBFOpP2BkAu0UxBuk2VJm7JXtdz0JW1E2",
+					"https://cdn.jsdelivr.net/npm/@shikijs/primitive@4.5.0/dist/index.mjs": "sha384-hlWJaWV/MJj15ZwCtMN3UxTlbTI2MQ3tC2qzNbmao6c2wzQS5KSPPuwMgP2acIZK",
+					"https://cdn.jsdelivr.net/npm/@shikijs/themes@4.5.0/dist/github-light-default.mjs": "sha384-nC5vFTQ+4bVE7t64DFAM9G4MXuoI3sDI4J9tk45aoYzNBnTixVneJbOh4Mc4IQXb",
+					"https://cdn.jsdelivr.net/npm/@shikijs/types@4.5.0/dist/index.mjs": "sha384-UDEOn9yv0cMgcHqD9CTPlZgYYCkGxYlP+GOOdNsasDvyFh+s1NaQOURmbla5Thj6",
+					"https://cdn.jsdelivr.net/npm/@shikijs/vscode-textmate@10.1.0/dist/index.js": "sha384-X7hZdnOAuinwTxgcPWvqVwwn7yYo+wXYTQ3o4ky10edKQ3+h4KoUehuGrgKi4BhZ",
+					"https://cdn.jsdelivr.net/npm/ccount@2.0.1/index.js": "sha384-4jLE1a3la5ye6Aqeu0XcJ8Mxz5GzTmSIKcw9fDS505377cXb4bvE0mfS9a12dU4K",
+					"https://cdn.jsdelivr.net/npm/character-entities-html4@2.1.0/index.js": "sha384-x0GHzzOxc+LuooBsdmc0/8P0ifidauUCi6SP6070BRAKvRYrOYORjEmZ5zFmmilW",
+					"https://cdn.jsdelivr.net/npm/character-entities-legacy@3.0.0/index.js": "sha384-YCHN1adXT68dBdKVKWq2sJVtOKR+UOCVp3UALaX/ClaJSdDlzCbdrgDlMgPxgX0I",
+					"https://cdn.jsdelivr.net/npm/comma-separated-tokens@2.0.3/index.js": "sha384-ZPPOTsAfyMFLLdsVVnBir2NLqkgieoZAngbOEPt7VNErwVvInyfrUdJFp+AFUeXC",
+					"https://cdn.jsdelivr.net/npm/hast-util-to-html@9.0.6/index.js": "sha384-CANPVwMnEFngz8ZgRYX8F90mJLhNi8nohbOKIJJYJ0MzqprkXewRXsdJOlVuo8iT",
+					"https://cdn.jsdelivr.net/npm/hast-util-to-html@9.0.6/lib/handle/comment.js": "sha384-cKux7nObE7nyRbbwvQAaw5WOjZe3efYXtvFYTfa2DR1YuztJl/oMzt9Qm9p26xHV",
+					"https://cdn.jsdelivr.net/npm/hast-util-to-html@9.0.6/lib/handle/doctype.js": "sha384-x+Nk8/2wGuBH8VgWJWLifuj90m/C5nFDF/EJDO7W2K19w99wfzSem6AZ6S6ZeTle",
+					"https://cdn.jsdelivr.net/npm/hast-util-to-html@9.0.6/lib/handle/element.js": "sha384-5lnMNScLE+b/3HpkYdyKoKlD2vzBSH3ktLuU60dWa+wFvDMxoBpmGIppoGAgEQp9",
+					"https://cdn.jsdelivr.net/npm/hast-util-to-html@9.0.6/lib/handle/index.js": "sha384-KdmimFBSVQ4JCltsVK8lK4MliDglGzfplM8NypXLkFiz1W1AWYpasiDD+4itOJoK",
+					"https://cdn.jsdelivr.net/npm/hast-util-to-html@9.0.6/lib/handle/raw.js": "sha384-5in1F6B/QTeBjjVSAqJ0rn/RWmTa3rYHvGSdxhNcflJPjTu1wNVKymQjNpGzCI3T",
+					"https://cdn.jsdelivr.net/npm/hast-util-to-html@9.0.6/lib/handle/root.js": "sha384-64yTOLYLVe3kBrbk54Yu081PiZb+85DQZNbOU7B0cPyldKbA70avTqWLzzjq9Sa0",
+					"https://cdn.jsdelivr.net/npm/hast-util-to-html@9.0.6/lib/handle/text.js": "sha384-Z0x0gunhDr25BQbhMn5yJr4bet7K0QUts42ov5ciNiX6eK865/siRtp3kHmooWrq",
+					"https://cdn.jsdelivr.net/npm/hast-util-to-html@9.0.6/lib/index.js": "sha384-nQTJ4AkIp7H23zfACetllmVw17ykJHc4JsS5hD3T0mrgRDvPr3x2XLSzo29gSXJ7",
+					"https://cdn.jsdelivr.net/npm/hast-util-to-html@9.0.6/lib/omission/closing.js": "sha384-8jYvw5zRCH86LMvhZ+Ps3y4X7z+Y+lLwDM9kOKLpM5HUEd0fRNqM2yYwyniU6XEa",
+					"https://cdn.jsdelivr.net/npm/hast-util-to-html@9.0.6/lib/omission/omission.js": "sha384-AR2897LqXPaXJGofnfv+aarfUwAqKFrB9KyQYgleHjox6nkHwiReSQNZFklN0cyi",
+					"https://cdn.jsdelivr.net/npm/hast-util-to-html@9.0.6/lib/omission/opening.js": "sha384-Ip2fULHF6i1e8NSmBxFyNKfv30YMo6aN7ZDF3rUqQ5kzyqSMlRruezfj4hxZEENs",
+					"https://cdn.jsdelivr.net/npm/hast-util-to-html@9.0.6/lib/omission/util/siblings.js": "sha384-2+z5XNrHbMgcVdEWpe7bM2Q6DQ/IJULc71+/eiElf/eSOXVUNBU3+5uvmw+AmzHq",
+					"https://cdn.jsdelivr.net/npm/hast-util-whitespace@3.0.0/index.js": "sha384-bTwitwUJMnIMA/DL+ndFKS33ZGLulUZaKFx8Z8p8Pag0GG1UwQ7BQ9bPSr6R/SjO",
+					"https://cdn.jsdelivr.net/npm/hast-util-whitespace@3.0.0/lib/index.js": "sha384-xoLU9I8uelMLmBTghxhOcXVm7+s3jkr9vfH4bqsiiEo33RFnjQ9ahBAmdgQqcHu5",
+					"https://cdn.jsdelivr.net/npm/html-void-elements@3.0.0/index.js": "sha384-kTk46QbMe4ShQBsvzVTudIf+s6GOZf2SfRl1B3x4ZrSAgxjK6iZxcViKWVObASAE",
+					"https://cdn.jsdelivr.net/npm/oniguruma-parser@0.12.2/dist/parser/node-utils.js": "sha384-EgRw638deFPaMFFx49v4QNad2aVjkybOOc33jiHGYVkNvJaASLv07WcWafvi8dJN",
+					"https://cdn.jsdelivr.net/npm/oniguruma-parser@0.12.2/dist/parser/parse.js": "sha384-GpfJNONbEbKzvR8dSTnze29Dh7nMHeUzknTsnPNJrgnuNOd6ogESdVnTjmdBZrA6",
+					"https://cdn.jsdelivr.net/npm/oniguruma-parser@0.12.2/dist/tokenizer/tokenize.js": "sha384-hoSiY0XCPXOn0QPe0rV/p+BuoPeR/hReTA0kgB4G3iFN+NKBtI0La6BzAavbI5Xd",
+					"https://cdn.jsdelivr.net/npm/oniguruma-parser@0.12.2/dist/traverser/traverse.js": "sha384-zEeePqciTr5u61L3XhaofRrwrwMf0lG0SKGt0lObFful0dALnwNPNoPEPeWYmb6x",
+					"https://cdn.jsdelivr.net/npm/oniguruma-parser@0.12.2/dist/utils.js": "sha384-k0Tp3TfMpZpMdXsnCLE7v89LrCsrHVyarJ/IA8AOb5onK0pcPvhowysatOCXc6F4",
+					"https://cdn.jsdelivr.net/npm/oniguruma-to-es@4.3.6/dist/esm/index.js": "sha384-IdViGPd9D6jcBDhsdu1aCO4D5QUMxlQUMgKPI60n7k9akiBoew/NCuKkI9BUyTtz",
+					"https://cdn.jsdelivr.net/npm/property-information@7.2.0/index.js": "sha384-h6YcXHd7skNN1yzU2csg/wMEQgPT1lAAuuV8CxThyRevbnPUo26OARfe5DKn7nc3",
+					"https://cdn.jsdelivr.net/npm/property-information@7.2.0/lib/aria.js": "sha384-RVMlHMeiWtWjJpMn13HtxFvlXDvwOAqLh7+99Ea/+yMLkm6K4gZDnZlUWkwiF3EL",
+					"https://cdn.jsdelivr.net/npm/property-information@7.2.0/lib/find.js": "sha384-kn+qybtnbuGnjqei3l9e4zt3f6uKCJ8SkQtetJjx4EJA/63dtKD5XNOcHaKcTjjj",
+					"https://cdn.jsdelivr.net/npm/property-information@7.2.0/lib/hast-to-react.js": "sha384-eNSbMtUG8nOyVxWzYzDVQBeF1fIaY/Mj7+EfFKuh31egc8A25T7W5kSCcCWSw3+4",
+					"https://cdn.jsdelivr.net/npm/property-information@7.2.0/lib/html.js": "sha384-z/5AepVCja6j7G5GThCMoK8sRNnAkipV/ZVEcw+Alngl2cgL51Lag7GMPXaoEs/4",
+					"https://cdn.jsdelivr.net/npm/property-information@7.2.0/lib/normalize.js": "sha384-E/zS4JzpJBR27N7k6Pm5fzXef4pa02vIRitJO6xK0bXUDj/uhk1FC4SnkXHs8B/V",
+					"https://cdn.jsdelivr.net/npm/property-information@7.2.0/lib/svg.js": "sha384-shXgwIYEoxzObyfd/ArqLhAH1PdMbyXm2YsAxk5E/BmsZRnbgnGFr0+Ukn3uxx23",
+					"https://cdn.jsdelivr.net/npm/property-information@7.2.0/lib/util/case-insensitive-transform.js": "sha384-uAqKA6XGl/C+LJneewS5rVW0SgXQWXe8u3z19tX6qbQvUDAL8K1iwMdcCdtg4YEn",
+					"https://cdn.jsdelivr.net/npm/property-information@7.2.0/lib/util/case-sensitive-transform.js": "sha384-ed1UG+SryyLSmcPp2U+aflimM7kpqBU7aAadZvUeVhrmSmQb1o7XeMvcf7YHJ4no",
+					"https://cdn.jsdelivr.net/npm/property-information@7.2.0/lib/util/create.js": "sha384-Hx7S7bIYfC7sWkNscbHU4AWnsHLAlaFSwzf7Ef+5rJE6EhZeAuKId7CcWC2YFAIu",
+					"https://cdn.jsdelivr.net/npm/property-information@7.2.0/lib/util/defined-info.js": "sha384-zbzHTO8S+92vsB8qore2Y4hpHr+Iurqx34el7PSkucXJohIaXnhru8ieUxIfL4ZA",
+					"https://cdn.jsdelivr.net/npm/property-information@7.2.0/lib/util/info.js": "sha384-153qx+X3nr8Fpq8klyF5gQOZ3ZdkvttIGe2a4FRonG8qa+W2G4h7Q0aj0ds1JM7z",
+					"https://cdn.jsdelivr.net/npm/property-information@7.2.0/lib/util/merge.js": "sha384-Pmhc7Vhnb+P2vyA4eZb8KkpohWsvrjOor5nOdbjiNBXqrgDJ2gP1RzfYZCwMgxpg",
+					"https://cdn.jsdelivr.net/npm/property-information@7.2.0/lib/util/schema.js": "sha384-VZp9U38V3jKBbtmYCZCyTBSYP6dJ8x4B9OpGWqDGkJ0IwJMVTVWKu4OjNvJmE9Wf",
+					"https://cdn.jsdelivr.net/npm/property-information@7.2.0/lib/util/types.js": "sha384-u54+BpxWVJp1SqFONU2d8pHX83AjaWPk35iVuAFPi2ZxzE3+OAC9pTsJsi8gSQNy",
+					"https://cdn.jsdelivr.net/npm/property-information@7.2.0/lib/xlink.js": "sha384-UuHiPoS4c0RjB2AOhZZegUV4LvlTBqeSZclU52XwujpUUlDYS6iyo02flryYMmOG",
+					"https://cdn.jsdelivr.net/npm/property-information@7.2.0/lib/xml.js": "sha384-R62DT/+I3ZQtVBDIKvBb3oSLcLQKsHwRQBCBY4ld1/Ik0SqjKIO3wCcx9sjXSDJv",
+					"https://cdn.jsdelivr.net/npm/property-information@7.2.0/lib/xmlns.js": "sha384-NSULmFnVgnbnPogciBX6FgUBp4l5CMuKERyhJ/Js8ww45n/YpDeVcjtfNIxUoBKO",
+					"https://cdn.jsdelivr.net/npm/regex-recursion@6.0.2/src/index.js": "sha384-QK0Xja31RvN9rkiJBmEdWxXwy2qEJ20JAFJ0y0vzqNoD09+gI+rz+giYluF+Zyf1",
+					"https://cdn.jsdelivr.net/npm/regex-utilities@2.3.0/src/index.js": "sha384-ysCB7fW6DUa1WZ52gIrAc57NPWUOmfmjN8coFuDZw9tXS3prqt4v5Z0CaDPZ8liT",
+					"https://cdn.jsdelivr.net/npm/regex@6.1.0/src/atomic.js": "sha384-qWl94Ik5J2eFemS7EgyCs2Fm5dAvMalKUb+PFls9rExojHTIo/A8mMfPishEjG9z",
+					"https://cdn.jsdelivr.net/npm/regex@6.1.0/src/internals.js": "sha384-lmptUweBFbhDrdc06mbNWm+Z0VHlxtSed5Cd2lIRVB4qOR5iVwWuculump8+BOZN",
+					"https://cdn.jsdelivr.net/npm/regex@6.1.0/src/subclass.js": "sha384-da12xxqS3lsyrrXQ751xpFjIMioZ+ILiM1wLFPqYFl97MUMDtTXDJgRibyEPJT70",
+					"https://cdn.jsdelivr.net/npm/regex@6.1.0/src/utils-internals.js": "sha384-0k0Dug2KK3P5wAmWQNkYwhi90iM3s7FSouOD78lW3yu2NBpeF83FJ7H2D0BsSd0D",
+					"https://cdn.jsdelivr.net/npm/space-separated-tokens@2.0.2/index.js": "sha384-0TRjBpx8VPIODtjMyeGxApnQ4MHM0OWOD5mdQJkaoegq5aU2AAiZpLUKALguFEra",
+					"https://cdn.jsdelivr.net/npm/stringify-entities@4.0.4/index.js": "sha384-wXS/QYwP758QNGl/+8o5x6V73VaK15vx7SMqVGsiJvVwcyDOgzhG7+ZcLt1WAm0+",
+					"https://cdn.jsdelivr.net/npm/stringify-entities@4.0.4/lib/constant/dangerous.js": "sha384-KJMLnKgY0QRpsnbXM8V4Q17rOfnF8PRT2e1wOBKE6rL1+DloONJy/UvAoc2CrkWj",
+					"https://cdn.jsdelivr.net/npm/stringify-entities@4.0.4/lib/core.js": "sha384-v4Zoec7Fy2VJomYC29eM1zNC8fjb+ykCnKTjvBISBygW15mFcCwAjz7whSpG1lq3",
+					"https://cdn.jsdelivr.net/npm/stringify-entities@4.0.4/lib/index.js": "sha384-SIP8oUyfdMm/vAt+NyPODxsCWJxVf65ByTZ9GCBV+jXDWPqsw718mZ76ku/v5VGN",
+					"https://cdn.jsdelivr.net/npm/stringify-entities@4.0.4/lib/util/format-basic.js": "sha384-C3X4VvPHa4ot7xUf5E/mNvAIbtbA9TT2zgIxalXaCKLYOAywdZ06e8ESdii2Q6I6",
+					"https://cdn.jsdelivr.net/npm/stringify-entities@4.0.4/lib/util/format-smart.js": "sha384-XKEzsqlOa5dqER9bisNrZVJ88i7lTvAVOq1ajqH7jKkhDkawU/k8MLbF2d7b6Hl+",
+					"https://cdn.jsdelivr.net/npm/stringify-entities@4.0.4/lib/util/to-decimal.js": "sha384-YM5eN/NbHci+/vlboUFWrpu2LANJyyfXBjYmIgwGJp83K0cXXjYG8qSMG9AP4bTm",
+					"https://cdn.jsdelivr.net/npm/stringify-entities@4.0.4/lib/util/to-hexadecimal.js": "sha384-jjTCvIuDXitYq07BQRsdnFTEUxVjhNN1kbhGJEf1mDzAN1gVet2rh+WMuO8NKZOT",
+					"https://cdn.jsdelivr.net/npm/stringify-entities@4.0.4/lib/util/to-named.js": "sha384-7G20ErxOHzyTvnKgcd70M0fd8aduqtuOvjQp/X1HZBq62+xt2Zyv0+SN71wKILdY",
+					"https://cdn.jsdelivr.net/npm/zwitch@2.0.4/index.js": "sha384-uxBZuHkL0qQxn41kxbY/tv/k9GUdExxFrsO8tVZVLreeuUdaR3Hz477FN4WC8R0J"
+				}
+			}
+		</script>
+		<script type="module">
+			/**
+			 * Highlight code in every <pre> with Shiki: VS Code's own grammars and its
+			 * "GitHub Light Default" theme. The language comes from `data-lang`, else from
+			 * the file extension in the code's caption; code with no known language stays plain.
+			 * Every file loads from jsDelivr, pinned by the SHA in the import map above.
+			 * Without network the code stays plain.
+			 *
+			 * @see {@link https://shiki.style/guide/install#fine-grained-bundle Shiki: fine-grained bundle}
+			 */
+			import { createHighlighterCore } from "@shikijs/core";
+			import { createJavaScriptRegexEngine } from "@shikijs/engine-javascript";
 
-			document.querySelectorAll("pre").forEach((pre) => {
-				pre.innerHTML = escape(pre.textContent).replace(
-					TOKEN,
-					(match, comment, string, number, call, word) => {
-						if (comment) return span("c", comment);
-						if (string) return span("s", string);
-						if (number) return span("n", number);
-						if (call)
-							return KEYWORDS.has(call) ? span("k", call) : span("f", call);
-						if (KEYWORDS.has(word)) return span("k", word);
-						if (/^[A-Z][A-Z0-9_]+$/.test(word)) return span("n", word);
-						if (/^[A-Z]/.test(word)) return span("t", word);
-						return word;
-					},
+			const THEME = "github-light-default";
+			const ITALIC = 1;
+			const BOLD = 2;
+			const UNDERLINE = 4;
+
+			// Shiki language for each `data-lang` value or file extension the import map pins
+			const LANG_BY_NAME = {
+				bash: "shellscript",
+				cjs: "javascript",
+				css: "css",
+				cts: "typescript",
+				diff: "diff",
+				html: "html",
+				js: "javascript",
+				json: "json",
+				jsonc: "json",
+				jsx: "jsx",
+				markdown: "markdown",
+				md: "markdown",
+				mjs: "javascript",
+				mts: "typescript",
+				patch: "diff",
+				py: "python",
+				python: "python",
+				sh: "shellscript",
+				shell: "shellscript",
+				sql: "sql",
+				svelte: "svelte",
+				toml: "toml",
+				ts: "typescript",
+				tsx: "tsx",
+				typescript: "typescript",
+				yaml: "yaml",
+				yml: "yaml",
+				zsh: "shellscript",
+			};
+
+			/**
+			 * Find the file path shown with a <pre>: an output-html caption or code group
+			 * tab, or a lesson `.file` line right above it.
+			 */
+			const captionFor = (pre) => {
+				const figure = pre.closest("figure");
+				if (figure?.classList.contains("codegroup")) {
+					const tabs = figure.querySelectorAll("figcaption button");
+					const index = [...figure.querySelectorAll("pre")].indexOf(pre);
+					return tabs[index]?.textContent ?? "";
+				}
+				if (figure)
+					return figure.querySelector("figcaption")?.textContent ?? "";
+
+				const previous = pre.previousElementSibling;
+				return previous?.classList.contains("file") ? previous.textContent : "";
+			};
+
+			/**
+			 * Pick the Shiki language for a <pre>, or undefined to leave it plain.
+			 *
+			 * @example
+			 * langFor(preWithCaption("sync.ts:80")); // 'typescript'
+			 */
+			const langFor = (pre) => {
+				if (pre.dataset.lang) return LANG_BY_NAME[pre.dataset.lang];
+				const extension = /\.([a-z0-9]+)(?::[\d-]+)?\s*$/i.exec(
+					captionFor(pre),
 				);
+				return extension ? LANG_BY_NAME[extension[1].toLowerCase()] : undefined;
+			};
+
+			const escapeHtml = (text) =>
+				text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+			const tokenStyle = ({ color, fontStyle = 0 }) => {
+				const styles = [`color: ${color}`];
+				if (fontStyle & ITALIC) styles.push("font-style: italic");
+				if (fontStyle & BOLD) styles.push("font-weight: 600");
+				if (fontStyle & UNDERLINE) styles.push("text-decoration: underline");
+				return styles.join("; ");
+			};
+
+			const lineHtml = (tokens) =>
+				tokens
+					.map(
+						(token) =>
+							`<span style="${tokenStyle(token)}">${escapeHtml(token.content)}</span>`,
+					)
+					.join("");
+
+			// Pick the code to color; printed output (`pre.out`, `pre.err`) stays plain
+			const blocks = [...document.querySelectorAll("pre:not(.out):not(.err)")]
+				.map((pre) => ({ lang: langFor(pre), pre }))
+				.filter(({ lang }) => lang !== undefined);
+
+			// Load only the languages this page uses
+			const highlighter = await createHighlighterCore({
+				engine: createJavaScriptRegexEngine(),
+				langs: [...new Set(blocks.map(({ lang }) => lang))].map(
+					(lang) => import(`@shikijs/langs/${lang}.mjs`),
+				),
+				themes: [import(`@shikijs/themes/${THEME}.mjs`)],
 			});
 
+			// Color each line in place, so line spans (`.line`, stepper `.ln`) and their classes survive
+			for (const { lang, pre } of blocks) {
+				const lineElements = [
+					...pre.querySelectorAll(":scope > .line, :scope > .ln"),
+				];
+				const code = lineElements.length
+					? lineElements.map((line) => line.textContent).join("\n")
+					: pre.textContent;
+				const { tokens } = highlighter.codeToTokens(code, {
+					lang,
+					theme: THEME,
+				});
+
+				if (lineElements.length) {
+					lineElements.forEach((line, index) => {
+						line.innerHTML = lineHtml(tokens[index] ?? []);
+					});
+				} else {
+					pre.innerHTML = tokens.map(lineHtml).join("\n");
+				}
+			}
+		</script>
+
+		<script>
 			// Tabs; the URL hash keeps the open tab on reload
 			const buttons = [...document.querySelectorAll("nav button")];
 			const show = (id) => {
