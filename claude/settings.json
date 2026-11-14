@@ -7,10 +7,10 @@
 		"deny": ["AskUserQuestion", "Read(./.env)", "Read(./.env.*)"],
 		"defaultMode": "bypassPermissions"
 	},
-	"autoMemoryEnabled": false,
 	"model": "opus[1m]",
 	"feedbackDrafts": "off",
 	"tui": "fullscreen",
+	"autoMemoryEnabled": false,
 	"skipDangerousModePermissionPrompt": true,
 	"theme": "dark"
 }
