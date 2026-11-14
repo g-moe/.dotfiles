@@ -16,7 +16,7 @@
 
 - When a reply has several parts (steps, options, or an explanation with separate pieces), put each part in a collapsed `<details>` block. The `<summary>` holds a bold label and one line saying what it is and why; code, commands, and detail go inside. Every part gets a block, even one with nothing inside, so they all look the same. Replies with one part stay plain.
 
-- When the parts are steps, write them procedurally: number the labels in order, with nested numbers (2.1, 2.2) for sub-steps.
+- When the parts are steps, write them procedurally: number the labels in order, with nested numbers (2.1, 2.2) for sub-steps. When the parts are options, letter the labels (A, B, C). Numbers are only for steps.
 
 ### Never
 
