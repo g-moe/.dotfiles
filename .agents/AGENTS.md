@@ -36,6 +36,7 @@ Code is how we do a majority of our communication, so it must be easy to read. T
 - Do not nest ternaries.
 - No magic values (numbers, strings, etc).
 - No code golf.
+- In comments, put one sentence per line. Never break a sentence across lines to fit a width.
 - Prefer object parameters instead of multiple positional parameters...an exception would be using positional args when in the hot-path.
 
 **Responsibility**
