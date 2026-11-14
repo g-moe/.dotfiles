@@ -72,7 +72,7 @@ diffRemoved = "#9e2e36"
 skill = "#b16286"
 
 [desktop.open-in-target-preferences]
-global = "zed"
+global = "systemDefault"
 
 [features]
 js_repl = false

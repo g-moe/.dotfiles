@@ -364,7 +364,7 @@
 	"workbench.editor.preventPinnedEditorClose": "keyboard",
 	"terminal.integrated.mouseWheelZoom": false,
 	"comments.openView": "never",
-	"git.blame.editorDecoration.enabled": false,
+	"git.blame.editorDecoration.enabled": true,
 	"gitlens.currentLine.enabled": false,
 	"editor.inlayHints.fontSize": 12,
 	"editor.suggestFontSize": 12,
@@ -444,10 +444,13 @@
 	"workbench.panel.showLabels": false,
 	"git.blame.editorDecoration.disableHover": true,
 	"git.blame.ignoreWhitespace": true,
-	"workbench.preferredDarkColorTheme": "GitHub Light Default",
+	"workbench.preferredDarkColorTheme": "GitHub Light",
 	"workbench.editor.swipeToNavigate": true,
 	"workbench.experimental.modernUI": true,
 	"workbench.experimental.modernUIUppercaseViewHeaders": true,
 	"workbench.tree.indent": 12,
-	"terminal.integrated.enableMultiLinePasteWarning": "never"
+    "terminal.integrated.enableMultiLinePasteWarning": "never",
+    "comments.thread.confirmOnCollapse": "never",
+    "diffEditor.useInlineViewWhenSpaceIsLimited": false,
+    "workbench.sideBar.location": "right"
 }

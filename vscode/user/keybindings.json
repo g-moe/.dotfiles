@@ -820,12 +820,7 @@
 		"command": "bookmarks.toggle",
 		"when": "editorTextFocus"
 	},
-	{
-		"key": "ctrl+shift+alt+cmd",
-		"command": "workbench.action.navigateBack",
-		"when": "canNavigateBack"
-	},
-	{
+    {
 		"key": "shift+cmd+c",
 		"command": "-workbench.action.terminal.openNativeConsole",
 		"when": "!terminalFocus"
@@ -1929,15 +1924,7 @@
 		"command": "-copyRelativeFilePath",
 		"when": "editorFocus"
 	},
-	{
-		"key": "ctrl+shift+alt+d",
-		"command": "workbench.action.navigateBackInEditLocations"
-	},
-	{
-		"key": "ctrl+shift+alt+f",
-		"command": "workbench.action.navigateForwardInEditLocations"
-	},
-	{
+    {
 		"key": "cmd+e cmd+f",
 		"command": "search.action.openEditor"
 	},
@@ -1963,5 +1950,18 @@
 	{
 		"key": "cmd+e cmd+g",
 		"command": "workbench.view.scm"
-	}
+    },
+    {
+        "key": "browserback",
+        "command": "-workbench.action.navigateBack",
+        "when": "canNavigateBack"
+    },
+    {
+        "key": "ctrl+shift+alt+d",
+        "command": "workbench.action.navigateBackInNavigationLocations"
+    },
+    {
+        "key": "ctrl+shift+alt+f",
+        "command": "workbench.action.navigateForwardInNavigationLocations"
+    }
 ]
