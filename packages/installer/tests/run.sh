@@ -26,6 +26,7 @@ tests=(
   "$TESTS_DIR/lib/lib-install.sh"
   "$TESTS_DIR/lib/lib-packages.sh"
   "$TESTS_DIR/lib/retire.sh"
+  "$TESTS_DIR/lib/ssh-fleet.sh"
   "$TESTS_DIR/repository/dotfiles-layout.sh"
 )
 

@@ -186,6 +186,9 @@ ssh-ls() {
 # Walk through creating a new SSH host config
 alias ssh-new="$HOME/.dotfiles/packages/lib/bash/bin/shared-ssh-new-host.sh"
 
+# Open or join the SSH fleet tmux session from SSH_FLEET_ALIASES in ~/.dotfiles/.env; `ssh-fleet --restart` rebuilds it
+alias ssh-fleet="$HOME/.dotfiles/packages/lib/bash/bin/shared-ssh-fleet.sh"
+
 # Record and uninstall a package on this platform
 alias retire='RETIRE_FILE="$HOME/.dotfiles/packages/installer/packages/retire.json" "$HOME/.dotfiles/packages/lib/bash/bin/shared-retire-package.sh"'
 
