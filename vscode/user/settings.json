@@ -451,6 +451,5 @@
 	"workbench.tree.indent": 12,
     "terminal.integrated.enableMultiLinePasteWarning": "never",
     "comments.thread.confirmOnCollapse": "never",
-    "diffEditor.useInlineViewWhenSpaceIsLimited": false,
-    "workbench.sideBar.location": "right"
+    "diffEditor.useInlineViewWhenSpaceIsLimited": false
 }

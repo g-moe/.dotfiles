@@ -69,7 +69,7 @@ packages/installer/setup/agents.sh  agent configuration and usage CLI (--agents 
 .agents/AGENTS.md                   global instructions shared by the coding clients
 claude/settings.json                personal Claude Code settings linked during agent setup
 pi/settings.json                    personal Pi settings linked during agent setup; uses /bin/zsh
-codex/.codex/                       personal Codex settings linked during development
+codex/.codex/                       shared Codex settings linked during development; config.toml links to /etc/codex, ~/.codex/config.toml stays per machine
 packages/installer/lib/lib.sh       installer library entry point
 packages/installer/tests/           mirrors installer paths (`setup/`, `lib/`, and top-level flow)
 packages/lib/bash/                  standalone reusable Bash library
