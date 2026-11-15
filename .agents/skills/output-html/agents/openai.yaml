@@ -1,7 +1,0 @@
-interface:
-  display_name: "Output HTML"
-  short_description: "Build polished single-file HTML artifacts"
-  default_prompt: "Use $output-html to turn this material into a polished, self-contained HTML artifact."
-
-policy:
-  allow_implicit_invocation: false

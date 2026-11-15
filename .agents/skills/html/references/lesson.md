@@ -1,9 +1,3 @@
----
-name: lesson
-description: Use only when explicitly invoked as $lesson to build self-contained HTML lessons or courses from source material.
-disable-model-invocation: true
----
-
 # Lesson
 
 Turn source material into a course a reader can learn from without opening anything else. Teach only the topic, sources and scope the user approved. If the scope is unclear, agree on it before drafting.
@@ -20,9 +14,9 @@ A multi-page course ends with a **capstone** page that follows one concrete exam
 
 ## The page
 
-**Self-contained.** All CSS and JavaScript are inline, and the page makes no network requests except the template's SHA-pinned Shiki files, so it works opened from disk or hosted alone. Without network, code shows uncolored. Copy in the code and facts a lesson relies on. When a page builds on another page, open with a short recap of what it needs.
+**Self-contained.** Copy in the code and facts a lesson relies on. When a page builds on another page, open with a short recap of what it needs.
 
-**Template.** Start from [assets/template.html](assets/template.html). It holds the page shell, styles, the shared component script and Shiki code highlighting: each `pre` takes its language from `data-lang` or the file extension in its `.codefile` caption, and `pre.out` and `pre.err` stay plain. Its shared components match the output-html template's. You supply the body, the navigation script and the widgets. Use its classes for these blocks, and style the blocks it lacks to match:
+**Template.** Copy [../assets/template.html](../assets/template.html), delete its sample header, tabs, sections and tab script (the one starting `// Tabs;`), and paste [../assets/template-lesson.css](../assets/template-lesson.css) into its `<style>` after the components and before the mobile rules. You supply the body, the navigation script and the widgets. Use these classes for these blocks, and style the blocks they lack to match the template:
 
 | Block | Class |
 | --- | --- |
@@ -44,8 +38,6 @@ A multi-page course ends with a **capstone** page that follows one concrete exam
 | Exercise | `.exercise` |
 | Next button | `.next` |
 | Key idea | none yet |
-
-Escape `<`, `>` and `&` inside code as `&lt;`, `&gt;` and `&amp;`.
 
 **Navigation.** Build it from each section's `data-nav`, `data-group` and `title` attributes: one tab per lesson, plus group pills when a page holds more than one group.
 
@@ -112,5 +104,3 @@ Start every reviewer in a fresh context holding only its brief and the files it 
 ## Delivery
 
 Show the user nothing until the final check passes. Report any problem you can't resolve instead of hiding it. Finish with links to the pages, then only the decisions the user must make and any bugs found in the source material.
-
-**Mobile layout.** Use the template’s single mobile breakpoint, `max-width: 640px`, for all mobile rules. Keep the built-in navigation script: it puts one hamburger menu in the page `<header>` on mobile, which opens every `nav` to fill the screen below the header, closes after selection or Escape, and leaves desktop tabs visible. Keep the page title as the only content of a `body > header`, with no description under it, and insert navigation before `DOMContentLoaded` fires.

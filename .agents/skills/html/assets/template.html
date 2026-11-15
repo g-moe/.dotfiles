@@ -24,37 +24,30 @@
 				background: var(--bg);
 				color: var(--text);
 				font:
-					15.5px/1.7 system-ui,
+					14px/1.55 system-ui,
 					sans-serif;
 			}
 			header {
-				padding: 28px 28px 0;
-				max-width: 820px;
-				margin: 0 auto;
+				padding: 20px 28px 0;
 			}
 			h1 {
-				margin: 0 0 6px;
-				font-size: 26px;
-				line-height: 1.25;
+				margin: 0 0 4px;
+				font-size: 20px;
 			}
 			nav {
 				display: flex;
-				gap: 2px;
-				padding: 0 20px;
+				gap: 4px;
+				padding: 0 14px;
 				border-bottom: 1px solid var(--line);
 				flex-wrap: wrap;
-				justify-content: center;
-				max-width: 1020px;
-				margin: 0 auto;
 			}
 			nav button {
 				background: none;
 				border: 0;
 				border-bottom: 2px solid transparent;
 				color: var(--muted);
-				padding: 10px 8px;
+				padding: 10px 14px;
 				font: inherit;
-				font-size: 14px;
 				cursor: pointer;
 			}
 			nav button.active {
@@ -63,34 +56,31 @@
 			}
 			section {
 				display: none;
-				padding: 24px 28px 64px;
-				max-width: 820px;
-				margin: 0 auto;
+				padding: 20px 28px 48px;
+				max-width: 1100px;
 			}
 			section.active {
 				display: block;
 			}
 			h2 {
-				font-size: 22px;
-				margin: 40px 0 8px;
+				font-size: 17px;
+				margin: 0 0 6px;
 			}
 			h3 {
-				font-size: 17px;
-				margin: 28px 0 6px;
+				font-size: 14px;
+				margin: 22px 0 6px;
+				color: var(--accent);
 			}
-			p {
-				margin: 0 0 14px;
+			.idea {
+				color: var(--muted);
+				margin: 0 0 12px;
 			}
-			ul,
-			ol {
-				margin: 6px 0 16px;
-				padding-left: 22px;
-			}
-			li {
-				margin: 4px 0;
+			ul {
+				margin: 6px 0;
+				padding-left: 20px;
 			}
 
-			/* Shared components: keep this block identical in the lesson and output-html templates. */
+			/* Components */
 			code {
 				font-family: ui-monospace, monospace;
 				font-size: 0.9em;
@@ -734,237 +724,6 @@
 				stroke: var(--bad);
 				stroke-width: 4;
 			}
-			/* End shared components. */
-
-			/* Lesson components */
-			/* Blog furniture */
-			.toc {
-				border: 1px solid var(--line);
-				border-radius: 8px;
-				padding: 10px 16px;
-				margin: 0 0 24px;
-				font-size: 14px;
-			}
-			.toc b {
-				display: block;
-				color: var(--muted);
-				font-size: 12px;
-				text-transform: uppercase;
-				letter-spacing: 0.04em;
-				margin-bottom: 2px;
-			}
-			.toc a {
-				color: var(--accent);
-				text-decoration: none;
-			}
-			.toc ol {
-				margin: 0;
-				padding-left: 20px;
-			}
-			.learn {
-				background: var(--panel);
-				border-radius: 8px;
-				padding: 12px 18px;
-				margin: 0 0 20px;
-			}
-			.learn ul {
-				margin: 4px 0 0;
-			}
-			.ask {
-				display: flex;
-				gap: 10px;
-				border: 1px solid var(--line);
-				border-radius: 8px;
-				padding: 12px 14px;
-				margin: 0 0 16px;
-			}
-			.ask .who {
-				font-size: 20px;
-				line-height: 1.2;
-			}
-			.ask > div:last-child {
-				min-width: 0;
-			}
-			.ask p {
-				margin: 0 0 6px;
-			}
-			.ask p:last-child {
-				margin: 0;
-			}
-			.ask .q {
-				font-weight: 600;
-				margin-bottom: 4px;
-			}
-			.ask pre {
-				margin: 6px 0 8px;
-			}
-
-			/* Exercise and next lesson */
-			.exercise {
-				border: 1px solid var(--line);
-				border-left: 3px solid var(--good);
-				border-radius: 0 8px 8px 0;
-				padding: 12px 16px;
-				margin: 0 0 20px;
-			}
-			.exercise > p:first-child {
-				font-weight: 600;
-			}
-			.exercise details {
-				border: 0;
-				padding: 0;
-				margin: 6px 0 0;
-			}
-			.exercise summary {
-				cursor: pointer;
-				color: var(--accent);
-				font-size: 14px;
-				font-weight: 600;
-				margin-bottom: 10px;
-			}
-			.next {
-				display: flex;
-				align-items: center;
-				justify-content: space-between;
-				gap: 12px;
-				border: 1px solid var(--line);
-				border-radius: 8px;
-				padding: 12px 16px;
-				margin-top: 24px;
-				background: var(--panel);
-			}
-			.next p {
-				margin: 0;
-			}
-
-			/* Widgets */
-			.widget {
-				border: 1px solid var(--line);
-				border-radius: 10px;
-				padding: 16px;
-				margin: 4px 0 20px;
-				background: #fbfcfd;
-			}
-			.widget .hint {
-				font-size: 13px;
-				color: var(--muted);
-				margin: 0 0 10px;
-			}
-			.widget pre {
-				margin: 0 0 10px;
-			}
-			.row {
-				display: flex;
-				gap: 8px;
-				flex-wrap: wrap;
-				align-items: center;
-				margin-bottom: 10px;
-			}
-			.btn {
-				border: 1px solid var(--line);
-				background: var(--bg);
-				border-radius: 6px;
-				padding: 5px 12px;
-				font: inherit;
-				font-size: 13.5px;
-				cursor: pointer;
-			}
-			.btn:hover {
-				border-color: var(--accent);
-			}
-			.btn.primary {
-				background: var(--accent);
-				color: #fff;
-				border-color: var(--accent);
-			}
-			.btn.on {
-				background: #ddf4ff;
-				border-color: var(--accent);
-				color: var(--accent);
-			}
-			.btn:disabled {
-				opacity: 0.45;
-				cursor: default;
-			}
-			.btn code {
-				background: none;
-				padding: 0;
-			}
-			.seg {
-				display: inline-flex;
-				flex-wrap: wrap;
-				gap: 4px;
-				vertical-align: middle;
-			}
-			.seg button {
-				border: 1px solid var(--line);
-				border-radius: 6px;
-				background: var(--bg);
-				padding: 4px 10px;
-				font:
-					13px ui-monospace,
-					monospace;
-				cursor: pointer;
-			}
-			.seg button:hover {
-				border-color: var(--accent);
-			}
-			.seg button.on {
-				background: var(--accent);
-				border-color: var(--accent);
-				color: #fff;
-			}
-			.status {
-				font-size: 14px;
-				background: var(--panel);
-				border-radius: 6px;
-				padding: 8px 10px;
-				min-height: 40px;
-			}
-			.status pre {
-				margin: 8px 0 0;
-			}
-			.counter {
-				font-size: 12px;
-				color: var(--muted);
-				margin-left: auto;
-			}
-			.bad {
-				color: var(--bad);
-				font-weight: 600;
-			}
-			.ok {
-				color: var(--good);
-				font-weight: 600;
-			}
-			.empty {
-				color: var(--muted);
-				font-size: 13px;
-				font-style: italic;
-			}
-			.stats {
-				display: flex;
-				gap: 16px;
-				font-size: 13px;
-				color: var(--muted);
-				margin-top: 8px;
-				flex-wrap: wrap;
-			}
-			.stats b {
-				color: var(--text);
-				font-size: 15px;
-			}
-			.lesson-tag {
-				display: inline-block;
-				font-size: 11px;
-				background: #ddf4ff;
-				color: var(--accent);
-				border-radius: 10px;
-				padding: 0 8px;
-				margin-left: 6px;
-				font-weight: 600;
-				vertical-align: 1px;
-			}
 
 			/* Shared mobile breakpoint: use 640px for all mobile layout rules. */
 			.nav-toggle {
@@ -1053,8 +812,444 @@
 		</style>
 	</head>
 	<body>
-		<!-- Insert the course header, group pills, lesson tabs and lesson sections here. -->
-		<!-- Inline the navigation code and group widget scripts after the sections. -->
+		<header>
+			<h1>TITLE</h1>
+		</header>
+
+		<!-- One button per section; data-tab matches the section id. -->
+		<nav>
+			<button data-tab="a" class="active">A · First option</button>
+			<button data-tab="b">B · Second option</button>
+			<button data-tab="brainstorm">Brainstorm</button>
+		</nav>
+
+		<section id="a" class="active">
+			<h2>A · First option</h2>
+			<p class="idea">One-line idea.</p>
+			<p>
+				<mark>TODO:</mark> A TODO for the user, with only its prefix marked.
+			</p>
+
+			<h3>Flow</h3>
+			<div class="flow">
+				<span>Input</span><i>→</i><span>Parse</span><i>→</i><span>Output</span>
+			</div>
+
+			<h3>Sequence</h3>
+			<!-- --from: left actor's column; --span: columns from left actor to right actor, inclusive. "back" points the arrow left. -->
+			<div class="seq" style="--actors: 3">
+				<b>Client</b><b>API</b><b>DB</b>
+				<div class="msg" style="--from: 1; --span: 2">request</div>
+				<div class="msg" style="--from: 2; --span: 2">query</div>
+				<div class="msg back" style="--from: 2; --span: 2">rows</div>
+				<div class="msg back" style="--from: 1; --span: 2">response</div>
+			</div>
+
+			<h3>Code</h3>
+			<figure class="codefile">
+				<figcaption>file.ts</figcaption>
+				<pre>
+export function example({ value }: { readonly value: number }): string {
+    return `value: ${value}`;
+}</pre
+				>
+			</figure>
+
+			<h3>Run</h3>
+			<pre
+				class="cmd"
+			><span>$ </span>pnpm test<button class="copy" data-copy="pnpm test">Copy</button></pre>
+
+			<h3>Output</h3>
+			<figure class="codefile">
+				<figcaption>$ pnpm test</figcaption>
+				<pre class="out">
+✓ parse.test.ts (3 tests)
+Tests  3 passed</pre
+				>
+			</figure>
+
+			<h3>Trade-offs</h3>
+			<ul>
+				<li class="pro">A benefit.</li>
+				<li class="con">A cost.</li>
+			</ul>
+
+			<details>
+				<summary>Detail most readers skip</summary>
+				<p>Long logs, full output, or background.</p>
+			</details>
+		</section>
+
+		<section id="b">
+			<h2>B · Second option</h2>
+			<p class="idea">One-line idea.</p>
+
+			<table>
+				<tr>
+					<th>Column</th>
+					<th>Column</th>
+				</tr>
+				<tr>
+					<td>Value</td>
+					<td>Value</td>
+				</tr>
+			</table>
+
+			<h3>Bars</h3>
+			<div class="meter-row">
+				<span>Label</span>
+				<div class="meter"><i style="width: 70%"></i></div>
+				<span>70%</span>
+			</div>
+			<div class="meter-row">
+				<span>Label</span>
+				<div class="meter"><i style="width: 40%"></i></div>
+				<span>40%</span>
+			</div>
+
+			<h3>Steps</h3>
+			<ol class="steps">
+				<li><strong>First</strong> step.</li>
+				<li>
+					<strong>Second</strong> step, with optional sub-steps.
+					<ol class="steps">
+						<li>Sub-step.</li>
+						<li>Sub-step.</li>
+					</ol>
+				</li>
+				<li><strong>Third</strong> step.</li>
+			</ol>
+
+			<h3>Checklist</h3>
+			<ul class="checks">
+				<li class="done">Done item.</li>
+				<li>
+					Open item, with optional sub-items.
+					<ul class="checks">
+						<li class="done">Done sub-item.</li>
+						<li>Open sub-item.</li>
+					</ul>
+				</li>
+			</ul>
+
+			<h3>Timeline</h3>
+			<div class="timeline">
+				<div><time>Date</time>Done milestone</div>
+				<div class="next"><time>Date</time>Upcoming milestone</div>
+			</div>
+
+			<h3>Files</h3>
+			<pre class="tree">
+src/
+├── parse.ts  <em>one-line role</em>
+└── index.ts</pre>
+		</section>
+
+		<!-- Brainstorm: candidate primitives. Keep what you pick, delete the rest. -->
+		<section id="brainstorm">
+			<h2>Brainstorm</h2>
+			<p class="idea">Candidate primitives. Pick by number.</p>
+
+			<h3>1 · Code group</h3>
+			<p class="idea">
+				Use for: one change across several files, one tab per file.
+			</p>
+			<figure class="codefile codegroup">
+				<figcaption>
+					<button class="active">parse.ts</button><button>parse.test.ts</button>
+				</figcaption>
+				<pre>
+export function parse({ raw }: { readonly raw: string }): Payload {
+    return PayloadSchema.parse(JSON.parse(raw));
+}</pre
+				>
+				<pre hidden>
+test('rejects bad json', () => {
+    expect(() => parse({ raw: '{' })).toThrow();
+});</pre
+				>
+			</figure>
+
+			<h3>2 · Line numbers + highlighted lines</h3>
+			<p class="idea">
+				Use for: pointing at exact lines without comments. Set
+				<code>data-lines="2,3"</code>.
+			</p>
+			<figure class="codefile">
+				<figcaption>sync.ts:80</figcaption>
+				<pre data-lines="2,3">
+for (const job of jobs) {
+    await run(job);
+    await sleep(0);
+}</pre
+				>
+			</figure>
+
+			<h3>3 · Editor links</h3>
+			<p class="idea">
+				Use for: file references that open in VS Code on click.
+			</p>
+			<p>
+				The check lives in
+				<a
+					class="ref"
+					href="vscode://file/Users/garrett/.dotfiles/packages/lib/ts/parse.ts:12"
+					>parse.ts:12</a
+				>
+				and runs before
+				<a
+					class="ref"
+					href="vscode://file/Users/garrett/.dotfiles/packages/lib/ts/index.ts:4"
+					>index.ts:4</a
+				>.
+			</p>
+
+			<h3>4 · Fields</h3>
+			<p class="idea">Use for: the shape of a type, config, or payload.</p>
+			<table class="fields">
+				<tr>
+					<th>Field</th>
+					<th>Type</th>
+					<th>Notes</th>
+				</tr>
+				<tr>
+					<td><code>id</code></td>
+					<td class="type">number</td>
+					<td>Server-assigned.</td>
+				</tr>
+				<tr>
+					<td><code>name</code></td>
+					<td class="type">string</td>
+					<td>1–80 chars.</td>
+				</tr>
+				<tr>
+					<td><code>email</code></td>
+					<td class="type">string</td>
+					<td><span class="opt">optional</span> Lowercased on save.</td>
+				</tr>
+			</table>
+
+			<h3>5 · Config change</h3>
+			<p class="idea">
+				Use for: settings whose value changes, old next to new.
+			</p>
+			<table>
+				<tr>
+					<th>Setting</th>
+					<th>Value</th>
+				</tr>
+				<tr>
+					<td><code>timeout</code></td>
+					<td><del>5000</del> → <ins>10000</ins></td>
+				</tr>
+				<tr>
+					<td><code>retries</code></td>
+					<td><del>0</del> → <ins>3</ins></td>
+				</tr>
+			</table>
+
+			<h3>6 · Test cases</h3>
+			<p class="idea">
+				Use for: inputs, expected vs. actual, failures stand out.
+			</p>
+			<table class="cases">
+				<tr>
+					<th>Input</th>
+					<th>Expected</th>
+					<th>Actual</th>
+					<th></th>
+				</tr>
+				<tr>
+					<td><code>"42"</code></td>
+					<td>42</td>
+					<td>42</td>
+					<td class="pass">✓</td>
+				</tr>
+				<tr class="fail">
+					<td><code>" 42 "</code></td>
+					<td>42</td>
+					<td>NaN</td>
+					<td class="failed">✗</td>
+				</tr>
+			</table>
+
+			<h3>7 · Decision tree</h3>
+			<p class="idea">
+				Use for: "if this, then that" logic the reader follows.
+			</p>
+			<ul class="dtree">
+				<li>
+					<strong>Is the input external?</strong>
+					<ul>
+						<li><em>yes</em>Validate at the boundary.</li>
+						<li>
+							<em>no</em><strong>Is it already typed?</strong>
+							<ul>
+								<li><em>yes</em>Use it directly.</li>
+								<li><em>no</em>Add a type at the source.</li>
+							</ul>
+						</li>
+					</ul>
+				</li>
+			</ul>
+
+			<h3>8 · State transitions</h3>
+			<p class="idea">Use for: states and the events that move between them.</p>
+			<div class="transitions">
+				<div><b>idle</b><i>— submit →</i><b>loading</b></div>
+				<div><b>loading</b><i>— success →</i><b>done</b></div>
+				<div>
+					<b>loading</b><i>— error →</i><b>failed</b><i>— retry →</i
+					><b>loading</b>
+				</div>
+			</div>
+
+			<h3>9 · Proportion bar</h3>
+			<p class="idea">Use for: how one whole splits into parts.</p>
+			<div class="split">
+				<span class="c1" style="width: 48%"></span
+				><span class="c2" style="width: 27%"></span
+				><span class="c3" style="width: 15%"></span
+				><span class="c4" style="width: 10%"></span>
+			</div>
+			<div class="legend">
+				<span class="c1">app 48%</span><span class="c2">react 27%</span
+				><span class="c3">zod 15%</span><span class="c4">other 10%</span>
+			</div>
+
+			<h3>10 · Scale with thresholds</h3>
+			<p class="idea">
+				Use for: where one value sits against good / warn / bad limits.
+			</p>
+			<div class="scale" style="--ok-at: 50%; --warn-at: 80%">
+				<i style="left: 64%"><span>p95: 320 ms</span></i>
+			</div>
+			<div class="scale-labels"><span>0 ms</span><span>500 ms</span></div>
+
+			<h3>11 · Sparkline</h3>
+			<p class="idea">Use for: a trend inside a table cell or sentence.</p>
+			<table>
+				<tr>
+					<th>Metric</th>
+					<th>Last 7 days</th>
+				</tr>
+				<tr>
+					<td>Errors</td>
+					<td>
+						<svg class="spark" width="80" height="20" viewBox="0 0 80 20">
+							<polyline points="0,15 13,12 26,14 40,6 53,8 66,4 80,2" />
+						</svg>
+					</td>
+				</tr>
+				<tr>
+					<td>Latency</td>
+					<td>
+						<svg class="spark" width="80" height="20" viewBox="0 0 80 20">
+							<polyline points="0,4 13,6 26,5 40,10 53,12 66,14 80,16" />
+						</svg>
+					</td>
+				</tr>
+			</table>
+
+			<h3>12 · Wireframe</h3>
+			<p class="idea">Use for: where a UI change lands on the page.</p>
+			<div class="wire">
+				<div class="top">Header</div>
+				<div>Sidebar</div>
+				<div class="focus">Main · new filter bar here</div>
+			</div>
+
+			<h3>13 · Color swatches</h3>
+			<p class="idea">Use for: theme or palette changes.</p>
+			<div class="swatches">
+				<div>
+					<i style="background: #0969da"></i
+					><span>accent<br /><code>#0969da</code></span>
+				</div>
+				<div>
+					<i style="background: #1a7f37"></i
+					><span>good<br /><code>#1a7f37</code></span>
+				</div>
+				<div>
+					<i style="background: #cf222e"></i
+					><span>bad<br /><code>#cf222e</code></span>
+				</div>
+			</div>
+
+			<h3>14 · Box diagram</h3>
+			<p class="idea">
+				Use for: free-form architecture an agent can draw in text.
+			</p>
+			<pre class="diagram">
+┌───────────┐     ┌──────────┐
+│ installer │────▶│ lib/bash │
+└─────┬─────┘     └──────────┘
+      │
+      ▼
+┌───────────┐
+│    mac    │
+└───────────┘</pre
+			>
+
+			<h3>15 · Notes</h3>
+			<p class="idea">
+				Use for: a side fact, or a warning the reader must not miss.
+			</p>
+			<div class="note">A side fact the reader may want.</div>
+			<div class="note warn">A warning the reader must not miss.</div>
+
+			<h3>16 · Image with callout</h3>
+			<p class="idea">
+				Use for: pointing at one spot on a screenshot. Set the SVG's
+				<code>viewBox</code> to the image's size in pixels, then place
+				<code>&lt;ellipse&gt;</code> rings or <code>&lt;rect&gt;</code> boxes in
+				image pixels.
+			</p>
+			<figure class="media phone">
+				<div class="shot">
+					<img
+						alt="Screenshot with the Menu button ringed"
+						src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='390' height='240'%3E%3Crect width='390' height='240' fill='%23f6f8fa'/%3E%3Crect x='270' y='16' width='100' height='40' rx='6' fill='%23fff' stroke='%23d0d7de'/%3E%3Ctext x='20' y='44' font-family='system-ui' font-size='20' font-weight='700' fill='%231f2328'%3EScreenshot%3C/text%3E%3Ctext x='298' y='42' font-family='system-ui' font-size='15' fill='%231f2328'%3EMenu%3C/text%3E%3C/svg%3E"
+					/>
+					<svg viewBox="0 0 390 240" aria-hidden="true">
+						<ellipse cx="320" cy="36" rx="64" ry="30" />
+					</svg>
+				</div>
+				<figcaption>The Menu button sits in the header.</figcaption>
+			</figure>
+
+			<h3>17 · GIF</h3>
+			<p class="idea">
+				Use for: a short loop when the source already is a GIF; otherwise use
+				video. Set <code>src="data:image/gif;base64,…"</code>.
+			</p>
+			<figure class="media phone">
+				<img
+					alt="Menu opening and picking a tab"
+					src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='390' height='240'%3E%3Crect width='390' height='240' fill='%23f6f8fa'/%3E%3Crect x='270' y='16' width='100' height='40' rx='6' fill='%23fff' stroke='%23d0d7de'/%3E%3Ctext x='20' y='44' font-family='system-ui' font-size='20' font-weight='700' fill='%231f2328'%3EScreenshot%3C/text%3E%3Ctext x='298' y='42' font-family='system-ui' font-size='15' fill='%231f2328'%3EMenu%3C/text%3E%3C/svg%3E"
+				/>
+				<figcaption>Open the menu, pick a tab.</figcaption>
+			</figure>
+
+			<h3>18 · Video</h3>
+			<p class="idea">
+				Use for: a recording of a change in action; MP4 or WebM is 5 to 10 times
+				smaller than the same GIF. Set
+				<code>src="data:video/mp4;base64,…"</code>.
+			</p>
+			<figure class="media phone">
+				<video
+					autoplay
+					muted
+					loop
+					playsinline
+					controls
+					poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='390' height='240'%3E%3Crect width='390' height='240' fill='%23f6f8fa'/%3E%3Crect x='270' y='16' width='100' height='40' rx='6' fill='%23fff' stroke='%23d0d7de'/%3E%3Ctext x='20' y='44' font-family='system-ui' font-size='20' font-weight='700' fill='%231f2328'%3EScreenshot%3C/text%3E%3Ctext x='298' y='42' font-family='system-ui' font-size='15' fill='%231f2328'%3EMenu%3C/text%3E%3C/svg%3E"
+				></video>
+				<figcaption>The recording plays on its own and loops.</figcaption>
+			</figure>
+		</section>
 
 		<!-- Shiki 4.5.0 from npm via jsDelivr; every file is pinned by its SHA-384 -->
 		<script type="importmap">
@@ -1308,8 +1503,34 @@
 		</script>
 
 		<script>
-			// Shared components: keep this script identical in the lesson and output-html templates.
-			// It runs before the Shiki module, which colors each `.line` in place.
+			// Tabs; the URL hash keeps the open tab on reload
+			const buttons = [...document.querySelectorAll("nav button")];
+			const show = (id) => {
+				buttons.forEach((button) =>
+					button.classList.toggle("active", button.dataset.tab === id),
+				);
+				document
+					.querySelectorAll("section")
+					.forEach((section) =>
+						section.classList.toggle("active", section.id === id),
+					);
+			};
+
+			buttons.forEach((button) =>
+				button.addEventListener("click", () => {
+					show(button.dataset.tab);
+					history.replaceState(null, "", `#${button.dataset.tab}`);
+				}),
+			);
+
+			const initial = location.hash.slice(1);
+			if (buttons.some((button) => button.dataset.tab === initial)) {
+				show(initial);
+			}
+		</script>
+
+		<script>
+			// Components: it runs before the Shiki module, which colors each `.line` in place.
 
 			// Wrap each line of <pre data-lines="2,3"> in a numbered `.line`; listed lines get `.hl`
 			document.querySelectorAll("pre[data-lines]").forEach((pre) => {
