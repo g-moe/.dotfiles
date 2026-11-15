@@ -245,9 +245,11 @@
 				color: var(--muted);
 				font-style: normal;
 			}
+			/* Menlo and Consolas carry box-drawing characters, so lines and corners meet. */
 			pre.diagram {
 				background: var(--bg);
-				line-height: 1.4;
+				font-family: Menlo, Consolas, "DejaVu Sans Mono", monospace;
+				line-height: 1.2;
 			}
 
 			/* Tables: plain, fields of a type, test cases, config changes */
@@ -683,6 +685,44 @@
 				color: var(--accent);
 				text-decoration: none;
 				border-bottom: 1px dotted var(--accent);
+			}
+			/* Media: image, GIF or video embedded as a data: URL, with optional callouts drawn over a screenshot */
+			.media {
+				margin: 12px 0;
+			}
+			.media.phone {
+				max-width: 320px;
+			}
+			.media img,
+			.media video {
+				display: block;
+				width: 100%;
+				height: auto;
+				border: 1px solid var(--line);
+				border-radius: 6px;
+			}
+			.media figcaption {
+				color: var(--muted);
+				font-size: 12px;
+				margin-top: 6px;
+			}
+			.shot {
+				position: relative;
+			}
+			/* The SVG's viewBox is the image's size in pixels, so callout numbers are image pixels. */
+			.shot svg {
+				position: absolute;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				pointer-events: none;
+			}
+			.shot ellipse,
+			.shot rect {
+				fill: none;
+				stroke: var(--bad);
+				stroke-width: 4;
 			}
 			/* End shared components. */
 
@@ -1159,6 +1199,57 @@ for (const job of jobs) {
 			</p>
 			<div class="note">A side fact the reader may want.</div>
 			<div class="note warn">A warning the reader must not miss.</div>
+
+			<h3>16 · Image with callout</h3>
+			<p class="idea">
+				Use for: pointing at one spot on a screenshot. Set the SVG's
+				<code>viewBox</code> to the image's size in pixels, then place
+				<code>&lt;ellipse&gt;</code> rings or <code>&lt;rect&gt;</code> boxes in
+				image pixels.
+			</p>
+			<figure class="media phone">
+				<div class="shot">
+					<img
+						alt="Screenshot with the Menu button ringed"
+						src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='390' height='240'%3E%3Crect width='390' height='240' fill='%23f6f8fa'/%3E%3Crect x='270' y='16' width='100' height='40' rx='6' fill='%23fff' stroke='%23d0d7de'/%3E%3Ctext x='20' y='44' font-family='system-ui' font-size='20' font-weight='700' fill='%231f2328'%3EScreenshot%3C/text%3E%3Ctext x='298' y='42' font-family='system-ui' font-size='15' fill='%231f2328'%3EMenu%3C/text%3E%3C/svg%3E"
+					/>
+					<svg viewBox="0 0 390 240" aria-hidden="true">
+						<ellipse cx="320" cy="36" rx="64" ry="30" />
+					</svg>
+				</div>
+				<figcaption>The Menu button sits in the header.</figcaption>
+			</figure>
+
+			<h3>17 · GIF</h3>
+			<p class="idea">
+				Use for: a short loop when the source already is a GIF; otherwise use
+				video. Set <code>src="data:image/gif;base64,…"</code>.
+			</p>
+			<figure class="media phone">
+				<img
+					alt="Menu opening and picking a tab"
+					src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='390' height='240'%3E%3Crect width='390' height='240' fill='%23f6f8fa'/%3E%3Crect x='270' y='16' width='100' height='40' rx='6' fill='%23fff' stroke='%23d0d7de'/%3E%3Ctext x='20' y='44' font-family='system-ui' font-size='20' font-weight='700' fill='%231f2328'%3EScreenshot%3C/text%3E%3Ctext x='298' y='42' font-family='system-ui' font-size='15' fill='%231f2328'%3EMenu%3C/text%3E%3C/svg%3E"
+				/>
+				<figcaption>Open the menu, pick a tab.</figcaption>
+			</figure>
+
+			<h3>18 · Video</h3>
+			<p class="idea">
+				Use for: a recording of a change in action; MP4 or WebM is 5 to 10 times
+				smaller than the same GIF. Set
+				<code>src="data:video/mp4;base64,…"</code>.
+			</p>
+			<figure class="media phone">
+				<video
+					autoplay
+					muted
+					loop
+					playsinline
+					controls
+					poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='390' height='240'%3E%3Crect width='390' height='240' fill='%23f6f8fa'/%3E%3Crect x='270' y='16' width='100' height='40' rx='6' fill='%23fff' stroke='%23d0d7de'/%3E%3Ctext x='20' y='44' font-family='system-ui' font-size='20' font-weight='700' fill='%231f2328'%3EScreenshot%3C/text%3E%3Ctext x='298' y='42' font-family='system-ui' font-size='15' fill='%231f2328'%3EMenu%3C/text%3E%3C/svg%3E"
+				></video>
+				<figcaption>The recording plays on its own and loops.</figcaption>
+			</figure>
 		</section>
 
 		<!-- Shiki 4.5.0 from npm via jsDelivr; every file is pinned by its SHA-384 -->

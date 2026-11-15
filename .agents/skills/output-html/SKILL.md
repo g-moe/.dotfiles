@@ -16,6 +16,10 @@ Copy [assets/template.html](assets/template.html) and replace its content. Keep 
 
 - Put whitespace-sensitive blocks (`.cmd`, `.tree`, `.diagram`) in a `pre`, so formatting keeps their lines.
 
+- Embed images, GIFs and video in a `figure.media` as base64 `data:` URLs, so the page stays one file. Prefer MP4 or WebM to GIF; give video `autoplay muted loop playsinline controls`. Add `phone` to the figure for phone-width shots.
+
+- Draw callouts on a screenshot with the `.shot` SVG overlay: its `viewBox` is the image's size in pixels.
+
 - Shiki colors code by the caption's file extension. Set `data-lang` on the `pre` when the caption has none (for example `data-lang="bash"`).
 
 - Escape `<`, `>`, `&` in code as `&lt;`, `&gt;`, `&amp;`.

@@ -38,6 +38,8 @@ A multi-page course ends with a **capstone** page that follows one concrete exam
 | "Reader asks" box | `.ask` |
 | Table | `table` |
 | Diagram | `pre.diagram`, `.flow`, `.seq` |
+| Image, GIF or video | `figure.media` with a base64 `data:` URL; `phone` for phone-width shots |
+| Screenshot with callouts | `.shot` inside `.media`: an SVG over the image, `viewBox` set to its pixel size |
 | Widget | `.widget` |
 | Exercise | `.exercise` |
 | Next button | `.next` |
