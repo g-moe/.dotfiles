@@ -6,13 +6,15 @@ disable-model-invocation: true
 
 # Output HTML
 
-Copy [assets/template.html](assets/template.html) and replace its content. Keep its style and script.
+Copy [assets/template.html](assets/template.html) and replace its content. Keep its style and scripts. Its shared components match the lesson template's.
 
 - Use only the components the content needs, not every one the template shows.
 
-- Always highlight only the `TODO:` prefix of the user's TODOs with a yellow background.
+- Always highlight only the `TODO:` prefix of the user's TODOs by wrapping it in `<mark>`.
 
 - Code always goes in a `codefile` figure with its file path in the caption.
+
+- Put whitespace-sensitive blocks (`.cmd`, `.tree`, `.diagram`) in a `pre`, so formatting keeps their lines.
 
 - Shiki colors code by the caption's file extension. Set `data-lang` on the `pre` when the caption has none (for example `data-lang="bash"`).
 
@@ -20,4 +22,4 @@ Copy [assets/template.html](assets/template.html) and replace its content. Keep 
 
 - Save where the user says; otherwise in a gitignored folder (for example `.local/`). Give the full path.
 
-**Mobile layout.** Use the template’s single mobile breakpoint, `max-width: 640px`, for all mobile rules. Keep the built-in navigation script: it turns page navigation tabs into a hamburger menu on mobile, closes after selection or Escape, and leaves desktop tabs visible. Insert navigation before `DOMContentLoaded` fires.
+**Mobile layout.** Use the template’s single mobile breakpoint, `max-width: 640px`, for all mobile rules. Keep the built-in navigation script: it puts one hamburger menu in the page `<header>` on mobile, which opens every `nav` to fill the screen below the header, closes after selection or Escape, and leaves desktop tabs visible. Keep the page title as the only content of a `body > header`, with no description under it, and insert navigation before `DOMContentLoaded` fires.

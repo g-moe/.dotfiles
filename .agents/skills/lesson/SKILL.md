@@ -22,21 +22,26 @@ A multi-page course ends with a **capstone** page that follows one concrete exam
 
 **Self-contained.** All CSS and JavaScript are inline, and the page makes no network requests except the template's SHA-pinned Shiki files, so it works opened from disk or hosted alone. Without network, code shows uncolored. Copy in the code and facts a lesson relies on. When a page builds on another page, open with a short recap of what it needs.
 
-**Template.** Start from [assets/template.html](assets/template.html). It holds the page shell, styles and Shiki code highlighting: each `pre` takes its language from `data-lang` or the file extension in the `.file` above it, and `pre.out` and `pre.err` stay plain. You supply the body, the navigation script and the widgets. Use its classes for these blocks, and style the blocks it lacks to match:
+**Template.** Start from [assets/template.html](assets/template.html). It holds the page shell, styles, the shared component script and Shiki code highlighting: each `pre` takes its language from `data-lang` or the file extension in its `.codefile` caption, and `pre.out` and `pre.err` stay plain. Its shared components match the output-html template's. You supply the body, the navigation script and the widgets. Use its classes for these blocks, and style the blocks it lacks to match:
 
 | Block | Class |
 | --- | --- |
 | Table of contents | `.toc` |
 | "By the end" box | `.learn` |
-| Code switch | `.switch` |
-| Quoted code with its file path | `.file` above a `pre` |
-| Printed output | `pre.out`, or `pre.err` for errors |
+| Quoted code with its file path | `figure.codefile` with the path in its `figcaption` |
+| Code switch | `figure.codefile.codegroup`, one `figcaption` button per `pre` |
+| Numbered or stepped lines | `pre[data-lines]`; widgets toggle `.hl`, `.dim`, `.bad` or `.good` on its `.line` spans |
+| Command to run | `pre.cmd` |
+| Printed output | `pre.out`, or `pre.err` for errors, in a `.codefile` captioned with the command |
 | Note | `.note` |
+| Warning | `.note.warn` |
 | "Reader asks" box | `.ask` |
+| Table | `table` |
+| Diagram | `pre.diagram`, `.flow`, `.seq` |
 | Widget | `.widget` |
 | Exercise | `.exercise` |
 | Next button | `.next` |
-| Warning, key idea, table, diagram | none yet |
+| Key idea | none yet |
 
 Escape `<`, `>` and `&` inside code as `&lt;`, `&gt;` and `&amp;`.
 
@@ -106,4 +111,4 @@ Start every reviewer in a fresh context holding only its brief and the files it 
 
 Show the user nothing until the final check passes. Report any problem you can't resolve instead of hiding it. Finish with links to the pages, then only the decisions the user must make and any bugs found in the source material.
 
-**Mobile layout.** Use the template’s single mobile breakpoint, `max-width: 640px`, for all mobile rules. Keep the built-in navigation script: it turns page navigation tabs into a hamburger menu on mobile, closes after selection or Escape, and leaves desktop tabs visible. Insert navigation before `DOMContentLoaded` fires.
+**Mobile layout.** Use the template’s single mobile breakpoint, `max-width: 640px`, for all mobile rules. Keep the built-in navigation script: it puts one hamburger menu in the page `<header>` on mobile, which opens every `nav` to fill the screen below the header, closes after selection or Escape, and leaves desktop tabs visible. Keep the page title as the only content of a `body > header`, with no description under it, and insert navigation before `DOMContentLoaded` fires.

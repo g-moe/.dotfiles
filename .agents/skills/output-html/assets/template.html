@@ -14,6 +14,7 @@
 				--accent: #0969da;
 				--good: #1a7f37;
 				--bad: #cf222e;
+				--warn: #9a6700;
 			}
 			* {
 				box-sizing: border-box;
@@ -32,10 +33,6 @@
 			h1 {
 				margin: 0 0 4px;
 				font-size: 20px;
-			}
-			header p {
-				margin: 0 0 16px;
-				color: var(--muted);
 			}
 			nav {
 				display: flex;
@@ -78,6 +75,19 @@
 				color: var(--muted);
 				margin: 0 0 12px;
 			}
+			ul {
+				margin: 6px 0;
+				padding-left: 20px;
+			}
+
+			/* Shared components: keep this block identical in the lesson and output-html templates. */
+			code {
+				font-family: ui-monospace, monospace;
+				font-size: 0.9em;
+				background: var(--panel);
+				padding: 1px 5px;
+				border-radius: 4px;
+			}
 			pre {
 				background: var(--panel);
 				border: 1px solid var(--line);
@@ -85,15 +95,25 @@
 				padding: 12px 14px;
 				overflow-x: auto;
 				font:
-					12.5px/1.5 ui-monospace,
+					13px/1.55 ui-monospace,
 					monospace;
+				margin: 12px 0;
 			}
-			code {
-				font-family: ui-monospace, monospace;
-				font-size: 12.5px;
+			pre code {
+				background: none;
+				padding: 0;
+				font-size: inherit;
 			}
+			mark {
+				background: #fff8c5;
+				color: inherit;
+				padding: 0 2px;
+				border-radius: 3px;
+			}
+
+			/* Code: file caption, tabs between files, printed output */
 			.codefile {
-				margin: 8px 0;
+				margin: 12px 0;
 			}
 			.codefile figcaption {
 				font:
@@ -111,32 +131,79 @@
 				border-radius: 0 0 6px 6px;
 				background: var(--bg);
 			}
-			.tree {
-				font:
-					12.5px/1.6 ui-monospace,
-					monospace;
-				white-space: pre;
-				background: var(--panel);
-				border: 1px solid var(--line);
-				border-radius: 6px;
-				padding: 12px 14px;
-				margin: 8px 0;
+			.codegroup figcaption {
+				display: flex;
+				gap: 2px;
+				padding: 0 6px;
+				overflow-x: auto;
 			}
-			.tree em {
+			.codegroup figcaption button {
+				background: none;
+				border: 0;
+				border-bottom: 2px solid transparent;
 				color: var(--muted);
-				font-style: normal;
+				font: inherit;
+				padding: 6px 8px;
+				cursor: pointer;
 			}
-			.cmd {
+			.codegroup figcaption button.active {
+				color: var(--text);
+				border-bottom-color: var(--accent);
+			}
+			pre.out {
+				background: var(--bg);
+				border-style: dashed;
+			}
+			pre.err {
+				background: #fff8f8;
+				border-color: #ffcecb;
+			}
+
+			/* Numbered lines for <pre data-lines>; widgets may toggle .hl, .dim, .bad and .good on each .line */
+			pre[data-lines] {
+				counter-reset: line;
+			}
+			pre .line {
+				display: block;
+				min-height: 1.55em;
+				margin: 0 -14px;
+				padding: 0 14px;
+				transition:
+					background 0.2s,
+					opacity 0.2s;
+			}
+			pre .line::before {
+				counter-increment: line;
+				content: counter(line);
+				display: inline-block;
+				width: 2em;
+				margin-right: 12px;
+				text-align: right;
+				color: var(--muted);
+				user-select: none;
+			}
+			pre .line.hl {
+				background: #fff8c5;
+			}
+			pre .line.dim {
+				opacity: 0.35;
+			}
+			pre .line.bad {
+				background: #ffebe9;
+				color: inherit;
+				font-weight: inherit;
+			}
+			pre .line.good {
+				background: #dafbe1;
+			}
+
+			/* Command to run, with a copy button */
+			pre.cmd {
 				position: relative;
-				font:
-					12.5px/1.5 ui-monospace,
-					monospace;
-				white-space: pre;
 				background: var(--text);
+				border-color: var(--text);
 				color: #e6edf3;
-				border-radius: 6px;
-				padding: 10px 14px;
-				margin: 8px 0;
+				padding: 10px 70px 10px 14px;
 			}
 			.cmd span {
 				color: #8b949e;
@@ -156,15 +223,111 @@
 				padding: 3px 8px;
 				cursor: pointer;
 			}
+
+			/* Notes and warnings */
+			.note {
+				border-left: 3px solid var(--accent);
+				background: #ddf4ff;
+				padding: 10px 14px;
+				border-radius: 0 6px 6px 0;
+				margin: 12px 0;
+			}
+			.note.warn {
+				border-left-color: var(--warn);
+				background: #fff8c5;
+			}
+			.note > :last-child {
+				margin-bottom: 0;
+			}
+
+			/* Text diagrams: file tree and free-form boxes */
+			pre.tree em {
+				color: var(--muted);
+				font-style: normal;
+			}
+			pre.diagram {
+				background: var(--bg);
+				line-height: 1.4;
+			}
+
+			/* Tables: plain, fields of a type, test cases, config changes */
+			table {
+				border-collapse: collapse;
+				width: 100%;
+				margin: 12px 0;
+			}
+			th,
+			td {
+				border: 1px solid var(--line);
+				padding: 6px 10px;
+				text-align: left;
+				vertical-align: top;
+			}
+			th {
+				background: var(--panel);
+			}
+			.fields code:first-child {
+				font-weight: 600;
+			}
+			.fields .type {
+				font-family: ui-monospace, monospace;
+				color: #953800;
+			}
+			.fields .opt {
+				color: var(--muted);
+				font-size: 0.85em;
+			}
+			.cases tr.fail td {
+				background: #ffebe9;
+			}
+			.cases .pass {
+				color: var(--good);
+			}
+			.cases .failed {
+				color: var(--bad);
+			}
+			del {
+				color: var(--bad);
+			}
+			ins {
+				color: var(--good);
+				text-decoration: none;
+			}
+
+			/* Disclosure for detail most readers skip */
+			details {
+				border: 1px solid var(--line);
+				border-radius: 6px;
+				padding: 8px 14px;
+				margin: 12px 0;
+			}
+			summary {
+				cursor: pointer;
+				font-weight: 600;
+			}
+			details p {
+				margin: 8px 0 0;
+			}
+
+			/* Lists: trade-offs, numbered steps, checklist, decision tree */
+			.pro::marker {
+				content: "+  ";
+				color: var(--good);
+			}
+			.con::marker {
+				content: "−  ";
+				color: var(--bad);
+			}
 			.steps {
 				counter-reset: step;
 				list-style: none;
 				padding: 0;
-				margin: 8px 0 8px 11px;
+				margin: 12px 0 12px 11px;
 			}
 			.steps li {
 				counter-increment: step;
 				position: relative;
+				margin: 0;
 				padding: 0 0 14px 24px;
 				border-left: 2px solid var(--line);
 			}
@@ -200,23 +363,6 @@
 				font-size: 11px;
 				line-height: 20px;
 			}
-			.flow {
-				display: flex;
-				align-items: center;
-				gap: 8px;
-				flex-wrap: wrap;
-				margin: 8px 0;
-			}
-			.flow span {
-				border: 1px solid var(--line);
-				border-radius: 6px;
-				padding: 6px 12px;
-				background: var(--panel);
-			}
-			.flow i {
-				color: var(--muted);
-				font-style: normal;
-			}
 			.checks {
 				list-style: none;
 				padding-left: 0;
@@ -233,37 +379,46 @@
 				padding-left: 22px;
 				margin: 2px 0;
 			}
-			.meter-row {
-				display: grid;
-				grid-template-columns: 140px 1fr 48px;
-				gap: 10px;
-				align-items: center;
+			.dtree,
+			.dtree ul {
+				list-style: none;
 				margin: 4px 0;
 			}
-			.meter {
-				height: 8px;
-				background: var(--panel);
-				border: 1px solid var(--line);
-				border-radius: 4px;
-				overflow: hidden;
+			.dtree {
+				padding-left: 0;
 			}
-			.meter i {
-				display: block;
-				height: 100%;
-				background: var(--accent);
+			.dtree ul {
+				padding-left: 18px;
+				border-left: 1px solid var(--line);
+				margin-left: 6px;
 			}
-			details {
+			.dtree li {
+				margin: 4px 0;
+			}
+			.dtree em {
+				color: var(--accent);
+				font-style: normal;
+				font-size: 12px;
+				margin-right: 6px;
+			}
+
+			/* Flows: pipeline, sequence, timeline, state transitions */
+			.flow {
+				display: flex;
+				align-items: center;
+				gap: 8px;
+				flex-wrap: wrap;
+				margin: 12px 0;
+			}
+			.flow span {
 				border: 1px solid var(--line);
 				border-radius: 6px;
-				padding: 8px 14px;
-				margin: 8px 0;
+				padding: 6px 12px;
+				background: var(--panel);
 			}
-			summary {
-				cursor: pointer;
-				font-weight: 600;
-			}
-			details p {
-				margin: 8px 0 0;
+			.flow i {
+				color: var(--muted);
+				font-style: normal;
 			}
 			.seq {
 				position: relative;
@@ -271,7 +426,7 @@
 				display: grid;
 				grid-template-columns: repeat(var(--actors, 3), 1fr);
 				row-gap: 10px;
-				margin: 8px 0;
+				margin: 12px 0;
 				padding-bottom: 8px;
 			}
 			.seq b {
@@ -313,7 +468,7 @@
 			}
 			.timeline {
 				display: flex;
-				margin: 8px 0 16px;
+				margin: 12px 0 16px;
 				border-top: 2px solid var(--line);
 			}
 			.timeline div {
@@ -335,146 +490,16 @@
 			.timeline div.next::before {
 				background: var(--bg);
 				border: 2px solid var(--accent);
-				box-sizing: border-box;
 			}
 			.timeline time {
 				display: block;
 				color: var(--muted);
 				font-size: 12px;
 			}
-			table {
-				border-collapse: collapse;
-				width: 100%;
-				margin: 8px 0;
-			}
-			th,
-			td {
-				border: 1px solid var(--line);
-				padding: 6px 10px;
-				text-align: left;
-				vertical-align: top;
-			}
-			th {
-				background: var(--panel);
-			}
-			ul {
-				margin: 6px 0;
-				padding-left: 20px;
-			}
-			.pro::marker {
-				content: "+  ";
-				color: var(--good);
-			}
-			.con::marker {
-				content: "−  ";
-				color: var(--bad);
-			}
-
-			/* Brainstorm: candidate primitives. Keep what you pick, delete the rest. */
-			.codegroup figcaption {
-				display: flex;
-				gap: 2px;
-				padding: 0 6px;
-				overflow-x: auto;
-			}
-			.codegroup figcaption button {
-				background: none;
-				border: 0;
-				border-bottom: 2px solid transparent;
-				color: var(--muted);
-				font: inherit;
-				padding: 6px 8px;
-				cursor: pointer;
-			}
-			.codegroup figcaption button.active {
-				color: var(--text);
-				border-bottom-color: var(--accent);
-			}
-			pre[data-lines] {
-				counter-reset: line;
-			}
-			pre .line {
-				display: block;
-				min-height: 1.5em;
-				margin: 0 -14px;
-				padding: 0 14px;
-			}
-			pre .line::before {
-				counter-increment: line;
-				content: counter(line);
-				display: inline-block;
-				width: 2em;
-				margin-right: 12px;
-				text-align: right;
-				color: var(--muted);
-				user-select: none;
-			}
-			pre .line.hl {
-				background: #fff8c5;
-			}
-			a.ref {
-				font:
-					12.5px ui-monospace,
-					monospace;
-				color: var(--accent);
-				text-decoration: none;
-				border-bottom: 1px dotted var(--accent);
-			}
-			.fields code:first-child {
-				font-weight: 600;
-			}
-			.fields .type {
-				font:
-					12.5px ui-monospace,
-					monospace;
-				color: #953800;
-			}
-			.fields .opt {
-				color: var(--muted);
-				font-size: 12px;
-			}
-			del {
-				color: var(--bad);
-			}
-			ins {
-				color: var(--good);
-				text-decoration: none;
-			}
-			.cases tr.fail td {
-				background: #ffebe9;
-			}
-			.cases .pass {
-				color: var(--good);
-			}
-			.cases .failed {
-				color: var(--bad);
-			}
-			.dtree,
-			.dtree ul {
-				list-style: none;
-				margin: 4px 0;
-			}
-			.dtree {
-				padding-left: 0;
-			}
-			.dtree ul {
-				padding-left: 18px;
-				border-left: 1px solid var(--line);
-				margin-left: 6px;
-			}
-			.dtree li {
-				margin: 4px 0;
-			}
-			.dtree em {
-				color: var(--accent);
-				font-style: normal;
-				font-size: 12px;
-				margin-right: 6px;
-			}
 			.transitions {
 				display: grid;
 				gap: 6px;
-				margin: 8px 0;
+				margin: 12px 0;
 			}
 			.transitions div {
 				display: flex;
@@ -494,12 +519,36 @@
 				font-size: 12px;
 				color: var(--muted);
 			}
+
+			/* Numbers: bars, proportion, scale with thresholds, sparkline */
+			.meter-row {
+				display: grid;
+				grid-template-columns: 140px 1fr 48px;
+				gap: 10px;
+				align-items: center;
+				margin: 4px 0;
+			}
+			.meter {
+				height: 8px;
+				background: var(--panel);
+				border: 1px solid var(--line);
+				border-radius: 4px;
+				overflow: hidden;
+			}
+			.meter i {
+				display: block;
+				height: 100%;
+				background: var(--accent);
+			}
 			.split {
 				display: flex;
 				height: 14px;
 				border-radius: 4px;
 				overflow: hidden;
-				margin: 8px 0 6px;
+				margin: 12px 0 6px;
+			}
+			.split span {
+				background: var(--swatch);
 			}
 			.legend {
 				display: flex;
@@ -507,9 +556,6 @@
 				gap: 4px 14px;
 				font-size: 12px;
 				color: var(--muted);
-			}
-			.split span {
-				background: var(--swatch);
 			}
 			.legend span::before {
 				content: "";
@@ -532,6 +578,7 @@
 			.c4 {
 				--swatch: #d0d7de;
 			}
+			/* --ok-at and --warn-at set where the scale turns from good to warn to bad. */
 			.scale {
 				position: relative;
 				height: 8px;
@@ -539,9 +586,9 @@
 				margin: 14px 0 6px;
 				background: linear-gradient(
 					to right,
-					var(--good) 0 var(--ok),
-					#bf8700 var(--ok) var(--warn),
-					var(--bad) var(--warn)
+					var(--good) 0 var(--ok-at),
+					#bf8700 var(--ok-at) var(--warn-at),
+					var(--bad) var(--warn-at)
 				);
 			}
 			.scale i {
@@ -564,6 +611,7 @@
 			.scale-labels {
 				display: flex;
 				justify-content: space-between;
+				margin-top: 18px;
 				font-size: 12px;
 				color: var(--muted);
 			}
@@ -575,6 +623,8 @@
 				stroke: var(--accent);
 				stroke-width: 1.5;
 			}
+
+			/* Design: wireframe and color swatches */
 			.wire {
 				display: grid;
 				grid-template-columns: 1fr 3fr;
@@ -584,7 +634,7 @@
 				border: 1px solid var(--line);
 				border-radius: 6px;
 				padding: 6px;
-				margin: 8px 0;
+				margin: 12px 0;
 			}
 			.wire div {
 				border: 1px dashed var(--line);
@@ -605,7 +655,7 @@
 				display: grid;
 				grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
 				gap: 8px;
-				margin: 8px 0;
+				margin: 12px 0;
 			}
 			.swatches div {
 				border: 1px solid var(--line);
@@ -625,25 +675,16 @@
 				color: var(--muted);
 				font-size: 11px;
 			}
-			.diagram {
-				font:
-					12.5px/1.4 ui-monospace,
-					monospace;
-				white-space: pre;
-				overflow-x: auto;
-				border: 1px solid var(--line);
-				border-radius: 6px;
-				padding: 12px 14px;
-				margin: 8px 0;
+
+			/* Editor links that open a file in VS Code */
+			a.ref {
+				font-family: ui-monospace, monospace;
+				font-size: 0.9em;
+				color: var(--accent);
+				text-decoration: none;
+				border-bottom: 1px dotted var(--accent);
 			}
-			@media print {
-				nav {
-					display: none;
-				}
-				section {
-					display: block;
-				}
-			}
+			/* End shared components. */
 
 			/* Shared mobile breakpoint: use 640px for all mobile layout rules. */
 			.nav-toggle {
@@ -667,23 +708,66 @@
 					display: none;
 					flex-direction: column;
 					align-items: stretch;
+					padding: 0;
 				}
 				nav.mobile-nav.open {
 					display: flex;
 				}
-				nav.mobile-nav button {
-					text-align: left;
+				/* An open menu fills the screen below the header; page content hides until it closes. */
+				body.nav-open {
+					display: flex;
+					flex-direction: column;
+					min-height: 100dvh;
 				}
+				body.nav-open > :not(header, nav) {
+					display: none;
+				}
+				body.nav-open > nav:last-of-type {
+					flex: 1;
+				}
+				nav.mobile-nav button {
+					display: flex;
+					justify-content: space-between;
+					align-items: center;
+					text-align: left;
+					padding: 14px 16px;
+					border-bottom: 0;
+				}
+				nav.mobile-nav button.active::after {
+					content: "✓";
+					color: var(--text);
+				}
+				/* The menu toggle sits in the header, to the right of the title. */
 				header {
-					padding: 20px 16px 0;
+					display: grid;
+					grid-template-columns: minmax(0, 1fr) auto;
+					column-gap: 12px;
+					align-items: center;
+					padding: 16px 16px 12px;
+					border-bottom: 1px solid var(--line);
+				}
+				header > :not(.nav-toggle) {
+					grid-column: 1;
+				}
+				header h1 {
+					margin: 0;
+				}
+				header > .nav-toggle {
+					grid-column: 2;
+					grid-row: 1;
+					margin: 0;
 				}
 				section {
 					padding: 20px 16px 40px;
 				}
 			}
 			@media print {
+				nav,
 				.nav-toggle {
 					display: none;
+				}
+				section {
+					display: block;
 				}
 			}
 		</style>
@@ -703,6 +787,9 @@
 		<section id="a" class="active">
 			<h2>A · First option</h2>
 			<p class="idea">One-line idea.</p>
+			<p>
+				<mark>TODO:</mark> A TODO for the user, with only its prefix marked.
+			</p>
 
 			<h3>Flow</h3>
 			<div class="flow">
@@ -730,11 +817,18 @@ export function example({ value }: { readonly value: number }): string {
 			</figure>
 
 			<h3>Run</h3>
-			<div class="cmd">
-				<span>$ </span>pnpm test<button class="copy" data-copy="pnpm test">
-					Copy
-				</button>
-			</div>
+			<pre
+				class="cmd"
+			><span>$ </span>pnpm test<button class="copy" data-copy="pnpm test">Copy</button></pre>
+
+			<h3>Output</h3>
+			<figure class="codefile">
+				<figcaption>$ pnpm test</figcaption>
+				<pre class="out">
+✓ parse.test.ts (3 tests)
+Tests  3 passed</pre
+				>
+			</figure>
 
 			<h3>Trade-offs</h3>
 			<ul>
@@ -807,9 +901,10 @@ export function example({ value }: { readonly value: number }): string {
 			</div>
 
 			<h3>Files</h3>
-			<div class="tree">
-				src/ ├── parse.ts <em>one-line role</em> └── index.ts
-			</div>
+			<pre class="tree">
+src/
+├── parse.ts  <em>one-line role</em>
+└── index.ts</pre>
 		</section>
 
 		<!-- Brainstorm: candidate primitives. Keep what you pick, delete the rest. -->
@@ -988,7 +1083,7 @@ for (const job of jobs) {
 			<p class="idea">
 				Use for: where one value sits against good / warn / bad limits.
 			</p>
-			<div class="scale" style="--ok: 50%; --warn: 80%">
+			<div class="scale" style="--ok-at: 50%; --warn-at: 80%">
 				<i style="left: 64%"><span>p95: 320 ms</span></i>
 			</div>
 			<div class="scale-labels"><span>0 ms</span><span>500 ms</span></div>
@@ -1047,10 +1142,23 @@ for (const job of jobs) {
 			<p class="idea">
 				Use for: free-form architecture an agent can draw in text.
 			</p>
-			<div class="diagram">
-				┌──────────┐ ┌──────────┐ │ installer│────▶│ lib/bash │ └────┬─────┘
-				└──────────┘ │ ▼ ┌──────────┐ │ mac │ └──────────┘
-			</div>
+			<pre class="diagram">
+┌───────────┐     ┌──────────┐
+│ installer │────▶│ lib/bash │
+└─────┬─────┘     └──────────┘
+      │
+      ▼
+┌───────────┐
+│    mac    │
+└───────────┘</pre
+			>
+
+			<h3>15 · Notes</h3>
+			<p class="idea">
+				Use for: a side fact, or a warning the reader must not miss.
+			</p>
+			<div class="note">A side fact the reader may want.</div>
+			<div class="note warn">A warning the reader must not miss.</div>
 		</section>
 
 		<!-- Shiki 4.5.0 from npm via jsDelivr; every file is pinned by its SHA-384 -->
@@ -1223,21 +1331,17 @@ for (const job of jobs) {
 			};
 
 			/**
-			 * Find the file path shown with a <pre>: an output-html caption or code group
-			 * tab, or a lesson `.file` line right above it.
+			 * Find the file path shown with a <pre>: its `.codefile` caption, or its tab in a code group.
 			 */
 			const captionFor = (pre) => {
-				const figure = pre.closest("figure");
-				if (figure?.classList.contains("codegroup")) {
+				const figure = pre.closest("figure.codefile");
+				if (!figure) return "";
+				if (figure.classList.contains("codegroup")) {
 					const tabs = figure.querySelectorAll("figcaption button");
 					const index = [...figure.querySelectorAll("pre")].indexOf(pre);
 					return tabs[index]?.textContent ?? "";
 				}
-				if (figure)
-					return figure.querySelector("figcaption")?.textContent ?? "";
-
-				const previous = pre.previousElementSibling;
-				return previous?.classList.contains("file") ? previous.textContent : "";
+				return figure.querySelector("figcaption")?.textContent ?? "";
 			};
 
 			/**
@@ -1287,11 +1391,9 @@ for (const job of jobs) {
 				themes: [import(`@shikijs/themes/${THEME}.mjs`)],
 			});
 
-			// Color each line in place, so line spans (`.line`, stepper `.ln`) and their classes survive
+			// Color each line in place, so `.line` spans and their classes survive
 			for (const { lang, pre } of blocks) {
-				const lineElements = [
-					...pre.querySelectorAll(":scope > .line, :scope > .ln"),
-				];
+				const lineElements = [...pre.querySelectorAll(":scope > .line")];
 				const code = lineElements.length
 					? lineElements.map((line) => line.textContent).join("\n")
 					: pre.textContent;
@@ -1331,14 +1433,29 @@ for (const job of jobs) {
 				}),
 			);
 
-			// Copy buttons on .cmd blocks
-			document.querySelectorAll(".cmd .copy").forEach((button) =>
-				button.addEventListener("click", () => {
-					navigator.clipboard.writeText(button.dataset.copy);
-				}),
-			);
+			const initial = location.hash.slice(1);
+			if (buttons.some((button) => button.dataset.tab === initial)) {
+				show(initial);
+			}
+		</script>
 
-			// Brainstorm: code group tabs
+		<script>
+			// Shared components: keep this script identical in the lesson and output-html templates.
+			// It runs before the Shiki module, which colors each `.line` in place.
+
+			// Wrap each line of <pre data-lines="2,3"> in a numbered `.line`; listed lines get `.hl`
+			document.querySelectorAll("pre[data-lines]").forEach((pre) => {
+				const marked = new Set(pre.dataset.lines.split(",").map(Number));
+				pre.innerHTML = pre.innerHTML
+					.split("\n")
+					.map((line, index) => {
+						const className = marked.has(index + 1) ? "line hl" : "line";
+						return `<span class="${className}">${line}</span>`;
+					})
+					.join("");
+			});
+
+			// Code group tabs show one file at a time
 			document.querySelectorAll(".codegroup").forEach((group) => {
 				const tabs = [...group.querySelectorAll("figcaption button")];
 				const files = [...group.querySelectorAll("pre")];
@@ -1354,63 +1471,72 @@ for (const job of jobs) {
 				);
 			});
 
-			// Brainstorm: line numbers and highlighted lines for <pre data-lines>
-			document.querySelectorAll("pre[data-lines]").forEach((pre) => {
-				const marked = new Set(pre.dataset.lines.split(",").map(Number));
-				pre.innerHTML = pre.innerHTML
-					.split("\n")
-					.map(
-						(line, index) =>
-							`<span class="line${marked.has(index + 1) ? " hl" : ""}">${line}</span>`,
-					)
-					.join("");
-			});
-
-			const initial = location.hash.slice(1);
-			if (buttons.some((button) => button.dataset.tab === initial)) {
-				show(initial);
-			}
+			// Copy buttons on `.cmd` blocks copy the command without its prompt
+			document.querySelectorAll(".cmd .copy").forEach((button) =>
+				button.addEventListener("click", () => {
+					navigator.clipboard.writeText(button.dataset.copy);
+				}),
+			);
 		</script>
 
 		<script>
+			// Put one menu toggle in the page header; on mobile it opens every nav.
 			// Keep the toggle outside nav so lesson/tab selectors only find navigation items.
 			document.addEventListener("DOMContentLoaded", () => {
-				document.querySelectorAll("nav").forEach((nav, index) => {
-					const toggle = document.createElement("button");
-					toggle.type = "button";
-					toggle.className = "nav-toggle";
-					toggle.innerHTML = '<span aria-hidden="true">☰</span> Menu';
+				const navs = [...document.querySelectorAll("nav")];
+				if (navs.length === 0) return;
+
+				// Mark each nav as collapsible and give it an id for aria-controls
+				navs.forEach((nav, index) => {
 					nav.id ||= `page-navigation-${index}`;
 					nav.classList.add("mobile-nav");
-					toggle.setAttribute("aria-controls", nav.id);
+				});
+
+				// Build the toggle and place it in the header, or above the first nav when there is no header
+				const toggle = document.createElement("button");
+				toggle.type = "button";
+				toggle.className = "nav-toggle";
+				toggle.innerHTML = '<span aria-hidden="true">☰</span> Menu';
+				toggle.setAttribute(
+					"aria-controls",
+					navs.map((nav) => nav.id).join(" "),
+				);
+				toggle.setAttribute("aria-expanded", "false");
+				const header = document.querySelector("body > header");
+				if (header) header.append(toggle);
+				else navs[0].before(toggle);
+
+				// Open and close every nav together
+				const isOpen = () => navs[0].classList.contains("open");
+				const close = ({ restoreFocus = false } = {}) => {
+					navs.forEach((nav) => nav.classList.remove("open"));
+					document.body.classList.remove("nav-open");
 					toggle.setAttribute("aria-expanded", "false");
-					nav.before(toggle);
+					if (restoreFocus && getComputedStyle(toggle).display !== "none")
+						toggle.focus();
+				};
 
-					const close = ({ restoreFocus = false } = {}) => {
-						nav.classList.remove("open");
-						toggle.setAttribute("aria-expanded", "false");
-						if (restoreFocus && getComputedStyle(toggle).display !== "none")
-							toggle.focus();
-					};
-
-					toggle.addEventListener("click", () => {
-						const expanded = nav.classList.toggle("open");
-						toggle.setAttribute("aria-expanded", String(expanded));
-					});
+				toggle.addEventListener("click", () => {
+					const expanded = !isOpen();
+					navs.forEach((nav) => nav.classList.toggle("open", expanded));
+					document.body.classList.toggle("nav-open", expanded);
+					if (expanded) window.scrollTo(0, 0);
+					toggle.setAttribute("aria-expanded", String(expanded));
+				});
+				navs.forEach((nav) =>
 					nav.addEventListener("click", (event) => {
 						if (event.target.closest("button, a"))
 							close({ restoreFocus: true });
-					});
-					document.addEventListener("keydown", (event) => {
-						if (event.key === "Escape" && nav.classList.contains("open"))
-							close({ restoreFocus: true });
-					});
-					document.addEventListener("click", (event) => {
-						if (!nav.contains(event.target) && !toggle.contains(event.target))
-							close();
-					});
-					window.addEventListener("resize", () => close());
+					}),
+				);
+				document.addEventListener("keydown", (event) => {
+					if (event.key === "Escape" && isOpen()) close({ restoreFocus: true });
 				});
+				document.addEventListener("click", (event) => {
+					const inMenu = navs.some((nav) => nav.contains(event.target));
+					if (!inMenu && !toggle.contains(event.target)) close();
+				});
+				window.addEventListener("resize", () => close());
 			});
 		</script>
 	</body>
