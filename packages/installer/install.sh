@@ -55,6 +55,7 @@ install_apps() {
   run_strategy 'Chrome' apps/chrome.sh
   run_strategy 'Arc link routing' apps/arc-routing.sh
   run_strategy 'Firefox' apps/firefox.sh
+  run_strategy 'Wave' apps/wave.sh
   run_strategy 'Keyboard pointer control' apps/keyboard-pointer.sh
   run_strategy 'Voice dictation' apps/voice-dictation.sh
   run_strategy 'Temperature monitor' apps/temperature-monitor.sh
