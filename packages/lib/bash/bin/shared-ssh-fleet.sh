@@ -4,6 +4,8 @@
 # The right half fills top, bottom, then splits the top row, then the bottom row, and so on.
 # Aliased as ssh-fleet in .zshrc.
 #
+# Joining an existing session types ssh again in any host pane that has dropped back to its local shell.
+#
 # Usage: ssh-fleet [--restart] [--install]
 #   --restart  Kill the ssh-fleet session first, then build it again.
 #   --install  Stop before touching anything if this machine has uncommitted changes or unpushed commits.
@@ -29,6 +31,7 @@ ROOT_DIR="$(cd "$LIB_DIR/../../.." && pwd)"
 . "$LIB_DIR/lib.sh"
 
 SESSION='ssh-fleet'
+ALIAS_OPTION='@ssh-fleet-alias'
 ENV_FILE="${SSH_FLEET_ENV_FILE:-$ROOT_DIR/.env}"
 SSH_CONFIG="${HOME:-}/.ssh/config"
 ENV_EXAMPLE='SSH_FLEET_ALIASES="linux mini"'
@@ -39,6 +42,9 @@ ALIAS_PATTERN='^[A-Za-z0-9._-]+$'
 # Typed into each host pane, so $(date ...) runs on the remote when the stash is made.
 # Fleet machines always end on origin/main; their local edits stay in a stash that is never applied.
 INSTALL_COMMAND='cd "$HOME/.dotfiles" && git fetch origin && git stash push --include-untracked -m "ssh-fleet $(date +%Y-%m-%dT%H:%M:%S)" && git checkout -B main origin/main && git reset --hard origin/main && npm run install:agents'
+
+# A host pane running one of these has no ssh in front, so it is safe to type into
+SHELL_PATTERN='^(zsh|bash|sh|fish)$'
 
 # Size of a detached session when the terminal size can't be read
 FALLBACK_COLUMNS=200
@@ -165,6 +171,9 @@ build_session() {
       bottom_row+=("$pane")
     fi
 
+    # Tag the pane with its alias so a later join can reconnect it
+    tmux set-option -p -t "$pane" "$ALIAS_OPTION" "${aliases[index]}"
+
     # Type the ssh command so the pane keeps a local shell after the connection ends
     tmux send-keys -t "$pane" "ssh ${aliases[index]}" Enter
   done
@@ -174,6 +183,16 @@ build_session() {
     equalize_row "${bottom_row[@]}"
   fi
   tmux select-pane -t "$local_pane"
+}
+
+# Type ssh again in every host pane that sits at its local shell; this machine's pane has no alias and is left alone.
+reconnect_panes() {
+  local pane command alias
+
+  while read -r pane command alias; do
+    [[ -n "$alias" && "$command" =~ $SHELL_PATTERN ]] || continue
+    tmux send-keys -t "$pane" "ssh $alias" Enter
+  done < <(tmux list-panes -s -t "=$SESSION" -F "#{pane_id} #{pane_current_command} #{$ALIAS_OPTION}")
 }
 
 # Type the install command into every pane, this machine's included, in a new or an existing session.
@@ -207,7 +226,9 @@ main() {
   fi
 
   # Check every alias before creating anything, so a bad .env leaves no half-built session
-  if ! session_exists; then
+  if session_exists; then
+    reconnect_panes
+  else
     read_aliases
     build_session
   fi

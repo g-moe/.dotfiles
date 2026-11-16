@@ -21,7 +21,13 @@ case "$1" in
     printf '%s\n' "$((count + 1))" >"$TEST_PANES"
     ;;
   display-message) printf '40\n' ;;
-  list-panes) printf '%b' "${TEST_PANE_LIST:-}" ;;
+  list-panes)
+    if [[ "$*" == *@ssh-fleet-alias* ]]; then
+      printf '%b' "${TEST_FLEET_PANE_LIST:-}"
+    else
+      printf '%b' "${TEST_PANE_LIST:-}"
+    fi
+    ;;
 esac
 EOF
 
@@ -74,6 +80,8 @@ expect_command 'send-keys -t %1 ssh linux Enter' 'alias 1 must connect in the to
 expect_command 'send-keys -t %2 ssh mini Enter' 'alias 2 must connect in the bottom-right pane'
 expect_command 'send-keys -t %3 ssh cloud-gg Enter' 'alias 3 must connect in the new top pane'
 expect_command 'send-keys -t %4 ssh windows Enter' 'alias 4 must connect in the new bottom pane'
+expect_command 'set-option -p -t %1 @ssh-fleet-alias linux' 'host panes must be tagged with their alias'
+expect_command 'set-option -p -t %4 @ssh-fleet-alias windows' 'every host pane must be tagged with its alias'
 expect_command 'resize-pane -t %1 -x 40' 'the top row must be resized to equal widths'
 expect_command 'resize-pane -t %2 -x 40' 'the bottom row must be resized to equal widths'
 expect_command 'select-pane -t %0' 'the local pane must have focus'
@@ -83,6 +91,14 @@ expect_command 'attach-session -t =ssh-fleet' 'ssh-fleet must attach outside tmu
 TEST_HAS_SESSION=0 run_fleet || fail 'ssh-fleet must join an existing session'
 grep -q '^new-session' "$TEST_COMMANDS" && fail 'ssh-fleet must not rebuild an existing session'
 expect_command 'attach-session -t =ssh-fleet' 'ssh-fleet must attach to the existing session'
+
+# Joining reconnects host panes at a local shell, and leaves live ssh, busy, and local panes alone
+export TEST_FLEET_PANE_LIST='%0 zsh \n%1 ssh linux\n%2 zsh mini\n%3 vim cloud-gg\n%4 bash windows\n'
+TEST_HAS_SESSION=0 run_fleet || fail 'ssh-fleet must join and reconnect an existing session'
+expect_command 'send-keys -t %2 ssh mini Enter' 'a dropped host pane must reconnect'
+expect_command 'send-keys -t %4 ssh windows Enter' 'a dropped host pane in bash must reconnect'
+grep -q '^send-keys -t %[013] ' "$TEST_COMMANDS" && fail 'ssh-fleet must not type into connected, busy, or local panes'
+unset TEST_FLEET_PANE_LIST
 
 # --restart kills the session, then builds it again
 TEST_HAS_SESSION=0 run_fleet --restart || true
