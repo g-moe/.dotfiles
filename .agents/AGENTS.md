@@ -36,7 +36,7 @@ Code is how we do a majority of our communication, so it must be easy to read. T
 - Do not nest ternaries.
 - No magic values (numbers, strings, etc).
 - No code golf.
-- In comments, put one sentence per line. Never break a sentence across lines to fit a width.
+- In comments and documentation, put one sentence per line. Never break a sentence across lines to fit a width.
 - Prefer object parameters instead of multiple positional parameters...an exception would be using positional args when in the hot-path.
 
 **Responsibility**
@@ -130,7 +130,48 @@ export async function runSetup(summary: SummarySection[]): Promise<SetupContext>
     return { rootDir, runCommand, summary };
 }
 ```
-4. Naming
+
+4. Bad Comment Examples
+
+Aim for code that needs no comments.
+If code needs a comment to be understood, change the code instead.
+- Pick names that say what the data holds and what the action does, and keep names aligned across code that works together (a wrapper and what it wraps, a caller and what it calls).
+- Replace a magic value with a named constant, so the line reads like the comment would have.
+- Split a long condition into named variables, or move it to its own function, so the condition reads like the comment would have.
+- Let types carry meaning a comment would have explained: return `number | undefined`, not `-1` with a comment saying `-1` means missing.
+- Prefer code over comments because comments go stale: tests, types, and linters check code, and nothing checks comments.
+- Documentation is not a comment: describe what a public API is for and what callers must know (states, errors, thread safety) in its doc block.
+- Comment only what code can't show: why code is shaped oddly for performance, or a link to the algorithm or math it implements.
+
+```svelte
+<!-- Earlier spans keep their width; only the last one shrinks into an ellipsis. -->
+<span class="flex min-w-0 gap-2 *:truncate *:not-last:shrink-0">
+    {@render children()}
+</span>
+```
+
+```typescript
+// Increment the retry count
+retryCount += 1;
+
+// Map orders to their ids
+const orderIds = orders.map((order) => order.id);
+
+// Default timeout of 5 seconds
+const DEFAULT_TIMEOUT_MS = 5_000;
+
+// Retry when the exchange rejected the order and attempts remain
+if (order.status === 'rejected' && order.rejectSource === 'exchange' && attempt < MAX_ATTEMPTS) {
+    ...
+}
+
+// Returns -1 when the symbol has no trades
+function getLastTradeTimeMs(symbolId: MdSymbolId): number {
+    ...
+}
+```
+
+5. Naming
 ```typescript
 // Name after the data it holds: an id is `symbolId`, the full object is `symbol`
 const symbolId: MdSymbolId = '/ES:XCME';
@@ -152,7 +193,7 @@ const groups = Uptime.GROUPS; // not `Uptime.UPTIME_GROUPS`
 import { OrdersHistoryView, OrdersOpenView } from '@core/trading'; // was `OrdersView`
 ```
 
-5. Matching Names Through Wrappers
+6. Matching Names Through Wrappers
 ```typescript
 // md-types.ts
 export type MdSymbolId = string & { readonly __brand: 'MdSymbolId' };
