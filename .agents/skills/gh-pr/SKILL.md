@@ -18,4 +18,5 @@ disable-model-invocation: true
 # Best Practices
 
 - Link directly to commits, files, or external resources only when the link helps the reader.
+- Attach images, videos, or GIFs when they show the work better than words. Upload them only with `gh --attach`.
 - Do not replace an existing pull request title unless the user asks or the title does not follow a clear repository convention.
