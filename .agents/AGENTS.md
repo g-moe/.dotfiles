@@ -44,6 +44,8 @@ Code is how we do a majority of our communication, so it must be easy to read. T
 
 **Naming**
 - Name things after the data they hold or the action they take, the same way at every layer: a wrapper and what it wraps use the same name for the same action and the same data.
+- Name siblings by one pattern: pieces that do the same job side by side (two caches, the functions that fill them, the methods that read them) share every word except the data word.
+- Before adding a sibling, copy the existing one's names and swap only the data word; if the names don't line up in a table, rename until they do.
 
 **File Structure**
 - Name files in kebab-case, starting with their folder's word and then what's inside (`check/check-todos-changes.ts`), so a file name reads correctly outside its folder.
@@ -237,4 +239,24 @@ export class DxfeedConnection {
         return this._feed.addSubscription({ product, onEvent: onFrame });
     }
 }
+```
+
+7. Matching Names Across Siblings
+```typescript
+// dom-ladder.ts
+// Two caches doing the same job differ only in the data word: `PriceText` and `Pnl`
+export class DomLadder {
+    private readonly _priceTextByTickIndex = new Map<number, string>();
+    private readonly _pnlByTickIndex = new Map<number, DomPnl | undefined>();
+
+    private _getPriceText(tickIndex: number): string {
+        ...
+    }
+
+    private _getPnl(tickIndex: number): DomPnl | undefined {
+        ...
+    }
+}
+
+// Not: `_priceTexts` next to `_rowPnls`, or `_toPriceText` next to `_getRowPnl`
 ```
