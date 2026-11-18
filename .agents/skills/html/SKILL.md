@@ -39,4 +39,9 @@ In Codex, type `$html` instead of `/html`.
 
 **Mobile layout.** Use the template's single mobile breakpoint, `max-width: 640px`, for all mobile rules. Keep the built-in navigation script: it puts one hamburger menu in the page `<header>` on mobile, which opens every `nav` to fill the screen below the header, closes after selection or Escape, and leaves desktop tabs visible. Keep the page title as the only content of a `body > header`, with no description under it, and insert navigation before `DOMContentLoaded` fires.
 
-**Saving.** Save where the user says. Otherwise use `.local/`, or the repository's own folder for temporary work; outside a repository, use a temporary folder. Give the full path.
+**Saving.** Save where the user says.
+Otherwise use `local/` at the repository root, or the repository's own folder for temporary work; outside a repository, use a temporary folder.
+Do not use a folder whose name starts with a dot, such as `.local/`, because the T3 Code file viewer cannot open files inside it.
+Before saving the first page in a repository, make sure git ignores `local/` without touching tracked files: append `/local/` to the file that `git rev-parse --git-path info/exclude` prints when that line is not there yet.
+Never edit the repository's `.gitignore` for this.
+Give the full path.
