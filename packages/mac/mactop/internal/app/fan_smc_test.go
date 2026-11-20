@@ -58,16 +58,46 @@ func (f *fakeFanModeHardware) WriteForceTest(enabled bool) error {
 	return nil
 }
 
-func TestSetFanModeUsesDirectWriteWhenHardwareAcceptsIt(t *testing.T) {
+func TestSetFanModeHoldsForceTestBeforeManualMode(t *testing.T) {
 	hardware := &fakeFanModeHardware{modes: map[int]int{0: 0}}
-	if err := setFanModeWithHardware(hardware, 0, 1, func(time.Duration) error {
-		t.Fatal("direct mode write slept")
+	var sleeps []time.Duration
+	if err := setFanModeWithHardware(hardware, 0, 1, func(delay time.Duration) error {
+		if hardware.forceTest != 1 {
+			t.Fatal("waited before force-test was set")
+		}
+		sleeps = append(sleeps, delay)
 		return nil
 	}, noFanControlCheck); err != nil {
 		t.Fatal(err)
 	}
-	if !reflect.DeepEqual(hardware.modeWrites, []int{1}) || len(hardware.forceTestWrites) != 0 {
-		t.Fatalf("mode writes = %v, force-test writes = %v", hardware.modeWrites, hardware.forceTestWrites)
+	if !reflect.DeepEqual(hardware.forceTestWrites, []bool{true}) || !reflect.DeepEqual(hardware.modeWrites, []int{1}) {
+		t.Fatalf("force-test writes = %v, mode writes = %v", hardware.forceTestWrites, hardware.modeWrites)
+	}
+	if !reflect.DeepEqual(sleeps, []time.Duration{fanUnlockSettleTime}) {
+		t.Fatalf("sleeps = %v", sleeps)
+	}
+}
+
+func TestSetFanModeKeepsHeldForceTest(t *testing.T) {
+	hardware := &fakeFanModeHardware{modes: map[int]int{1: 0}, forceTest: 1}
+	if err := setFanModeWithHardware(hardware, 1, 1, func(time.Duration) error {
+		t.Fatal("held force-test slept")
+		return nil
+	}, noFanControlCheck); err != nil {
+		t.Fatal(err)
+	}
+	if len(hardware.forceTestWrites) != 0 || !reflect.DeepEqual(hardware.modeWrites, []int{1}) {
+		t.Fatalf("force-test writes = %v, mode writes = %v", hardware.forceTestWrites, hardware.modeWrites)
+	}
+}
+
+func TestSetFanModeWorksWithoutForceTestKey(t *testing.T) {
+	hardware := &fakeFanModeHardware{modes: map[int]int{0: 3}, forceTestMissing: true, modeFailures: 2}
+	if err := setFanModeWithHardware(hardware, 0, 1, func(time.Duration) error { return nil }, noFanControlCheck); err != nil {
+		t.Fatal(err)
+	}
+	if len(hardware.forceTestWrites) != 0 || !reflect.DeepEqual(hardware.modeWrites, []int{1, 1, 1}) {
+		t.Fatalf("force-test writes = %v, mode writes = %v", hardware.forceTestWrites, hardware.modeWrites)
 	}
 }
 
@@ -80,7 +110,7 @@ func TestFansHaveManualModeDistinguishesSystemControl(t *testing.T) {
 	}
 }
 
-func TestSetFanModeFallsBackToForceTestUnlock(t *testing.T) {
+func TestSetFanModeRetriesUntilFanStarts(t *testing.T) {
 	hardware := &fakeFanModeHardware{modes: map[int]int{0: 3}, modeFailures: 3}
 	var sleeps []time.Duration
 	if err := setFanModeWithHardware(hardware, 0, 1, func(delay time.Duration) error {
@@ -95,14 +125,14 @@ func TestSetFanModeFallsBackToForceTestUnlock(t *testing.T) {
 	if !reflect.DeepEqual(hardware.forceTestWrites, []bool{true}) {
 		t.Fatalf("force-test writes = %v", hardware.forceTestWrites)
 	}
-	wantSleeps := []time.Duration{fanUnlockSettleTime, fanUnlockRetryTime, fanUnlockRetryTime}
+	wantSleeps := []time.Duration{fanUnlockSettleTime, fanUnlockRetryTime, fanUnlockRetryTime, fanUnlockRetryTime}
 	if !reflect.DeepEqual(sleeps, wantSleeps) {
 		t.Fatalf("sleeps = %v, want %v", sleeps, wantSleeps)
 	}
 }
 
 func TestSetFanModeClearsForceTestAfterUnlockTimeout(t *testing.T) {
-	hardware := &fakeFanModeHardware{modes: map[int]int{0: 3}, modeFailures: fanUnlockAttempts + 1}
+	hardware := &fakeFanModeHardware{modes: map[int]int{0: 3}, modeFailures: fanUnlockAttempts}
 	err := setFanModeWithHardware(hardware, 0, 1, func(time.Duration) error { return nil }, noFanControlCheck)
 	if err == nil {
 		t.Fatal("unlock timeout returned no error")
