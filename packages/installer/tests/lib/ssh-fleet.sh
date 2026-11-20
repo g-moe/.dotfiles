@@ -119,6 +119,22 @@ grep -q '^\(new-session\|send-keys\|has-session\)' "$TEST_COMMANDS" && fail '--i
 
 TEST_AHEAD=2 TEST_HAS_SESSION=0 run_fleet --install && fail '--install accepted unpushed commits'
 grep -q '^send-keys' "$TEST_COMMANDS" && fail '--install must not type into panes with unpushed commits'
+
+# --cmd types the command into every pane, in either spelling
+fleet_command='aws sso login --profile my-profile --use-device-code --no-browser'
+TEST_HAS_SESSION=0 run_fleet --cmd="$fleet_command" || fail 'ssh-fleet --cmd= must run on an existing session'
+expect_command "send-keys -t %0 $fleet_command Enter" '--cmd must run on this machine'
+expect_command "send-keys -t %1 $fleet_command Enter" '--cmd must run in the first host pane'
+expect_command "send-keys -t %2 $fleet_command Enter" '--cmd must run in the second host pane'
+expect_command 'attach-session -t =ssh-fleet' '--cmd must still join the session'
+
+TEST_HAS_SESSION=0 run_fleet --cmd "$fleet_command" || fail 'ssh-fleet --cmd must accept the command as the next argument'
+expect_command "send-keys -t %1 $fleet_command Enter" '--cmd COMMAND must run in the host panes'
+
+# --cmd stops before touching tmux when it has no command or is paired with --install
+run_fleet --cmd && fail '--cmd accepted a missing command'
+TEST_HAS_SESSION=0 run_fleet --install --cmd="$fleet_command" && fail 'ssh-fleet accepted --install with --cmd'
+grep -q '^send-keys' "$TEST_COMMANDS" && fail '--install with --cmd must not type into panes'
 unset TEST_PANE_LIST
 
 # Inside tmux, ssh-fleet switches instead of attaching

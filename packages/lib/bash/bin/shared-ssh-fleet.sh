@@ -6,8 +6,10 @@
 #
 # Joining an existing session types ssh again in any host pane that has dropped back to its local shell.
 #
-# Usage: ssh-fleet [--restart] [--install]
+# Usage: ssh-fleet [--restart] [--install | --cmd=COMMAND]
 #   --restart  Kill the ssh-fleet session first, then build it again.
+#   --cmd      Type COMMAND into every pane (this machine and each host) and press Enter.
+#              Pass it as --cmd=COMMAND or --cmd COMMAND, quoted as one argument.
 #   --install  Stop before touching anything if this machine has uncommitted changes or unpushed commits.
 #              Otherwise, in every pane (this machine and each host), stash local changes, reset ~/.dotfiles
 #              to origin/main, and run npm run install:agents. The stash is a timestamped backup that is never
@@ -15,6 +17,9 @@
 #
 # Example .env line:
 #   SSH_FLEET_ALIASES="linux mini cloud-gg"
+#
+# Example command:
+#   ssh-fleet --cmd="aws sso login --profile my-profile --use-device-code --no-browser"
 
 set -euo pipefail
 
@@ -50,13 +55,15 @@ SHELL_PATTERN='^(zsh|bash|sh|fish)$'
 FALLBACK_COLUMNS=200
 FALLBACK_LINES=50
 
-USAGE='Usage: ssh-fleet [--restart] [--install]
+USAGE='Usage: ssh-fleet [--restart] [--install | --cmd=COMMAND]
   --restart  Kill the ssh-fleet session first, then build it again.
   --install  Stop if this machine has local work; otherwise, in every pane, stash, reset ~/.dotfiles to origin/main, and run npm run install:agents.
+  --cmd      Type COMMAND into every pane and press Enter, e.g. --cmd="aws sso login --profile my-profile".
   --help     Show this help.'
 
 restart=0
 install=0
+command=''
 aliases=()
 
 read_args() {
@@ -64,6 +71,12 @@ read_args() {
     case "$1" in
       --restart) restart=1 ;;
       --install) install=1 ;;
+      --cmd=*) command="${1#--cmd=}" ;;
+      --cmd)
+        (($# > 1)) || die 'Missing command after --cmd. Run ssh-fleet --help.'
+        shift
+        command="$1"
+        ;;
       -h | --help)
         printf '%s\n' "$USAGE"
         exit 0
@@ -72,6 +85,11 @@ read_args() {
     esac
     shift
   done
+
+  # Both type into the same panes, so the second would land as input to the first
+  if ((install)) && [[ -n "$command" ]]; then
+    die 'Pass --install or --cmd, not both.'
+  fi
 }
 
 host_exists() {
@@ -195,12 +213,12 @@ reconnect_panes() {
   done < <(tmux list-panes -s -t "=$SESSION" -F "#{pane_id} #{pane_current_command} #{$ALIAS_OPTION}")
 }
 
-# Type the install command into every pane, this machine's included, in a new or an existing session.
-send_install() {
+# Type a command into every pane, this machine's included, in a new or an existing session.
+send_command() {
   local pane
 
   while read -r pane; do
-    tmux send-keys -t "$pane" "$INSTALL_COMMAND" Enter
+    tmux send-keys -t "$pane" "$1" Enter
   done < <(tmux list-panes -s -t "=$SESSION" -F '#{pane_id}')
 }
 
@@ -234,7 +252,9 @@ main() {
   fi
 
   if ((install)); then
-    send_install
+    send_command "$INSTALL_COMMAND"
+  elif [[ -n "$command" ]]; then
+    send_command "$command"
   fi
   join_session
 }
