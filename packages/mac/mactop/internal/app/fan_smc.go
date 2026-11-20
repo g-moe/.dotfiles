@@ -10,7 +10,7 @@ import (
 const (
 	fanUnlockSettleTime = 500 * time.Millisecond
 	fanUnlockRetryTime  = 100 * time.Millisecond
-	fanUnlockAttempts   = 100
+	fanUnlockAttempts   = 300
 	fanResetAttempts    = 50
 )
 
@@ -80,6 +80,10 @@ func checkFanControlContext(ctx context.Context) fanControlCheck {
 	return ctx.Err
 }
 
+// setFanModeWithHardware moves one fan into manual (1) or automatic (0) mode.
+// Manual mode always holds Ftst first when the SMC exposes it.
+// Without Ftst, Apple Silicon can accept the mode write and then hand the fan back to the system seconds later.
+// Fans starting from zero RPM can reject mode writes until they spin up, so writes retry for the full unlock window.
 func setFanModeWithHardware(hardware fanModeHardware, fanID, mode int, wait fanWait, check fanControlCheck) error {
 	if mode == 0 {
 		return hardware.WriteMode(fanID, mode)
@@ -91,41 +95,43 @@ func setFanModeWithHardware(hardware fanModeHardware, fanID, mode int, wait fanW
 		return err
 	}
 
-	directErr := hardware.WriteMode(fanID, mode)
-	if directErr == nil {
-		return nil
+	// Hold Ftst for the manual session, or continue without it on hardware that has no Ftst key
+	forceTest, forceTestErr := hardware.ReadForceTest()
+	forceTestAvailable := !errors.Is(forceTestErr, errFanForceTestUnavailable)
+	if forceTestErr != nil && forceTestAvailable {
+		return forceTestErr
 	}
-	if err := check(); err != nil {
-		return err
-	}
-	if err := hardware.WriteForceTest(true); err != nil {
-		return errors.Join(directErr, fmt.Errorf("could not unlock fan control: %w", err))
+	clearForceTest := func() error { return nil }
+	if forceTestAvailable && forceTest == 0 {
+		if err := hardware.WriteForceTest(true); err != nil {
+			return fmt.Errorf("could not unlock fan control: %w", err)
+		}
+		clearForceTest = func() error { return hardware.WriteForceTest(false) }
+		if err := wait(fanUnlockSettleTime); err != nil {
+			return errors.Join(err, clearForceTest())
+		}
 	}
 
-	if err := wait(fanUnlockSettleTime); err != nil {
-		return errors.Join(err, hardware.WriteForceTest(false))
-	}
-	var retryErr error
+	// Retry the mode write until the fan accepts it
+	var modeErr error
 	for attempt := 0; attempt < fanUnlockAttempts; attempt++ {
 		if err := check(); err != nil {
-			return errors.Join(err, hardware.WriteForceTest(false))
+			return errors.Join(err, clearForceTest())
 		}
-		retryErr = hardware.WriteMode(fanID, mode)
-		if retryErr == nil {
+		modeErr = hardware.WriteMode(fanID, mode)
+		if modeErr == nil {
 			return nil
 		}
 		if attempt+1 < fanUnlockAttempts {
 			if err := wait(fanUnlockRetryTime); err != nil {
-				return errors.Join(err, hardware.WriteForceTest(false))
+				return errors.Join(err, clearForceTest())
 			}
 		}
 	}
 
-	resetErr := hardware.WriteForceTest(false)
 	return errors.Join(
-		directErr,
-		fmt.Errorf("fan %d did not enter manual mode after the force-test unlock: %w", fanID, retryErr),
-		resetErr,
+		fmt.Errorf("fan %d did not enter manual mode: %w", fanID, modeErr),
+		clearForceTest(),
 	)
 }
 
