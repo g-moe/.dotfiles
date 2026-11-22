@@ -78,7 +78,7 @@ sudo mactop --fan-reset          # Restore automatic control
 
 Only one mactop fan-control process can own the SMC at a time.
 
-mactop probes each fan's mode-key casing at runtime. It first tries the direct manual-mode write used by M1 and M4 Mac mini hardware. It verifies the mode and RPM target in the next policy sample, not by an immediate SMC read that can be stale. If Apple Silicon rejects the direct write and the `Ftst` key is available, mactop enables force-test mode and retries for up to 10 seconds. This unlock is required on the tested M4 Max MacBook Pro and typically takes several seconds. A cancellation, timeout, policy error, reset, or normal shutdown clears force-test mode and verifies that no fan remains in manual mode. Apple Silicon system mode `3` is a valid automatic state; older hardware usually reports automatic mode `0`.
+mactop probes each fan's mode-key casing at runtime. Before every manual-mode write, mactop enables force-test mode when the `Ftst` key is available and holds it for the whole manual session. Without it, Apple Silicon can accept the mode write and then return the fans to system mode `3` seconds later. Hardware without `Ftst` uses the same mode write without it. Fans starting from zero RPM can reject mode writes until they spin up, so mactop retries for up to 30 seconds; the tested M4 Max MacBook Pro typically needs about 15 seconds. It verifies the mode and RPM target in the next policy sample, not by an immediate SMC read that can be stale. A cancellation, timeout, policy error, reset, or normal shutdown clears force-test mode and verifies that no fan remains in manual mode. Apple Silicon system mode `3` is a valid automatic state; older hardware usually reports automatic mode `0`.
 
 ## Menu bar
 
