@@ -12,6 +12,15 @@ expect_file_contains "$preferences" \
   'xfconf_set thunar /last-show-hidden bool true' \
   'Thunar must always show hidden files'
 
+default_applications="$INSTALLER_DIR/setup/files/default-applications.sh"
+expect_file_contains "$default_applications" \
+  "readonly AUDIO_PLAYER_ID='com.apple.QuickTimePlayerX'" \
+  'audio files must open in QuickTime Player, not Music'
+for type_id in public.mp3 com.apple.m4a-audio com.microsoft.waveform-audio org.xiph.flac; do
+  expect_file_contains "$default_applications" "  $type_id" \
+    "default applications are missing audio type: $type_id"
+done
+
 sidebar="$INSTALLER_DIR/setup/files/sidebar.sh"
 helper="$INSTALLER_DIR/setup/files/finder-sidebar.js"
 [[ -f "$helper" ]] || fail 'Finder sidebar helper is missing'
