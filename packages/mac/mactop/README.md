@@ -84,7 +84,7 @@ mactop probes each fan's mode-key casing at runtime. Before every manual-mode wr
 
 Menu bar mode skips recurring process scans and terminal rendering.
 
-The **Menubar** Settings tab controls CPU, GPU, and RAM visibility and colors, plus status-item width and font size. Fan control stays in the **Fans** tab. mactop does not add a separate fan icon.
+The **Menubar** Settings tab controls CPU, GPU, and MEM visibility and colors, plus status-item width and font size. Fan control stays in the **Fans** tab. mactop does not add a separate fan icon.
 
 Each menu bar sample also writes `prompt-stats` for the Zsh prompt: an expiry time in Unix seconds on the first line, then `CPU-4% | GPU-2% | MEM 33%`. The expiry is three update intervals ahead, so the prompt hides the stats when the menu bar stops.
 

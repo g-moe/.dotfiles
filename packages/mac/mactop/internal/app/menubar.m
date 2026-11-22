@@ -395,6 +395,29 @@ static NSColor *headerColor(void) { return menuBarLabelColor(); }
 
 // ---- Settings Window Controller ----
 
+static const CGFloat kSettingsWindowWidth = 380;
+static const CGFloat kSettingsMargin = 16;
+static const CGFloat kSettingsTopMargin = 12;
+static const CGFloat kSettingsContentWidth = kSettingsWindowWidth - 2 * kSettingsMargin;
+static const CGFloat kSettingsSectionSpacing = 14;
+static const CGFloat kSettingsCardPadding = 14;
+static const CGFloat kSettingsCardWidth = kSettingsContentWidth - 2 * kSettingsCardPadding;
+static const CGFloat kSettingsCardCornerRadius = 10;
+static const CGFloat kSettingsRowSpacing = 12;
+static const CGFloat kSettingsInputSpacing = 4;
+static const CGFloat kSettingsStatusSpacing = 6;
+static const CGFloat kSettingsTabWidth = 180;
+static const CGFloat kSettingsNumberFieldWidth = 64;
+static const CGFloat kSettingsSliderWidth = 150;
+static const CGFloat kSettingsSliderValueWidth = 28;
+static const CGFloat kSettingsColorWellWidth = 44;
+static const CGFloat kSettingsColorWellHeight = 24;
+static const CGFloat kFanPanelHeight = 60;
+static const CGFloat kFanStatusDotSize = 8;
+static const CGFloat kSegmentHeight = 24;
+static const CGFloat kSegmentInset = 2;
+static const CGFloat kSegmentCornerRadius = 7;
+
 static NSColor *mactopAccentColor(void) {
   return [NSColor colorWithSRGBRed:0.0
                              green:135.0 / 255.0
@@ -402,11 +425,37 @@ static NSColor *mactopAccentColor(void) {
                              alpha:1.0];
 }
 
-static NSColor *mactopSegmentedBackgroundColor(void) {
-  return [NSColor colorWithSRGBRed:26.0 / 255.0
-                             green:26.0 / 255.0
-                              blue:26.0 / 255.0
-                             alpha:1.0];
+static BOOL mactopIsDarkAppearance(NSAppearance *appearance) {
+  NSAppearanceName match = [appearance bestMatchFromAppearancesWithNames:@[
+    NSAppearanceNameAqua, NSAppearanceNameDarkAqua
+  ]];
+  return [match isEqualToString:NSAppearanceNameDarkAqua];
+}
+
+// Light and dark values follow the macOS segmented control: a faint track with a raised selection.
+static NSColor *mactopSegmentedTrackColor(NSAppearance *appearance) {
+  if (mactopIsDarkAppearance(appearance)) {
+    return [NSColor colorWithWhite:1.0 alpha:0.08];
+  }
+  return [NSColor colorWithWhite:0.0 alpha:0.07];
+}
+
+static NSColor *mactopSegmentedSelectionColor(NSAppearance *appearance) {
+  if (mactopIsDarkAppearance(appearance)) {
+    return [NSColor colorWithSRGBRed:99.0 / 255.0
+                               green:99.0 / 255.0
+                                blue:102.0 / 255.0
+                               alpha:1.0];
+  }
+  return [NSColor whiteColor];
+}
+
+// Cards tint the window background, which is white in light mode on recent macOS.
+static NSColor *mactopSettingsCardColor(NSAppearance *appearance) {
+  if (mactopIsDarkAppearance(appearance)) {
+    return [NSColor colorWithWhite:1.0 alpha:0.06];
+  }
+  return [NSColor colorWithWhite:0.0 alpha:0.045];
 }
 
 // AppKit does not honor selectedSegmentBezelColor for every appearance. Draw
@@ -431,6 +480,11 @@ static NSColor *mactopSegmentedBackgroundColor(void) {
     _pressedSegment = -1;
   }
   return self;
+}
+
+// Segment widths follow the frame, so layout sets the width and only the height is fixed.
+- (NSSize)intrinsicContentSize {
+  return NSMakeSize(NSViewNoIntrinsicMetric, kSegmentHeight);
 }
 
 - (NSFont *)segmentFont {
@@ -539,44 +593,64 @@ static NSColor *mactopSegmentedBackgroundColor(void) {
   return YES;
 }
 
+- (void)viewDidChangeEffectiveAppearance {
+  [super viewDidChangeEffectiveAppearance];
+  [self setNeedsDisplay:YES];
+}
+
 - (void)drawRect:(NSRect)dirtyRect {
   [self updateSegmentWidths];
+  NSAppearance *appearance = self.effectiveAppearance;
   NSRect bounds = self.bounds;
-  CGFloat radius = NSHeight(bounds) / 2.0;
-  NSBezierPath *background =
-      [NSBezierPath bezierPathWithRoundedRect:bounds xRadius:radius yRadius:radius];
-  [mactopSegmentedBackgroundColor() setFill];
+  NSBezierPath *background = [NSBezierPath bezierPathWithRoundedRect:bounds
+                                                             xRadius:kSegmentCornerRadius
+                                                             yRadius:kSegmentCornerRadius];
+  [mactopSegmentedTrackColor(appearance) setFill];
   [background fill];
 
   NSInteger count = self.segmentCount;
   if (count <= 0) {
     return;
   }
+  CGFloat innerRadius = kSegmentCornerRadius - kSegmentInset;
+
+  // Selected segment: a raised pill with a soft shadow in light mode
   NSInteger selected = self.selectedSegment;
   if (selected >= 0 && selected < count) {
-    NSRect selectedRect = NSInsetRect([self rectForSegment:selected], 1, 1);
     NSBezierPath *selection = [NSBezierPath
-        bezierPathWithRoundedRect:selectedRect
-                         xRadius:MAX(0, radius - 1)
-                         yRadius:MAX(0, radius - 1)];
-    [[mactopAccentColor()
-        colorWithAlphaComponent:self.enabled ? 1.0 : 0.35] setFill];
+        bezierPathWithRoundedRect:NSInsetRect([self rectForSegment:selected],
+                                              kSegmentInset, kSegmentInset)
+                          xRadius:innerRadius
+                          yRadius:innerRadius];
+    [NSGraphicsContext saveGraphicsState];
+    if (!mactopIsDarkAppearance(appearance)) {
+      NSShadow *shadow = [[NSShadow alloc] init];
+      shadow.shadowOffset = NSMakeSize(0, -1);
+      shadow.shadowBlurRadius = 2;
+      shadow.shadowColor = [[NSColor blackColor] colorWithAlphaComponent:0.18];
+      [shadow set];
+    }
+    [[mactopSegmentedSelectionColor(appearance)
+        colorWithAlphaComponent:self.enabled ? 1.0 : 0.5] setFill];
     [selection fill];
+    [NSGraphicsContext restoreGraphicsState];
   }
 
   if (_pressedSegment >= 0 && _pressedSegment < count) {
     NSBezierPath *pressed = [NSBezierPath
-        bezierPathWithRoundedRect:NSInsetRect([self rectForSegment:_pressedSegment], 1, 1)
-                         xRadius:MAX(0, radius - 1)
-                         yRadius:MAX(0, radius - 1)];
+        bezierPathWithRoundedRect:NSInsetRect([self rectForSegment:_pressedSegment],
+                                              kSegmentInset, kSegmentInset)
+                          xRadius:innerRadius
+                          yRadius:innerRadius];
     [[[NSColor blackColor] colorWithAlphaComponent:0.12] setFill];
     [pressed fill];
   }
 
+  // Labels: primary text on the selection, secondary text elsewhere
   NSFont *font = [self segmentFont];
   for (NSInteger i = 0; i < count; i++) {
     NSString *label = [self labelForSegment:i] ?: @"";
-    NSColor *textColor = i == selected ? [NSColor whiteColor]
+    NSColor *textColor = i == selected ? [NSColor labelColor]
                                         : [NSColor secondaryLabelColor];
     if (!self.enabled) {
       textColor = [textColor colorWithAlphaComponent:0.5];
@@ -611,20 +685,36 @@ static NSColor *mactopSegmentedBackgroundColor(void) {
 
 @implementation MactopSettingsCard
 - (void)drawRect:(NSRect)dirtyRect {
-  NSBezierPath *background =
-      [NSBezierPath bezierPathWithRoundedRect:self.bounds xRadius:10 yRadius:10];
-  // Keep the card related to the current macOS appearance, but make it 15%
-  // darker than the standard control background so sections stay distinct.
-  NSColor *cardColor = [[NSColor controlBackgroundColor]
-      blendedColorWithFraction:0.15
-                        ofColor:[NSColor blackColor]];
-  [cardColor setFill];
+  NSBezierPath *background = [NSBezierPath bezierPathWithRoundedRect:self.bounds
+                                                             xRadius:kSettingsCardCornerRadius
+                                                             yRadius:kSettingsCardCornerRadius];
+  [mactopSettingsCardColor(self.effectiveAppearance) setFill];
   [background fill];
 }
 
 - (void)viewDidChangeEffectiveAppearance {
   [super viewDidChangeEffectiveAppearance];
   [self setNeedsDisplay:YES];
+}
+@end
+
+@interface MactopStatusDot : NSView
+@property(strong, nonatomic) NSColor *color;
+@end
+
+@implementation MactopStatusDot
+- (void)setColor:(NSColor *)color {
+  _color = color;
+  [self setNeedsDisplay:YES];
+}
+
+- (NSSize)intrinsicContentSize {
+  return NSMakeSize(kFanStatusDotSize, kFanStatusDotSize);
+}
+
+- (void)drawRect:(NSRect)dirtyRect {
+  [(_color ?: [NSColor tertiaryLabelColor]) setFill];
+  [[NSBezierPath bezierPathWithOvalInRect:self.bounds] fill];
 }
 @end
 
@@ -640,7 +730,9 @@ static NSColor *mactopSegmentedBackgroundColor(void) {
 @property(strong) NSColorWell *gpuColorWell;
 @property(strong) NSColorWell *memColorWell;
 @property(strong) NSSegmentedControl *settingsTabControl;
-@property(strong) NSTabView *settingsTabs;
+@property(strong) NSStackView *settingsPage;
+@property(strong) NSStackView *menubarView;
+@property(strong) NSStackView *fansView;
 @property(strong) NSSegmentedControl *fanModeControl;
 @property(strong) NSView *fanDefaultPanel;
 @property(strong) NSView *fanConstantPanel;
@@ -653,6 +745,7 @@ static NSColor *mactopSegmentedBackgroundColor(void) {
 @property(strong) NSTextField *maximumTempField;
 @property(strong) NSStepper *maximumTempStepper;
 @property(strong) NSButton *fanApplyButton;
+@property(strong) MactopStatusDot *fanPolicyDot;
 @property(strong) NSTextField *fanPolicyStateLabel;
 @property(strong) NSTextField *fanPolicyDetailLabel;
 @property(strong) NSTextField *fanPolicyErrorLabel;
@@ -663,8 +756,8 @@ static NSColor *mactopSegmentedBackgroundColor(void) {
 @property(assign) unsigned long long fanRequestGeneration;
 @property(assign) BOOL fanMutationPending;
 - (void)buildUI:(NSView *)view;
-- (void)buildMenubarUI:(NSView *)view;
-- (void)buildFansUI:(NSView *)view;
+- (void)buildMenubarUI:(NSStackView *)page;
+- (void)buildFansUI:(NSStackView *)page;
 - (void)updateFanPolicyState:(int)state
                         mode:(int)mode
                  constantRPM:(int)constantRPM
@@ -681,55 +774,128 @@ static NSColor *mactopSegmentedBackgroundColor(void) {
 
 @implementation SettingsWindowController
 
-// Section titles live above the card so AppKit cannot clip them into a border.
-static NSView *addSettingsSection(NSView *parent, NSString *title,
-                                  NSRect frame) {
-  NSTextField *titleLabel = [NSTextField labelWithString:title];
-  titleLabel.font = [NSFont systemFontOfSize:13 weight:NSFontWeightSemibold];
-  titleLabel.frame = NSMakeRect(frame.origin.x + 4,
-                                NSMaxY(frame) - 20,
-                                frame.size.width - 8, 20);
-  [parent addSubview:titleLabel];
+static NSStackView *makeSettingsStack(NSArray<NSView *> *views, CGFloat spacing) {
+  NSStackView *stack = [NSStackView stackViewWithViews:views];
+  stack.orientation = NSUserInterfaceLayoutOrientationVertical;
+  stack.alignment = NSLayoutAttributeLeading;
+  stack.spacing = spacing;
+  stack.translatesAutoresizingMaskIntoConstraints = NO;
+  return stack;
+}
 
-  NSView *card = [[MactopSettingsCard alloc]
-      initWithFrame:NSMakeRect(frame.origin.x, frame.origin.y,
-                               frame.size.width, frame.size.height - 28)];
-  [parent addSubview:card];
+// Rows pinned to both sides of their stack fill the card or page width.
+static void pinToStackSides(NSView *view, NSStackView *stack, CGFloat inset) {
+  [NSLayoutConstraint activateConstraints:@[
+    [view.leadingAnchor constraintEqualToAnchor:stack.leadingAnchor constant:inset],
+    [view.trailingAnchor constraintEqualToAnchor:stack.trailingAnchor constant:-inset],
+  ]];
+}
+
+static NSView *makeSettingsCard(NSArray<NSView *> *rows) {
+  MactopSettingsCard *card = [[MactopSettingsCard alloc] initWithFrame:NSZeroRect];
+  card.translatesAutoresizingMaskIntoConstraints = NO;
+
+  NSStackView *stack = makeSettingsStack(rows, kSettingsRowSpacing);
+  stack.edgeInsets = NSEdgeInsetsMake(kSettingsCardPadding, kSettingsCardPadding,
+                                      kSettingsCardPadding, kSettingsCardPadding);
+  [card addSubview:stack];
+  [NSLayoutConstraint activateConstraints:@[
+    [stack.topAnchor constraintEqualToAnchor:card.topAnchor],
+    [stack.bottomAnchor constraintEqualToAnchor:card.bottomAnchor],
+    [stack.leadingAnchor constraintEqualToAnchor:card.leadingAnchor],
+    [stack.trailingAnchor constraintEqualToAnchor:card.trailingAnchor],
+  ]];
+  for (NSView *row in rows) {
+    pinToStackSides(row, stack, kSettingsCardPadding);
+  }
   return card;
 }
 
+// A row puts its title on the left and its control on the right.
+static NSStackView *makeSettingsRow(NSView *leading, NSView *trailing) {
+  NSStackView *row = [[NSStackView alloc] initWithFrame:NSZeroRect];
+  row.orientation = NSUserInterfaceLayoutOrientationHorizontal;
+  row.alignment = NSLayoutAttributeCenterY;
+  row.translatesAutoresizingMaskIntoConstraints = NO;
+  if (leading) {
+    [row addView:leading inGravity:NSStackViewGravityLeading];
+  }
+  [row addView:trailing inGravity:NSStackViewGravityTrailing];
+  return row;
+}
+
+// The unit sits after the stepper, so row titles carry no unit text.
+static NSStackView *makeNumberInput(NSTextField *field, NSStepper *stepper,
+                                    NSString *unit) {
+  field.alignment = NSTextAlignmentRight;
+  [field.widthAnchor constraintEqualToConstant:kSettingsNumberFieldWidth].active = YES;
+  NSTextField *unitLabel = [NSTextField labelWithString:unit];
+  unitLabel.textColor = [NSColor secondaryLabelColor];
+  NSStackView *input = [NSStackView stackViewWithViews:@[ field, stepper, unitLabel ]];
+  input.spacing = kSettingsInputSpacing;
+  return input;
+}
+
+static NSStackView *makeSliderInput(NSSlider *slider, NSTextField *valueLabel) {
+  [slider.widthAnchor constraintEqualToConstant:kSettingsSliderWidth].active = YES;
+  valueLabel.alignment = NSTextAlignmentRight;
+  valueLabel.textColor = [NSColor secondaryLabelColor];
+  [valueLabel.widthAnchor constraintEqualToConstant:kSettingsSliderValueWidth].active = YES;
+  return [NSStackView stackViewWithViews:@[ slider, valueLabel ]];
+}
+
+static NSColorWell *makeMetricColorWell(NSString *metricTitle, id target) {
+  NSColorWell *well = [[NSColorWell alloc] initWithFrame:NSZeroRect];
+  [NSLayoutConstraint activateConstraints:@[
+    [well.widthAnchor constraintEqualToConstant:kSettingsColorWellWidth],
+    [well.heightAnchor constraintEqualToConstant:kSettingsColorWellHeight],
+  ]];
+  well.accessibilityLabel =
+      [NSString stringWithFormat:@"%@ %@", metricTitle, messageText(@"Menu_Colors")];
+  well.target = target;
+  well.action = @selector(colorChanged:);
+  return well;
+}
+
+static NSColor *fanPolicyDotColor(int state) {
+  switch (state) {
+  case 3:
+    return [NSColor systemGreenColor];
+  case 1:
+    return [NSColor tertiaryLabelColor];
+  case 5:
+  case 7:
+    return [NSColor systemRedColor];
+  default:
+    return [NSColor systemOrangeColor];
+  }
+}
+
 - (instancetype)init {
-  CGFloat w = 480;
-  CGFloat h = 620;
-  NSRect frame = NSMakeRect(0, 0, w, h);
   NSWindow *window = [[NSWindow alloc]
-      initWithContentRect:frame
+      initWithContentRect:NSMakeRect(0, 0, kSettingsWindowWidth, kSettingsWindowWidth)
                 styleMask:NSWindowStyleMaskTitled | NSWindowStyleMaskClosable |
                           NSWindowStyleMaskMiniaturizable
                   backing:NSBackingStoreBuffered
                     defer:NO];
   window.title = @"mactop";
-  [window center];
-
-  NSView *contentView = [[NSView alloc] initWithFrame:frame];
-  window.contentView = contentView;
+  window.movable = NO;
   window.opaque = YES;
   window.backgroundColor = [NSColor windowBackgroundColor];
 
   self = [super initWithWindow:window];
   if (self) {
     window.delegate = self;
-    [self buildUI:contentView];
+    [self buildUI:window.contentView];
+    [self fitWindowToContent];
   }
   return self;
 }
 
 - (void)buildUI:(NSView *)view {
-  _settingsTabControl = [[MactopSegmentedControl alloc]
-      initWithFrame:NSMakeRect((view.bounds.size.width - 240) / 2,
-                               view.bounds.size.height - 44, 240, 28)];
-  _settingsTabControl.autoresizingMask = NSViewMinXMargin | NSViewMaxXMargin |
-                                         NSViewMinYMargin;
+  // Tabs
+  _settingsTabControl = [[MactopSegmentedControl alloc] initWithFrame:NSZeroRect];
+  _settingsTabControl.translatesAutoresizingMaskIntoConstraints = NO;
   _settingsTabControl.segmentCount = 2;
   [_settingsTabControl setLabel:messageText(@"Menu_SettingsTabMenubar")
                      forSegment:0];
@@ -738,63 +904,57 @@ static NSView *addSettingsSection(NSView *parent, NSString *title,
   _settingsTabControl.selectedSegment = 0;
   _settingsTabControl.target = self;
   _settingsTabControl.action = @selector(settingsTabChanged:);
-  [view addSubview:_settingsTabControl];
+  [_settingsTabControl.widthAnchor constraintEqualToConstant:kSettingsTabWidth].active = YES;
 
-  _settingsTabs = [[NSTabView alloc]
-      initWithFrame:NSMakeRect(14, 14, view.bounds.size.width - 28,
-                               view.bounds.size.height - 66)];
-  _settingsTabs.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
-  _settingsTabs.tabViewType = NSNoTabsNoBorder;
+  // Tab pages; the hidden page drops out of the stack so the window fits the shown one
+  _menubarView = makeSettingsStack(@[], kSettingsSectionSpacing);
+  [self buildMenubarUI:_menubarView];
+  _fansView = makeSettingsStack(@[], kSettingsSectionSpacing);
+  [self buildFansUI:_fansView];
+  _fansView.hidden = YES;
 
-  NSTabViewItem *menubarTab =
-      [[NSTabViewItem alloc] initWithIdentifier:@"menubar"];
-  NSTabViewItem *fansTab = [[NSTabViewItem alloc] initWithIdentifier:@"fans"];
-  [_settingsTabs addTabViewItem:menubarTab];
-  [_settingsTabs addTabViewItem:fansTab];
-  [view addSubview:_settingsTabs];
+  // Page with equal margins on both sides
+  _settingsPage = makeSettingsStack(@[ _settingsTabControl, _menubarView, _fansView ],
+                                    kSettingsSectionSpacing);
+  _settingsPage.alignment = NSLayoutAttributeCenterX;
+  _settingsPage.edgeInsets = NSEdgeInsetsMake(kSettingsTopMargin, kSettingsMargin,
+                                              kSettingsMargin, kSettingsMargin);
+  [view addSubview:_settingsPage];
+  [NSLayoutConstraint activateConstraints:@[
+    [_settingsPage.topAnchor constraintEqualToAnchor:view.topAnchor],
+    [_settingsPage.leadingAnchor constraintEqualToAnchor:view.leadingAnchor],
+    [_settingsPage.widthAnchor constraintEqualToConstant:kSettingsWindowWidth],
+  ]];
+  pinToStackSides(_menubarView, _settingsPage, kSettingsMargin);
+  pinToStackSides(_fansView, _settingsPage, kSettingsMargin);
+}
 
-  NSScrollView *menubarScroll =
-      [[NSScrollView alloc] initWithFrame:menubarTab.view.bounds];
-  menubarScroll.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
-  menubarScroll.hasVerticalScroller = NO;
-  menubarScroll.drawsBackground = NO;
-  NSView *menubarView =
-      [[NSView alloc] initWithFrame:NSMakeRect(0, 0, 430, 540)];
-  menubarScroll.documentView = menubarView;
-  [menubarTab.view addSubview:menubarScroll];
-  [self buildMenubarUI:menubarView];
-  CGFloat top = menubarView.bounds.size.height -
-                menubarScroll.contentView.bounds.size.height;
-  [menubarScroll.contentView scrollToPoint:NSMakePoint(0, MAX(0, top))];
-  [menubarScroll reflectScrolledClipView:menubarScroll.contentView];
-
-  NSScrollView *fansScroll =
-      [[NSScrollView alloc] initWithFrame:fansTab.view.bounds];
-  fansScroll.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
-  fansScroll.hasVerticalScroller = YES;
-  fansScroll.drawsBackground = NO;
-  NSView *fansView = [[NSView alloc] initWithFrame:NSMakeRect(0, 0, 430, 540)];
-  fansScroll.documentView = fansView;
-  [fansTab.view addSubview:fansScroll];
-  [self buildFansUI:fansView];
+// The window keeps its top edge and changes height to fit the shown page.
+- (void)fitWindowToContent {
+  NSWindow *window = self.window;
+  [window.contentView layoutSubtreeIfNeeded];
+  NSRect contentRect = NSMakeRect(0, 0, kSettingsWindowWidth,
+                                  _settingsPage.fittingSize.height);
+  NSRect frame = [window frameRectForContentRect:contentRect];
+  NSRect current = window.frame;
+  frame.origin = NSMakePoint(NSMinX(current), NSMaxY(current) - NSHeight(frame));
+  if (NSEqualRects(frame, current)) {
+    return;
+  }
+  [window setFrame:frame display:YES animate:window.visible];
 }
 
 - (void)settingsTabChanged:(id)sender {
   NSInteger index = _settingsTabControl.selectedSegment;
-  if (index >= 0 && index < _settingsTabs.numberOfTabViewItems) {
-    [_settingsTabs selectTabViewItemAtIndex:index];
-  }
+  _menubarView.hidden = index != 0;
+  _fansView.hidden = index != 1;
+  [self fitWindowToContent];
 }
 
-- (void)buildFansUI:(NSView *)view {
-  CGFloat x = 14;
-  CGFloat width = 402;
-
-  NSView *control = addSettingsSection(
-      view, messageText(@"Menu_FanControlMode"), NSMakeRect(x, 282, width, 242));
-
-  _fanModeControl = [[MactopSegmentedControl alloc]
-      initWithFrame:NSMakeRect(12, 176, width - 28, 28)];
+- (void)buildFansUI:(NSStackView *)page {
+  // Mode
+  _fanModeControl = [[MactopSegmentedControl alloc] initWithFrame:NSZeroRect];
+  _fanModeControl.translatesAutoresizingMaskIntoConstraints = NO;
   _fanModeControl.segmentCount = 3;
   [_fanModeControl setLabel:messageText(@"Menu_FanModeDefault") forSegment:0];
   [_fanModeControl setLabel:messageText(@"Menu_FanModeConstant") forSegment:1];
@@ -802,233 +962,186 @@ static NSView *addSettingsSection(NSView *parent, NSString *title,
   _fanModeControl.target = self;
   _fanModeControl.action = @selector(fanModeChanged:);
   _fanModeControl.selectedSegment = 0;
-  [control addSubview:_fanModeControl];
 
-  NSRect panelFrame = NSMakeRect(12, 48, width - 28, 112);
-  _fanDefaultPanel = [[NSView alloc] initWithFrame:panelFrame];
+  // Apple Default panel
   NSTextField *defaultHint = [NSTextField
       wrappingLabelWithString:messageText(@"Menu_FanDefaultDescription")];
   defaultHint.font = [NSFont systemFontOfSize:12];
   defaultHint.textColor = [NSColor secondaryLabelColor];
-  defaultHint.frame = NSMakeRect(4, 45, panelFrame.size.width - 8, 48);
-  [_fanDefaultPanel addSubview:defaultHint];
-  [control addSubview:_fanDefaultPanel];
+  defaultHint.preferredMaxLayoutWidth = kSettingsCardWidth;
+  _fanDefaultPanel = makeSettingsStack(@[ defaultHint ], kSettingsRowSpacing);
 
-  _fanConstantPanel = [[NSView alloc] initWithFrame:panelFrame];
-  NSTextField *rpmLabel = [NSTextField
-      labelWithString:messageText(@"Menu_FanConstantRPM")];
-  rpmLabel.frame = NSMakeRect(4, 72, 174, 20);
-  [_fanConstantPanel addSubview:rpmLabel];
-  _constantRPMField =
-      [[NSTextField alloc] initWithFrame:NSMakeRect(190, 69, 110, 24)];
+  // Constant panel
+  _constantRPMField = [[NSTextField alloc] initWithFrame:NSZeroRect];
   _constantRPMField.integerValue = 2500;
-  [_fanConstantPanel addSubview:_constantRPMField];
-  _constantRPMStepper =
-      [[NSStepper alloc] initWithFrame:NSMakeRect(308, 68, 20, 26)];
+  _constantRPMStepper = [[NSStepper alloc] initWithFrame:NSZeroRect];
   _constantRPMStepper.minValue = 1;
   _constantRPMStepper.maxValue = 20000;
   _constantRPMStepper.increment = 100;
   _constantRPMStepper.integerValue = 2500;
   _constantRPMStepper.target = self;
   _constantRPMStepper.action = @selector(fanStepperChanged:);
-  [_fanConstantPanel addSubview:_constantRPMStepper];
+  NSStackView *rpmRow = makeSettingsRow(
+      [NSTextField labelWithString:messageText(@"Menu_FanConstantRPM")],
+      makeNumberInput(_constantRPMField, _constantRPMStepper,
+                      messageText(@"Menu_UnitRPM")));
 
   _constantRPMRangeLabel = [NSTextField
       labelWithString:messageText(@"Menu_FanRangeCheckedOnApply")];
   _constantRPMRangeLabel.font = [NSFont systemFontOfSize:11];
   _constantRPMRangeLabel.textColor = [NSColor secondaryLabelColor];
-  _constantRPMRangeLabel.frame = NSMakeRect(4, 39, panelFrame.size.width - 8, 18);
-  [_fanConstantPanel addSubview:_constantRPMRangeLabel];
-  [control addSubview:_fanConstantPanel];
+  _fanConstantPanel = makeSettingsStack(@[ rpmRow, _constantRPMRangeLabel ],
+                                        kSettingsRowSpacing);
+  pinToStackSides(rpmRow, (NSStackView *)_fanConstantPanel, 0);
 
-  _fanCurvePanel = [[NSView alloc] initWithFrame:panelFrame];
-  NSTextField *startLabel =
-      [NSTextField labelWithString:messageText(@"Menu_FanStartRamp")];
-  startLabel.frame = NSMakeRect(4, 79, 174, 20);
-  [_fanCurvePanel addSubview:startLabel];
-  _startTempField =
-      [[NSTextField alloc] initWithFrame:NSMakeRect(190, 76, 110, 24)];
+  // Curve panel
+  _startTempField = [[NSTextField alloc] initWithFrame:NSZeroRect];
   _startTempField.integerValue = 38;
-  [_fanCurvePanel addSubview:_startTempField];
-  _startTempStepper =
-      [[NSStepper alloc] initWithFrame:NSMakeRect(308, 75, 20, 26)];
+  _startTempStepper = [[NSStepper alloc] initWithFrame:NSZeroRect];
   _startTempStepper.minValue = 20;
   _startTempStepper.maxValue = 95;
   _startTempStepper.integerValue = 38;
   _startTempStepper.target = self;
   _startTempStepper.action = @selector(fanStepperChanged:);
-  [_fanCurvePanel addSubview:_startTempStepper];
+  NSStackView *startRow = makeSettingsRow(
+      [NSTextField labelWithString:messageText(@"Menu_FanStartRamp")],
+      makeNumberInput(_startTempField, _startTempStepper,
+                      messageText(@"Menu_UnitCelsius")));
 
-  NSTextField *maximumLabel =
-      [NSTextField labelWithString:messageText(@"Menu_FanMaximumTemperature")];
-  maximumLabel.frame = NSMakeRect(4, 47, 174, 20);
-  [_fanCurvePanel addSubview:maximumLabel];
-  _maximumTempField =
-      [[NSTextField alloc] initWithFrame:NSMakeRect(190, 44, 110, 24)];
+  _maximumTempField = [[NSTextField alloc] initWithFrame:NSZeroRect];
   _maximumTempField.integerValue = 85;
-  [_fanCurvePanel addSubview:_maximumTempField];
-  _maximumTempStepper =
-      [[NSStepper alloc] initWithFrame:NSMakeRect(308, 43, 20, 26)];
+  _maximumTempStepper = [[NSStepper alloc] initWithFrame:NSZeroRect];
   _maximumTempStepper.minValue = 25;
   _maximumTempStepper.maxValue = 100;
   _maximumTempStepper.integerValue = 85;
   _maximumTempStepper.target = self;
   _maximumTempStepper.action = @selector(fanStepperChanged:);
-  [_fanCurvePanel addSubview:_maximumTempStepper];
+  NSStackView *maximumRow = makeSettingsRow(
+      [NSTextField labelWithString:messageText(@"Menu_FanMaximumTemperature")],
+      makeNumberInput(_maximumTempField, _maximumTempStepper,
+                      messageText(@"Menu_UnitCelsius")));
 
-  NSTextField *curveHint = [NSTextField
-      wrappingLabelWithString:messageText(@"Menu_FanCurveExplanation")];
-  curveHint.font = [NSFont systemFontOfSize:11];
-  curveHint.textColor = [NSColor secondaryLabelColor];
-  curveHint.frame = NSMakeRect(4, 2, panelFrame.size.width - 8, 34);
-  [_fanCurvePanel addSubview:curveHint];
-  [control addSubview:_fanCurvePanel];
+  _fanCurvePanel = makeSettingsStack(@[ startRow, maximumRow ], kSettingsRowSpacing);
+  pinToStackSides(startRow, (NSStackView *)_fanCurvePanel, 0);
+  pinToStackSides(maximumRow, (NSStackView *)_fanCurvePanel, 0);
 
+  // Panels share one fixed-height slot so switching modes does not resize the window
+  NSView *panels = [[NSView alloc] initWithFrame:NSZeroRect];
+  panels.translatesAutoresizingMaskIntoConstraints = NO;
+  [panels.heightAnchor constraintEqualToConstant:kFanPanelHeight].active = YES;
+  for (NSView *panel in @[ _fanDefaultPanel, _fanConstantPanel, _fanCurvePanel ]) {
+    [panels addSubview:panel];
+    [NSLayoutConstraint activateConstraints:@[
+      [panel.topAnchor constraintEqualToAnchor:panels.topAnchor],
+      [panel.leadingAnchor constraintEqualToAnchor:panels.leadingAnchor],
+      [panel.trailingAnchor constraintEqualToAnchor:panels.trailingAnchor],
+    ]];
+  }
+
+  // Apply
   _fanApplyButton = [NSButton buttonWithTitle:messageText(@"Menu_FanApply")
                                        target:self
                                        action:@selector(applyFanControl:)];
   _fanApplyButton.bezelStyle = NSBezelStyleRounded;
   _fanApplyButton.bezelColor = mactopAccentColor();
-  _fanApplyButton.frame = NSMakeRect(12, 12, 100, 28);
-  [control addSubview:_fanApplyButton];
+  NSStackView *applyRow = makeSettingsRow(nil, _fanApplyButton);
 
-  NSView *status = addSettingsSection(
-      view, messageText(@"Menu_FanStatusSection"), NSMakeRect(x, 60, width, 202));
+  NSView *control = makeSettingsCard(@[ _fanModeControl, panels, applyRow ]);
+  [page addArrangedSubview:control];
+  pinToStackSides(control, page, 0);
 
+  // Status: state on the first line, readings below, then any error or helper action
+  _fanPolicyDot = [[MactopStatusDot alloc] initWithFrame:NSZeroRect];
   _fanPolicyStateLabel = [NSTextField labelWithString:messageText(@"Menu_FanPolicyChecking")];
-  _fanPolicyStateLabel.font = [NSFont systemFontOfSize:14 weight:NSFontWeightSemibold];
-  _fanPolicyStateLabel.frame = NSMakeRect(12, 136, width - 54, 22);
-  [status addSubview:_fanPolicyStateLabel];
-
-  _fanProgressIndicator = [[NSProgressIndicator alloc]
-      initWithFrame:NSMakeRect(width - 42, 138, 16, 16)];
+  _fanPolicyStateLabel.font = [NSFont systemFontOfSize:13 weight:NSFontWeightSemibold];
+  _fanProgressIndicator = [[NSProgressIndicator alloc] initWithFrame:NSZeroRect];
   _fanProgressIndicator.style = NSProgressIndicatorStyleSpinning;
   _fanProgressIndicator.controlSize = NSControlSizeSmall;
   _fanProgressIndicator.displayedWhenStopped = NO;
   _fanProgressIndicator.hidden = YES;
-  [status addSubview:_fanProgressIndicator];
+  NSStackView *stateRow = [NSStackView
+      stackViewWithViews:@[ _fanPolicyDot, _fanPolicyStateLabel, _fanProgressIndicator ]];
 
-  _fanPolicyDetailLabel = [NSTextField wrappingLabelWithString:messageText(@"Menu_FanCurveDetail")];
+  _fanPolicyDetailLabel = [NSTextField wrappingLabelWithString:@""];
   _fanPolicyDetailLabel.font = [NSFont systemFontOfSize:12];
   _fanPolicyDetailLabel.textColor = [NSColor secondaryLabelColor];
-  _fanPolicyDetailLabel.frame = NSMakeRect(12, 88, width - 28, 42);
-  [status addSubview:_fanPolicyDetailLabel];
+  _fanPolicyDetailLabel.preferredMaxLayoutWidth = kSettingsContentWidth;
 
   _fanPolicyErrorLabel = [NSTextField wrappingLabelWithString:@""];
   _fanPolicyErrorLabel.font = [NSFont systemFontOfSize:12];
   _fanPolicyErrorLabel.textColor = [NSColor systemRedColor];
-  _fanPolicyErrorLabel.frame = NSMakeRect(12, 43, width - 28, 40);
-  [status addSubview:_fanPolicyErrorLabel];
+  _fanPolicyErrorLabel.preferredMaxLayoutWidth = kSettingsContentWidth;
+  _fanPolicyErrorLabel.hidden = YES;
 
   _fanHelperInstallButton = [NSButton buttonWithTitle:messageText(@"Menu_InstallFanHelper")
                                              target:self
                                              action:@selector(installFanHelper:)];
   _fanHelperInstallButton.bezelStyle = NSBezelStyleRounded;
-  _fanHelperInstallButton.frame = NSMakeRect(12, 8, 150, 28);
-  [status addSubview:_fanHelperInstallButton];
+  _fanHelperInstallButton.hidden = YES;
+
+  NSStackView *status = makeSettingsStack(
+      @[ stateRow, _fanPolicyDetailLabel, _fanPolicyErrorLabel, _fanHelperInstallButton ],
+      kSettingsStatusSpacing);
+  [page addArrangedSubview:status];
+  pinToStackSides(status, page, 0);
   [self fanModeChanged:_fanModeControl];
 }
 
-- (void)buildMenubarUI:(NSView *)view {
-  CGFloat x = 14;
-  CGFloat width = 402;
-  CGFloat lh = 20;
-
-  // Align the first Menubar section with the first Fans section. Keeping the
-  // section close to the tab control avoids a large empty band at the top.
-  NSView *metrics = addSettingsSection(
-      view, messageText(@"Menu_MenubarMetrics"), NSMakeRect(x, 328, width, 196));
-
+- (void)buildMenubarUI:(NSStackView *)page {
+  // Metrics and their colors
   _cpuCheck = [NSButton checkboxWithTitle:messageText(@"Menu_CPU")
                                    target:self
                                    action:@selector(toggleChanged:)];
-  _cpuCheck.frame = NSMakeRect(14, 116, 280, lh);
-  [metrics addSubview:_cpuCheck];
-
-  _cpuColorWell = [[NSColorWell alloc] initWithFrame:NSMakeRect(322, 114, 62, 24)];
-  _cpuColorWell.accessibilityLabel =
-      [NSString stringWithFormat:@"%@ %@", messageText(@"Menu_CPU"),
-                                 messageText(@"Menu_Colors")];
-  _cpuColorWell.target = self;
-  _cpuColorWell.action = @selector(colorChanged:);
-  [metrics addSubview:_cpuColorWell];
-
+  _cpuColorWell = makeMetricColorWell(messageText(@"Menu_CPU"), self);
   _gpuCheck = [NSButton checkboxWithTitle:messageText(@"Menu_GPU")
                                    target:self
                                    action:@selector(toggleChanged:)];
-  _gpuCheck.frame = NSMakeRect(14, 72, 280, lh);
-  [metrics addSubview:_gpuCheck];
-
-  _gpuColorWell = [[NSColorWell alloc] initWithFrame:NSMakeRect(322, 70, 62, 24)];
-  _gpuColorWell.accessibilityLabel =
-      [NSString stringWithFormat:@"%@ %@", messageText(@"Menu_GPU"),
-                                 messageText(@"Menu_Colors")];
-  _gpuColorWell.target = self;
-  _gpuColorWell.action = @selector(colorChanged:);
-  [metrics addSubview:_gpuColorWell];
-
-  NSString *memoryTitle = [messageText(@"Menu_RAM")
-      stringByTrimmingCharactersInSet:[NSCharacterSet
-                                         whitespaceAndNewlineCharacterSet]];
-  while ([memoryTitle hasSuffix:@":"] || [memoryTitle hasSuffix:@"："]) {
-    memoryTitle = [memoryTitle substringToIndex:memoryTitle.length - 1];
-  }
-  _memCheck = [NSButton checkboxWithTitle:memoryTitle
+  _gpuColorWell = makeMetricColorWell(messageText(@"Menu_GPU"), self);
+  _memCheck = [NSButton checkboxWithTitle:messageText(@"Menu_MEM")
                                    target:self
                                    action:@selector(toggleChanged:)];
-  _memCheck.frame = NSMakeRect(14, 28, 280, lh);
-  [metrics addSubview:_memCheck];
+  _memColorWell = makeMetricColorWell(messageText(@"Menu_MEM"), self);
+  NSView *metrics = makeSettingsCard(@[
+    makeSettingsRow(_cpuCheck, _cpuColorWell),
+    makeSettingsRow(_gpuCheck, _gpuColorWell),
+    makeSettingsRow(_memCheck, _memColorWell),
+  ]);
 
-  _memColorWell = [[NSColorWell alloc] initWithFrame:NSMakeRect(322, 26, 62, 24)];
-  _memColorWell.accessibilityLabel =
-      [NSString stringWithFormat:@"%@ %@", memoryTitle,
-                                 messageText(@"Menu_Colors")];
-  _memColorWell.target = self;
-  _memColorWell.action = @selector(colorChanged:);
-  [metrics addSubview:_memColorWell];
-
-  NSView *size = addSettingsSection(
-      view, messageText(@"Menu_MenubarAppearance"), NSMakeRect(x, 152, width, 136));
-
+  // Status item size
   NSTextField *wl = [NSTextField labelWithString:messageText(@"Menu_StatusBarWidth")];
-  wl.frame = NSMakeRect(14, 62, 145, lh);
-  [size addSubview:wl];
-
-  _widthSlider = [[NSSlider alloc] initWithFrame:NSMakeRect(160, 62, 174, lh)];
+  _widthSlider = [[NSSlider alloc] initWithFrame:NSZeroRect];
   _widthSlider.minValue = 4;
   _widthSlider.maxValue = 120;
   _widthSlider.accessibilityTitleUIElement = wl;
   _widthSlider.accessibilityLabel = wl.stringValue;
   _widthSlider.target = self;
   _widthSlider.action = @selector(sliderChanged:);
-  [size addSubview:_widthSlider];
-
   _widthLabel = [NSTextField labelWithString:@"28"];
-  _widthLabel.alignment = NSTextAlignmentRight;
-  _widthLabel.frame = NSMakeRect(340, 62, 42, lh);
-  [size addSubview:_widthLabel];
 
   NSTextField *fsl = [NSTextField labelWithString:messageText(@"Menu_BarFontSize")];
-  fsl.frame = NSMakeRect(14, 22, 145, lh);
-  [size addSubview:fsl];
-
-  _fontSizeSlider = [[NSSlider alloc] initWithFrame:NSMakeRect(160, 22, 174, lh)];
+  _fontSizeSlider = [[NSSlider alloc] initWithFrame:NSZeroRect];
   _fontSizeSlider.minValue = 8;
   _fontSizeSlider.maxValue = 16;
   _fontSizeSlider.accessibilityTitleUIElement = fsl;
   _fontSizeSlider.accessibilityLabel = fsl.stringValue;
   _fontSizeSlider.target = self;
   _fontSizeSlider.action = @selector(sliderChanged:);
-  [size addSubview:_fontSizeSlider];
-
   _fontSizeLabel = [NSTextField labelWithString:@"10"];
-  _fontSizeLabel.alignment = NSTextAlignmentRight;
-  _fontSizeLabel.frame = NSMakeRect(340, 22, 42, lh);
-  [size addSubview:_fontSizeLabel];
+
+  NSView *size = makeSettingsCard(@[
+    makeSettingsRow(wl, makeSliderInput(_widthSlider, _widthLabel)),
+    makeSettingsRow(fsl, makeSliderInput(_fontSizeSlider, _fontSizeLabel)),
+  ]);
+
+  [page addArrangedSubview:metrics];
+  [page addArrangedSubview:size];
+  pinToStackSides(metrics, page, 0);
+  pinToStackSides(size, page, 0);
 }
 
 - (void)showWindow:(id)sender {
   [self syncUI];
+  [self.window center];
   [super showWindow:sender];
   [NSApp activateIgnoringOtherApps:YES];
   [self showFanPolicyTransition:messageText(@"Menu_FanPolicyChecking")];
@@ -1061,8 +1174,16 @@ static NSView *addSettingsSection(NSView *parent, NSString *title,
   GoRequestFanPolicyStatus(_fanRequestGeneration);
 }
 
+// An empty message hides the error line so the window can shrink.
+- (void)showFanPolicyError:(NSString *)message {
+  _fanPolicyErrorLabel.stringValue = message ?: @"";
+  _fanPolicyErrorLabel.hidden = _fanPolicyErrorLabel.stringValue.length == 0;
+  [self fitWindowToContent];
+}
+
 - (void)showFanPolicyTransition:(NSString *)state {
   _fanPolicyStateLabel.stringValue = state;
+  _fanPolicyDot.color = [NSColor tertiaryLabelColor];
   _fanModeControl.enabled = NO;
   _constantRPMField.enabled = NO;
   _constantRPMStepper.enabled = NO;
@@ -1072,10 +1193,10 @@ static NSView *addSettingsSection(NSView *parent, NSString *title,
   _maximumTempStepper.enabled = NO;
   _fanApplyButton.enabled = NO;
   _fanHelperInstallButton.enabled = NO;
-  _fanPolicyErrorLabel.stringValue = @"";
   _fanProgressIndicator.accessibilityLabel = state;
   _fanProgressIndicator.hidden = NO;
   [_fanProgressIndicator startAnimation:nil];
+  [self showFanPolicyError:@""];
 }
 
 - (void)fanModeChanged:(id)sender {
@@ -1110,7 +1231,7 @@ static NSView *addSettingsSection(NSView *parent, NSString *title,
   int maximum = _maximumTempField.intValue;
   if ((mode == 1 && rpm <= 0) ||
       (mode == 2 && (start < 20 || maximum > 100 || maximum - start < 5))) {
-    _fanPolicyErrorLabel.stringValue = messageText(@"Menu_FanInvalidSettings");
+    [self showFanPolicyError:messageText(@"Menu_FanInvalidSettings")];
     return;
   }
   _fanRequestGeneration++;
@@ -1158,8 +1279,8 @@ static NSView *addSettingsSection(NSView *parent, NSString *title,
   ];
   int safeState = (state >= 0 && state < (int)names.count) ? state : 5;
   _fanPolicyStateLabel.stringValue = names[safeState];
+  _fanPolicyDot.color = fanPolicyDotColor(safeState);
   _fanPolicyDetailLabel.stringValue = detail ?: @"";
-  _fanPolicyErrorLabel.stringValue = message ?: @"";
   if (rpmRangeState == 1 && minimumRPM > 0 && maximumRPM >= minimumRPM) {
     _constantRPMStepper.minValue = minimumRPM;
     _constantRPMStepper.maxValue = maximumRPM;
@@ -1210,6 +1331,7 @@ static NSView *addSettingsSection(NSView *parent, NSString *title,
                                       : messageText(@"Menu_InstallFanHelper");
   _fanHelperInstallButton.hidden = !showHelperAction;
   _fanHelperInstallButton.enabled = showHelperAction;
+  [self showFanPolicyError:message];
   [self scheduleFanPolicyRefreshAfter:inFlight ? 0.25 : 1.0];
 }
 
