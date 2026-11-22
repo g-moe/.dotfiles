@@ -1,0 +1,6 @@
+interface:
+  display_name: "Linear Ticket"
+  short_description: "Write a Linear ticket in the house format"
+  default_prompt: "Use $linear-ticket to write a Linear ticket for this work."
+policy:
+  allow_implicit_invocation: false
