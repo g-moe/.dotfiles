@@ -131,12 +131,9 @@ test("a closed machine succeeds when the viewer appears without a dialog", async
 	]);
 });
 
-test("a closed machine reports a bounded dialog timeout", async () => {
+test("a closed machine stops quietly when the viewer never appears", async () => {
 	const { events, dependencies } = machineDependencies([]);
-	await assert.rejects(
-		runMachineControlFlow("Office Mac", "office-mac.local", dependencies),
-		/Could not connect/,
-	);
+	await runMachineControlFlow("Office Mac", "office-mac.local", dependencies);
 
 	assert.equal(
 		events.filter((event) => event.startsWith("step:waiting")).length,

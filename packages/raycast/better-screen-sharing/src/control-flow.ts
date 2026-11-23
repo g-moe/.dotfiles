@@ -80,7 +80,7 @@ export async function runMachineControlFlow(
 		await dependencies.sleep();
 	}
 
-	throw new Error(`Could not connect to ${name}`);
+	// Screen Sharing owns the connection now and reports its own failures.
 }
 
 export async function runConnectionsControlFlow(

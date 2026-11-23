@@ -12,8 +12,8 @@ display name and a hostname or IP address. Complete slots appear below
 Selecting a machine focuses its open Screen Sharing window. If it is not open,
 the extension opens its `vnc://` address and accepts Apple's sign-in dialog
 once when saved credentials are already filled in. It accepts Apple's default
-screen-sharing type in either dialog order, and returns only after the viewer
-exists. Machine actions require Raycast's Accessibility permission.
+screen-sharing type in either dialog order. It stops watching after a few
+seconds without an error; Screen Sharing reports its own connection failures. Machine actions require Raycast's Accessibility permission.
 
 The extension does not use Full Disk Access, System Events, or stored
 credentials. Raycast needs Accessibility access for both machine and

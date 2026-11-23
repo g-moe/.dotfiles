@@ -19,8 +19,9 @@ import {
  * Machine:
  * - Viewer open: select its native Window menu item so macOS also switches Space.
  * - Viewer closed: open vnc://<address>. Apple/Keychain supplies saved credentials;
- *   poll until the viewer exists, accepting Sign In once and the default sharing
+ *   poll for a bounded time, accepting Sign In once and the default sharing
  *   type in either order. It never reads or types a username or password.
+ *   Screen Sharing reports its own connection failures, so polling ends quietly.
  */
 
 const run = promisify(execFile);
