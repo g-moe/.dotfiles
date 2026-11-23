@@ -20,8 +20,6 @@ Pick the flavor from the first word of the request, then read only that flavor's
 /html help                       this list
 ```
 
-In Codex, type `$html` instead of `/html`.
-
 ## Every flavor
 
 **Template.** Start from [assets/template.html](assets/template.html). Keep its styles and scripts. A flavor adds its own parts from its reference; it never changes the template's base styles, so every page has the same sizes and spacing.
