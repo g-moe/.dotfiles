@@ -8,6 +8,7 @@
 # Flow:
 # 1. Find each direct child directory that contains a package.json.
 # 2. For "install", install dependencies and build each extension for local use.
+#    If Raycast already has a copy of the extension, refresh that copy.
 # 3. For package scripts such as "test", "typecheck", and "build", run
 #    them one extension at a time and stop immediately if one fails.
 # 4. For "dev", start every extension watcher at the same time. When this
@@ -48,6 +49,9 @@ dev | build | test | typecheck | format-check | check) command="$1" ;;
 	;;
 esac
 
+# Raycast keeps a copy of each imported extension here, named after its package.
+RAYCAST_EXTENSIONS_DIR="$HOME/.config/raycast/extensions"
+
 # Each matching manifest represents one Raycast extension.
 package_files=(packages/raycast/*/package.json)
 if ((${#package_files[@]} == 0)); then
@@ -62,6 +66,17 @@ run() {
 	if [[ "$operation" == "install" ]]; then
 		npm --prefix "$package_dir" ci
 		npm --prefix "$package_dir" run build
+
+		# Raycast runs its own copy of an imported extension, so refresh that copy.
+		local extension_name
+		extension_name="$(node -p "require('./$package_dir/package.json').name")"
+		local raycast_copy_dir="$RAYCAST_EXTENSIONS_DIR/$extension_name"
+		if [[ -d "$raycast_copy_dir" ]]; then
+			cp -R "$package_dir/dist/." "$raycast_copy_dir/"
+			echo "Updated Raycast's copy: $raycast_copy_dir"
+			return
+		fi
+
 		echo "Build ready."
 		echo "Raycast will show this as a Development extension because it is a local import."
 		echo "If you want a Store-style extension, it must be published to the Raycast Store."
