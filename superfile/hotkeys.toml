@@ -1,0 +1,96 @@
+##############################################
+#                                            #
+#           Superfile Configuration          #
+#                                            #
+##############################################
+
+# This contains the hotkey config file for superfile! More details can be found at
+# https://superfile.dev/configure/custom-hotkeys/.
+
+###############################################################################
+#                                Global hotkeys                               #
+###############################################################################
+
+# Note: These hotkeys should be unique.
+
+#-- Basic Actions
+confirm = ['enter', 'right', 'l']
+cd_quit = ['f20', '']
+quit = ['q', 'esc']
+
+#-- Navigation
+list_down = ['down', 'j']
+list_up = ['up', 'k']
+page_down = ['pgdown','']
+page_up = ['pgup','']
+
+#-- File Panel Controls
+close_file_panel = ['f20', '']
+create_new_file_panel = ['f20', '']
+next_file_panel = ['tab', 'L']
+open_sort_options_menu = ['f20', '']
+pinned_directory = ['f20', '']
+previous_file_panel = ['shift+left', 'H']
+split_file_panel = ['f20', '']
+toggle_file_preview_panel = ['f20', '']
+toggle_reverse_sort = ['f20', '']
+
+#-- Focus Manipulation
+focus_on_metadata = ['f20', '']
+focus_on_process_bar = ['f20', '']
+focus_on_sidebar = ['f20', '']
+
+#-- File/Dir Creation/Renaming
+file_panel_item_create = ['f20', '']
+file_panel_item_rename = ['f20', '']
+
+#-- Main File Operations
+copy_items = ['f20', '']
+cut_items = ['f20', '']
+delete_items = ['f20', '']
+paste_items = ['f20', '']
+permanently_delete_items = ['f20', '']
+
+#-- Archive Manipulation
+compress_file = ['f20', '']
+extract_file = ['f20', '']
+
+#-- Editor Actions
+open_current_directory_with_editor = ['f20', '']
+open_file_with_editor = ['f20', '']
+
+#-- Other Actions
+change_panel_mode = ['f20', '']
+copy_path = ['f20', '']
+copy_present_working_directory = ['f20', '']
+open_command_line = ['f20', '']
+open_help_menu = ['f20', '']
+open_spf_prompt = ['f20', '']
+open_zoxide = ['f20', '']
+toggle_dot_file = ['f20', '']
+toggle_footer = ['f20', '']
+
+###############################################################################
+#                                Typing hotkeys                               #
+###############################################################################
+
+# Note: These hotkeys can override all hotkeys.
+
+confirm_typing = ['enter', '']
+cancel_typing = ['esc', '']
+
+###############################################################################
+#                            Mode-Specific Hotkeys                            #
+###############################################################################
+
+# Note: These hotkeys can conflict with other modes, but not with global
+# hotkeys.
+
+#-- Normal Mode Actions
+parent_directory = ['h', 'left', 'backspace']
+search_bar = ['f20', '']
+
+#-- Selection Mode Actions
+file_panel_select_mode_items_select_down = ['f20', '']
+file_panel_select_mode_items_select_up = ['f20', '']
+file_panel_select_all_items = ['f20', '']

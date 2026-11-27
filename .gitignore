@@ -92,6 +92,7 @@
 # Superfile
 !/superfile/
 !/superfile/config.toml
+!/superfile/hotkeys.toml
 !/superfile/theme/
 !/superfile/theme/gtheme.toml
 

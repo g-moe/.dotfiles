@@ -25,6 +25,7 @@ _configure() {
 
   safe_symlink_group Superfile \
     "$ROOT_DIR/superfile/config.toml" "$target/config.toml" \
+    "$ROOT_DIR/superfile/hotkeys.toml" "$target/hotkeys.toml" \
     "$ROOT_DIR/superfile/theme/gtheme.toml" "$target/theme/gtheme.toml"
 }
 
