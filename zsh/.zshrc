@@ -183,6 +183,45 @@ ssh-ls() {
   awk 'tolower($1)=="host" {for (i=2; i<=NF; i++) if ($i !~ /[*?]/) print $i}' "$HOME/.ssh/config"
 }
 
+# Ask for a local file or folder and an SSH host, then send it into that host's Documents folder
+unalias ssh-send 2>/dev/null
+ssh-send() {
+  local file_path=""
+  local host=""
+  local -a hosts
+
+  # 1. Ask for the local path, with tab completion
+  vared -p 'File to send: ' file_path || return 1
+  file_path="${(Q)file_path}"
+  file_path="${file_path/#\~/$HOME}"
+  if [[ ! -e "$file_path" ]]; then
+    print -ru2 "ssh-send: '$file_path' does not exist"
+    return 1
+  fi
+
+  # 2. Pick a host from the SSH config
+  hosts=("${(@f)$(ssh-ls)}")
+  if (( ${#hosts} == 0 )); then
+    print -u2 'ssh-send: no hosts in ~/.ssh/config; add one with ssh-new'
+    return 1
+  fi
+  PS3='Send to: '
+  select host in "${hosts[@]}"; do
+    [[ -n "$host" ]] && break
+  done
+  [[ -n "$host" ]] || return 1
+
+  # A path without a leading slash is relative to the remote home, so this lands in ~/Documents on macOS, Linux, and Windows
+  scp -r "$file_path" "$host:Documents/" || return 1
+
+  # 3. Offer to delete the local copy once it has been sent, defaulting to keep
+  local delete_reply=""
+  read -r "delete_reply?Delete '$file_path' from this machine? [y/N] "
+  if [[ "$delete_reply" == [yY] ]]; then
+    rm -r -- "$file_path"
+  fi
+}
+
 # Walk through creating a new SSH host config
 alias ssh-new="$HOME/.dotfiles/packages/lib/bash/bin/shared-ssh-new-host.sh"
 
