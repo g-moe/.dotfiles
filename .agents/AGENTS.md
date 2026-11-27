@@ -12,7 +12,20 @@
 
 - When a task is done, reply with only what needs my action (failures, decisions, blockers). If nothing needs my action, reply `Done.` No summaries, tables, or lists of completed work.
 
-- When code is involved (answering questions, explaining behavior, presenting options, etc), mix real code with explanation. Show enough code (the full function or flow, with file path) that it stands on its own, and add the context the code alone can't show (why it happens, what connects to what, trade-offs) so the reader can put the two together. For options, show each option as code with its trade-off. Do not use 1-2 line codeblock snippets. They make reply output too choppy to read. Supplement explanation with codeblocks. When a reply uses blocks, the code goes inside the block it belongs to.
+- Don't rely on text alone; paragraph after paragraph buries the point. Give one short paragraph, then show the thing itself, so I can skip the paragraph and still get it:
+
+  | The question is about                         | Show                                       |
+  | --------------------------------------------- | ------------------------------------------ |
+  | how something looks (layout, spacing, states) | a rendered mock in T3 Code, one per option |
+  | how something flows (screens, steps, data)    | a rendered diagram in T3 Code              |
+  | how code behaves or is structured             | code, mixed with explanation               |
+  | names, types, or APIs                         | code                                       |
+
+  A mock or diagram should explain itself, the way good code needs no comments: label options and nothing else, and if it needs notes to be understood, redraw it instead.
+  For options, show each one the same way, with its trade-off.
+  When a task is done, show nothing; I read the diff myself.
+
+- When showing code, show enough (the full function or flow, with file path) that it stands on its own, and add what the code alone can't show (why it happens, what connects to what, trade-offs). Do not use 1-2 line codeblock snippets; they make replies too choppy to read. When a reply uses blocks, the code goes inside the block it belongs to.
 
 - Use collapsed `<details>` blocks to tuck away what is not the main point, not as the default reply shape. Keep the main point, the answer, and anything I must act on in plain text outside every block. Put side notes, background, long code, and other supporting detail in a block only when it would crowd the main point. Most replies need no blocks. Steps and options are the exception: when a reply walks through steps or presents options, give each step or option its own block, and every one gets a block so they all look the same. The `<summary>` holds a bold label and one line saying what it is and why; code, commands, and detail go inside.
 
@@ -58,10 +71,28 @@ Code is how we do a majority of our communication, so it must be easy to read. T
 - Use readonly types and data structures where applicable.
 - Pit of success by Rico Mariani - safe behaviours happen by default so authors can't get it wrong.
 
+**Comments**
+
+Code carries meaning through names, constants, and types, not comments.
+Only these three comments are allowed; write no other kind, and drop any other kind you copy or move.
+
+1. Doc block on a function or class: what it does, what callers must know that the signature can't say, and an `@example`.
+2. Step comment: one line above each chunk of a long function, naming the step in a procedural manner.
+3. Why comment: why code is shaped oddly, or a link to the algorithm it implements.
+
+Any other comment is replaced by code:
+
+| The comment would say                  | Write instead                       |
+| -------------------------------------- | ----------------------------------- |
+| what a constant, variable, or field is | a name that says it, unit included  |
+| what a line does                       | nothing; the code says it           |
+| what a condition means                 | a named variable or function        |
+| what a special return value means      | a type, like `number \| undefined`  |
+
 
 ### Coding Examples
 
-1. Commenting Functions
+1. Doc Block (comment kind 1)
 ```typescript
 /**
  * Compose RGB channels into a lowercase `#rrggbb` hex color.
@@ -76,7 +107,7 @@ export function rgbToHex(r: number, g: number, b: number): HEXValue {
 }
 ```
 
-2. Commenting Functions with Links to Docs/Resources
+2. Doc Block with Links to Docs/Resources (comment kind 1)
 ```typescript
 /**
  * Send a single transactional email through Postmark.
@@ -102,10 +133,19 @@ export async function sendPostmarkEmail(params: SendPostmarkEmailParams): Promis
 
 ```
 
-3. Commenting Long Codeblock
+3. Step Comments in a Long Function (comment kind 2)
 ```typescript
-/** 
- * Reads local runtime metadata and verifies repository prerequisites. 
+/**
+ * Reads local runtime metadata and verifies repository prerequisites.
+ *
+ * Steps:
+ * 1. Validate dependencies
+ * 2. Verify git branch exists in remote
+ * 3. ...
+ *
+ * @example
+ * const context = await runSetup(summary);
+ * context.rootDir; // '/home/user/tradester'
  */
 export async function runSetup(summary: SummarySection[]): Promise<SetupContext> {
     const rootDir = process.cwd();
@@ -133,24 +173,16 @@ export async function runSetup(summary: SummarySection[]): Promise<SetupContext>
 }
 ```
 
-4. Bad Comment Examples
-
-Aim for code that needs no comments.
-If code needs a comment to be understood, change the code instead.
-- Pick names that say what the data holds and what the action does, and keep names aligned across code that works together (a wrapper and what it wraps, a caller and what it calls).
-- Replace a magic value with a named constant, so the line reads like the comment would have.
-- Split a long condition into named variables, or move it to its own function, so the condition reads like the comment would have.
-- Let types carry meaning a comment would have explained: return `number | undefined`, not `-1` with a comment saying `-1` means missing.
-- Prefer code over comments because comments go stale: tests, types, and linters check code, and nothing checks comments.
-- Documentation is not a comment: describe what a public API is for and what callers must know (states, errors, thread safety) in its doc block.
-- Comment only what code can't show: why code is shaped oddly for performance, or a link to the algorithm or math it implements.
-
-```svelte
-<!-- Earlier spans keep their width; only the last one shrinks into an ellipsis. -->
-<span class="flex min-w-0 gap-2 *:truncate *:not-last:shrink-0">
-    {@render children()}
-</span>
+4. Why Comment (comment kind 3)
+```typescript
+// Update each row's PnL
+// - A plain loop, not `.map`: this runs on every tick, and `.map` makes a new array each time.
+for (let index = 0; index < rows.length; index += 1) {
+    rows[index].pnl = toPnl({ row: rows[index], price });
+}
 ```
+
+5. Not Allowed
 
 ```typescript
 // Increment the retry count
@@ -161,6 +193,9 @@ const orderIds = orders.map((order) => order.id);
 
 // Default timeout of 5 seconds
 const DEFAULT_TIMEOUT_MS = 5_000;
+
+/** Lowest take profit or stop loss in whole ticks. */
+export const BRACKET_MIN_WHOLE_TICK_EXIT = 1;
 
 // Retry when the exchange rejected the order and attempts remain
 if (order.status === 'rejected' && order.rejectSource === 'exchange' && attempt < MAX_ATTEMPTS) {
@@ -173,7 +208,7 @@ function getLastTradeTimeMs(symbolId: MdSymbolId): number {
 }
 ```
 
-5. Naming
+6. Naming
 ```typescript
 // Name after the data it holds: an id is `symbolId`, the full object is `symbol`
 const symbolId: MdSymbolId = '/ES:XCME';
@@ -195,7 +230,7 @@ const groups = Uptime.GROUPS; // not `Uptime.UPTIME_GROUPS`
 import { OrdersHistoryView, OrdersOpenView } from '@core/trading'; // was `OrdersView`
 ```
 
-6. Matching Names Through Wrappers
+7. Matching Names Through Wrappers
 ```typescript
 // md-types.ts
 export type MdSymbolId = string & { readonly __brand: 'MdSymbolId' };
@@ -241,7 +276,7 @@ export class DxfeedConnection {
 }
 ```
 
-7. Matching Names Across Siblings
+8. Matching Names Across Siblings
 ```typescript
 // dom-ladder.ts
 // Two caches doing the same job differ only in the data word: `PriceText` and `Pnl`
